@@ -132,7 +132,11 @@ def test_baseline_launcher_keeps_trainer_cache_on_scratch(tmp_path):
     subprocess.run(
         ['bash', str(BASELINE_LAUNCHER), '--dry-run'],
         check=True,
-        env={**os.environ, 'RUN_ROOT': str(run_root)},
+        env={
+            **os.environ,
+            'RUN_ROOT': str(run_root),
+            'RUN_REVISION': '2',
+        },
         capture_output=True,
         text=True,
     )
@@ -142,6 +146,7 @@ def test_baseline_launcher_keeps_trainer_cache_on_scratch(tmp_path):
     inner_scripts = sorted(run_root.glob('*/train_inner.sh'))
     assert len(inner_scripts) == 8
     for script in inner_scripts:
+        assert script.parent.name.endswith('-v2')
         contents = script.read_text()
         expected = f'export SPT_CACHE_DIR={script.parent}/spt_cache'
         assert expected in contents

@@ -15,6 +15,7 @@ WANDB_GROUP="${WANDB_GROUP:-native-cls-baseline-v1}"
 SEED="${SEED:-3072}"
 MAX_EPOCHS="${MAX_EPOCHS:-10}"
 BATCH_SIZE="${BATCH_SIZE:-128}"
+RUN_REVISION="${RUN_REVISION:-}"
 TR2_SIDECAR="${JEPA_FEATURES_TR2_SIDECAR:-/scratch/yd3062/memory-for-jepa/runs/tunnel_rooms_filled18x18/two_leaf/paired_color/tunnel_room_color_noise_filled18x18_location_probe_cue_and_position.h5}"
 TR2_SIDECAR_SHA256=074d876b1af63a94ac2ca0dfe2d749fdfae7e820f2523e8eac994d3f1102d16e
 DEPENDENCY=""
@@ -88,6 +89,9 @@ for dataset in "${DATASETS[@]}"; do
 
   for model in "${MODELS[@]}"; do
     run_id="${dataset}-${model}-native-cls-s${SEED}"
+    if [[ -n "${RUN_REVISION}" ]]; then
+      run_id="${run_id}-v${RUN_REVISION}"
+    fi
     run_dir="${RUN_ROOT}/${run_id}"
     mkdir -p "${run_dir}"
 
@@ -102,6 +106,7 @@ dataset_sha256=${expected_sha}
 seed=${SEED}
 epochs=${MAX_EPOCHS}
 batch_size=${BATCH_SIZE}
+run_revision=${RUN_REVISION:-initial}
 training_keys=pixels,action
 decoder=detached_global
 post_training_probe=encoder_cls,projector_current,predictor_future
