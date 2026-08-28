@@ -1,0 +1,35 @@
+defaults:
+  - tunnel_rooms
+  - _self_
+
+output_dir: ${oc.env:STABLEWM_HOME}/runs/${now:%Y-%m-%d}/tunnel_rooms_three_noise
+
+collection_mode: manifest_first
+num_leaves: 3
+num_scenarios: 10000
+max_attempts_per_condition: 20
+log_every: 100
+
+dataset_names:
+  hidden: tunnel_room_three_noise
+  paired_color: tunnel_room_color_three_noise
+
+# Scenarios are frozen from the natural, target-independent stream before any
+# rollout. Failed conditions retry the same scenario with deterministic noise.
+agent_speed: 5.0
+world:
+  max_episode_steps: 700
+
+policy:
+  action_noise: 2.0
+  action_repeat_prob: 0.05
+
+# The 50k launcher imports the completed 10k HDF5/journal prefix, verifies its
+# scenario hashes, and then collects scenarios 10,000 through 49,999.
+prefix:
+  enable: false
+  output_dir: null
+  num_scenarios: 10000
+  dataset_names:
+    hidden: tunnel_room_three_noise
+    paired_color: tunnel_room_color_three_noise

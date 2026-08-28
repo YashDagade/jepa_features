@@ -1,0 +1,46 @@
+defaults:
+  - _self_
+
+hydra:
+  output_subdir: null
+  run:
+    dir: .
+
+# Calibration is the safe default. Full collection is a separate reviewed gate.
+task: calibrate
+seed: 47291
+# With 100-step reviewed trajectories, 6,500 episodes closely match TR2-Color's
+# 651,357 frames and 12,180 rare teleport transitions.
+episodes: 6500
+conditions: [cue]
+overwrite: false
+calibration_approved: false
+
+# An experiment can select a distinct immutable filename. Null preserves the
+# condition-derived names for ordinary cue and reflection collection.
+dataset_filename: null
+
+output_dir: ${oc.env:STABLEWM_HOME}/runs/chaser/calibration
+dataset_cache_dir: ${oc.env:STABLEWM_HOME}
+
+calibration:
+  # Ten thousand episodes make the 10%-per-cell cue balance gate statistically
+  # meaningful; at 2,000 episodes it rejects balanced multinomial samples often.
+  episodes: 10000
+
+policy:
+  # Full 10k-episode calibration matches all three TR2-Color exposure metrics.
+  action_noise: 0.86
+
+world:
+  num_envs: 8
+  # Runner colors index CUE_COLORS in env.py. Restricting this list changes
+  # only the persistent cue alphabet; the dynamics and teleport rules stay fixed.
+  cue_ids: [0, 1, 2]
+  # Each stored episode keeps one target color and one motion process for all
+  # 100 steps, while the smooth stochastic heading evolves within the episode.
+  max_episode_steps: 100
+  # EMA-filtered heading noise makes the larger colored runner visibly
+  # wander without changing its constant three-pixel speed.
+  runner_noise_std: 1.0
+  image_shape: [224, 224]

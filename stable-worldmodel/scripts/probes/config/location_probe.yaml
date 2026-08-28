@@ -1,0 +1,42 @@
+defaults:
+  - _self_
+
+device: cuda
+
+world_model:
+  checkpoint: ???
+  cache_dir: ${oc.env:STABLEWM_HOME,null}
+
+dataset:
+  source_hdf5: null
+  expected_split_counts:
+    fit: 512
+    validation: 128
+    test: 256
+
+location_probe:
+  sidecar: ???
+  image_size: 224
+  batch_size: 128
+  num_workers: 8
+  expected_feature_width: null
+  autocast: true
+  ridge_alpha: 10.0
+
+# A training callback supplies batch_index; a standalone final probe uses fit_end.
+snapshot:
+  batch_index: null
+  fit_end: true
+
+output:
+  directory: ${hydra:runtime.output_dir}/location_probe
+
+wandb:
+  enabled: false
+  config:
+    entity: yash21-dagade-duke-university
+    project: rank_eval
+    name: linear-location-probe
+    group: location-probe
+    job_type: location_probe
+    tags: [location_probe, separate_current_predicted_visual]

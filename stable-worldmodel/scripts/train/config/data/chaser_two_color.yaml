@@ -1,0 +1,10 @@
+dataset:
+  # Override JEPA_FEATURES_CHASER_DATASET to use another immutable corpus.
+  name: ${oc.env:JEPA_FEATURES_CHASER_DATASET,/scratch/yd3062/memory-for-jepa/datasets/chaser_cue_two_color.h5}
+  num_steps: ${eval:'${wm.num_preds} + ${wm.history_size}'}
+  frameskip: 5
+  keys_to_load:
+    - pixels
+    - action
+  keys_to_cache:
+    - action

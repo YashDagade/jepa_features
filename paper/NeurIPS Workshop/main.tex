@@ -1,0 +1,245 @@
+\documentclass{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{balance}
+\usepackage{icml2026}
+
+\makeatletter
+\renewcommand{\Notice@String}{Preliminary work. Under review for a NeurIPS workshop. Do not distribute.}
+\makeatother
+
+\definecolor{pendingred}{HTML}{B93835}
+\newcommand{\pending}[1]{\textcolor{pendingred}{\textbf{[Pending: #1]}}}
+\newcommand{\trtwo}{\textsc{TR2-Color}}
+\newcommand{\chaser}{\textsc{Chaser-Cue}}
+\newcommand{\lewm}{\textsc{LeWM}}
+\newcommand{\pldm}{\textsc{PLDM}}
+\newcommand{\lpwm}{\textsc{LpWM}}
+\newcommand{\smwm}{\textsc{SMWM}}
+
+\icmltitlerunning{When Do JEPA World Models Abstract Predictive Features?}
+
+\begin{document}
+
+\twocolumn[
+\icmltitle{When Do JEPA World Models\\Abstract Predictive Features?}
+
+\begin{icmlauthorlist}
+  \icmlauthor{Anonymous Author(s)}{anon}
+\end{icmlauthorlist}
+\icmlaffiliation{anon}{Anonymous Institution}
+\icmlcorrespondingauthor{Anonymous Author}{anonymous@domain.com}
+\icmlkeywords{world models, joint embeddings, abstraction, rare events}
+\vskip 0.25in
+]
+
+\printAffiliationsAndNotice{}
+
+\begin{abstract}
+Joint-embedding predictive architectures are intended to discard
+unpredictable detail while retaining information needed to predict the world.
+That principle leaves a basic empirical question unresolved: when a visual
+feature is continuously observable but affects dynamics only at rare events,
+does a learned world state preserve it or abstract it away?  We introduce two
+controlled benchmarks that separate a frequent smooth objective from a rare
+cue-conditioned transition.  In Tunnel Rooms Color, an agent usually
+approaches a portal and occasionally undergoes a color-determined teleport.
+In Chaser Cue, an agent usually pursues a moving runner and contact triggers a
+runner-color-determined teleport.  We compare native global-CLS
+implementations of \lewm{}, \pldm{}, \lpwm{}, and a sensorimotor JEPA using
+matched datasets, update budgets, and episode-disjoint diagnostics.  We
+measure realized transition exposure, geometry and cue readouts at the
+encoder, projector, and predictor, detached reconstructions, and predictions
+through the rare event.  This design distinguishes encoder abstraction from
+predictor loss and downstream energy failure, and supports controlled sweeps
+over rare-event exposure and training duration.  \pending{Insert native
+baseline and exposure-sweep results after all registered runs complete.}
+\end{abstract}
+
+\section{Introduction}
+
+Joint-embedding predictive architectures (JEPAs) learn by predicting target
+representations rather than pixels
+\citep{lecun2022path,assran2023ijepa,bardes2024vjepa}.  Feature-space
+prediction is attractive because a useful state should represent stable,
+predictively relevant structure without spending capacity on every detail of
+the observation.  The same abstraction, however, can become a failure when a
+feature has a rare but decisive consequence.
+
+Consider an offline dataset with two dynamical objectives.  Most transitions
+teach smooth local motion, while a small fraction identify which discontinuous
+transition occurs.  Minimizing average prediction error can reward a model
+that captures the first objective and treats the second as noise, even when
+the second determines task success.  Prior toy analyses show that predictive
+joint embeddings can prefer slowly varying or easily predicted factors
+\citep{sobal2022slow}; we study the complementary case of a persistent cue
+whose consequence is temporally sparse.
+
+We introduce paired visual environments that make this hypothesis testable.
+\trtwo{} uses portal color to determine a teleport destination.  \chaser{}
+uses the color of a moving runner to determine the chaser's post-contact
+destination.  In both environments the cue is visible throughout the episode,
+but its causal role is revealed only at a rare transition.  We separately
+measure the dominant and rare objectives, rather than using overall planning
+success as a proxy for cue use.
+
+Our study has three goals:
+\begin{enumerate}
+  \item establish whether native JEPA world-model states preserve geometry,
+  motion, cue identity, and cue-conditioned destination;
+  \item localize a failure to the encoder, projector, predictor, or final
+  energy; and
+  \item test whether increasing rare-event exposure or optimization duration
+  systematically restores the missing feature.
+\end{enumerate}
+
+\section{Two Objectives with Unequal Exposure}
+
+Let an episode contain observations $x_t$, actions $a_t$, and events $e_t$.
+The encoder and projector produce $z_t=g(f(x_t))$, and a predictor estimates
+\begin{equation}
+  \hat z_{t+1}=p(z_{\leq t},a_{\leq t}).
+\end{equation}
+The ordinary prediction objective averages over sampled transitions:
+\begin{equation}
+  \mathcal{L}_{\mathrm{pred}}
+  =\frac{1}{N}\sum_{i=1}^{N}
+  \lVert \hat z_{t_i+1}-z_{t_i+1}\rVert_2^2.
+\end{equation}
+Partition transitions into dominant approach/chase transitions
+$\mathcal{D}_{\mathrm{smooth}}$, rare teleports $\mathcal{D}_{\mathrm{event}}$,
+and other transitions $\mathcal{D}_{\mathrm{other}}$.  The raw event exposure
+is
+\begin{equation}
+  \rho_{\mathrm{raw}}
+  =\frac{|\mathcal{D}_{\mathrm{event}}|}
+  {|\mathcal{D}_{\mathrm{smooth}}|+|\mathcal{D}_{\mathrm{event}}|
+  +|\mathcal{D}_{\mathrm{other}}|}.
+\end{equation}
+Because training uses multi-frame windows and frameskip, we also report the
+realized fraction $\rho_{\mathrm{target}}$ of sampled prediction intervals
+that cross an event.  This is the exposure the loss actually receives.
+
+\subsection{Tunnel Rooms Color}
+
+Each observation is a $224\times224$ RGB image containing an agent, a hub,
+and colored portals.  Ordinary motion approaches a portal.  Crossing it
+teleports the agent to the leaf paired by color.  Portal locations are
+randomized so that geometry alone does not determine identity.  We derive
+dominant-objective targets from nearest-portal identity, distance, and
+direction, and rare-objective targets from color-conditioned hub/leaf
+locations and destination identity.
+
+\subsection{Chaser Cue}
+
+A small red chaser pursues a larger moving runner.  The runner follows a
+smooth noisy orbit; contact teleports the chaser according to the runner's
+color and contact quadrant.  Dominant-objective targets include both agent
+positions, relative displacement, velocity, and closing distance.  The rare
+objective uses cue identity, event imminence, destination quadrant, and
+post-contact position.
+
+\section{Models and Controlled Protocol}
+
+We compare four global-state predictive world models under their native
+training objectives.  \lewm{} uses prediction MSE and SIGReg
+\citep{maes2026leworldmodel}.  \pldm{} uses prediction, variance/covariance,
+and temporal-alignment terms \citep{sobal2025latentplanning}.  \lpwm{} uses a
+non-negative projector and rectified distribution matching inspired by
+Rectified LpJEPA \citep{kuang2026rectified}.  \smwm{} uses forward dynamics
+and its published inverse-dynamics anti-collapse objective.  All models select
+the backbone's actual CLS token and consume image observations plus actions.
+Each family retains its native published objective.
+
+The primary matrix contains four models on two datasets using the same seed,
+episode split, number of viewed examples, and optimizer updates.  Decoder
+training is diagnostic and detached from the world state.  Subsequent sweeps
+vary only realized event exposure and training duration.
+
+\section{Failure Localization}
+
+We fit episode-disjoint readouts at four stages: native encoder CLS,
+projected current state, predicted state, and decoded pixels.  Let $C$ denote
+the persistent cue, $G$ geometric state, and $Y$ the cue-conditioned
+destination.  The evidence is classified as follows:
+
+\paragraph{Encoder or projector abstraction.}
+$G$ is accurately decoded, but $C$ is near its balanced null and cue-only
+counterfactuals weakly change the current state.
+
+\paragraph{Predictor failure.}
+The current state retains $C$, but $Y$ or future cue information is lost in
+$\hat z$.
+
+\paragraph{Energy failure.}
+Current and predicted states retain $Y$, but the correct destination does not
+receive a favorable terminal energy.
+
+\paragraph{Success.}
+Geometry, cue, destination prediction, decoded transition, and energy ranking
+are all consistent on matched event scenarios.
+
+\section{Results}
+
+\pending{Populate the native 4-by-2 baseline table with dataset hashes,
+episode denominators, decoder metrics, stagewise probes, event-transition
+error, and confidence intervals.}
+
+\pending{Add exposure sweeps at 1\%, 10\%, 50\%, and 200\% of the matched
+event-target rate while holding examples and optimizer updates constant.}
+
+\pending{Add duration sweeps only after the native baseline establishes which
+stage loses the cue.}
+
+\section{Discussion}
+
+The intended conclusion is conditional rather than universal.  A model that
+fails one cue-conditioned benchmark may still preserve the same feature when
+its consequence is more frequent, when a different anti-collapse objective is
+used, or when optimization continues longer.  Conversely, a clear decoder is
+not sufficient evidence of correct causal use.  The paired environments and
+stagewise diagnostics are designed to identify these boundaries without
+conflating representation, prediction, energy, and planning.
+
+\section{Limitations}
+
+The environments are deliberately simple, and the first baseline uses one
+training seed.  Model families differ in anti-collapse objective as well as
+optimization geometry, so family comparisons do not isolate one mechanism.
+Training windows, rather than raw frames, are the statistical unit that enters
+the loss.  Final claims will require multiple seeds, episode-stratified
+intervals, and a prespecified exposure intervention.
+
+\bibliography{references}
+\bibliographystyle{icml2026}
+
+\appendix
+
+\section{Reproducibility Checklist}
+
+For every reported run we record the source commit, resolved configuration,
+dataset path and SHA-256, episode split, seed, viewed examples, optimizer
+updates, checkpoint, W\&B run ID, and diagnostic completion.  Missing metrics
+remain missing and are never converted to zero.
+
+\section{Planned Tables and Figures}
+
+\begin{enumerate}
+  \item A benchmark schematic showing the frequent smooth objective and rare
+  cue-conditioned teleport in both environments.
+  \item A complete native-baseline table for all eight model--dataset cells.
+  \item Stagewise geometry/cue/destination probes with explicit nulls.
+  \item Matched original/decoded event frames and predicted rollouts.
+  \item Event-exposure and training-duration dose-response curves.
+\end{enumerate}
+
+\balance
+\end{document}

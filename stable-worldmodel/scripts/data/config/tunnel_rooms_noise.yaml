@@ -1,0 +1,16 @@
+defaults:
+  - tunnel_rooms
+  - _self_
+
+output_dir: ${oc.env:STABLEWM_HOME}/runs/${now:%Y-%m-%d}/tunnel_rooms_noise
+
+dataset_names:
+  hidden: tunnel_room_noise
+  paired_color: tunnel_room_color_noise
+
+# Match the Two Rooms noisy expert collection setup. The final trainable noisy
+# corpus is filtered to paired successful episodes so expert validity is 100%.
+agent_speed: 5.0
+policy:
+  action_noise: 2.0
+  action_repeat_prob: 0.05

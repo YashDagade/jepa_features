@@ -1,0 +1,26 @@
+defaults:
+  - _self_
+
+hydra:
+  output_subdir: null
+  run:
+    dir: .
+
+output_dir: ${oc.env:STABLEWM_HOME}/runs/${now:%Y-%m-%d}/tunnel_rooms_full
+dataset_cache_dir: ${oc.env:STABLEWM_HOME}
+scenario_seed: 41021
+policy_seed: 41021
+num_scenarios: 10000
+overwrite: false
+resume: true
+record_videos: true
+video_steps: 500
+
+policy:
+  action_noise: 0.0
+  action_repeat_prob: 0.0
+
+world:
+  num_envs: 1
+  max_episode_steps: 500
+  image_shape: [224, 224]

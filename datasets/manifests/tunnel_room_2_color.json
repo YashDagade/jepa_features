@@ -1,0 +1,117 @@
+{
+  "objective_probe": {
+    "sidecar": "/scratch/yd3062/memory-for-jepa/runs/tunnel_rooms_filled18x18/two_leaf/paired_color/tunnel_room_color_noise_filled18x18_location_probe_cue_and_position.h5",
+    "sidecar_sha256": "074d876b1af63a94ac2ca0dfe2d749fdfae7e820f2523e8eac994d3f1102d16e",
+    "schema_version": 2,
+    "source_sha256": "e134677f2c74d17de8765254a4b97b87c8258a898115e2dd1dcf8b3b2a3df042",
+    "sample_sha256": "1d2b74dcee68a6318e2c1431fd69ee48c2da8c4126f817a30bcefe6e540196b5",
+    "sample_counts": {
+      "fit": 512,
+      "validation": 128,
+      "test": 256
+    },
+    "readouts": {
+      "dominant_objective": [
+        "agent_current",
+        "agent_future",
+        "tunnel_top_hub",
+        "tunnel_top_leaf",
+        "tunnel_bottom_hub",
+        "tunnel_bottom_leaf"
+      ],
+      "cue_binding": [
+        "tunnel_green_hub",
+        "tunnel_green_leaf",
+        "tunnel_orange_hub",
+        "tunnel_orange_leaf"
+      ]
+    }
+  },
+  "location_sidecars": {
+    "filled_sidecar": "/scratch/yd3062/memory-for-jepa/runs/tunnel_rooms_filled18x18/two_leaf/paired_color/tunnel_room_color_noise_filled18x18_location_probe.h5",
+    "filled_sidecar_sha256": "8c6925e8fbc3d7072b73d713012143858b96cd988784869ea8dd10abd97ac271",
+    "filled_source_sha256": "e134677f2c74d17de8765254a4b97b87c8258a898115e2dd1dcf8b3b2a3df042",
+    "outline_sidecar": "/scratch/yd3062/memory-for-jepa/runs/tunnel_rooms_filled18x18/two_leaf/paired_color/tunnel_room_color_noise_location_probe_outline.h5",
+    "outline_sidecar_sha256": "d4efdbe6c5e4acf5fac20a6cca6f8897e8492e493d486d019515689bc56a8800",
+    "outline_source_sha256": "66bbc4d9ea18aa076a5d4edd5acd6d1a5411b51cb22c9b6e7d38d17f012364ed",
+    "sample_counts": {
+      "fit": 512,
+      "test": 256,
+      "validation": 128
+    },
+    "sample_sha256": "23949a26430311a753cc076b566fdc39a1fd1c4266bdd58682f4fa9ebfe72c7a",
+    "target_names": [
+      "agent_current_x",
+      "agent_current_y",
+      "agent_future_x",
+      "agent_future_y",
+      "tunnel_green_hub_x",
+      "tunnel_green_hub_y",
+      "tunnel_green_leaf_x",
+      "tunnel_green_leaf_y",
+      "tunnel_orange_hub_x",
+      "tunnel_orange_hub_y",
+      "tunnel_orange_leaf_x",
+      "tunnel_orange_leaf_y"
+    ]
+  },
+  "provenance": {
+    "condition": "paired_color",
+    "destination_hdf5": "/scratch/yd3062/memory-for-jepa/datasets/tunnel_room_color_noise_filled18x18.h5",
+    "destination_sha256": "e134677f2c74d17de8765254a4b97b87c8258a898115e2dd1dcf8b3b2a3df042",
+    "num_leaves": 2,
+    "render_scenario_manifest_sha256": "9cbf79ef656752c267025662009925ed8b413c057d9222ba5bd91ddb6f711d65",
+    "renderer": {
+      "agent_render_radius": 9,
+      "marker_height": 18,
+      "marker_style": "filled18x18",
+      "marker_width": 18,
+      "method": "exact_state_replay_and_visual_raster_upgrade"
+    },
+    "schema_version": 2,
+    "source_hdf5": "/scratch/yd3062/memory-for-jepa/datasets/tunnel_room_color_noise.h5",
+    "source_scenario_manifest_sha256": "7bfb155332055eac415f1d1f6929eef92594d1caba2a70c100c6d3694cc80cab",
+    "source_sha256": "66bbc4d9ea18aa076a5d4edd5acd6d1a5411b51cb22c9b6e7d38d17f012364ed",
+    "validation": {
+      "appearance": {
+        "agent_render_radius": 9,
+        "marker_height": 18,
+        "marker_style": "filled18x18",
+        "marker_width": 18
+      },
+      "image_delta": {
+        "goal": {
+          "changed_frames": 651357,
+          "changed_values": 2322470226,
+          "total_frames": 651357
+        },
+        "pixels": {
+          "changed_frames": 651357,
+          "changed_values": 2293865856,
+          "total_frames": 651357
+        }
+      },
+      "nonimage_value_sha256": {
+        "action": "302d5e2188943bc717211e0e2c99ab628b4c1f2a39ba58e1d630e8b348ebd950",
+        "distance_to_target": "67655c72241726199727f0616aa6387fed172888d1920b92d4add39f68810657",
+        "env_name": "179aed94873a58b9240f7efe2598843ad3f79591001c5c930ca5314e21020d66",
+        "ep_idx": "3a814f64cffad9bcf80830c7c11fb77ce598d54bb5aab4fc8c83517c57015caa",
+        "ep_len": "4501ba9bd8a7b5b0b84061838d2349122b7888038048a0714df50358c862a59e",
+        "ep_offset": "fc5b41108d54ba992c0052a041f3f7d35b34399c2c6f6cbfdd89eac46e1f8455",
+        "goal_state": "c88ad51baa85040633d749a53932eae81249798aa793c0b3af4d719bc41d7993",
+        "id": "4e0eb61f9b7afdac66c84a53162d8b6fdc619e77cc2433107b8478aa696e7b86",
+        "pos_agent": "452ced89f342e5889bc7a159f19b55ba08db6a944464fc4d433207f20a295f4e",
+        "pos_target": "c88ad51baa85040633d749a53932eae81249798aa793c0b3af4d719bc41d7993",
+        "proprio": "452ced89f342e5889bc7a159f19b55ba08db6a944464fc4d433207f20a295f4e",
+        "render_time": "2fb9c1ce0c457b61883ce3d1a0dac35d3476869c06cae5234c4403a6ff6ae22b",
+        "reward": "4bc1130438b2062860facfe54fdb79d65960b6fc2e3a8e9e83eba30ae2a342fa",
+        "state": "452ced89f342e5889bc7a159f19b55ba08db6a944464fc4d433207f20a295f4e",
+        "step_idx": "1a7a00753e8e923320978ef820f5a22be567a7c3741db5085cc875569fe98f30",
+        "terminated": "9a0a1b7af8304fa9b568712a12389514fbe1b2542b22b5f91deaff6a1ae71489",
+        "truncated": "4f47d221ad14829a7abb154e7e59604f8982ff33c7154c76fc31ca755bcf4b58"
+      },
+      "num_episodes": 10000,
+      "num_rows": 651357
+    }
+  }
+}

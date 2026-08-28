@@ -1,0 +1,131 @@
+{
+  "config": {
+    "calibration": {
+      "episodes": 10000
+    },
+    "calibration_approved": true,
+    "conditions": [
+      "cue"
+    ],
+    "dataset_cache_dir": "/scratch/yd3062/worktrees/neurips-color-blind-jepa",
+    "dataset_filename": "chaser_cue_two_color.h5",
+    "episodes": 6500,
+    "output_dir": "/scratch/yd3062/worktrees/neurips-color-blind-jepa/runs/Aug23/chaser-cue-two-color",
+    "overwrite": false,
+    "policy": {
+      "action_noise": 0.86
+    },
+    "seed": 47291,
+    "task": "collect",
+    "world": {
+      "cue_ids": [
+        0,
+        1
+      ],
+      "image_shape": [
+        224,
+        224
+      ],
+      "max_episode_steps": 100,
+      "num_envs": 8,
+      "runner_noise_std": 1.0
+    }
+  },
+  "datasets": {
+    "cue": {
+      "columns": [
+        "action",
+        "contact_quadrant",
+        "cue_id",
+        "destination_quadrant",
+        "distance_to_target",
+        "event",
+        "event_count",
+        "id",
+        "orbit_direction",
+        "orbit_phase",
+        "orbit_radius",
+        "pixels",
+        "pos_agent",
+        "pos_blue",
+        "pos_red",
+        "pre_contact_blue",
+        "pre_contact_red",
+        "proprio",
+        "render_time",
+        "reward",
+        "runner_noise_seed",
+        "runner_noise_std",
+        "scenario_seed",
+        "state",
+        "step_idx",
+        "teleport_destination",
+        "terminated",
+        "truncated"
+      ],
+      "cue_episode_counts": [
+        3238,
+        3262
+      ],
+      "cue_event_counts": [
+        4474,
+        6697
+      ],
+      "cue_ids": [
+        0,
+        1
+      ],
+      "cue_names": [
+        "blue",
+        "green"
+      ],
+      "cue_quadrant_counts": [
+        [
+          620,
+          653,
+          652,
+          614
+        ],
+        [
+          626,
+          630,
+          649,
+          645
+        ]
+      ],
+      "episode_length_max": 100,
+      "episode_length_min": 100,
+      "episodes": 6500,
+      "event_clip_exposure": 0.2570712250712251,
+      "event_clips": 135348,
+      "event_intervals": 136040,
+      "events": 11171,
+      "events_per_episode": 1.7186153846153847,
+      "inter_event_interval_mean": 27.489148306478132,
+      "legal_clips": 526500,
+      "path": "/scratch/yd3062/worktrees/neurips-color-blind-jepa/datasets/chaser_cue_two_color.h5",
+      "durable_external_path": "/scratch/yd3062/memory-for-jepa/datasets/chaser_cue_two_color.h5",
+      "predicted_interval_exposure": 0.08612852168407724,
+      "predicted_intervals": 1579500,
+      "raw_event_rate": 0.017186153846153848,
+      "raw_frames": 650000,
+      "sha256": "c6d8a9abaf9c3fb69c69c7701051b60ae9ff7306e24ce79b545a67a70e21941b"
+    }
+  },
+  "git_commit": "a388f8a51b2a343c8caa64ff5b55d7257364fb3a",
+  "loader_contract": {
+    "frameskip": 5,
+    "num_observations": 4,
+    "predicted_intervals": 3
+  },
+  "schema_version": 1,
+  "training_keys": [
+    "pixels",
+    "action",
+    "proprio"
+  ],
+  "jepa_features_baseline_training_keys": [
+    "pixels",
+    "action"
+  ]
+}

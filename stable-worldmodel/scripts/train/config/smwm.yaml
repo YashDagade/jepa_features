@@ -1,0 +1,23 @@
+defaults:
+  # SMWM deliberately reuses LeWM's native global-CLS architecture.
+  - lewm
+  - _self_
+
+output_model_name: smwm
+
+model:
+  _target_: stable_worldmodel.wm.smwm.SMWM
+
+# The official inverse head has two 256-wide ReLU hidden layers. Runtime data
+# resolution fills its concatenated-state input and action output dimensions.
+idm:
+  _target_: stable_worldmodel.wm.smwm.InverseModel
+  input_dim: ???
+  hidden_dim: 256
+  output_dim: ???
+
+loss:
+  sigreg: null
+  idm:
+    enabled: true
+    weight: 0.1

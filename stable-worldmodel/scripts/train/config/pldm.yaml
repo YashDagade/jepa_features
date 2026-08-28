@@ -1,0 +1,114 @@
+#output_dir: ./outputs
+defaults:
+  - _self_
+  - launcher: local
+  - data: tunnel_room_two_color
+
+output_model_name: pldm
+subdir: ${hydra:job.id}
+checkpoint_every: 1
+
+num_workers: 6
+train_split: 0.9
+seed: 3072
+img_size: 224
+patch_size: 14
+encoder_scale: tiny
+embed_dim: 192
+
+decoder:
+  enabled: true
+  detach: true
+  loss_weight: 1.0
+  log_every: 10000
+  num_clips: 6
+  kwargs:
+    dim: 256
+    heads: 8
+    depth: 4
+
+trainer:
+  max_epochs: 10
+  devices: auto
+  accelerator: gpu
+  precision: bf16
+  gradient_clip_val: 1.0
+
+loader:
+  batch_size: 128
+  num_workers: ${num_workers}
+  drop_last: True
+  persistent_workers: True
+  multiprocessing_context: spawn
+  prefetch_factor: 3
+  pin_memory: True
+  shuffle: True
+
+optimizer:
+  type: AdamW
+  lr: 5e-5
+  weight_decay: 1e-3
+
+wm:
+  history_size: 3
+  num_preds: 1
+
+model:
+  _target_: stable_worldmodel.wm.pldm.pldm.PLDM
+  # PLDM uses the ViT's actual CLS token, matching its original implementation.
+  encoder:
+    _target_: stable_pretraining.backbone.utils.vit_hf
+    size: ${encoder_scale}
+    patch_size: ${patch_size}
+    image_size: ${img_size}
+    pretrained: false
+    use_mask_token: false
+  predictor:
+    _target_: stable_worldmodel.wm.pldm.module.Predictor
+    num_frames: ${wm.history_size}
+    input_dim: ${embed_dim}
+    hidden_dim: ${embed_dim}
+    output_dim: ${embed_dim}
+    depth: 6
+    heads: 16
+    mlp_dim: 2048
+    dim_head: 64
+    dropout: 0.1
+    emb_dropout: 0.0
+  action_encoder:
+    _target_: stable_worldmodel.wm.pldm.module.Embedder
+    input_dim: ???
+    emb_dim: ${embed_dim}
+  projector:
+    _target_: stable_worldmodel.wm.pldm.module.MLP
+    input_dim: ${embed_dim}
+    output_dim: ${embed_dim}
+    hidden_dim: 2048
+    norm_fn:
+      _target_: torch.nn.BatchNorm1d
+      _partial_: true
+  pred_proj:
+    _target_: stable_worldmodel.wm.pldm.module.MLP
+    input_dim: ${embed_dim}
+    output_dim: ${embed_dim}
+    hidden_dim: 2048
+    norm_fn:
+      _target_: torch.nn.BatchNorm1d
+      _partial_: true
+
+loss:
+  std:
+    enabled: true
+    weight: 18
+  std_t:
+    enabled: true
+    weight: 0.7
+  cov:
+    enabled: true
+    weight: 12.0
+  cov_t:
+    enabled: true
+    weight: 0.0
+  temp_align:
+    enabled: true
+    weight: 0.2

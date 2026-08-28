@@ -1,0 +1,68 @@
+defaults:
+  - _self_
+
+hydra:
+  output_subdir: null
+  run:
+    dir: .
+
+# All durable destinations derive from this one root. Tests override it with a
+# temporary directory; production resolves it to the repository workspace.
+output_root: ${oc.env:STABLEWM_HOME}
+profile: filled18x18
+groups: [two_leaf, three_leaf]
+conditions: [hidden, paired_color]
+chunk_rows: 32
+finalize_only: false
+agent_render_radius: 9
+
+# Four concurrent jobs select one group and condition each, for example:
+#   groups=[two_leaf] conditions=[hidden]
+# After all four publish, run once with finalize_only=true to verify every
+# recorded hash and create runs/tunnel_rooms_filled18x18/provenance_manifest.json.
+
+location_probe:
+  fit_episodes: 512
+  validation_episodes: 128
+  test_episodes: 256
+  history_size: 3
+  frameskip: 5
+  num_preds: 1
+  seed: 180018
+
+# Output names are explicit because these are immutable controlled datasets,
+# not suffixes inferred by the implementation.
+leaf_groups:
+  two_leaf:
+    num_leaves: 2
+    source_manifest: ${output_root}/runs/Jun26_noise_50k_filtered/tunnel_rooms_noise_50k/audit_manifest.json
+    datasets:
+      hidden:
+        source: ${output_root}/datasets/tunnel_room_noise.h5
+        output_name: tunnel_room_noise_filled18x18.h5
+        source_sidecar_name: tunnel_room_noise_location_probe_outline.h5
+        destination_sidecar_name: tunnel_room_noise_filled18x18_location_probe.h5
+        include_positional_targets: false
+      paired_color:
+        source: ${output_root}/datasets/tunnel_room_color_noise.h5
+        output_name: tunnel_room_color_noise_filled18x18.h5
+        source_sidecar_name: tunnel_room_color_noise_location_probe_cue_and_position_outline.h5
+        destination_sidecar_name: tunnel_room_color_noise_filled18x18_location_probe_cue_and_position.h5
+        include_positional_targets: true
+
+  three_leaf:
+    num_leaves: 3
+    source_manifest: ${output_root}/runs/Jul12/tunnel_rooms_three_noise/scenario_manifest.json
+    datasets:
+      hidden:
+        source: ${output_root}/datasets/tunnel_room_three_noise.h5
+        output_name: tunnel_room_three_noise_filled18x18.h5
+        source_sidecar_name: tunnel_room_three_noise_location_probe_outline.h5
+        destination_sidecar_name: tunnel_room_three_noise_filled18x18_location_probe.h5
+        include_positional_targets: false
+      paired_color:
+        source: ${output_root}/datasets/tunnel_room_color_three_noise.h5
+        output_name: tunnel_room_color_three_noise_filled18x18.h5
+        source_sidecar_name: tunnel_room_color_three_noise_location_probe_cue_and_position_outline.h5
+        destination_sidecar_name: tunnel_room_color_three_noise_filled18x18_location_probe_cue_and_position.h5
+        include_positional_targets: true

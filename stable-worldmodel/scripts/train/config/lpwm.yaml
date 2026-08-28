@@ -1,0 +1,109 @@
+defaults:
+  - _self_
+  - launcher: local
+  - data: tunnel_room_two_color
+
+output_model_name: lpwm
+subdir: ${hydra:job.id}
+checkpoint_every: 1
+
+num_workers: 6
+train_split: 0.9
+seed: 3072
+img_size: 224
+patch_size: 14
+encoder_scale: tiny
+embed_dim: 192
+
+decoder:
+  enabled: true
+  detach: true
+  loss_weight: 1.0
+  log_every: 10000
+  num_clips: 6
+  kwargs:
+    dim: 256
+    heads: 8
+    depth: 4
+
+trainer:
+  max_epochs: 10
+  devices: auto
+  accelerator: gpu
+  precision: bf16
+  gradient_clip_val: 1.0
+
+loader:
+  batch_size: 128
+  num_workers: ${num_workers}
+  drop_last: true
+  persistent_workers: true
+  multiprocessing_context: spawn
+  prefetch_factor: 3
+  pin_memory: true
+  shuffle: true
+
+optimizer:
+  type: AdamW
+  lr: 5e-5
+  weight_decay: 1e-3
+
+wm:
+  history_size: 3
+  num_preds: 1
+
+model:
+  _target_: stable_worldmodel.wm.lpwm.LpWM
+  # LpWM shares LeWM's native actual-CLS encoder and causal predictor.
+  encoder:
+    _target_: stable_pretraining.backbone.utils.vit_hf
+    size: ${encoder_scale}
+    patch_size: ${patch_size}
+    image_size: ${img_size}
+    pretrained: false
+    use_mask_token: false
+  predictor:
+    _target_: stable_worldmodel.wm.lpwm.module.Predictor
+    num_frames: ${wm.history_size}
+    input_dim: ${embed_dim}
+    hidden_dim: ${embed_dim}
+    output_dim: ${embed_dim}
+    depth: 6
+    heads: 16
+    mlp_dim: 2048
+    dim_head: 64
+    dropout: 0.1
+    emb_dropout: 0.0
+  action_encoder:
+    _target_: stable_worldmodel.wm.lpwm.module.Embedder
+    input_dim: ???
+    emb_dim: ${embed_dim}
+  projector:
+    _target_: stable_worldmodel.wm.lpwm.module.MLP
+    input_dim: ${embed_dim}
+    output_dim: ${embed_dim}
+    hidden_dim: 2048
+    link_function_type: ${loss.inforeg.kwargs.link_function_type}
+    norm_fn:
+      _target_: torch.nn.BatchNorm1d
+      _partial_: true
+  pred_proj:
+    _target_: stable_worldmodel.wm.lpwm.module.MLP
+    input_dim: ${embed_dim}
+    output_dim: ${embed_dim}
+    hidden_dim: 2048
+    link_function_type: ${loss.inforeg.kwargs.link_function_type}
+    norm_fn:
+      _target_: torch.nn.BatchNorm1d
+      _partial_: true
+
+loss:
+  inforeg:
+    weight: 10.0
+    kwargs:
+      mu: 0.0
+      p: 1.0
+      link_function_type: ReLU
+      loss_func_type: sliced_wasserstein
+      num_slices: 1024
+      target_dist_rms_norm: false

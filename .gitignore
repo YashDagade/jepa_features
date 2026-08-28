@@ -1,0 +1,53 @@
+# Python and test caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+
+# Local environments and editor state
+.venv/
+venv/
+.env
+.idea/
+.vscode/
+
+# Research data and generated outputs
+datasets/*
+!datasets/README.md
+!datasets/TUNNEL_ROOMS.md
+!datasets/manifests/
+!datasets/manifests/*.json
+runs/*
+!runs/README.md
+outputs/
+checkpoints/
+wandb/
+lightning_logs/
+*.h5
+*.hdf5
+*.pt
+*.pth
+*.ckpt
+*.log
+slurm-*.out
+train_inner.sh
+train.slurm
+run_info.txt
+wandb_resume.json
+
+# Generated paper artifacts
+paper/**/build/
+paper/**/*.aux
+paper/**/*.bbl
+paper/**/*.blg
+paper/**/*.fdb_latexmk
+paper/**/*.fls
+paper/**/*.log
+paper/**/*.out
+paper/**/*.pdf
+!paper/**/figures/*.pdf
+
+# Local migration bookkeeping
+.migration_backup_path

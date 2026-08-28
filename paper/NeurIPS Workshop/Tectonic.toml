@@ -1,0 +1,10 @@
+[doc]
+name = "lewm-color-blind-neurips-workshop"
+bundle = "https://data1.fullyjustified.net/tlextras-2022.0r0.tar"
+extra_paths = ["."]
+
+[[output]]
+name = "main"
+type = "pdf"
+inputs = "main.tex"
+synctex = true
