@@ -84,6 +84,8 @@ def test_native_configs_share_one_cls_and_decoder_contract():
     for cfg in configs.values():
         assert cfg.model.encoder._target_.endswith('vit_hf')
         assert cfg.decoder.enabled and cfg.decoder.detach
+        assert 'group' in cfg.wandb.config
+        assert cfg.wandb.config.resume == 'allow'
 
     # 2. LeWM/LpWM/PLDM have no IDM module or objective. SMWM retains the
     # paper-defining inverse-dynamics loss at its published weight.

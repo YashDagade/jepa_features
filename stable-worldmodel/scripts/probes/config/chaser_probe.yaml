@@ -30,6 +30,7 @@ wandb:
   config:
     entity: yash21-dagade-duke-university
     project: Chaser_Cue
+    group: null
     name: ???
     id: ???
     resume: allow

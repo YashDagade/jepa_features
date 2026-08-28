@@ -12,6 +12,7 @@ wandb:
   config:
     entity: stable-wm
     project: stable-wm
+    group: null
     name: ${output_model_name}
     id: ${subdir}
     resume: allow
