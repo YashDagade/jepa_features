@@ -16,6 +16,7 @@ class PLDM(nn.Module):
         action_encoder,
         projector=None,
         pred_proj=None,
+        feature_mode=None,
     ):
         super().__init__()
 
@@ -24,6 +25,7 @@ class PLDM(nn.Module):
         self.action_encoder = action_encoder
         self.projector = projector or nn.Identity()
         self.pred_proj = pred_proj or nn.Identity()
+        self.feature_mode = feature_mode
 
     def encode(self, info):
         """Encode observations and actions into embeddings.
@@ -35,9 +37,16 @@ class PLDM(nn.Module):
             pixels, 'b t ... -> (b t) ...'
         )  # flatten for encoding
         output = self.encoder(pixels, interpolate_pos_encoding=True)
-        # Preserve PLDM's native contract: token zero is the actual ViT CLS
-        # token, not an average or learned aggregation of patch tokens.
-        pixels_emb = output.last_hidden_state[:, 0]
+        pixels_emb = (
+            output.last_hidden_state[:, 0]
+            if self.feature_mode is None
+            else self.feature_mode(output)
+        )
+        if pixels_emb.ndim != 2:
+            raise ValueError(
+                'PLDM requires one global feature per frame, got '
+                f'{tuple(pixels_emb.shape)}.'
+            )
         emb = self.projector(pixels_emb)
         info['emb'] = rearrange(emb, '(b t) d -> b t d', b=b)
 

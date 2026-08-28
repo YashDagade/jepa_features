@@ -132,6 +132,41 @@ def test_dominant_objective_probe_recovers_nearest_tunnel_geometry():
         assert metrics['nearest_tunnel_direction']['mean_cosine'] > 0.999
 
 
+def test_tunnel_probe_recovers_green_to_positional_slot_binding():
+    count = 180
+    splits = np.repeat(np.arange(3, dtype=np.int8), count // 3)
+    color_slot = np.arange(count, dtype=np.int64) % 2
+    agent = np.tile(np.asarray([[100.0, 112.0]]), (count, 1))
+    hubs = np.broadcast_to(
+        np.asarray([[112.0, 45.0], [112.0, 179.0]]), (count, 2, 2)
+    )
+    green = hubs[np.arange(count), color_slot]
+    target_names = (
+        'agent_current_x',
+        'agent_current_y',
+        'agent_future_x',
+        'agent_future_y',
+        'tunnel_green_hub_x',
+        'tunnel_green_hub_y',
+        'tunnel_top_hub_x',
+        'tunnel_top_hub_y',
+        'tunnel_bottom_hub_x',
+        'tunnel_bottom_hub_y',
+    )
+    targets = np.concatenate(
+        (agent, agent, green, hubs.reshape(count, -1)), axis=1
+    )
+    stage = np.column_stack((color_slot, np.ones(count), np.ones(count)))
+    features = np.stack((stage, stage), axis=1)
+
+    result = fit_tunnel_objective_probes(
+        features, targets, splits, target_names, ridge_alpha=1e-6
+    )
+
+    for metrics in result.values():
+        assert metrics['color_binding']['balanced_accuracy'] > 0.99
+
+
 def _sha256_file(path: Path) -> str:
     hasher = hashlib.sha256()
     with path.open('rb') as handle:

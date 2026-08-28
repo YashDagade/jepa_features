@@ -15,6 +15,7 @@ from torch import nn
 from stable_worldmodel.wm.lewm import LeWM
 from stable_worldmodel.wm.lewm.module import Predictor as LeWMPredictor
 from stable_worldmodel.wm.decoder import GlobalDecoder
+from stable_worldmodel.wm.feature_modes import FeatureMode
 from stable_worldmodel.wm.lpwm import LpWM
 from stable_worldmodel.wm.pldm import PLDM
 from stable_worldmodel.wm.pldm.module import Predictor as PLDMPredictor
@@ -28,6 +29,12 @@ BASELINE_LAUNCHER = (
     / 'sbatch_scripts'
     / 'train'
     / 'baseline_matrix.sh'
+)
+COLOR_ONSET_LAUNCHER = (
+    Path(__file__).resolve().parents[3]
+    / 'sbatch_scripts'
+    / 'train'
+    / 'color_onset_matrix.sh'
 )
 sys.path.insert(0, str(TRAIN_DIR))
 
@@ -77,6 +84,42 @@ def test_every_native_model_selects_actual_cls_token(model_class):
     torch.testing.assert_close(encoded, expected)
 
 
+@pytest.mark.parametrize('model_class', [LeWM, PLDM, LpWM, SMWM])
+def test_every_native_model_uses_explicit_feature_readout(model_class):
+    feature_mode = FeatureMode(
+        mode='global',
+        aggregation='mean',
+        input_dim=2,
+        output_dim=2,
+    )
+    model = model_class(
+        encoder=_TokenEncoder(),
+        predictor=nn.Identity(),
+        action_encoder=_ActionEncoder(),
+        feature_mode=feature_mode,
+    )
+    batch = {
+        'pixels': torch.zeros(2, 3, 3, 4, 4),
+        'action': torch.zeros(2, 3, 1),
+    }
+
+    encoded = model.encode(batch)['emb']
+    expected = torch.tensor([156.0, 163.0]).expand(2, 3, -1)
+    torch.testing.assert_close(encoded, expected)
+
+
+def test_spatial_8x8_readout_preserves_shape_and_rejects_non_square_grid():
+    mode = FeatureMode(
+        mode='global',
+        aggregation='spatial_8x8',
+        input_dim=3,
+        output_dim=5,
+    )
+    assert mode(torch.randn(4, 1 + 16 * 16, 3)).shape == (4, 5)
+    with pytest.raises(ValueError, match='square patch grid'):
+        mode(torch.randn(4, 1 + 255, 3))
+
+
 def test_pldm_reuses_the_identical_lewm_predictor_implementation():
     assert PLDMPredictor is LeWMPredictor
 
@@ -91,6 +134,7 @@ def test_native_configs_share_one_cls_and_decoder_contract():
     # 1. Every model instantiates a ViT encoder and the detached global decoder.
     for cfg in configs.values():
         assert cfg.model.encoder._target_.endswith('vit_hf')
+        assert cfg.feature_mode.aggregation == 'cls'
         assert cfg.decoder.enabled and cfg.decoder.detach
         assert 'group' in cfg.wandb.config
         assert cfg.wandb.config.resume == 'allow'
@@ -151,6 +195,26 @@ def test_baseline_launcher_keeps_trainer_cache_on_scratch(tmp_path):
         expected = f'export SPT_CACHE_DIR={script.parent}/spt_cache'
         assert expected in contents
         assert '/home/' not in contents
+
+
+def test_color_onset_launcher_generates_prespecified_matrix(tmp_path):
+    run_root = tmp_path / 'onset'
+    subprocess.run(
+        ['bash', str(COLOR_ONSET_LAUNCHER), '--dry-run'],
+        check=True,
+        env={**os.environ, 'RUN_ROOT': str(run_root)},
+        capture_output=True,
+        text=True,
+    )
+
+    scripts = sorted(run_root.glob('*/train_inner.sh'))
+    assert len(scripts) == 16
+    contents = [script.read_text() for script in scripts]
+    assert sum('trainer.max_epochs=10' in text for text in contents) == 4
+    assert sum('trainer.max_epochs=50' in text for text in contents) == 12
+    assert sum('feature_mode=global_spatial_8x8' in text for text in contents) == 8
+    assert sum('epoch_probe=chaser' in text for text in contents) == 4
+    assert sum('epoch_probe=tunnel_color' in text for text in contents) == 12
 
 
 def test_smwm_inverse_head_matches_official_two_layer_relu_mlp():

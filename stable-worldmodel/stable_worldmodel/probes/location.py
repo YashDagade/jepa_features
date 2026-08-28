@@ -28,6 +28,8 @@ IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
 FEATURE_READOUT = 'separate_current_predicted_visual'
 FEATURE_SOURCES = ('current_visual', 'predicted_visual')
+REPRESENTATION_SOURCES = ('encoder', 'projector', 'predictor')
+REPRESENTATION_READOUT = 'encoder_readout_projector_predictor'
 FEATURE_CACHE_SCHEMA = 3
 SIDECAR_SCHEMAS = (1, 2)
 SPLIT_NAMES = ('fit', 'validation', 'test')
@@ -612,15 +614,26 @@ class FrozenLocationFeatures(nn.Module):
         action: torch.Tensor,
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, int]:
         """Return actual encoder CLS, projector, and predictor histories."""
-        # 1. Read the actual CLS token emitted by the published encoder.
+        # 1. Read the configured pre-projector global representation. Old
+        # checkpoints without an explicit feature mode retain actual CLS.
         batch, steps = pixels.shape[:2]
         encoder_dtype = next(self.model.encoder.parameters()).dtype
         flat_pixels = rearrange(
             pixels.to(encoder_dtype), 'b t c h w -> (b t) c h w'
         )
         output = self.model.encoder(flat_pixels, interpolate_pos_encoding=True)
+        selected = (
+            output.last_hidden_state[:, 0]
+            if getattr(self.model, 'feature_mode', None) is None
+            else self.model.feature_mode(output)
+        )
+        if selected.ndim != 2:
+            raise ValueError(
+                'Frozen stage probes require one global feature per frame, '
+                f'got {tuple(selected.shape)}.'
+            )
         encoder = rearrange(
-            output.last_hidden_state[:, 0],
+            selected,
             '(b t) d -> b t d',
             b=batch,
             t=steps,
@@ -853,6 +866,71 @@ def extract_location_features(
                 split_batches.append(batch['split'].cpu())
                 sample_batches.append(batch['sample_id'].cpu())
     # 4. Concatenate in sidecar order so sample IDs remain aligned with features.
+    return tuple(
+        torch.cat(values).numpy()
+        for values in (
+            feature_batches,
+            target_batches,
+            split_batches,
+            sample_batches,
+        )
+    )  # type: ignore[return-value]
+
+
+def extract_location_representation_features(
+    dataset: Dataset,
+    extractor: nn.Module,
+    *,
+    device: torch.device | str = 'cpu',
+    batch_size: int = 128,
+    num_workers: int = 0,
+    autocast_dtype: torch.dtype | None = None,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """Extract encoder/readout, projector, and predictor vectors in order."""
+    device = torch.device(device)
+    feature_batches: list[torch.Tensor] = []
+    target_batches: list[torch.Tensor] = []
+    split_batches: list[torch.Tensor] = []
+    sample_batches: list[torch.Tensor] = []
+    with _preserve_global_torch_rng_state(device):
+        loader = DataLoader(
+            dataset,
+            batch_size=int(batch_size),
+            num_workers=int(num_workers),
+            shuffle=False,
+            persistent_workers=int(num_workers) > 0,
+            pin_memory=device.type == 'cuda',
+            generator=torch.Generator().manual_seed(0),
+        )
+        extractor.to(device)
+        with (
+            frozen_inference(extractor),
+            _inference_autocast(device, autocast_dtype),
+        ):
+            for batch in loader:
+                batch = _move_batch(batch, device)
+                features = extractor.representation_features(
+                    batch['pixels'], batch['action_history']
+                )
+                if (
+                    features.ndim != 3
+                    or features.shape[1] != len(REPRESENTATION_SOURCES)
+                    or features.shape[0] != batch['target'].shape[0]
+                ):
+                    raise ValueError(
+                        'Representation readout must return '
+                        '(batch, encoder/projector/predictor, feature); got '
+                        f'{tuple(features.shape)}.'
+                    )
+                if not torch.isfinite(features).all():
+                    raise FloatingPointError(
+                        'Location representation features contain NaN or '
+                        'infinity.'
+                    )
+                feature_batches.append(features.float().cpu())
+                target_batches.append(batch['target'].float().cpu())
+                split_batches.append(batch['split'].cpu())
+                sample_batches.append(batch['sample_id'].cpu())
     return tuple(
         torch.cat(values).numpy()
         for values in (
@@ -1144,9 +1222,27 @@ def classification_metrics(
         out=np.full(class_count, np.nan),
         where=support > 0,
     )
+    balanced_accuracy = float(np.nanmean(recall))
+    recall_variance = np.divide(
+        recall * (1.0 - recall),
+        support,
+        out=np.zeros(class_count, dtype=np.float64),
+        where=support > 0,
+    )
+    balanced_accuracy_se = float(
+        np.sqrt(np.nansum(recall_variance)) / class_count
+    )
+    ci_half_width = 1.96 * balanced_accuracy_se
     return {
         'accuracy': float(np.mean(target == prediction)),
-        'balanced_accuracy': float(np.nanmean(recall)),
+        'balanced_accuracy': balanced_accuracy,
+        'balanced_accuracy_se': balanced_accuracy_se,
+        'balanced_accuracy_ci95_low': max(
+            0.0, balanced_accuracy - ci_half_width
+        ),
+        'balanced_accuracy_ci95_high': min(
+            1.0, balanced_accuracy + ci_half_width
+        ),
         'chance_balanced_accuracy': 1.0 / class_count,
         'support': support.tolist(),
         'confusion_matrix': confusion.tolist(),
@@ -1236,12 +1332,37 @@ def _nearest_hub_targets(
     return identity, nearest_distance[:, None], nearest_direction
 
 
+def _color_binding_targets(
+    targets: np.ndarray,
+    target_names: Sequence[str],
+    color: str = 'green',
+) -> tuple[np.ndarray, int]:
+    """Map one semantic color hub to its exact positional tunnel slot."""
+    color_columns = _coordinate_columns(target_names, f'tunnel_{color}_hub')
+    positional_columns = _positional_hub_columns(target_names)
+    color_position = np.asarray(targets)[:, color_columns]
+    positional = np.stack(
+        [np.asarray(targets)[:, columns] for columns in positional_columns],
+        axis=1,
+    )
+    distances = np.linalg.norm(positional - color_position[:, None], axis=-1)
+    labels = distances.argmin(axis=1).astype(np.int64)
+    matched = distances[np.arange(len(distances)), labels]
+    if not np.allclose(matched, 0.0, atol=1e-6):
+        raise ValueError(
+            f'{color} hub does not match a positional hub exactly; '
+            f'maximum distance is {float(matched.max())}.'
+        )
+    return labels, len(positional_columns)
+
+
 def fit_tunnel_objective_probes(
     features: np.ndarray,
     targets: np.ndarray,
     split_codes: np.ndarray,
     target_names: Sequence[str],
     ridge_alpha: float,
+    feature_sources: Sequence[str] = FEATURE_SOURCES,
 ) -> dict[str, dict[str, Any]]:
     """Probe the dominant objective: which tunnel is nearest and how to reach it."""
     x = np.asarray(features, dtype=np.float64)
@@ -1257,8 +1378,21 @@ def fit_tunnel_objective_probes(
     prefixes = {
         'current_visual': 'agent_current',
         'predicted_visual': 'agent_future',
+        'encoder': 'agent_current',
+        'projector': 'agent_current',
+        'predictor': 'agent_future',
     }
-    for index, source in enumerate(FEATURE_SOURCES):
+    unknown = sorted(set(feature_sources) - set(prefixes))
+    if unknown:
+        raise ValueError(f'Unknown location feature sources: {unknown}.')
+    has_color_binding = all(
+        name in target_names
+        for name in ('tunnel_green_hub_x', 'tunnel_green_hub_y')
+    )
+    color_binding = (
+        _color_binding_targets(y, target_names) if has_color_binding else None
+    )
+    for index, source in enumerate(feature_sources):
         identity, distance, direction = _nearest_hub_targets(
             y, target_names, prefixes[source]
         )
@@ -1299,6 +1433,16 @@ def fit_tunnel_objective_probes(
                 'mean_cosine': float(np.mean(np.clip(cosine, -1.0, 1.0))),
             },
         }
+        if color_binding is not None:
+            color_labels, color_class_count = color_binding
+            result[source]['color_binding'] = fit_ridge_classifier(
+                stage_features,
+                color_labels,
+                train,
+                test,
+                color_class_count,
+                ridge_alpha,
+            )
     return result
 
 
@@ -1320,6 +1464,7 @@ def fit_location_probe(
     split_codes: np.ndarray,
     target_names: Sequence[str],
     ridge_alpha: float,
+    feature_sources: Sequence[str] = FEATURE_SOURCES,
 ) -> tuple[dict[str, StandardizedRidge], LocationProbeResult]:
     """Fit one fixed linear map per feature source and test exactly once."""
     # 1. Validate the shared feature, target, and regularization contract.
@@ -1330,10 +1475,11 @@ def fit_location_probe(
         raise ValueError(
             'Location-probe ridge_alpha must be finite and positive.'
         )
-    if x.ndim != 3 or x.shape[1] != len(FEATURE_SOURCES):
+    feature_sources = tuple(feature_sources)
+    if x.ndim != 3 or x.shape[1] != len(feature_sources):
         raise ValueError(
-            'Location features must have shape '
-            '(samples, current/predicted, width).'
+            'Location features must have shape (samples, sources, width) '
+            'matching feature_sources.'
         )
     if y.ndim != 2 or len(x) != len(y) or y.shape[1] != len(target_names):
         raise ValueError('Location features and targets are incompatible.')
@@ -1356,11 +1502,17 @@ def fit_location_probe(
     columns = {
         'current_visual': tuple(sorted(current_columns)) + geometry_columns,
         'predicted_visual': tuple(sorted(future_columns)) + geometry_columns,
+        'encoder': tuple(sorted(current_columns)) + geometry_columns,
+        'projector': tuple(sorted(current_columns)) + geometry_columns,
+        'predictor': tuple(sorted(future_columns)) + geometry_columns,
     }
     # 4. Fit and evaluate one independent ridge map per feature source.
     models: dict[str, StandardizedRidge] = {}
     test_metrics: dict[str, dict[str, Any]] = {}
-    for feature_index, source in enumerate(FEATURE_SOURCES):
+    unknown = sorted(set(feature_sources) - set(columns))
+    if unknown:
+        raise ValueError(f'Unknown location feature sources: {unknown}.')
+    for feature_index, source in enumerate(feature_sources):
         target_columns = columns[source]
         source_targets = y[:, target_columns]
         source_names = tuple(target_names[index] for index in target_columns)
@@ -1378,13 +1530,23 @@ def fit_location_probe(
         ridge_alpha=alpha,
         test_metrics=test_metrics,
         objective_metrics=fit_tunnel_objective_probes(
-            x, y, splits, target_names, alpha
+            x,
+            y,
+            splits,
+            target_names,
+            alpha,
+            feature_sources=feature_sources,
         ),
         sample_counts={
             'train': int(train_mask.sum()),
             'test': int(masks['test'].sum()),
         },
         feature_width=int(x.shape[2]),
+        readout=(
+            REPRESENTATION_READOUT
+            if feature_sources == REPRESENTATION_SOURCES
+            else FEATURE_READOUT
+        ),
     )
     return models, result
 
@@ -1396,6 +1558,9 @@ def flatten_probe_metrics(
     namespaces = {
         'current_visual': 'location_probe_encoder',
         'predicted_visual': 'location_probe_predictor',
+        'encoder': 'location_probe_encoder',
+        'projector': 'location_probe_projector',
+        'predictor': 'location_probe_predictor',
     }
     metrics: dict[str, float] = {}
     for source, source_metrics in result.test_metrics.items():
@@ -1406,6 +1571,16 @@ def flatten_probe_metrics(
         for metric, score in source_metrics['average'].items():
             metrics[f'{source_prefix}/average/{metric}'] = score
         objective = result.objective_metrics[source]
+        if 'color_binding' in objective:
+            for metric in (
+                'accuracy',
+                'balanced_accuracy',
+                'balanced_accuracy_ci95_low',
+                'balanced_accuracy_ci95_high',
+            ):
+                metrics[f'{source_prefix}/color_binding/{metric}'] = objective[
+                    'color_binding'
+                ][metric]
         for metric in ('accuracy', 'balanced_accuracy'):
             metrics[f'{source_prefix}/nearest_tunnel_identity/{metric}'] = (
                 objective['nearest_tunnel_identity'][metric]

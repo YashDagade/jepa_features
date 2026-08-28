@@ -1,6 +1,8 @@
 #output_dir: ./outputs
 defaults:
   - _self_
+  - feature_mode: global_cls
+  - epoch_probe: disabled
   - launcher: local
   - data: tunnel_room_two_color
 
@@ -63,6 +65,7 @@ model:
     image_size: ${img_size}
     pretrained: false
     use_mask_token: false
+  feature_mode: ${feature_mode}
   predictor:
     _target_: stable_worldmodel.wm.pldm.module.Predictor
     num_frames: ${wm.history_size}

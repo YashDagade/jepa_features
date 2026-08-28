@@ -577,7 +577,12 @@ def flatten_chaser_metrics(result: dict[str, Any]) -> dict[str, float]:
             'contact_quadrant',
             'destination_quadrant',
         ):
-            for metric in ('accuracy', 'balanced_accuracy'):
+            for metric in (
+                'accuracy',
+                'balanced_accuracy',
+                'balanced_accuracy_ci95_low',
+                'balanced_accuracy_ci95_high',
+            ):
                 metrics[f'{prefix}/{task}/{metric}'] = tasks[task][metric]
     return metrics
 

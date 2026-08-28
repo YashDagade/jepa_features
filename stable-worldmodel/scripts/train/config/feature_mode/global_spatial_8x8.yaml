@@ -1,0 +1,5 @@
+_target_: stable_worldmodel.wm.feature_modes.FeatureMode
+mode: global
+aggregation: spatial_8x8
+input_dim: ???
+output_dim: ???

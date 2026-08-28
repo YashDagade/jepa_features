@@ -19,6 +19,8 @@ from stable_worldmodel.data import column_normalizer as get_column_normalizer
 from stable_worldmodel.wm.decoder import GlobalDecoder
 from stable_worldmodel.wm.utils import save_pretrained
 
+from _epoch_probes import EpochProbeCallback
+
 
 def get_img_preprocessor(source: str, target: str, img_size: int = 224):
     """Convert stored frames to normalized ImageNet tensors."""
@@ -53,24 +55,30 @@ class SaveCkptCallback(Callback):
             )
 
 
-class FinalDecoderMediaCallback(Callback):
-    """Upload the last original/decoded batch after decoder training ends."""
+class EpochDecoderMediaCallback(Callback):
+    """Upload one deterministic validation reconstruction every epoch."""
 
-    def on_train_epoch_end(self, trainer, pl_module):
+    def __init__(self, *, commit: bool = True) -> None:
+        super().__init__()
+        self.commit = bool(commit)
+
+    def on_validation_epoch_end(self, trainer, pl_module):
         if (
             not trainer.is_global_zero
-            or trainer.current_epoch + 1 != trainer.max_epochs
+            or trainer.sanity_checking
             or not wandb.run
-            or not hasattr(pl_module, '_final_decoder_media')
+            or not hasattr(pl_module, '_epoch_decoder_media')
         ):
             return
-        original, decoded = pl_module._final_decoder_media
+        original, decoded = pl_module._epoch_decoder_media
         wandb.log(
             {
-                'fit/final_epoch_original_clip': wandb.Video(original),
-                'fit/final_epoch_decoded_clip': wandb.Video(decoded),
+                'validate/epoch': trainer.current_epoch + 1,
+                'validate/epoch_original_clip': wandb.Video(original),
+                'validate/epoch_decoded_clip': wandb.Video(decoded),
             },
             step=trainer.global_step,
+            commit=self.commit,
         )
 
 
@@ -115,23 +123,19 @@ def add_decoder_diagnostic(self, output, batch, stage, cfg):
         cfg.decoder.loss_weight * output['decoder_loss']
     )
 
-    # 3. Retain only the final batch's small media payload for the epoch-end
-    # callback, and optionally expose periodic clips during long runs.
-    is_final_batch = (
-        stage == 'fit'
-        and self.current_epoch + 1 == self.trainer.max_epochs
-        and self.trainer.is_last_batch
-    )
+    # 3. Retain the last deterministic validation batch for one reconstruction
+    # per epoch, and preserve periodic training clips for continuity.
+    is_validation_batch = stage == 'validate' and self.trainer.is_last_batch
     should_log = (
         cfg.wandb.enabled
         and stage == 'fit'
         and self.global_step % cfg.decoder.log_every == 0
         and self.global_rank == 0
     )
-    if is_final_batch or should_log:
+    if is_validation_batch or should_log:
         media = _decoder_videos(pixels, decoded, cfg.decoder.num_clips)
-    if is_final_batch:
-        self._final_decoder_media = media
+    if is_validation_batch:
+        self._epoch_decoder_media = media
     if should_log:
         wandb.log(
             {
@@ -167,6 +171,13 @@ def train_global_jepa(cfg, *, forward, objective_factory):
     transforms = [get_img_preprocessor('pixels', 'pixels', cfg.img_size)]
 
     with open_dict(cfg):
+        if cfg.feature_mode.aggregation != 'cls':
+            cfg.feature_mode.input_dim = cfg.embed_dim
+            cfg.feature_mode.output_dim = cfg.embed_dim
+            if cfg.feature_mode.aggregation == 'mlp':
+                cfg.feature_mode.num_patches = (
+                    cfg.img_size // cfg.patch_size
+                ) ** 2
         for column in cfg.data.dataset.keys_to_load:
             if not column.startswith('pixels'):
                 transforms.append(
@@ -250,8 +261,10 @@ def train_global_jepa(cfg, *, forward, objective_factory):
             cfg,
             epoch_interval=cfg.checkpoint_every,
         ),
-        FinalDecoderMediaCallback(),
+        EpochDecoderMediaCallback(commit=not cfg.epoch_probe.enabled),
     ]
+    if cfg.epoch_probe.enabled:
+        callbacks.append(EpochProbeCallback(cfg, run_dir))
     trainer = pl.Trainer(
         **cfg.trainer,
         callbacks=callbacks,

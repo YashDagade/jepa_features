@@ -1,0 +1,3 @@
+_target_: stable_worldmodel.wm.feature_modes.FeatureMode
+mode: global
+aggregation: cls
