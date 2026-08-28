@@ -1,0 +1,17 @@
+model,configuration,stage,target_color_accuracy_percent,visible_cue_accuracy_percent,correct_portal_accuracy_percent,test_episodes,seed
+PLDM,8x8,native tokens,44.00,100.00,30.00,150,3072
+PLDM,8x8,pooled 8x8,39.33,100.00,30.00,150,3072
+PLDM,8x8,fixed random 192,36.00,100.00,30.67,150,3072
+PLDM,8x8,learned global aggregator,41.33,100.00,30.00,150,3072
+PLDM,8x8,projector,44.00,100.00,30.00,150,3072
+LeWM,8x8 IDM 3.125,native tokens,42.00,99.33,30.00,150,3072
+LeWM,8x8 IDM 3.125,pooled 8x8,38.67,100.00,30.00,150,3072
+LeWM,8x8 IDM 3.125,fixed random 192,33.33,74.67,30.00,150,3072
+LeWM,8x8 IDM 3.125,learned global aggregator,40.00,89.33,30.00,150,3072
+LeWM,8x8 IDM 3.125,projector,38.00,80.67,30.00,150,3072
+LpWM,8x8 IDM 0.625 TJ 0.1,native tokens,39.33,100.00,30.00,150,3072
+LpWM,8x8 IDM 0.625 TJ 0.1,pooled 8x8,31.33,100.00,30.00,150,3072
+LpWM,8x8 IDM 0.625 TJ 0.1,fixed random 192,34.00,100.00,30.00,150,3072
+LpWM,8x8 IDM 0.625 TJ 0.1,learned global aggregator,44.00,100.00,30.00,150,3072
+LpWM,8x8 IDM 0.625 TJ 0.1,projector,67.33,100.00,70.67,150,3072
+DINO-WM,all patch,native tokens,38.67,99.33,30.00,150,3072

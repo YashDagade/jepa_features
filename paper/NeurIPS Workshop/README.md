@@ -17,3 +17,8 @@ The Makefile exports a fixed `SOURCE_DATE_EPOCH`, so identical clean inputs
 produce an identical PDF. For TeX-only live rebuilding, use `make watch`;
 Tectonic's live output remains under `build/main/main.pdf` until the next
 `make build`.
+
+The `data/` and `figures/` directories preserve the audited tables and final
+assets from the earlier LeWM color-blindness study. The prior complete draft is
+kept read-only in `archive/color_blind_jepa_draft.tex`; it is evidence and prose
+provenance, while `main.tex` is the active feature-abstraction manuscript.

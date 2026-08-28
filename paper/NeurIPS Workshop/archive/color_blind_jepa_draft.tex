@@ -1,0 +1,1068 @@
+\documentclass{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{cleveref}
+\usepackage{balance}
+
+% Use the supplied ICML 2026 two-column style in anonymous review mode.
+\usepackage{icml2026}
+
+% Identify the review venue without changing the supplied typesetting contract.
+\makeatletter
+\renewcommand{\Notice@String}{Preliminary work. Under review for a NeurIPS workshop. Do not distribute.}
+\makeatother
+\hypersetup{pdfsubject={Anonymous NeurIPS workshop submission}}
+
+\definecolor{resultred}{HTML}{B93835}
+\definecolor{resultblue}{HTML}{2468A2}
+\newcommand{\trtwo}{\textsc{TR2-Color}}
+\newcommand{\trthree}{\textsc{TR3-Color}}
+\newcommand{\trfour}{\textsc{TR4-Color}}
+\newcommand{\lewm}{\textsc{LeWM}}
+\newcommand{\pldm}{\textsc{PLDM}}
+\newcommand{\lpwm}{\textsc{LpWM}}
+\newcommand{\dinowm}{\textsc{DINO-WM}}
+\newcommand{\experimentneeded}[1]{\textcolor{resultred}{\textbf{[Experiment needed:} #1\textbf{]}}}
+\newcommand{\artifactneeded}[1]{\textcolor{resultred}{\textbf{[Artifact needed:} #1\textbf{]}}}
+
+\icmltitlerunning{When LeWM Is Color Blind}
+
+\begin{document}
+
+\twocolumn[
+\icmltitle{When LeWM Is Color Blind:\\A Two-Room Color-Identity Failure}
+
+  \begin{icmlauthorlist}
+    \icmlauthor{Anonymous Author(s)}{anon}
+  \end{icmlauthorlist}
+  \icmlaffiliation{anon}{Anonymous Institution}
+  \icmlcorrespondingauthor{Anonymous Author}{anonymous@domain.com}
+  \icmlkeywords{world models, joint embeddings, representation learning, color}
+  \vskip 0.25in
+]
+
+\printAffiliationsAndNotice{}
+
+\begin{abstract}
+We introduce \emph{Tunnel Rooms Color}, a diagnostic environment in which
+geometrically identical portals appear at randomized locations and color
+determines a delayed teleport destination.  The task separates access to
+portal geometry from color--location binding.  Across three two-room training
+seeds, LeWorldModel (LeWM) spatial states localize position-defined hubs to
+$6.41\pm0.34$ pixels, yet color-conditioned error remains $25.97\pm0.20$
+pixels against a 30.02-pixel bias-only reference; CLS and MLP states are weaker.
+No tested LeWM global readout is strong, whereas PLDM spatial states reach
+$18.05\pm0.41$ pixels and LpWM CLS states $15.65\pm1.42$.  The failure is
+stage-specific: native LeWM patches retain fixed-slot hue at 96--100\%
+balanced accuracy, but all 12 final projectors in our inverse-dynamics
+factorial remain near chance (45.0--56.3\%).  At selected spatial checkpoints,
+PLDM and LpWM projectors retain visible hue at 100\%; only LpWM also retains
+destination binding.  Detached MSE decoders retain 4.85\% of original
+green--orange separation for LeWM, versus 49.5\% for PLDM and 37.8\% for LpWM;
+LeWM instead reconstructs their olive average and repeats the behavior for
+green/blue.  Inverse-dynamics and temporal-alignment sweeps do not rescue the
+two-room failure, while spatial three-room LeWM is a counterexample.  Thus the
+evidence identifies a consistent loss of accessible TR2 color along LeWM's
+learned global path, not an absence of color in its backbone patches or
+universal color sensitivity in every comparator state.
+\end{abstract}
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{figures/colorblind_teaser.pdf}
+    \caption{\textbf{LeWM averages two predictive colors, although selected
+    comparators and three-room LeWM can preserve separation.}  Top: on one
+    matched final-epoch TR2 frame, spatial \lewm{} maps green/orange to olive
+    while preserving layout; \pldm{} and \lpwm{} retain more separation.
+    \dinowm{} is clearest but uses an unmatched minibatch ($\dagger$).  Bottom:
+    spatial \lewm{} (IDM .125, chosen to make the counterexample legible; the
+    full six-weight grid is in the appendix) separates three TR3 colors, whereas
+    swapping orange for blue in TR2 yields teal.  All-marker audits and probes provide descriptive
+    corroboration beyond these qualitative panels.}
+    \label{fig:teaser}
+\end{figure*}
+
+\section{Introduction}
+
+Color is a nuisance only when it is irrelevant to dynamics.  In Tunnel Rooms
+Color, portals share geometry but their colors determine different
+destinations; predicting a portal transition therefore requires information
+about the color--location assignment.  Yet across the tested random-layout
+two-room settings, spatial LeWorldModel (\lewm{}; \citealp{maes2026leworldmodel})
+reconstructs green and orange as the same olive marker while accurately
+localizing both portals (\cref{fig:teaser}).
+
+JEPAs predict target representations rather than reconstruct pixels
+\citep{lecun2022path,assran2023ijepa,bardes2024vjepa}.  Here the markers remain
+visible, but their consequence occurs only at a crossing.  This creates a
+possible availability conflict: average prediction can favor geometry and
+local motion over color identity.  Related toy JEPAs can retain a persistent
+distractor while losing a moving dot \citep{sobal2022slow}; our persistent cue
+instead determines the next state.  We test the failure but do not identify its
+optimization mechanism.
+
+We introduce \emph{Tunnel Rooms Color}: an agent moves from a hub through two
+or three colored portals, each paired with a same-color destination.  Geometry
+and local motion are predictable without hue; teleportation identity is not.
+We call a state operationally ``color blind'' when specified readouts cannot
+recover hue/binding while geometry remains accessible---not when
+$I(Z;C)=0$.
+
+Across native CLS and spatial 8$\times$8 representations and six
+inverse-dynamics-modeling (IDM) weights, TR2 LeWM decoders reconstruct the cue
+toward a mixed color.  Two spatial green/blue controls at IDM 0 and .625 repeat
+the result.  A stagewise audit of all 12 TR2 checkpoints finds hue in native
+patches but weak accessibility in every projected state; exact marker swaps
+and nonlinear readouts corroborate one prespecified spatial checkpoint.
+
+Three-seed readout controls sharpen the boundary.  LeWM is weak under native
+CLS, flattened-patch MLP, and spatial 8$\times$8 global states.  PLDM
+\citep{sobal2025latentplanning} improves only with spatial 8$\times$8, whereas
+a Product-Laplace LpWM adaptation of Rectified LpJEPA
+\citep{kuang2026rectified} is already substantially better with native CLS.
+Thus neither comparator is uniformly color-sensitive, but each has a strong
+TR2 global readout absent from LeWM.  At selected spatial checkpoints, PLDM
+retains visible hue but not destination binding, whereas LpWM retains both.
+Native all-patch \dinowm{}
+\citep{zhou2025dinowm} reconstructs color, and spatial LeWM recovers color in
+TR3.  These controls establish observation-level solvability and important
+boundary conditions; objective and tokenization differences preclude a pure
+architecture ranking.
+
+\section{Tunnel Rooms Color Separates Geometry from Identity}
+
+\paragraph{Environment.}
+Each 224$\times$224 RGB observation shows a central hub, an agent, and two
+(\trtwo{}) or three (\trthree{}) destination rooms (leaves).  Colored markers
+pair every hub portal with the same-color leaf reached after entry.  Each
+episode specifies a target leaf; the correct hub portal shares its color,
+while randomized layouts prevent solving identity from a fixed position.
+Portal crossings account for 1.90\%/2.12\%
+of adjacent transitions in the audited \trtwo{}/\trthree{} corpora, making the
+color-conditioned consequence less frequent even though the marker remains
+visible.  Under the exact TR2 four-observation, frameskip-five loader, 10.22\%
+of legal windows contain a teleport in the prediction target interval and
+26.62\% contain one anywhere in context or target.
+
+\paragraph{Models and factorial.}
+We train \lewm{} with IDM weights
+$\{0,.005,.025,.125,.625,3.125\}$, native CLS or spatial 8$\times$8
+aggregation, and \trtwo{} or \trthree{}, giving 24 runs.  We compare one
+spatial \pldm{}, spatial \lpwm{}, and native all-patch \dinowm{} per dataset.
+All use seed 3072 and ten epochs.  The first three use trainable ViT-tiny
+encoders; their spatial variants use a shared 8$\times$8 aggregator, whereas
+the other \lewm{} variants use native CLS.  \dinowm{} uses frozen pretrained
+DINOv2 patches, a patch decoder, and more updates
+\citep{oquab2023dinov2,zhou2025dinowm}.
+Equal epochs yield about 32,550 TR2 versus 20,820 TR3 updates, so room count is
+not an isolated intervention.
+
+Two follow-ups test global readout and temporal smoothness.  A three-seed TR2
+grid compares native CLS, flattened-patch MLP, and spatial 8$\times$8 states
+within LeWM, PLDM, and LpWM.  Each family retains its labeled objective recipe,
+so within-family readout comparisons are controlled and family comparisons are
+boundary conditions.  A one-seed LeWM sweep adds PLDM-style adjacent-state MSE
+at weights $\{0,.005,.025,.125,.2,.625,3.125\}$; .2 matches PLDM.
+
+For observation $x_t$, let
+\begin{equation}
+ z_t=g_\phi(f_\theta(x_t)), \qquad
+ \hat z_{t+1}=p_\psi(z_{\leq t},a_{\leq t}).
+ \label{eq:jepa}
+\end{equation}
+The audited LeWM+IDM objective has the schematic form
+\begin{equation}
+ \mathcal L_{\rm audit}=\mathbb E\|\hat z_{t+1}-z_{t+1}\|_2^2
+ +\lambda\,\mathrm{SIGReg}(Z)+\beta\mathcal L_{\rm IDM}.
+ \label{eq:lewm-objective}
+\end{equation}
+The original LeWM objective is recovered when $\beta=0$
+\citep{balestriero2025lejepa,maes2026leworldmodel}.  Standardized ridge probes
+fit on 640 examples and test on 256 probe-disjoint examples.  Semantic targets
+locate hubs by color; positional controls locate fixed geometric slots.  Their
+bias-only references are 30.02/19.27 pixels (TR2) and 30.25/7.72 (TR3).
+Semantic MAE therefore combines identity and localization.
+
+A separate 525/75/150 episode split localizes fixed-slot hue and
+target--destination binding across native patches, nonlearned pooling, learned
+aggregation, and projection.  Each stage selects its ridge penalty on
+validation; 50\% is balanced chance.  One pre-frozen LeWM checkpoint supplies
+the deeper nonlinear and counterfactual controls.  Full probe and split
+contracts appear in the appendix.
+
+\paragraph{Why averaging is diagnostic.}
+For an MSE decoder $d_\omega$, the population optimum is
+\begin{equation}
+ d^*(z)=\mathbb E[X\mid Z=z].
+ \label{eq:conditional-mean}
+\end{equation}
+If $Z$ does not distinguish cue $C$ at the marker pixels, then
+$d^*(z)\approx\sum_c p(c\mid z)x_c$: green/orange becomes olive and
+green/blue becomes teal.  This signature is \emph{consistent with} cue
+collapse, not proof of $I(Z;C)=0$; decoder capacity is an alternative.
+Conditional-mean blur under MSE is documented in pixel prediction
+\citep{mathieu2016video}.  Representations are detached, so decoder training
+cannot make the world model retain color.
+
+From each final video we detect marker support in the original, exclude agent
+overlap, and sample the matched decode.  We report CIE L$^*$a$^*$b$^*$
+nearest-centroid accuracy and decoded/original class-centroid separation.
+Support-sensitivity checks preserve the ordering; clips are descriptors, not
+independent replicates.
+
+\section{LeWM Preserves Geometry but Misses Color in TR2}
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{figures/color_sweep_summary.pdf}
+    \caption{\textbf{LeWM's TR2 color failure persists across global readouts
+    and temporal alignment.}  (a,b) Three-seed mean $\pm$ SD: all LeWM color
+    readouts remain weak despite accurate spatial geometry; PLDM spatial and
+    LpWM CLS are stronger.  (c,d) One-seed temporal sweeps: no weight rescues
+    TR2; spatial TR3 improves while CLS remains near null.  Dotted lines are
+    target-specific bias-only references.}
+    \label{fig:sweep-summary}
+\end{figure*}
+
+\paragraph{Geometry improves; color-conditioned localization does not.}
+In the three-seed no-IDM replication, LeWM's current semantic hub MAE is
+$30.69\pm.47$ for native CLS, $28.35\pm.74$ for MLP, and $25.97\pm.20$
+pixels for spatial 8$\times$8.  Position-only MAE falls from $19.48\pm.29$ to
+$13.41\pm.61$ and $6.41\pm.34$ pixels over the same readouts
+(\cref{fig:sweep-summary}).  The spatial representation therefore removes
+66.7\% of its positional null error but only 13.5\% of its semantic null error.
+Across the earlier six-weight spatial IDM sweep, semantic MAE likewise stays
+24.84--25.79 pixels while position-only MAE reaches 4.50 pixels.  IDM improves
+geometry without making color identity reliably accessible.
+
+\paragraph{Temporal alignment does not rescue TR2.}
+Across weights 0--3.125, current TR2 semantic hub MAE spans only
+25.74--25.84 pixels for spatial 8$\times$8 and 29.89--30.96 for CLS;
+one-step predictions closely overlap.  The PLDM-matched .2 coefficient is no
+exception.  In TR3, however, spatial MAE improves from 9.00 to 7.58 pixels as
+the weight increases, while CLS stays near 29 pixels.  Temporal smoothness is
+therefore neither sufficient to create a useful TR2 global color state nor a
+universal suppressor of color.  Because this mechanism sweep uses one seed,
+the TR3 dose response is descriptive.
+
+\paragraph{Fixed-slot visible hue remains weak across the factorial.}
+Balanced accuracy spans 45.0--50.0\% for CLS and 49.2--56.3\% for spatial
+projectors; target--destination binding spans 46.2--51.3\% across all 12.
+Every corresponding 95\% Wilson interval for raw accuracy includes 50\%, and
+neither endpoint varies monotonically with IDM.  All cells share one
+world-model seed and test split: this is a hyperparameter-robustness check, not
+training-seed replication.
+
+\paragraph{Hue accessibility declines after the patch representation.}
+The stagewise audit localizes the TR2 failure across all 12 checkpoints
+(\cref{tab:tr2-stagewise}).  Native ViT patches classify fixed-slot hue at
+96.0--100\% balanced accuracy, and nonlearned 8$\times$8 pooling reaches 100\%
+throughout.  The actual CLS state is already weak, while learned spatial
+aggregation retains 66.0--92.7\%; projection reduces every checkpoint to the
+near-chance range reported above.  The native-to-projector decline is positive
+in 12/12 configurations and averages 50.1 percentage points.  Thus backbone patch tokens
+retain visible hue; accessibility declines along the learned global path and
+is weak in every final projector.  On the prespecified spatial checkpoint, the
+learned aggregator reaches 66.0\%.  Inside its projector, hue stays at
+65.8--68.7\% through GELU but falls to 51.6\% after the final
+2048$\rightarrow$192 Linear.  A fixed 192-D map retains 71.1\%, while selected
+unmatched PLDM stays at 100\% throughout.
+
+\begin{table}[h]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{2.0pt}
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+Model & Stage & Hue & Bind. & Portal & Dec. sep. \\
+\midrule
+\lewm{} & native patches & 96.0 & 48.0 & 58.2 & -- \\
+\lewm{} & projector & 51.6 & 50.6 & 52.1 & 4.85 \\
+\pldm{} & projector & 100 & 46.4 & 52.6 & 49.5 \\
+\lpwm{} & projector & 100 & 95.2 & 86.9 & 37.8 \\
+\dinowm{} & native patches & 100 & 60.2 & 54.0 & 78.8 \\
+\bottomrule
+\end{tabular}
+\caption{\textbf{Where TR2 color survives in selected checkpoints.}
+Hue, binding, and portal columns are balanced accuracy (\%); chance is 50\%.
+Decoder separation is the percentage of original green--orange centroid
+separation retained on 300 prespecified frames.  Comparator checkpoints are
+selected and unmatched; DINO-WM has no global projector.  The complete
+12-checkpoint LeWM hue audit appears in \cref{fig:stagewise-factorial}.}
+\label{tab:tr2-stagewise}
+\end{table}
+
+The final LeWM state does not exceed measured geometry baselines for binding
+(50.6\%) or portal identity (52.1\%).  At these unmatched checkpoints, only
+LeWM's global projector is near chance on hue; PLDM retains hue but not binding, whereas LpWM
+retains hue/binding/portal identity (100/95.2/86.9\%).  A
+validation-selected one-hidden-layer MLP likewise leaves LeWM hue/binding at
+52.4/47.0\%, but LpWM at 100/96.9\% (five probe seeds).  This excludes only
+that MLP family; exact intervention results are in \cref{sec:counterfactual}.
+At this audited checkpoint, near-unit variance and accurate geometry reject
+total scalar collapse.  Because the current projected state already has a weak
+hue readout, the predictor is not the earliest audited forward stage with weak
+accessibility; predictor-loss gradients during training remain unresolved.
+
+\paragraph{The decoder moves toward the palette mean.}
+For spatial \trtwo{} at IDM 0--.625, final-video color accuracy is 50\% and
+only 4.0--7.5\% of original separation remains.  On 300 prespecified frames,
+LeWM retains 4.85\% separation (95\% CI [3.57\%, 6.17\%]), versus 49.5/37.8/
+78.8\% for PLDM/LpWM/DINO-WM; color accuracies are 54.2/57.3/70.4/100\%.
+Thus PLDM retains a color axis despite modest class accuracy, while LpWM has
+greater class recoverability than LeWM.  These controls are selected and
+unmatched.  LeWM has lower pixel MSE than PLDM/LpWM (.0996 versus
+.1190/.1305), so average reconstruction error hides color failure.  Green/blue
+controls likewise render teal and retain only 2.9/2.1\% separation (appendix).
+
+\section{The Failure Is Conditional, Not Universal}
+
+\paragraph{Comparator success depends on the global readout.}
+LeWM is the only family in the three-seed grid without a strong TR2 readout:
+its best semantic mean is $25.97\pm.20$ pixels.  PLDM reaches
+$18.05\pm.41$ with spatial 8$\times$8, although its CLS is near null and its
+MLP is seed-unstable.  LpWM reaches $15.65\pm1.42$ with native CLS, although
+its MLP is weak and its spatial results split sharply across seeds
+(11.95/28.36/28.66 pixels).  The claim is therefore not that every PLDM or
+LpWM state preserves color; rather, both families expose a substantially
+better global state than any tested LeWM readout.  Native all-patch \dinowm{}
+also decodes color at 100\% accuracy with 81.9/76.5\% TR2/TR3 separation.
+
+Selected stagewise controls agree: PLDM retains visible hue but not binding,
+whereas LpWM retains both (\cref{tab:tr2-stagewise}).  A VISReg intervention
+rescues one seed but not two others or binding (\cref{tab:visreg-swap}); the
+objective's causal role remains unresolved.
+
+\paragraph{TR3 is a boundary condition.}
+Spatial \lewm{} reaches 7.58-pixel semantic MAE and 79--97\% decoder accuracy
+on \trthree{}; CLS remains near null.  This refutes universal blindness but,
+because exposure differs, does not show that more colors cause recovery.
+
+\clearpage
+\bibliography{references}
+\bibliographystyle{icml2026}
+
+\clearpage
+\appendix
+
+\section{Three-Seed Global-Readout Replication}
+
+\Cref{tab:aggregation-replication} reports the exact TR2-Color probe summary
+behind \cref{fig:sweep-summary}a--b.  ``Position'' is a geometric control
+measured on the same color dataset, not a separate non-color benchmark.  The
+per-seed rows and color-specific green/orange errors are frozen in
+\texttt{data/tr2\_aggregation\_color\_probe.csv}.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4.2pt}
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+& & \multicolumn{2}{c}{Color-conditioned hub MAE} &
+\multicolumn{2}{c}{Position-only hub MAE} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}
+Model & Global readout & Current & Predicted & Current & Predicted \\
+\midrule
+\lewm{} & CLS & $30.69\pm.47$ & $30.69\pm.50$ & $19.48\pm.29$ & $19.49\pm.31$ \\
+\lewm{} & MLP & $28.35\pm.74$ & $28.35\pm.62$ & $13.41\pm.61$ & $13.43\pm.62$ \\
+\lewm{} & spatial 8$\times$8 & $25.97\pm.20$ & $26.02\pm.22$ & $6.41\pm.34$ & $6.44\pm.32$ \\
+\midrule
+\pldm{} & CLS & $31.05\pm.32$ & $30.67\pm.33$ & $20.09\pm.04$ & $19.78\pm.11$ \\
+\pldm{} & MLP & $28.57\pm5.02$ & $28.75\pm5.08$ & $20.03\pm1.17$ & $19.86\pm1.24$ \\
+\pldm{} & spatial 8$\times$8 & $18.05\pm.41$ & $17.17\pm.29$ & $16.54\pm.50$ & $16.23\pm.32$ \\
+\midrule
+\lpwm{} & CLS & $15.65\pm1.42$ & $15.74\pm1.62$ & $11.26\pm.51$ & $11.27\pm.45$ \\
+\lpwm{} & MLP & $29.79\pm.69$ & $28.99\pm1.18$ & $13.47\pm3.50$ & $12.92\pm3.48$ \\
+\lpwm{} & spatial 8$\times$8 & $22.99\pm9.56$ & $23.09\pm10.24$ & $12.42\pm.77$ & $12.35\pm1.16$ \\
+\bottomrule
+\end{tabular}
+\caption{\textbf{TR2-Color global-readout replication.} Mean $\pm$ one sample
+standard deviation over seeds 3072/4072/5072; lower is better.  Each family
+retains its labeled recipe: LeWM uses SIGReg without IDM, PLDM uses VCReg with
+temporal alignment .2, and LpWM uses Product-Laplace InfoReg with IDM 3.125.
+The comparison isolates readout within each family, not objective across
+families.}
+\label{tab:aggregation-replication}
+\end{table*}
+
+\section{Four-Color Boundary Experiment}
+
+The spatial \trthree{} result suggests that greater cue diversity may make
+color harder for LeWM to ignore, but it does not isolate color cardinality:
+TR2 and TR3 differ in geometry, trajectory distribution, transition exposure,
+and optimization steps.  A four-color result has the same ambiguity, so we
+treat \trfour{} as a prespecified boundary experiment rather than a causal
+cardinality ablation.
+
+The randomized environment has four right-side leaf rooms and four unique
+portal identities (green, orange, blue, and magenta).  Portal positions,
+pairings, cue assignments, starts, and targets are sampled per episode.  The
+comparison trains spatial 8$\times$8 LeWM, PLDM, and LpWM for ten epochs over
+three seeds, with each family retaining the labeled recipe used in
+\cref{tab:aggregation-replication}.  The primary endpoints are mean
+color-conditioned hub MAE over all four identities relative to a target-mean
+reference, position-only hub MAE, and decoded centroid-separation retention.
+Fixed-slot hue and destination binding are complementary; ranked planning is
+secondary because visible hue without correct binding is insufficient for
+control.
+
+The 10,000-episode corpus completed with 638,774 frames and an approximately
+uniform geometry-defined rank histogram (2,438/2,553/2,509/2,500). The first
+dependency-released training submission exited before model initialization:
+its source-commit guard correctly detected that the shared checkout had
+advanced. A second submission then exposed a missing Hydra schema entry for
+the new four-leaf protocol, also before model initialization. We therefore
+report no TR4 model result from either operational attempt. The same
+prespecified nine-run matrix was corrected without changing its scientific
+design and submitted as revision 4 from an immutable detached worktree; its
+outcomes remain pending.
+\experimentneeded{After all revision-4 checkpoints finish, freeze the decoder,
+location-probe, hue, and binding audits before adding any TR4 outcome.}
+If spatial LeWM remains weak while PLDM/LpWM retain four-way identity, the TR2
+bottleneck extends despite greater cue diversity.  If LeWM improves, the result
+locates another boundary like TR3 but cannot attribute it to color count alone.
+Repeating two colors across four portals is not a matched control: it makes
+color intrinsically insufficient to identify a unique destination.  A causal
+follow-up must preserve four unique identities while separately controlling
+palette separation, geometry, transition exposure, and optimization updates.
+
+\section{Complete LeWM Factorial}
+
+The full numeric table is distributed as
+\texttt{data/lewm\_color\_identity\_factorial.csv}.  It contains every stable
+anonymous experiment ID, aggregation, IDM weight, room count, current/predicted semantic MAE,
+position-only MAE, their raw difference, and seed.  The raw difference is
+descriptive, not a pure hue statistic; target-specific bias-only references
+are in \texttt{data/probe\_target\_nulls.csv}.  No missing value is encoded as zero.
+All 24 runs completed ten epochs and their final diagnostics.
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{figures/lewm_identity_factorial.pdf}
+    \caption{\textbf{Complete original LeWM IDM factorial.} Mean
+    color-conditioned and position-only hub MAE for current and one-step
+    predicted states.  Spatial TR2 improves geometry but not color binding;
+    spatial TR3 is the counterexample.  All cells share seed 3072.}
+    \label{fig:idm-factorial}
+\end{figure*}
+
+\begin{table}[h]
+\centering
+\small
+\setlength{\tabcolsep}{3.2pt}
+\begin{tabular}{@{}rrrrr@{}}
+\toprule
+IDM & CLS hue & CLS bind. & 8$\times$8 hue & 8$\times$8 bind. \\
+\midrule
+0     & 47.7 & 48.0 & 50.0 & 50.0 \\
+.005  & 50.0 & 48.0 & 50.0 & 47.2 \\
+.025  & 45.0 & 46.2 & 53.6 & 49.9 \\
+.125  & 47.9 & 48.9 & 56.3 & 48.3 \\
+.625  & 47.9 & 48.9 & 49.2 & 47.0 \\
+3.125 & 45.3 & 51.3 & 51.6 & 50.6 \\
+\bottomrule
+\end{tabular}
+\caption{LeWM TR2 projector balanced accuracy (\%) on fixed-slot hue and
+target--destination color binding.  All cells share training seed 3072 and the
+same frozen 525/75/150 episode split; 50\% is balanced chance and no
+population-level training-seed uncertainty is estimated.}
+\label{tab:projector-factorial}
+\end{table}
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{figures/lewm_tr2_stagewise_hue_factorial.pdf}
+    \caption{\textbf{The stagewise hue decline holds across every audited TR2
+    LeWM checkpoint.}  Each point is balanced accuracy on the same 150
+    readout-test episodes; lines connect hyperparameters for readability, not
+    training trajectories.  Native patches and deterministic 8$\times$8
+    pooling retain hue; the latter is a readout control and is not part of the
+    CLS computation path.  The actual CLS state is weak, whereas learned spatial
+    aggregation retains varying hue; every projector is near chance.  All
+    checkpoints share one world-model seed, so this is a hyperparameter audit,
+    not training-seed replication.}
+    \label{fig:stagewise-factorial}
+\end{figure*}
+
+\section{Tunnel Rooms Color Specification}
+
+TR2-Color and TR3-Color each contain 10,000 successful expert episodes with
+651,357 and 482,051 stored RGB observations.  The agent receives a continuous
+two-dimensional motion action, repeated for five simulator steps per stored
+transition.  Each reset randomizes the agent, goal, portal geometry, and a
+permutation assigning two or three cue identities to the hub/leaf portal
+pairs.  Entering a hub portal teleports the agent to its paired leaf; the goal
+specifies a leaf destination, so success requires the same-color assignment
+rather than the nearest portal.  Median episode lengths are 56/45 frames.
+Using a within-episode position jump above ten pixels as the prespecified
+crossing detector, portal transitions are 12,180/641,357 (1.90\%) in TR2 and
+10,000/472,051 (2.12\%) in TR3.  The world-model 90/10 split is over legal
+short windows, not entire episodes; the stagewise probe split is
+episode-disjoint, but it draws from this source corpus.  Exact counts,
+definitions, and dataset hashes are frozen in
+\texttt{data/benchmark\_audit.csv}.  The maintained loader yields target
+intervals containing a crossing in 10.22\% of all legal windows and 10.21\% of
+the exact 90\% training split; counts and split seed are frozen in
+\path{data/training_window_transition_audit.csv}.
+
+\section{Decoder Color-Fidelity Audit}
+
+\paragraph{Protocol.}
+For each of 34 final-epoch training-media pairs (24 \lewm{}, six selected
+comparators, two native DINO CLS controls, and two blue/green controls), we
+parse six 224$\times$224 clips over four
+frames.  Saturated 18$\times$18 non-red connected components in the original
+identify portal support; red connected components identify the agent, and any
+overlap is excluded.  The same support is sampled from the decoded frame.
+Run-local original CIE L$^*$a$^*$b$^*$ centroids define the nearest-color rule
+and the unweighted palette mean.  Worst matched-pair separation retention is
+\begin{equation}
+ R_{\mathrm{sep}}=
+ \min_{c\ne c'}
+ \frac{\|\hat\mu_c-\hat\mu_{c'}\|_2}
+      {\|\mu_c-\mu_{c'}\|_2}.
+ \end{equation}
+This is a reconstruction-at-known-support diagnostic, not a test of mutual
+information.  Exact media hashes, instance counts, exclusions, and run-level
+statistics are preserved with the paper.
+
+\paragraph{Prespecified diagnostic episodes.}
+We also apply the same metric to two marker-visible frames from each of 150
+distinct episodes in the stagewise test split; selections were fixed before
+decoder outputs were inspected.  The 300 frames
+yield 1,127 cue instances after excluding 72 agent overlaps and one failed
+detection.  Checkpoints and decoder sidecars are strict-loaded and decoder
+tensors are checked bitwise.  A 10,000-replicate episode bootstrap gives
+separation retention of 4.85\% [95\% CI 3.57\%, 6.17\%] for LeWM,
+49.5\% [48.4\%, 50.5\%] for PLDM, 37.8\% [36.4\%, 39.1\%] for LpWM, and
+78.8\% [78.1\%, 79.5\%] for DINO-WM.
+LeWM's reconstructed green/orange centroids are nearly identical despite its
+lower normalized-pixel MSE than PLDM/LpWM.  These prespecified episodes come
+from the world-model source corpus and are therefore not a world-model
+holdout; logged media lacks source IDs, so disjointness from its six clips
+cannot be proved.  An anonymized frame manifest and all cue-level sufficient
+statistics are distributed for independent recomputation.
+
+For the frozen LeWM checkpoint, all four trained decoder snapshots logged over
+training retain only 4.0--9.4\% of palette separation; the random-decoder
+snapshot is excluded.  The snapshots use different minibatches and W\&B media
+indices are not epochs, so this rules out only an obvious late collapse from a
+previously high-fidelity decoder.  It is not an epoch-wise representation
+probe; portable intermediate checkpoints were not saved.
+
+\section{Stagewise Hue and Binding Readouts}
+
+The primary \trtwo{} audit draws 750 episodes from the world-model training
+corpus.  Its cue tasks use exactly one example per episode: the goal image and
+target position stored at the episode offset.  Two separately sampled frames
+per episode are used only by an auxiliary agent-position probe.  Fit,
+validation, and test episodes are disjoint (525/75/150), and every target
+selects its own ridge penalty on validation before a final refit on the 600
+fit-plus-validation episodes.  For ridge readouts, classification penalties maximize raw validation accuracy;
+balanced accuracy is used only for test reporting.  Features are centered per
+coordinate and divided by one training-set global RMS scalar; coordinate
+targets are divided by 224 and class targets are one-hot vectors.  Targets are
+centered on the ridge-training split and the mean is restored after prediction.
+No examples or classes are reweighted.
+
+Visible hue is the identity of the upper leaf marker; both hues occur in every
+image, so this is a spatial identity task rather than color-presence detection.
+Destination binding is the hue of the leaf nearest the stored target.  The
+portal readout regresses the coordinate of the hub with that hue, then assigns
+the prediction to the nearest actual hub and scores its color.  A
+room-majority destination-color rule and a global-mean hub coordinate obtain
+54.8\% and 54.5\% balanced accuracy on the same test split.  These are measured
+geometry baselines, not statistical null distributions; theoretical balanced
+chance remains 50\%.
+
+As a nonlinear check, one-hidden-layer ReLU MLP candidates use fit-split
+per-feature standardization and are fit on the 525 training episodes.  Width $\{32,64,128\}$, weight decay
+$\{0,10^{-4},10^{-3}\}$, and an epoch up to 300 are ranked by validation balanced
+accuracy, then, in order, lower class-weighted validation cross-entropy,
+smaller width, smaller weight decay, and earlier epoch.  The selected recipe is refit on all
+600 fit-plus-validation episodes and tested once on 150 for each of five
+optimizer seeds.
+LeWM hue/binding remains 52.4$\pm$3.0\%/47.0$\pm$3.7\% balanced accuracy; the
+20,000-replicate episode-bootstrap intervals are 47.6--57.3\% and
+43.0--51.0\%.  PLDM retains hue but not binding, while LpWM retains both.
+Probe seeds quantify optimization variability, not world-model seed
+uncertainty.
+
+The projector-substage audit uses the same split and independently selects a
+ridge penalty at every stage:
+
+\begin{table}[h]
+\centering
+\small
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+Model & Input & Linear$_1$ & BN & GELU & Linear$_2$ \\
+\midrule
+\lewm{} & 66.0 & 65.8 & 68.7 & 67.0 & 51.6 \\
+\pldm{}$^\dagger$ & 100 & 100 & 100 & 100 & 100 \\
+\bottomrule
+\end{tabular}
+\caption{Fixed-slot hue balanced accuracy (\%) within one 192--2048--192
+projector.  Linear$_2$ exactly reproduces each prior full-projector result;
+$\dagger$PLDM is a selected unmatched control.}
+\label{tab:projector-substage}
+\end{table}
+
+Exact all-marker and hub-only green/orange swaps alter 972,000 and 486,000
+exact-RGB pixels of the filled 18$\times$18 markers over the full audit,
+respectively, with zero changes elsewhere.  The all-marker swap flips visible
+and destination-color labels and reverses color-to-hub indexing while leaving
+the correct physical hub coordinate fixed.  The hub-only swap leaves visible
+and destination labels fixed, reverses hub-color indexing, and moves the
+correct-hub coordinate.  The complete stagewise values,
+selected penalties, Wilson intervals, counterfactual readouts, checkpoint
+hashes, and split hash are frozen in the accompanying \texttt{tr2\_stagewise}
+tables.  Because the world model trained on the source corpus, this establishes
+readout generalization across episodes, not world-model generalization to a
+new corpus.
+
+\subsection{Counterfactual binding sensitivity}
+\label{sec:counterfactual}
+
+We sample one three-frame context from each of 128 distinct TR2 episodes and
+compare three exact interventions: exchange the two marker RGB values, shift
+both markers by a common RGB offset, or recolor the agent.  The first two alter
+the same 3,888 pixels and differ in input relative $\ell_2$ magnitude by less
+than .5\%.  For representation stage $s$, define
+\begin{equation}
+\begin{aligned}
+ \delta_s(v)&=\|h_s(x^v)-h_s(x)\|_2/\|h_s(x)\|_2,\\
+ Q_s&=\delta_s({\rm swap})/\delta_s({\rm shift}),\\
+ H_s&=Q_s/Q_{\rm native}.
+\end{aligned}
+\end{equation}
+$Q_s$ measures response to exchanging color--location binding relative to a
+matched generic color perturbation; $H_s$ measures its retention from native
+patches.  Values are paired episode means with 20,000-replicate bootstrap
+intervals.
+
+\begin{table}[h]
+\centering
+\small
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Model & $Q_{\rm native}$ & $Q_{\rm agg}$ & $Q_{\rm proj}$ & $Q_{\rm pred}$ \\
+\midrule
+\lewm{}, IDM 3.125 & .855 & .341 & .287 & .280 \\
+\lewm{}, IDM .625 & .605 & .147 & .134 & .133 \\
+\pldm{} & 1.956 & 2.898 & 3.197 & 3.765 \\
+\lpwm{} & 1.235 & .826 & 1.769 & 2.340 \\
+\dinowm{} & .528 & .528 & -- & .574 \\
+\bottomrule
+\end{tabular}
+\caption{TR2 counterfactual response relative to the matched cue-shift control.
+For DINO-WM, aggregation is the unchanged native patch grid. Predictor/native
+retention is .327/.219 for the two LeWM checkpoints, 1.908 for PLDM, 1.896 for
+LpWM, and 1.085 for DINO-WM. Full 95\% intervals and the agent control are in
+\texttt{data/tr2\_counterfactual\_sensitivity.csv}.}
+\label{tab:counterfactual}
+\end{table}
+
+The accompanying raw-response table reports numerator and denominator
+separately: $Q_s$ can change because either response changes, so it is a
+relative selectivity statistic rather than proof that absolute swap
+sensitivity is erased.  Agent recoloring is retained only as an unmatched
+descriptive calibration and is not interpreted.  One
+seed, a source-corpus audit, and an out-of-distribution common-shift control
+limit causal generalization; absolute responses are not compared across
+latent scales.
+
+For context, the same stagewise visible-hue readout protocol on \trthree{}
+provides a boundary condition:
+
+\begin{table}[h]
+\centering
+\small
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+Model & Native & Pool & Rand. & Agg. & Proj. \\
+\midrule
+\pldm{} & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 \\
+\lewm{} & 99.3 & 100.0 & 74.7 & 89.3 & 80.7 \\
+\lpwm{} & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 \\
+\dinowm{} & 99.3 & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\caption{Visible-cue color accuracy (\%) across \trthree{}
+representation
+stages.  \lewm{} is the 8$\times$8, IDM-3.125 run; \lpwm{} is the later
+8$\times$8, IDM-.625, temporal-Jaccard-.1 run.  These unmatched settings make
+the table a localization clue, not an architecture ranking; each row uses 150
+test episodes.}
+\label{tab:stagewise-tr3}
+\end{table}
+
+The TR3 LeWM projector reaches 80.7\% raw accuracy, versus 53.3\% TR2 raw
+accuracy under the matched readout protocol.  Native-token hue is accessible
+in both tasks; the learned
+global path's retention is conditional on the environment.  Different task
+statistics, 50\% more marker-support pixels per frame, and unequal update
+counts preclude attributing the contrast to room count alone.
+
+\section{Alternate Palette and Fixed-Layout Control}
+
+\paragraph{Fixed layouts can masquerade as color understanding.}
+With corrected episode-level cue assignments, the same LeWM family obtains
+1.81-pixel post-projector color-hub MAE and $R^2=.994$ in a three-room
+fixed-wall pilot, versus 17.74 pixels when cue geometry varies.  Because a
+fixed layout makes the semantic target recoverable from position, this result
+does not test hue accessibility.  It instead demonstrates why the primary audit
+randomizes marker geometry and pairs semantic readouts with positional controls.
+
+The green/blue controls use fixed anonymous experiment records at IDM 0 and .625 and the same seed
+3072.  The source-dataset SHA256 is recorded in the paper data with prefix
+\texttt{6e2823ad}.
+Their full probe values appear in \texttt{data/blue\_green\_control.csv}; visual
+examples appear in \cref{fig:teaser}.
+
+\section{LpWM Sparsity and Temporal-Jaccard Controls}
+
+We backfill the identical 640/256 location-probe protocol on an internally matched
+single-seed LpWM matrix with Product-Laplace
+$\mu\in\{0,-0.5,-1,-1.5\}$, temporal-Jaccard weight 0 or .1, fixed $p=1$,
+IDM .625, and spatial 8$\times$8 features.  Across all eight checkpoints,
+current semantic hub MAE is 8.25--11.10 pixels and positional hub MAE is
+8.03--11.17 pixels (\cref{tab:lpwm-tj}).  Thus LpWM does not reproduce LeWM's
+large semantic-versus-position gap in this controlled family.  Temporal
+Jaccard shows no directionally consistent benefit: its same-seed, same-split contrast
+changes sign with $\mu$, worsening both hub targets at $\mu=-1$, improving both
+at $\mu=-1.5$, and producing mixed effects otherwise.  All cells share one
+training seed, so these are conditional checkpoints rather than a
+population-level factorial result.
+
+\begin{table}[h]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.1pt}
+\begin{tabular}{@{}rrrrr@{}}
+\toprule
+$\mu$ & TJ & Sem. hub & Pos. hub & Pred. sem. \\
+\midrule
+0 & 0 & 8.93 & 8.03 & 8.87 \\
+0 & .1 & 8.70 & 8.13 & 8.92 \\
+-.5 & 0 & 8.96 & 9.17 & 8.98 \\
+-.5 & .1 & 8.50 & 10.24 & 8.68 \\
+-1 & 0 & 8.25 & 8.40 & 8.32 \\
+-1 & .1 & 9.14 & 9.47 & 9.40 \\
+-1.5 & 0 & 11.10 & 11.17 & 11.49 \\
+-1.5 & .1 & 10.48 & 10.85 & 10.67 \\
+\bottomrule
+\end{tabular}
+\caption{\textbf{Internally controlled single-seed LpWM TR2-Color grid.} Current-feature semantic and
+position-only hub MAE and predicted-feature semantic hub MAE (pixels).  Lower
+is better.  All rows use seed 3072, the same 256-episode probe-test split, and
+fixed ridge $\alpha=10$; that split is held out from probe fitting, not
+world-model training.  TJ pairs are distinct training runs, so no across-seed
+uncertainty is estimated.}
+\label{tab:lpwm-tj}
+\end{table}
+
+\section{Exploratory Shape-Conditioned Localization Caveat}
+
+We replaced color with identically colored triangle, diamond, and star markers
+while preserving the underlying trajectories, actions, positions, rewards, and
+episode boundaries.  From the same frozen current projected world-model states
+and one-step predicted states, ridge probes predict either the location of a
+named shape or a positional slot.  Across one seed, named-shape MAE is
+27.02--31.18 pixels for current states and
+26.84--30.76 for predictor features, near intercept-only baselines of 31.16
+(TR2) and 30.20 (TR3).  Current and predicted features support substantially
+better positional than shape-conditioned localization
+(\cref{tab:shape-control}).  Because PLDM and the historical learned-token
+DINO-WM control show the same pattern, and no completed LpWM Shape result exists, this pilot
+is a broader cue-binding caveat rather than evidence for extending the main
+LeWM-specific color claim.
+
+Final-epoch decoder clips agree qualitatively but are not an independent
+identity metric. Across all available clips, LeWM and PLDM reconstruct portal
+locations and often the agent, yet triangle, diamond, and star markers soften
+into similarly colored diffuse blobs; learned-token DINO-WM is blurrier and
+often suppresses the agent as well. No existing family visibly reconstructs
+the three identities consistently enough to support a LeWM-specific decoder
+failure. This assessment uses every final-epoch clip rather than one selected
+frame, but pixel-MSE decoder capacity remains a confound.
+
+\begin{table}[h]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.0pt}
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+Data & Model & \multicolumn{2}{c}{Identity MAE} & \multicolumn{2}{c}{Position MAE} \\
+& & Current & Pred. & Current & Pred. \\
+\midrule
+TR2 & DINO--MLP & 27.02 & 26.84 & 7.47 & 7.36 \\
+TR2 & PLDM & 29.17 & 28.37 & 6.80 & 6.69 \\
+TR2 & LeWM & 28.05 & 28.10 & \textbf{4.57} & \textbf{4.41} \\
+TR3 & DINO--MLP & 27.93 & 27.87 & 6.94 & 6.85 \\
+TR3 & PLDM & 31.18 & 30.76 & 3.18 & 3.20 \\
+TR3 & LeWM & 29.99 & 29.80 & \textbf{2.66} & \textbf{2.56} \\
+\bottomrule
+\end{tabular}
+\caption{\textbf{Exploratory shape-conditioned localization control (pixels).} Lower is better.
+Identity probes locate a named shape; position probes locate a geometric slot.
+All rows use one world-model seed.  DINO--MLP is a historical learned-token
+recipe, not native all-patch DINO-WM; model recipes are unmatched.}
+\label{tab:shape-control}
+\end{table}
+
+Two prespecified one-seed controls are pending for each room count: LpWM with
+the spatial 8$\times$8, IDM 3.125, Product-Laplace $\mu=-1,p=1$ recipe used in
+the color study, and native all-patch DINO-WM. LpWM tests whether the sparse
+global objective is the missing successful family; all-patch DINO-WM tests
+whether the historical learned global MLP token, rather than shape information
+in the frozen patch representation, caused the weak DINO row. Neither pending
+run is used in the table or conclusions.
+
+\section{Provenance, Limitations, and Open Validations}
+
+\paragraph{What the localization does and does not explain.}
+The observation is solvable because native LeWM encoder patch tokens and selected
+checkpoints from all three comparator families retain hue.  Across the complete LeWM TR2 factorial,
+nonlearned 8$\times$8 pooling remains at 100\% hue accuracy, selected global
+states span 50.3--92.7\%, and projections span 45.0--56.3\%.  On the
+prespecified spatial checkpoint, fixed random 192-D compression reaches 71.1\%,
+the learned aggregator 66.0\%, and projection 51.6\%.  These results show a
+stagewise decline in hue accessibility along the learned global path but do
+not identify the mechanism producing it.  The audited LeWM projector has final
+validation-epoch average per-dimension variance .974 and effective rank 45.1 of 192, so the
+failure is not scalar variance collapse, although its effective rank is below
+the selected PLDM/LpWM controls (72.1/65.8).  Because the current projected
+state already has a weak hue readout, the predictor is not the earliest audited
+forward stage with weak accessibility; predictor-loss gradients during
+training remain unresolved.  Less frequent color-conditioned consequences and the
+representation objective remain hypotheses, not identified causes.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}p{.18\textwidth}p{.34\textwidth}p{.36\textwidth}@{}}
+\toprule
+Explanation & Diagnostic evidence & Status \\
+\midrule
+Observation lacks hue & LeWM native patches reach 96\%; DINO/PLDM/LpWM retain hue & Rejected for audited images \\
+Decoder-only underfit & Ridge and validation-selected MLP also fail at LeWM projection & Insufficient as sole explanation \\
+Scalar variance collapse & Projector variance .974 and effective rank 45.1; geometry remains accurate & Rejected as scalar collapse; selective/dimensional loss remains \\
+Stagewise global-path decline & Native patches 96--100\%; projected states 45--56\%; fixed random and learned maps differ & Observed; causal mechanism not identified \\
+Global readout alone & LeWM CLS/MLP/spatial MAE is 30.69/28.35/25.97; PLDM spatial and LpWM CLS are stronger & LeWM is consistently weak; no readout type is universally sufficient \\
+Final projector map & LeWM stays 65.8--68.7\% through GELU, then reaches 51.6\%; PLDM stays at 100\% & Localized at one checkpoint; training cause open \\
+Predictor is earliest weak stage & Current projected state is already weak; predicted semantic MAE is similar & Rejected in audited forward order; training gradients remain open \\
+Missing temporal alignment & TR2 LeWM is unchanged from weight 0 to 3.125; TR3 spatial improves & Rejected as sole TR2 explanation \\
+Less frequent consequence & Teleports occur in 10.21\% of training-split target intervals; TR3 differs in cue support/task statistics & Plausible but not sufficient or identified \\
+More distinct colors & Spatial TR3 succeeds, but room count, trajectories, exposure, and updates also change & Open; the prespecified TR4 study is a boundary test, not a cardinality control \\
+Regularizer/objective & Matched-architecture/data VISReg comparison yields one 100\% hue readout, not replicated by two seeds or binding & Consistent with sensitivity; causal influence unresolved \\
+\bottomrule
+\end{tabular}
+\caption{Candidate explanations for the audited TR2 LeWM failure.  ``Rejected''
+means inconsistent with these diagnostics, not impossible in another setting.}
+\label{tab:explanations}
+\end{table*}
+
+The audited \lewm{} objective combines prediction and SIGReg (.09)
+\citep{balestriero2025lejepa,maes2026leworldmodel} with our IDM extension.
+The \pldm{} objective combines prediction with VICReg-inspired VC terms
+(variance 18, covariance 12, temporal variance .7, alignment .2; IDM 0)
+\citep{bardes2022vicreg,sobal2025latentplanning}.  Our \lpwm{} adaptation uses
+prediction, ReLU Product-Laplace InfoReg (10; $\mu=-1,p=1$), and IDM 3.125
+\citep{kuang2026rectified}; \dinowm{} predicts frozen pretrained DINOv2 patch
+targets.
+
+For the selected TR2 global controls, LeWM, PLDM, and LpWM share the dataset,
+seed, 32,550 updates, trainable random ViT-tiny, spatial 8$\times$8 aggregator,
+192--2048--192 projector, and six-layer 16-head predictor.  Their checkpoints
+have the same 307 tensor-state keys/shapes (20,426,736 elements); decoders see
+detached states.  LeWM and PLDM differ principally in representation objective,
+while LpWM also rectifies projector and prediction-head outputs.  This makes
+the objective the sharpest remaining hypothesis, but coefficients and losses
+are not scale-matched, IDM differs for PLDM, and trained initializations are not
+paired; it is not a causal ablation.  Exact contracts are in
+\path{data/global_model_contracts.csv}.
+
+The 30-run core experiment is frozen by an anonymous source snapshot and
+artifact hashes; the private experiment mapping will be released after review.
+The follow-up evidence adds 27 aggregation runs (nine conditions over three
+seeds) and 28 one-seed temporal-alignment runs.  All 55 finished ten epochs
+with final decoder and
+location-probe artifacts; their anonymous per-run metrics are frozen in the two
+new plotting tables.
+Dataset SHA256 values are
+\texttt{e134677f...df042} (\trtwo{}) and
+\texttt{61c576d...da617} (\trthree{}).  The paper data distribute stable
+anonymous experiment IDs and exact plotting inputs for the core tables, plus
+media hashes for the decoder audit and checkpoint/split hashes for the
+stagewise and counterfactual audits.  All 30 core runs finished ten epochs.
+The completion manifest records one absent DINO-WM W\&B energy summary key;
+the corresponding final local image is retained and visually valid, so this is
+an upload/completion-metadata exception rather than a missing training result.
+Figure crops use unscaled pixels from final-epoch training videos; the selection rule and
+unmatched DINO frame are disclosed.
+
+The central limitations are that the stagewise, IDM, and temporal-alignment
+audits use one training seed; the new aggregation grid has only three seeds;
+TR2/TR3 have unequal update counts; model recipes differ in objective and IDM;
+the corrected four-color boundary matrix is pending and remains unobserved;
+the LpWM and all-patch DINO Shape controls are also pending;
+and semantic MAE
+composes identity with localization.  Diagnostic decoders may
+also underfit, although independent ridge and MLP readouts support the same
+LeWM conclusion.  The \trthree{} result explicitly falsifies universal LeWM
+color blindness; the fixed-layout pilot is not a hue test.
+
+The stagewise tables preserve checkpoint, dataset, configuration, sidecar, and
+episode-split hashes, and the protocol is specified above.  Its one-off runner
+was intentionally temporary and is not part of the anonymous artifact.  A
+clean checkpoint-to-table evaluator is therefore an artifact-release task, not
+an unreported experiment or a source of additional results in this draft.
+
+The original LeWorldModel study also reports weaker performance on simple
+Two-Room and hypothesizes that low data diversity or intrinsic dimensionality
+can make high-dimensional isotropic-Gaussian SIGReg matching difficult
+\citep{maes2026leworldmodel}.  This motivates our TR2/TR3 and regularizer
+controls, but neither our unequal-room comparison nor that hypothesis identifies
+the mechanism.
+
+VISReg separates a variance-based scale penalty from a sliced-Wasserstein shape
+penalty; its authors show that the scale-loss gradient approaches a constant as
+embeddings approach collapse \citep{wu2026visreg}.  This property concerns
+collapse prevention, not semantic cue retention, so we evaluate VISReg only as
+a diagnostic objective-family intervention.  Concurrent VIS-WM work studies
+planning rather than color retention and reports VISReg weight 4.5
+\citep{wu2026viscore}; our prespecified weight 1.5 experiment is therefore not a
+reproduction of that recipe.
+
+The prespecified experiment is a matched-architecture, matched-data recipe
+swap, not a regularizer-strength-matched test.  Three seeds each use spatial
+8$\times$8 LeWM, IDM 0, ten epochs, and 1024 random directions with either
+SIGReg weight .09 or VISReg weight 1.5.  The latter direction count is reduced
+from the VISReg paper's $K=4096$ setting.  Method-specific coefficients are not
+loss- or gradient-matched: on one frozen epoch-0 state and validation batch,
+the weighted regularizer-gradient norm was 9.32$\times$ the prediction gradient
+for SIGReg but 2.33$\times$ for VISReg (cosine .675).  Different accelerator
+classes under BF16 are another implementation nuisance.  E049's 100\% fixed-slot
+hue ridge readout shows that this LeWM architecture can retain accessible TR2
+hue under one alternative recipe/seed; it does not show that SIGReg causes cue
+loss or that VISReg reliably prevents it.
+Before inspecting final outcomes, we designated projector visible-hue balanced
+accuracy on the frozen episode-disjoint 525/75/150 split as primary.  Secondary
+endpoints are destination-binding accuracy, null-adjusted semantic-hub MAE,
+and decoder separation.  We report every completed seed, select no checkpoint
+or hyperparameter using test outcomes, and interpret the objective contrast
+only if all three seeds and final diagnostics complete.
+
+All six runs and fit-end diagnostics completed.  \Cref{tab:visreg-swap} reports
+every seed.  SIGReg remains near chance on hue and binding.  VISReg produces one
+perfect hue readout but two near-chance readouts; its binding readouts are all
+near chance.  The perfect-hue seed also has a low 4.00-pixel green-hub MAE but a
+26.75-pixel orange-hub MAE (not shown), worsened positional mean MAE (15.56
+pixels), and 50\% decoder macro color accuracy.  Visual inspection is consistent
+with one-color preservation rather than faithful two-color reconstruction, but
+the aggregate decoder statistics alone do not identify which color is lost.
+This is a heterogeneous one-seed fixed-slot hue result, not a reproducible
+semantic-binding result.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}llrrrrrr@{}}
+\toprule
+ID & Recipe & Seed & Hue BA & Binding BA & Green hub & Position & Decoder sep. \\
+ & & & (\%) & (\%) & MAE (px) & MAE (px) & (\%) \\
+\midrule
+E046 & SIGReg & 3072 & 50.0 & 49.9 & 25.57 & 6.10 & 7.80 \\
+E047 & SIGReg & 4072 & 50.8 & 47.8 & 26.10 & 6.35 & 6.04 \\
+E048 & SIGReg & 5072 & 47.0 & 47.9 & 25.53 & 6.77 & 1.35 \\
+E049 & VISReg & 3072 & \textbf{100.0} & 50.4 & \textbf{4.00} & 15.56 & \textbf{67.22} \\
+E050 & VISReg & 4072 & 54.3 & 47.6 & 25.82 & 7.04 & 3.41 \\
+E051 & VISReg & 5072 & 50.0 & 56.3 & 26.58 & 7.58 & 1.20 \\
+\bottomrule
+\end{tabular}
+\caption{\textbf{Matched-architecture, matched-data LeWM recipe comparison.}  Hue and binding
+are independently validation-selected projector ridge readouts on the same 150
+episode test split.  Lower MAE is better.  Decoder separation uses every cue in
+the matched final video.  Wilson intervals for all non-perfect raw accuracies
+include chance; E049's raw hue interval is [97.5\%, 100\%].  Training seeds are
+not uncertainty estimates for the original 12-configuration factorial.}
+\label{tab:visreg-swap}
+\end{table*}
+
+\paragraph{Causal validations left open.}
+{\footnotesize
+\begin{enumerate}[leftmargin=*,itemsep=0pt,topsep=2pt]
+    \item Compare SIGReg, VISReg, PLDM-style VC, and Product-Laplace InfoReg under a prespecified
+    strength-matching rule.
+    \item Repeat the same linear and validation-selected MLP readouts on newly
+    generated episodes unseen during world-model training.
+    \item Match decoder capacity and budget and audit identical
+    episode-disjoint frames.
+\end{enumerate}
+}
+
+\clearpage
+\begin{figure*}[p]
+    \centering
+    \includegraphics[width=\textwidth]{figures/appendix/lewm_factorial_tr2_low.png}
+    \caption{\textbf{\trtwo{} decoder factorial, IDM 0--.025.} Columns compare
+    native CLS and spatial 8$\times$8.  Spatial decoders remain olive while CLS
+    is faint or gray. Within each column the input is left, reconstruction is
+    right, and O/D marker crops appear below. Embedded step labels are W\&B
+    media indices, not optimizer steps or epochs.}
+    \label{fig:factorial-tr2-low}
+\end{figure*}
+
+\begin{figure*}[p]
+    \centering
+    {\small\textbf{\trtwo{} --- native CLS}\hfill
+    \textbf{\trtwo{} --- spatial 8$\times$8}\par}
+    \includegraphics[width=\textwidth]{figures/appendix/lewm_factorial_tr2_high.png}
+    \caption{\textbf{\trtwo{} decoder factorial, IDM .125--3.125.} The matched
+    frame rule is identical to \cref{fig:factorial-tr2-low}; averaging persists
+    at the larger IDM weights. Embedded step labels are W\&B media indices.}
+    \label{fig:factorial-tr2-high}
+\end{figure*}
+
+\begin{figure*}[p]
+    \centering
+    \includegraphics[width=\textwidth]{figures/appendix/lewm_factorial_tr3_low.png}
+    \caption{\textbf{\trthree{} decoder factorial, IDM 0--.025.} Spatial
+    decoders separate green, orange, and blue; CLS is faint or gray. Within
+    each column the input is left, reconstruction is right, and O/D marker
+    crops appear below. Embedded step labels are W\&B media indices.}
+    \label{fig:factorial-tr3-low}
+\end{figure*}
+
+\begin{figure*}[p]
+    \centering
+    {\small\textbf{\trthree{} --- native CLS}\hfill
+    \textbf{\trthree{} --- spatial 8$\times$8}\par}
+    \includegraphics[width=\textwidth]{figures/appendix/lewm_factorial_tr3_high.png}
+    \caption{\textbf{\trthree{} decoder factorial, IDM .125--3.125.} Spatial
+    color separation remains visible but is non-monotonic at high IDM. Embedded
+    step labels are W\&B media indices.}
+    \label{fig:factorial-tr3-high}
+\end{figure*}
+
+\end{document}

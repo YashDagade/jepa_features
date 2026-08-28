@@ -1,0 +1,5 @@
+experiment_id,dataset,model_recipe,training_seed,epochs,context_frames,prediction_frames,frameskip,decoder,location_probe,source_commit,status
+S007,TR2 Shape,"LpWM, spatial 8x8 + IDM 3.125 + InfoReg mu=-1 p=1",3072,10,3,1,5,true,true,beda95a0dfc769176034adef4ced9ab568c7014b,running_outcome_pending
+S008,TR3 Shape,"LpWM, spatial 8x8 + IDM 3.125 + InfoReg mu=-1 p=1",3072,10,3,1,5,true,true,03dbeb77c86f93e97f47bf0faf29adb95ac31b03,resubmitted_r3_outcome_pending
+S009,TR2 Shape,"DINO-WM, native all-patch",3072,10,3,1,5,true,true,beda95a0dfc769176034adef4ced9ab568c7014b,running_outcome_pending
+S010,TR3 Shape,"DINO-WM, native all-patch",3072,10,3,1,5,true,true,03dbeb77c86f93e97f47bf0faf29adb95ac31b03,resubmitted_r3_outcome_pending
