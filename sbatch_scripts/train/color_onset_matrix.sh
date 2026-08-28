@@ -14,7 +14,7 @@ WANDB_PROJECT="${WANDB_PROJECT:-JEPA_Features}"
 WANDB_GROUP="${WANDB_GROUP:-color-onset-v1}"
 SEED="${SEED:-3072}"
 BATCH_SIZE="${BATCH_SIZE:-128}"
-RUN_REVISION="${RUN_REVISION:-1}"
+RUN_REVISION="${RUN_REVISION:-2}"
 TR2_DATASET="${JEPA_FEATURES_TR2_DATASET:-/scratch/yd3062/memory-for-jepa/datasets/tunnel_room_color_noise_filled18x18.h5}"
 CHASER_DATASET="${JEPA_FEATURES_CHASER_DATASET:-/scratch/yd3062/memory-for-jepa/datasets/chaser_cue_two_color.h5}"
 TR2_SIDECAR="${JEPA_FEATURES_TR2_SIDECAR:-/scratch/yd3062/memory-for-jepa/runs/tunnel_rooms_filled18x18/two_leaf/paired_color/tunnel_room_color_noise_filled18x18_location_probe_cue_and_position.h5}"
@@ -162,8 +162,9 @@ if [[ "${dataset_config}" == tunnel_room_two_color ]]; then
   }
 fi
 
-cd ${REPO_ROOT}/stable-worldmodel
-${PYTHON} scripts/train/${model}.py \
+cd ${run_dir}
+test ! -e wandb_resume.json
+${PYTHON} ${REPO_ROOT}/stable-worldmodel/scripts/train/${model}.py \
   data=${dataset_config} \
   feature_mode=${feature_mode} \
   epoch_probe=${epoch_probe} \
@@ -187,7 +188,7 @@ test -f ${run_dir}/checkpoints/${run_id}/epoch_probes/epoch_$(printf '%03d' ${ep
 mkdir -p ${run_dir}/probes
 
 if [[ "${dataset_config}" == tunnel_room_two_color ]]; then
-  ${PYTHON} scripts/probes/location_probe.py \
+  ${PYTHON} ${REPO_ROOT}/stable-worldmodel/scripts/probes/location_probe.py \
     world_model.checkpoint=\${checkpoint} \
     dataset.source_hdf5=${data_path} \
     location_probe.sidecar=${TR2_SIDECAR} \
@@ -201,7 +202,7 @@ if [[ "${dataset_config}" == tunnel_room_two_color ]]; then
     +wandb.config.resume=allow \
     hydra.run.dir=${run_dir}/probes/location_hydra
 else
-  ${PYTHON} scripts/probes/chaser_probe.py \
+  ${PYTHON} ${REPO_ROOT}/stable-worldmodel/scripts/probes/chaser_probe.py \
     world_model.checkpoint=\${checkpoint} \
     dataset.path=${data_path} \
     dataset.sha256=${data_sha} \

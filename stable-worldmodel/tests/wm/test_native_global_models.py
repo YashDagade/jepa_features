@@ -40,7 +40,7 @@ sys.path.insert(0, str(TRAIN_DIR))
 
 from pldm import pldm_forward  # noqa: E402
 from smwm import sensorimotor_forward  # noqa: E402
-from _global_jepa import add_decoder_diagnostic  # noqa: E402
+from _global_jepa import add_decoder_diagnostic, train_global_jepa  # noqa: E402
 
 
 class _TokenEncoder(nn.Module):
@@ -212,9 +212,25 @@ def test_color_onset_launcher_generates_prespecified_matrix(tmp_path):
     contents = [script.read_text() for script in scripts]
     assert sum('trainer.max_epochs=10' in text for text in contents) == 4
     assert sum('trainer.max_epochs=50' in text for text in contents) == 12
-    assert sum('feature_mode=global_spatial_8x8' in text for text in contents) == 8
+    assert (
+        sum('feature_mode=global_spatial_8x8' in text for text in contents)
+        == 8
+    )
     assert sum('epoch_probe=chaser' in text for text in contents) == 4
     assert sum('epoch_probe=tunnel_color' in text for text in contents) == 12
+    assert all(
+        f'cd {script.parent}' in text
+        for script, text in zip(scripts, contents, strict=True)
+    )
+    assert all('test ! -e wandb_resume.json' in text for text in contents)
+
+
+def test_training_rejects_unscoped_wandb_resume_sidecar(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    Path('wandb_resume.json').write_text('{"id": "unrelated-run"}')
+
+    with pytest.raises(RuntimeError, match='override this run ID'):
+        train_global_jepa(None, forward=None, objective_factory=None)
 
 
 def test_smwm_inverse_head_matches_official_two_layer_relu_mlp():

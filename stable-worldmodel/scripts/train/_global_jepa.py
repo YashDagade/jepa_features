@@ -158,6 +158,16 @@ def log_losses(self, output, stage):
 
 def train_global_jepa(cfg, *, forward, objective_factory):
     """Run one native global-CLS model with shared data and diagnostics."""
+    # Stable Pretraining treats a CWD sidecar as resumable provenance. Never
+    # let an unrelated run silently override the explicitly configured W&B ID.
+    cwd_resume = Path('wandb_resume.json')
+    if cwd_resume.is_file():
+        raise RuntimeError(
+            'Refusing to train with a CWD wandb_resume.json because it can '
+            f'override this run ID: {cwd_resume.resolve()}. Launch from an '
+            'isolated run directory instead.'
+        )
+
     # 1. Load the resolved offline corpus and reproduce the baseline transforms.
     dataset_cfg = OmegaConf.to_container(cfg.data.dataset, resolve=True)
     dataset_name = dataset_cfg.pop('name')
