@@ -1,5 +1,7 @@
 """Native global-CLS architecture and objective regression tests."""
 
+import os
+import subprocess
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -21,6 +23,12 @@ from stable_worldmodel.wm.smwm import InverseModel, SMWM
 
 TRAIN_DIR = Path(__file__).resolve().parents[2] / 'scripts' / 'train'
 CONFIG_DIR = TRAIN_DIR / 'config'
+BASELINE_LAUNCHER = (
+    Path(__file__).resolve().parents[3]
+    / 'sbatch_scripts'
+    / 'train'
+    / 'baseline_matrix.sh'
+)
 sys.path.insert(0, str(TRAIN_DIR))
 
 from pldm import pldm_forward  # noqa: E402
@@ -115,6 +123,29 @@ def test_baseline_configs_compose_with_pixels_and_actions_only(
     assert cfg.data.dataset.name.endswith(filename)
     assert list(cfg.data.dataset.keys_to_load) == ['pixels', 'action']
     assert cfg.trainer.max_epochs == 10
+
+
+def test_baseline_launcher_keeps_trainer_cache_on_scratch(tmp_path):
+    # 1. Generate every job without submitting so the test exercises the same
+    # shell templates used on the cluster.
+    run_root = tmp_path / 'runs'
+    subprocess.run(
+        ['bash', str(BASELINE_LAUNCHER), '--dry-run'],
+        check=True,
+        env={**os.environ, 'RUN_ROOT': str(run_root)},
+        capture_output=True,
+        text=True,
+    )
+
+    # 2. Every trainer registry and checkpoint cache must live beside its run
+    # outputs on scratch, never under the quota-limited home directory.
+    inner_scripts = sorted(run_root.glob('*/train_inner.sh'))
+    assert len(inner_scripts) == 8
+    for script in inner_scripts:
+        contents = script.read_text()
+        expected = f'export SPT_CACHE_DIR={script.parent}/spt_cache'
+        assert expected in contents
+        assert '/home/' not in contents
 
 
 def test_smwm_inverse_head_matches_official_two_layer_relu_mlp():

@@ -119,6 +119,7 @@ conda activate /scratch/yd3062/conda_envs/stable_worldmodel_latest
 export LD_LIBRARY_PATH=/scratch/yd3062/conda_envs/stable_worldmodel_latest/lib:\${LD_LIBRARY_PATH:-}
 export PYTHONPATH=${REPO_ROOT}/stable-worldmodel:\${PYTHONPATH:-}
 export STABLEWM_HOME=${run_dir}
+export SPT_CACHE_DIR=${run_dir}/spt_cache
 export WANDB_DIR=${run_dir}/wandb
 export WANDB__SERVICE_WAIT=300
 export WANDB__DISABLE_VIEWER=true
@@ -130,7 +131,7 @@ export MKL_NUM_THREADS=1
 export NUMEXPR_NUM_THREADS=1
 export PYTHONUNBUFFERED=1
 export HYDRA_FULL_ERROR=1
-mkdir -p \${WANDB_DIR}
+mkdir -p \${SPT_CACHE_DIR} \${WANDB_DIR}
 
 actual_sha=\$(sha256sum ${data_path} | cut -d' ' -f1)
 [[ "\${actual_sha}" == "${expected_sha}" ]] || {
