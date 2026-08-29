@@ -128,24 +128,107 @@ Because training uses multi-frame windows and frameskip, we also report the
 realized fraction $\rho_{\mathrm{target}}$ of sampled prediction intervals
 that cross an event.  This is the exposure the loss actually receives.
 
+The two objectives are related but not interchangeable.  Objective~1 asks
+whether the state represents the geometry and motion needed for the frequent
+smooth dynamics.  Objective~2 asks whether it binds a persistent color cue to
+the discontinuous transition that the cue selects.  Recognizing color alone
+does not solve Objective~2: the representation must combine cue identity with
+the relevant geometry and retain the resulting destination across the event.
+
+\begin{table}[t]
+  \caption{Objective exposure in the fixed training datasets.  Raw transitions
+  are mutually exclusive; sampled-interval exposures may overlap because one
+  frameskipped prediction interval can contain more than one raw transition
+  type.}
+  \label{tab:objective-exposure}
+  \centering
+  \small
+  \resizebox{\columnwidth}{!}{%
+  \begin{tabular}{llrr}
+    \toprule
+    Environment & Objective & Raw count (rate) & Interval exposure \\
+    \midrule
+    \chaser{} & O1: chase
+      & 507,685 (78.89\%) & 99.90\% \\
+    \chaser{} & O2: teleport
+      & 11,052 (1.72\%) & 8.61\% \\
+    \trtwo{} & O1: approach
+      & 291,335 (45.42\%) & 81.58\% \\
+    \trtwo{} & O2: teleport
+      & 12,180 (1.90\%) & 8.95\% \\
+    \bottomrule
+  \end{tabular}
+  }
+\end{table}
+
+Thus the raw dominant-to-event ratio is 45.94:1 in \chaser{} and
+23.92:1 in \trtwo{}.  Frameskip makes the imbalance seen by the loss less
+extreme, but an event-crossing interval remains roughly one-tenth of the
+training targets in both environments.
+
 \subsection{Tunnel Rooms Color}
 
-Each observation is a $224\times224$ RGB image containing an agent, a hub,
-and colored portals.  Ordinary motion approaches a portal.  Crossing it
-teleports the agent to the leaf paired by color.  Portal locations are
-randomized so that geometry alone does not determine identity.  We derive
-dominant-objective targets from nearest-portal identity, distance, and
-direction, and rare-objective targets from color-conditioned hub/leaf
-locations and destination identity.
+Each observation is a $224\times224$ RGB image containing an agent, a central
+hub, and two colored tunnel entrances leading to two leaves.  The semantic
+green/orange assignment is permuted across positional slots, so a model cannot
+identify a tunnel color from a fixed screen coordinate.  During ordinary
+motion the agent approaches the nearest entrance.  Crossing it produces a
+discontinuous teleport to the leaf paired with that entrance's color.
+
+Objective~1 is the frequent navigation problem: represent the current and
+future agent position, identify the nearest tunnel, and encode its distance
+and direction.  Objective~2 is the rare binding problem: associate the
+green/orange cue with the correct positional hub and leaf, then preserve that
+binding through the teleport.  We probe the first objective with agent MAE,
+$R^2$, nearest-tunnel balanced accuracy, distance MAE, and directional cosine.
+We probe the second with balanced accuracy for the semantic-color-to-slot
+binding and with color-conditioned hub/leaf location MAE and $R^2$.
 
 \subsection{Chaser Cue}
 
 A small red chaser pursues a larger moving runner.  The runner follows a
 smooth noisy orbit; contact teleports the chaser according to the runner's
-color and contact quadrant.  Dominant-objective targets include both agent
-positions, relative displacement, velocity, and closing distance.  The rare
-objective uses cue identity, event imminence, destination quadrant, and
-post-contact position.
+blue/green color and the quadrant in which contact occurs.  The color is
+visible before contact, whereas its dynamical consequence is observed only at
+the teleport.
+
+Objective~1 is the frequent pursuit problem: represent the red chaser and
+runner positions, their relative displacement and motion, and the closing
+distance.  Objective~2 is the rare contact-to-destination mapping: combine
+runner color with contact quadrant to determine the destination quadrant and
+post-teleport chaser position.  We therefore report separate readouts for the
+red and runner positions, cue identity before first contact, event imminence,
+contact quadrant, destination quadrant, and post-teleport position.  This
+separation is essential because a linear readout can recover color even when
+the model has not learned to reconstruct it cleanly or use it to predict the
+correct destination.
+
+\subsection{Counting transitions to acquisition}
+
+We convert an onset epoch into cumulative sampled prediction intervals rather
+than reporting epochs alone.  If an epoch contains $B$ batches, each batch has
+$M$ clips, and each clip supplies $K$ prediction intervals, then
+\begin{equation}
+  N_{\mathrm{seen}}(e)=eBMK,
+  \qquad
+  N_k(e)=\rho_k N_{\mathrm{seen}}(e),
+  \label{eq:onset-count}
+\end{equation}
+where $N_k$ is the expected number of intervals containing objective $k$.
+The present matrix uses $M=128$ and $K=3$.  With 3,701 Chaser batches per
+epoch, one epoch contains 1,421,184 sampled intervals, of which approximately
+1,419,750 contain chase dynamics and 122,404 cross a teleport.  With 3,255
+Tunnel Rooms batches, the corresponding counts are 1,249,920 total,
+1,019,690 approach-bearing, and 111,914 teleport-crossing intervals.  These
+are cumulative sampled exposures, not unique dataset transitions; later
+epochs revisit clips under a new shuffle.
+
+For categorical probes, the registered onset is the first epoch whose 95\%
+confidence-interval lower bound exceeds balanced chance and whose next epoch
+confirms the crossing.  For this single-seed pilot, continuous onset is
+exploratory: both $R^2>0$ and MAE below the frozen mean baseline must hold for
+two consecutive epochs.  Final sample-complexity claims require the same
+crossing to recur across seeds.
 
 \section{Models and Controlled Protocol}
 
@@ -188,6 +271,58 @@ Geometry, cue, destination prediction, decoded transition, and energy ranking
 are all consistent on matched event scenarios.
 
 \section{Results}
+
+\subsection{Preliminary transition-to-onset accounting}
+
+Table~\ref{tab:pilot-onset} reports the first confirmed frozen-encoder
+crossings available while the 50-epoch matrix is still running.  Objective~1
+requires both Chaser positions or, in Tunnel Rooms, agent localization plus
+nearest-tunnel identity.  Objective~2 requires destination-quadrant decoding
+in Chaser and semantic color-to-slot binding in Tunnel Rooms.  Counts are
+computed with Equation~\ref{eq:onset-count} and are rounded to three decimal
+places.
+
+\begin{table}[t]
+  \caption{Single-seed pilot onset at the native encoder.  ``O1 intervals''
+  counts expected dominant-objective intervals at its crossing; ``O2
+  intervals'' counts expected event-crossing intervals at its crossing.
+  These are preliminary crossings, not final sample-complexity estimates.}
+  \label{tab:pilot-onset}
+  \centering
+  \small
+  \resizebox{\columnwidth}{!}{%
+  \begin{tabular}{llrrrr}
+    \toprule
+    Env. & Model & O1 ep. & O1 intervals & O2 ep. & O2 intervals \\
+    \midrule
+    Chaser & \lewm{} & 1 & 1.420M & 1 & 0.122M \\
+    Chaser & \pldm{} & 2 & 2.840M & 1 & 0.122M \\
+    Chaser & \lpwm{} & 1 & 1.420M & 1 & 0.122M \\
+    Chaser & \smwm{} & 1 & 1.420M & 2 & 0.245M \\
+    Tunnel & \smwm{} & 6 & 6.118M & 8 & 0.895M \\
+    \bottomrule
+  \end{tabular}
+  }
+\end{table}
+
+Cue identity in the Chaser encoder is already linearly separable at
+initialization for all four models, corresponding to zero training
+transitions.  The pilot therefore does not support the statement that the
+encoder becomes able to ``see'' color only late in training.  The qualitative
+decoder trajectory instead motivates a narrower question: when does color
+become reconstructable and when is it bound to the correct rare transition?
+The destination readout in Table~\ref{tab:pilot-onset} measures the latter.
+
+For native-CLS Tunnel Rooms, \smwm{} is currently the only model with both
+objectives crossing the pilot criteria: the frequent geometry objective
+crosses after about 6.118 million approach-bearing intervals, whereas color
+binding crosses after about 0.895 million event-bearing intervals.  The
+remaining native-CLS cells are still running and are not converted into
+failure claims.  In the completed 10-epoch spatial-$8\times8$ ablation,
+several geometry and color readouts cross at initialization.  Such a
+zero-transition result indicates that the architecture exposes the feature to
+a linear readout before learning; it must not be interpreted as learned sample
+complexity.
 
 \pending{Populate the native 4-by-2 baseline table with dataset hashes,
 episode denominators, decoder metrics, stagewise probes, event-transition
