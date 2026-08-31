@@ -1,11 +1,14 @@
 """Native global-CLS architecture and objective regression tests."""
 
+import hashlib
 import os
+import random
 import subprocess
 import sys
 from pathlib import Path
 from types import SimpleNamespace
 
+import numpy as np
 import pytest
 import torch
 from hydra import compose, initialize_config_dir
@@ -40,6 +43,7 @@ sys.path.insert(0, str(TRAIN_DIR))
 
 from pldm import pldm_forward  # noqa: E402
 from smwm import sensorimotor_forward  # noqa: E402
+import _global_jepa as global_jepa  # noqa: E402
 from _global_jepa import add_decoder_diagnostic, train_global_jepa  # noqa: E402
 
 
@@ -231,6 +235,175 @@ def test_training_rejects_unscoped_wandb_resume_sidecar(tmp_path, monkeypatch):
 
     with pytest.raises(RuntimeError, match='override this run ID'):
         train_global_jepa(None, forward=None, objective_factory=None)
+
+
+@pytest.fixture
+def seeded_training_runner(tmp_path, monkeypatch):
+    """Exercise the training lifecycle without loading an experiment corpus."""
+    python_rng_state = random.getstate()
+    numpy_rng_state = np.random.get_state()
+    torch_rng_state = torch.random.get_rng_state()
+    monkeypatch.delenv('PL_GLOBAL_SEED', raising=False)
+    monkeypatch.delenv('PL_SEED_WORKERS', raising=False)
+
+    active_run = []
+    real_seed_everything = global_jepa.pl.seed_everything
+
+    class _Dataset:
+        transform = None
+
+        @staticmethod
+        def get_dim(column):
+            assert column == 'action'
+            return 1
+
+    class _Loader:
+        def __init__(self, *_args, **_kwargs):
+            pass
+
+        @staticmethod
+        def __len__():
+            return 1
+
+    class _Manager:
+        def __init__(self, **kwargs):
+            active_run[-1]['events'].append(('manager', kwargs['seed']))
+            active_run[-1]['manager_seed'] = kwargs['seed']
+
+        def __call__(self):
+            active_run[-1]['events'].append(('manager_call', None))
+
+    def seed_everything(seed, *, workers):
+        active_run[-1]['events'].append(('seed', seed))
+        return real_seed_everything(seed, workers=workers, verbose=False)
+
+    def load_dataset(*_args, **_kwargs):
+        active_run[-1]['events'].append(('dataset', None))
+        return _Dataset()
+
+    def instantiate(_cfg):
+        active_run[-1]['events'].append(('model', None))
+        model = nn.Sequential(nn.Linear(8, 8), nn.Linear(8, 4))
+        parameter_bytes = b''.join(
+            parameter.detach().cpu().numpy().tobytes()
+            for parameter in model.parameters()
+        )
+        active_run[-1]['parameter_hash'] = hashlib.sha256(
+            parameter_bytes
+        ).hexdigest()
+        return model
+
+    def trainer(**_kwargs):
+        active_run[-1]['events'].append(('trainer', None))
+        return object()
+
+    monkeypatch.setattr(global_jepa.pl, 'seed_everything', seed_everything)
+    monkeypatch.setattr(global_jepa.swm.data, 'load_dataset', load_dataset)
+    monkeypatch.setattr(
+        global_jepa,
+        'get_img_preprocessor',
+        lambda *_args, **_kwargs: object(),
+    )
+    monkeypatch.setattr(
+        global_jepa.spt.data.transforms,
+        'Compose',
+        lambda *_args: object(),
+    )
+    monkeypatch.setattr(
+        global_jepa.spt.data,
+        'random_split',
+        lambda *_args, **_kwargs: (object(), object()),
+    )
+    monkeypatch.setattr(global_jepa.torch.utils.data, 'DataLoader', _Loader)
+    monkeypatch.setattr(global_jepa.hydra.utils, 'instantiate', instantiate)
+    monkeypatch.setattr(
+        global_jepa.spt,
+        'Module',
+        lambda **_kwargs: object(),
+    )
+    monkeypatch.setattr(
+        global_jepa.swm.data.utils,
+        'get_cache_dir',
+        lambda **_kwargs: tmp_path,
+    )
+    monkeypatch.setattr(global_jepa.pl, 'Trainer', trainer)
+    monkeypatch.setattr(
+        global_jepa.spt.data,
+        'DataModule',
+        lambda **_kwargs: object(),
+    )
+    monkeypatch.setattr(global_jepa.spt, 'Manager', _Manager)
+
+    def run(seed):
+        record = {'events': []}
+        active_run.append(record)
+        cfg = OmegaConf.create(
+            {
+                'seed': str(seed),
+                'data': {
+                    'dataset': {
+                        'name': 'seed-test',
+                        'frameskip': 1,
+                        'keys_to_load': ['pixels'],
+                    }
+                },
+                'img_size': 8,
+                'patch_size': 4,
+                'embed_dim': 8,
+                'feature_mode': {'aggregation': 'cls'},
+                'model': {'action_encoder': {'input_dim': 0}},
+                'decoder': {'enabled': False},
+                'train_split': 0.8,
+                'loader': {},
+                'trainer': {'max_epochs': 1},
+                'optimizer': {},
+                'subdir': f'seed-{seed}',
+                'wandb': {'enabled': False},
+                'output_model_name': 'seed-test',
+                'checkpoint_every': 1,
+                'epoch_probe': {'enabled': False},
+            }
+        )
+        try:
+            train_global_jepa(
+                cfg,
+                forward=None,
+                objective_factory=lambda _cfg: {},
+            )
+        finally:
+            active_run.pop()
+        return record
+
+    yield run
+
+    random.setstate(python_rng_state)
+    np.random.set_state(numpy_rng_state)
+    torch.random.set_rng_state(torch_rng_state)
+
+
+def test_global_training_seed_controls_initial_parameter_hash(
+    seeded_training_runner,
+):
+    first = seeded_training_runner(713)['parameter_hash']
+    repeated = seeded_training_runner(713)['parameter_hash']
+    changed = seeded_training_runner(714)['parameter_hash']
+
+    assert first == repeated
+    assert first != changed
+
+
+def test_global_training_seeds_before_construction_and_seeds_manager(
+    seeded_training_runner,
+):
+    result = seeded_training_runner(713)
+    event_names = [name for name, _value in result['events']]
+
+    assert event_names.index('seed') < event_names.index('dataset')
+    assert event_names.index('seed') < event_names.index('model')
+    assert event_names.index('seed') < event_names.index('trainer')
+    assert result['events'][0] == ('seed', 713)
+    assert result['manager_seed'] == 713
+    assert type(result['manager_seed']) is int
 
 
 def test_smwm_inverse_head_matches_official_two_layer_relu_mlp():

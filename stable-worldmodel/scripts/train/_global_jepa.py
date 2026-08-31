@@ -168,6 +168,10 @@ def train_global_jepa(cfg, *, forward, objective_factory):
             'isolated run directory instead.'
         )
 
+    # Seed every global RNG before constructing data, modules, or the Trainer.
+    seed = int(cfg.seed)
+    pl.seed_everything(seed, workers=True)
+
     # 1. Load the resolved offline corpus and reproduce the baseline transforms.
     dataset_cfg = OmegaConf.to_container(cfg.data.dataset, resolve=True)
     dataset_name = dataset_cfg.pop('name')
@@ -202,7 +206,7 @@ def train_global_jepa(cfg, *, forward, objective_factory):
 
     # 2. Use one seeded, episode-agnostic split and ordinary shuffled clips for
     # every family so model objective is the only baseline difference.
-    generator = torch.Generator().manual_seed(cfg.seed)
+    generator = torch.Generator().manual_seed(seed)
     train_set, val_set = spt.data.random_split(
         dataset,
         lengths=[cfg.train_split, 1 - cfg.train_split],
@@ -287,6 +291,7 @@ def train_global_jepa(cfg, *, forward, objective_factory):
         trainer=trainer,
         module=training_module,
         data=spt.data.DataModule(train=train, val=val),
+        seed=seed,
         ckpt_path=checkpoint if checkpoint.exists() else None,
     )
     manager()
