@@ -1,0 +1,5 @@
+model,cue_first_confirmed,cue_persistent_onset,encoder_advantage_first_confirmed,encoder_advantage_persistent_onset
+lewm,>50,>50,<=1,<=1
+pldm,>50,>50,"(2,3]","(2,3]"
+lpwm,>50,>50,"(1,2]","(1,2]"
+smwm,"(10,20]","(10,20]",>50,>50

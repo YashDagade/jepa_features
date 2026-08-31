@@ -4,377 +4,1796 @@
 \usepackage{microtype}
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{multirow}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{xcolor}
+\usepackage{xurl}
 \usepackage{hyperref}
 \usepackage{cleveref}
-\usepackage{balance}
 \usepackage{icml2026}
+\hypersetup{
+  pdftitle={Visible Is Not Bound: When JEPA World Models Organize Predictive Color Relations},
+  pdfsubject={Anonymous NeurIPS workshop submission}
+}
 
 \makeatletter
 \renewcommand{\Notice@String}{Preliminary work. Under review for a NeurIPS workshop. Do not distribute.}
 \makeatother
 
-\definecolor{pendingred}{HTML}{B93835}
-\newcommand{\pending}[1]{\textcolor{pendingred}{\textbf{[Pending: #1]}}}
 \newcommand{\trtwo}{\textsc{TR2-Color}}
 \newcommand{\chaser}{\textsc{Chaser-Cue}}
 \newcommand{\lewm}{\textsc{LeWM}}
-\newcommand{\pldm}{\textsc{PLDM}}
+\newcommand{\pldm}{\textsc{PLDM-no-IDM}}
 \newcommand{\lpwm}{\textsc{LpWM}}
 \newcommand{\smwm}{\textsc{SMWM}}
+\definecolor{pendingred}{HTML}{B93835}
+\newcommand{\yash}[1]{\textcolor{pendingred}{\textbf{#1}}}
 
-\icmltitlerunning{When Do JEPA World Models Abstract Predictive Features?}
+\icmltitlerunning{Visible Is Not Bound}
 
 \begin{document}
 
 \twocolumn[
-\icmltitle{When Do JEPA World Models\\Abstract Predictive Features?}
+\icmltitle{Visible Is Not Bound:\\When JEPA World Models Organize Predictive Color Relations}
 
 \begin{icmlauthorlist}
   \icmlauthor{Anonymous Author(s)}{anon}
 \end{icmlauthorlist}
 \icmlaffiliation{anon}{Anonymous Institution}
 \icmlcorrespondingauthor{Anonymous Author}{anonymous@domain.com}
-\icmlkeywords{world models, joint embeddings, abstraction, rare events}
+\icmlkeywords{world models, joint embeddings, feature abstraction, rare events, color binding}
 \vskip 0.25in
 ]
 
 \printAffiliationsAndNotice{}
 
 \begin{abstract}
-Joint-embedding predictive architectures are intended to discard
-unpredictable detail while retaining information needed to predict the world.
-That principle leaves a basic empirical question unresolved: when a visual
-feature is continuously observable but affects dynamics only at rare events,
-does a learned world state preserve it or abstract it away?  We introduce two
-controlled benchmarks that separate a frequent smooth objective from a rare
-cue-conditioned transition.  In Tunnel Rooms Color, an agent usually
-approaches a portal and occasionally undergoes a color-determined teleport.
-In Chaser Cue, an agent usually pursues a moving runner and contact triggers a
-runner-color-determined teleport.  We compare native global-CLS
-implementations of \lewm{}, \pldm{}, \lpwm{}, and a sensorimotor JEPA using
-matched datasets, update budgets, and episode-disjoint diagnostics.  We
-measure realized transition exposure, geometry and cue readouts at the
-encoder, projector, and predictor, detached reconstructions, and predictions
-through the rare event.  This design distinguishes encoder abstraction from
-predictor loss and downstream energy failure, and supports controlled sweeps
-over rare-event exposure and training duration.  \pending{Insert native
-baseline and exposure-sweep results after all registered runs complete.}
+Predictive representation learning must decide what to preserve.  We ask when
+visible features with rare dynamical consequences enter prediction.  We study
+four JEPA-style world models in Tunnel Rooms, where color binds portals to
+randomized slots, and Chaser, where runner color selects a post-contact
+destination.  We probe cue identity, geometry,
+semantic binding, outcome access, and paired response over training.
+In Chaser, cue identity is linearly accessible before training.  The observed
+\lewm{}, \pldm{}, and \lpwm{} runs exceed a frozen contact-only destination baseline by
+epochs 1--3 but show no jointly positive cue-specific predictor response
+through epoch 50.  The Sensorimotor World Model (SMWM) reverses that ranking:
+its encoder destination advantage remains right-censored, while response is
+persistent from the scheduled interval $(10,20]$.  In native-CLS Tunnel Rooms,
+\lewm{}, \pldm{}, and \lpwm{} do not linearly expose both geometry and durable color--place binding after
+50 epochs; one SMWM run organizes geometry in CLS by epoch 6 and stable joint
+binding in CLS by epoch 13.  Yet 192-dimensional patch compressions expose
+binding at validated reconstructed initialization across three unique encoder
+draws.  At the saved epoch-1 and epoch-10 anchors, PCA binding satisfies
+the prespecified all-six accessibility rule, although one LeWM seed declines
+modestly by epoch 10 and one SMWM seed reorganizes binding strongly into CLS.
+Exact Tunnel swaps and detached decoders dissociate endpoint visual sensitivity and
+rendered hue from global linear semantic binding.  Event rarity alone does not
+determine retention, so aggregation, target geometry, binding, and supported
+event-specific response require separate measurement; there is no shared
+transition count at which color appears.
 \end{abstract}
 
 \section{Introduction}
 
-Joint-embedding predictive architectures (JEPAs) learn by predicting target
+Joint-embedding predictive architectures (JEPAs) learn to predict target
 representations rather than pixels
-\citep{lecun2022path,assran2023ijepa,bardes2024vjepa}.  Feature-space
-prediction is attractive because a useful state should represent stable,
-predictively relevant structure without spending capacity on every detail of
-the observation.  The same abstraction, however, can become a failure when a
-feature has a rare but decisive consequence.
+\citep{lecun2022path,assran2023ijepa,bardes2024vjepa,assran2025vjepa2}.  Their appeal for world
+modeling is selective abstraction: a compact state should preserve stable,
+predictively relevant structure without allocating capacity to every detail
+of an observation.  The same selectivity creates a failure mode.  A visual
+feature can be continuously observable yet matter to the dynamics only at a
+small set of transitions.  Average latent prediction may then favor the
+dominant smooth dynamics and organize the rare feature poorly, even if that
+feature determines which future state occurs.
 
-Consider an offline dataset with two dynamical objectives.  Most transitions
-teach smooth local motion, while a small fraction identify which discontinuous
-transition occurs.  Minimizing average prediction error can reward a model
-that captures the first objective and treats the second as noise, even when
-the second determines task success.  Prior toy analyses show that predictive
-joint embeddings can prefer slowly varying or easily predicted factors
-\citep{sobal2022slow}; we study the complementary case of a persistent cue
-whose consequence is temporally sparse.
+This paper asks when that failure appears.  We construct two environments in
+which color has the same conceptual role---it selects a discontinuous
+transition---but differs in its relationship to ordinary motion.  In
+\trtwo{}, two static colored portal pairs occupy randomized positional slots.
+Color is irrelevant while an agent moves through open space and decisive when
+the agent crosses a portal.  In \chaser{}, a blue or green runner moves on
+every frame while a red chaser pursues it; runner color selects the chaser's
+destination at first contact.  The cue is therefore attached to the object
+whose motion defines the dominant prediction problem.
 
-We introduce paired visual environments that make this hypothesis testable.
-\trtwo{} uses portal color to determine a teleport destination.  \chaser{}
-uses the color of a moving runner to determine the chaser's post-contact
-destination.  In both environments the cue is visible throughout the episode,
-but its causal role is revealed only at a rare transition.  We separately
-measure the dominant and rare objectives, rather than using overall planning
-success as a proxy for cue use.
+The contrast produces a sharper hypothesis than ``JEPAs forget rare
+features.''  We hypothesize that a global state is especially likely to
+abstract a cue when three conditions coincide: the cue is static, its
+consequence is rare, and the dominant dynamics are solvable from geometry
+without organizing cue identity.  When the cue belongs to the continuously
+modeled moving object, it should remain accessible even if its causal
+consequence is rare.  This hypothesis predicts a Tunnel--Chaser asymmetry and
+also predicts boundary cases: spatially structured patch aggregation should
+expose local color that a single CLS token obscures, and action-aligned inverse
+dynamics may preserve
+the controllable state needed at a portal.
 
-Our study has three goals:
+Testing the hypothesis requires more than asking whether a decoder contains a
+blue or green pixel.  We separate five properties: (i) raw cue identity is
+linearly accessible; (ii) color is bound to the correct positional slot; (iii)
+the cue-conditioned future destination is accessible; (iv) an exact cue swap
+elicits the corresponding event-specific latent response; and (v) a trained
+decoder reconstructs the appearance.  A representation can satisfy any one
+without satisfying the others.  We therefore probe the native encoder CLS,
+the projected current state, and the predicted state on episode-disjoint
+splits, and treat detached reconstructions as complementary diagnostics.
+
+Our contributions are:
 \begin{enumerate}
-  \item establish whether native JEPA world-model states preserve geometry,
-  motion, cue identity, and cue-conditioned destination;
-  \item localize a failure to the encoder, projector, predictor, or final
-  energy; and
-  \item test whether increasing rare-event exposure or optimization duration
-  systematically restores the missing feature.
+  \item two paired benchmarks that separate frequent smooth dynamics from a
+  rare cue-conditioned transition while keeping the cue visible;
+  \item checkpoint-resolved, transition-normalized measurements for four
+  native JEPA world-model objectives over 50 epochs;
+  \item evidence that Chaser color is present at initialization while simple
+  destination access and event-specific predictor response follow opposite
+  model rankings, whereas three observed native-CLS Tunnel runs do not linearly
+  expose the broader global state task and one SMWM run exhibits delayed native-CLS
+  organization of binding after geometry; and
+  \item dimension-matched patch readouts validated from reconstructed
+  initialization through saved epoch-1 and epoch-10 anchors in six globally
+  seeded runs, exact
+  Chaser and Tunnel cue swaps,
+  and decoder controls showing that appearance, spatially indexed access,
+  global binding, destination decodability, and supported event-specific
+  predictor response
+  are distinct.
 \end{enumerate}
 
-\section{Two Objectives with Unequal Exposure}
+\section{Hypotheses and Related Work}
 
-Let an episode contain observations $x_t$, actions $a_t$, and events $e_t$.
-The encoder and projector produce $z_t=g(f(x_t))$, and a predictor estimates
+\subsection{Predictive abstraction}
+
+Feature prediction can suppress high-variance or unpredictable pixel detail,
+which is one reason latent prediction scales more favorably than direct video
+generation.  I-JEPA and V-JEPA demonstrate that useful visual representations
+can be learned without reconstructing every pixel
+\citep{assran2023ijepa,bardes2024vjepa}.  At the same time, predictive joint
+embeddings need not preserve every factor equally.  Toy analyses show a bias
+toward slowly varying or otherwise easily predicted factors
+\citep{sobal2022slow}.  Our cue is persistent rather than fast, but its
+\emph{dynamical consequence} is sparse.  This separates persistence in the
+observation from frequency in the predictive objective.
+
+The closest theory is more specific than a generic abstraction argument.
+Deep-linear JEPAs can prioritize high-influence features
+\citep{littwin2024jepa}, and LeJEPA can identify latent world variables under
+stationary additive-noise assumptions \citep{klindt2026when}.  Self-predictive
+RL analyses likewise show that target updates, predictor optimization, and
+transition spectra shape the learned state \citep{tang2023selfpredictive}.
+Our contribution is complementary: we measure when particular relations
+become accessible in nonlinear action-conditioned models with discrete events,
+not a first theory of JEPA feature selection or a test of those theorems.
+
+The question is related to shortcut learning: a predictor may solve the
+high-frequency portion of an objective with an easier subset of available
+features \citep{hermann2024shortcut,robinson2021contrastive,xue2023features}.
+Gradient starvation and simplicity bias provide adjacent examples in which
+one predictive feature suppresses another during optimization
+\citep{pezeshki2021gradient,shah2020pitfalls}.  We do not call the dominant solution a
+shortcut by default.  Geometry is genuinely useful in both benchmarks.  The
+failure arises when a representation that is good for most transitions is
+insufficient for the rare branch of the same dynamics.
+
+Stage-like learning is also plausible without implying a phase transition.
+Deep linear networks and gradient descent can learn modes or functions in an
+ordered sequence, while spectral bias favors some components over others
+\citep{saxe2014exact,kalimeris2019sgd,rahaman2019spectral}.  These results
+motivate checkpoint measurement; they do not license fitting every curve with
+a sigmoid.  From an information perspective, sufficiency and minimality can
+discard nuisance variation \citep{tishby1999information,achille2018invariance}, while
+lossy predictive representations retain information only for a specified task
+family \citep{dubois2021lossy}.  Our event-conditioned factor may be a nuisance
+for most intervals and indispensable for a small subset.
+
+Finally, global and local visual readouts need not expose the same structure.
+Vision Transformers can distribute local and global information differently
+\citep{raghu2021vision}; self-supervised DINO models additionally exhibit
+spatially organized patch features \citep{caron2021dino,oquab2023dinov2}.
+Object-factored world models and self-predictive control representations preserve
+structured state in different ways
+\citep{kipf2020contrastive,nguyen2021temporal,schwarzer2021spr}.  We use fixed-capacity
+linear probes with explicit nulls because probe expressivity can itself create
+misleading conclusions \citep{hewitt2019probes}.  Our separately trained
+spatial architecture is only an architectural boundary condition, not proof
+that CLS pooling alone removed color.
+
+\subsection{World-model objectives}
+
+We compare four end-to-end JEPA world-model objectives.  LeWM combines latent
+prediction with SIGReg \citep{balestriero2025lejepa,maes2026leworldmodel}; our
+\pldm{} condition retains PLDM's prediction, variance/covariance, and temporal
+alignment terms but sets the published method's inverse-dynamics weight to zero
+\citep{bardes2022vicreg,sobal2025latentplanning}; LpWM uses a non-negative projector and
+rectified distribution matching \citep{kuang2026rectified}; and SMWM uses
+forward prediction plus inverse dynamics \citep{ivashkov2026sensorimotor}.
+These objectives prevent collapse in different ways and may organize the same
+visual evidence differently.  Jointly trained auxiliary tasks can themselves
+anchor which distinctions a JEPA preserves \citep{yu2025auxjepa}.  We treat
+\pldm{} as a component ablation, not an
+objective-faithful implementation of published PLDM.  Our comparison is a
+controlled boundary study, not a claim that one loss term alone causes every
+difference.
+
+Frozen pretrained features offer a useful but separate reference: DINO-WM
+builds latent dynamics on DINOv2 patch features
+\citep{zhou2025dinowm,oquab2023dinov2}.  We keep that setting outside the
+primary randomly initialized matrix and report an audited control in the
+appendix.
+
+\subsection{Three hypotheses}
+
+We state the claims at the level supported by the experiment matrix.
+
+\paragraph{H1: static rare-cue abstraction.}
+Native global-CLS Tunnel states will be an unreliable substrate for durable
+semantic color-to-slot binding.  Conditional on learning the dominant
+geometry, binding should appear later.  This separates the broad prediction
+of binding difficulty from the stronger selective-abstraction prediction;
+the latter requires geometry to succeed while binding fails.  Because the
+claim concerns the learned global state, reconstruction of green and orange
+pixels is not sufficient to reject it.
+
+\paragraph{H2: moving-cue retention.}
+In Chaser, color should be accessible at initialization and at convergence
+because it is attached to the runner whose position and motion are continuously
+modeled.  Cue visibility should therefore precede, but need not coincide with,
+organization of the first-contact destination and post-event state.  This
+organization may occur earlier than relational binding in Tunnel Rooms despite
+nearly matched teleport-bearing interval rates.
+
+\paragraph{H3: aggregation and objective boundaries.}
+Spatially structured patch aggregation and an action-aligned inverse objective
+are candidate boundary conditions for H1.  Positive cases would show that
+the cue exists in the observation and that rarity alone does not determine
+abstraction.
+
+\section{Benchmarks and Event Exposure}
+
+Let an episode contain observations $x_t$, actions $a_t$, and event labels
+$e_t$.  The encoder and projector produce $z_t=g(f(x_t))$, and the predictor
+estimates
 \begin{equation}
   \hat z_{t+1}=p(z_{\leq t},a_{\leq t}).
 \end{equation}
-The ordinary prediction objective averages over sampled transitions:
-\begin{equation}
-  \mathcal{L}_{\mathrm{pred}}
-  =\frac{1}{N}\sum_{i=1}^{N}
-  \lVert \hat z_{t_i+1}-z_{t_i+1}\rVert_2^2.
-\end{equation}
-Partition transitions into dominant approach/chase transitions
-$\mathcal{D}_{\mathrm{smooth}}$, rare teleports $\mathcal{D}_{\mathrm{event}}$,
-and other transitions $\mathcal{D}_{\mathrm{other}}$.  The raw event exposure
-is
-\begin{equation}
-  \rho_{\mathrm{raw}}
-  =\frac{|\mathcal{D}_{\mathrm{event}}|}
-  {|\mathcal{D}_{\mathrm{smooth}}|+|\mathcal{D}_{\mathrm{event}}|
-  +|\mathcal{D}_{\mathrm{other}}|}.
-\end{equation}
-Because training uses multi-frame windows and frameskip, we also report the
-realized fraction $\rho_{\mathrm{target}}$ of sampled prediction intervals
-that cross an event.  This is the exposure the loss actually receives.
-
-The two objectives are related but not interchangeable.  Objective~1 asks
-whether the state represents the geometry and motion needed for the frequent
-smooth dynamics.  Objective~2 asks whether it binds a persistent color cue to
-the discontinuous transition that the cue selects.  Recognizing color alone
-does not solve Objective~2: the representation must combine cue identity with
-the relevant geometry and retain the resulting destination across the event.
+Training minimizes an average latent prediction loss together with the
+family-specific anti-collapse terms.  We partition prediction intervals into
+dominant smooth dynamics $\mathcal D_{\mathrm{smooth}}$, teleport-bearing
+intervals $\mathcal D_{\mathrm{event}}$, and other transitions.  Raw
+adjacent-transition counts and realized training-window exposure are both
+reported because frameskip and multi-frame clips make them different.
 
 \begin{table}[t]
-  \caption{Objective exposure in the fixed training datasets.  Raw transitions
-  are mutually exclusive; sampled-interval exposures may overlap because one
-  frameskipped prediction interval can contain more than one raw transition
-  type.}
-  \label{tab:objective-exposure}
+  \caption{Event exposure in the fixed training datasets.  Raw categories
+  are mutually exclusive; interval exposures may overlap because one
+  frameskipped prediction interval can contain multiple raw transitions.}
+  \label{tab:event-exposure}
   \centering
   \small
   \resizebox{\columnwidth}{!}{%
   \begin{tabular}{llrr}
     \toprule
-    Environment & Objective & Raw count (rate) & Interval exposure \\
+    Environment & Regime & Raw count (rate) & Interval exposure \\
     \midrule
-    \chaser{} & O1: chase
-      & 507,685 (78.89\%) & 99.90\% \\
-    \chaser{} & O2: teleport
-      & 11,052 (1.72\%) & 8.61\% \\
-    \trtwo{} & O1: approach
-      & 291,335 (45.42\%) & 81.58\% \\
-    \trtwo{} & O2: teleport
-      & 12,180 (1.90\%) & 8.95\% \\
+    \chaser{} & pursuit & 507,685 (78.89\%) & 99.90\% \\
+    \chaser{} & teleport & 11,052 (1.72\%) & 8.61\% \\
+    \trtwo{} & approach & 291,335 (45.42\%) & 81.58\% \\
+    \trtwo{} & teleport & 12,180 (1.90\%) & 8.95\% \\
     \bottomrule
-  \end{tabular}
-  }
+  \end{tabular}}
 \end{table}
 
-Thus the raw dominant-to-event ratio is 45.94:1 in \chaser{} and
-23.92:1 in \trtwo{}.  Frameskip makes the imbalance seen by the loss less
-extreme, but an event-crossing interval remains roughly one-tenth of the
-training targets in both environments.
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=.78\textwidth]{figures/environment_overview.pdf}
+  \caption{Unmodified held-out observations from the two controlled
+  environments.  Tunnel Rooms presents two color identities simultaneously
+  and randomizes their positional binding across episodes.  Chaser presents
+  one colored moving runner per episode; contact triggers a color-conditioned
+  destination.  The red disk is the controlled agent or chaser.}
+  \label{fig:environments}
+\end{figure*}
+
+The raw dominant-to-event ratio is 45.94:1 in Chaser and 23.92:1 in
+Tunnel Rooms.  Frameskip makes the imbalance seen by the prediction loss less
+extreme: event-bearing intervals account for 8.61\% and 8.95\% of the two
+training streams.  Thus a difference between environments cannot be explained
+by event-window frequency alone.  \Cref{fig:environments} shows one unmodified
+held-out observation from each benchmark.
 
 \subsection{Tunnel Rooms Color}
 
-Each observation is a $224\times224$ RGB image containing an agent, a central
-hub, and two colored tunnel entrances leading to two leaves.  The semantic
-green/orange assignment is permuted across positional slots, so a model cannot
-identify a tunnel color from a fixed screen coordinate.  During ordinary
-motion the agent approaches the nearest entrance.  Crossing it produces a
-discontinuous teleport to the leaf paired with that entrance's color.
+Each $224\times224$ RGB observation contains an agent, a central hub, and two
+colored entrances paired with two leaves.  The green/orange assignment is
+permuted over positional slots across episodes.  A fixed screen coordinate
+therefore cannot identify a semantic color.  During ordinary motion the agent
+approaches an entrance; crossing it produces a discontinuous teleport to the
+paired leaf.
 
-Objective~1 is the frequent navigation problem: represent the current and
-future agent position, identify the nearest tunnel, and encode its distance
-and direction.  Objective~2 is the rare binding problem: associate the
-green/orange cue with the correct positional hub and leaf, then preserve that
-binding through the teleport.  We probe the first objective with agent MAE,
-$R^2$, nearest-tunnel balanced accuracy, distance MAE, and directional cosine.
-We probe the second with balanced accuracy for the semantic-color-to-slot
-binding and with color-conditioned hub/leaf location MAE and $R^2$.
+We evaluate two factor families.  Navigation geometry includes current or
+future agent position, nearest entrance identity, distance, and direction.
+Semantic binding asks
+which positional slot is green, and where the green/orange hub and leaf are.
+The target-matched mean-only baseline averaged over these four semantic
+locations is 31.187 pixels.  Both colors are
+present in every frame, so the binding probe does not merely detect whether
+green exists.
 
 \subsection{Chaser Cue}
 
-A small red chaser pursues a larger moving runner.  The runner follows a
-smooth noisy orbit; contact teleports the chaser according to the runner's
-blue/green color and the quadrant in which contact occurs.  The color is
-visible before contact, whereas its dynamical consequence is observed only at
-the teleport.
+A small red chaser pursues a larger runner on a noisy orbit.  The runner is
+blue or green for the whole episode.  First contact teleports the chaser to a
+quadrant determined jointly by runner color and contact quadrant.  The frequent
+factor family is pursuit geometry: encode both positions and their motion.
+The event-conditioned family is the mapping from the pre-contact state to destination
+quadrant and post-teleport chaser position.  The frozen mean baseline for the
+post-teleport coordinate is 44.20 pixels.
 
-Objective~1 is the frequent pursuit problem: represent the red chaser and
-runner positions, their relative displacement and motion, and the closing
-distance.  Objective~2 is the rare contact-to-destination mapping: combine
-runner color with contact quadrant to determine the destination quadrant and
-post-teleport chaser position.  We therefore report separate readouts for the
-red and runner positions, cue identity before first contact, event imminence,
-contact quadrant, destination quadrant, and post-teleport position.  This
-separation is essential because a linear readout can recover color even when
-the model has not learned to reconstruct it cleanly or use it to predict the
-correct destination.
+The event probe uses each episode's first contact.  Encoder/projector features
+come from the history immediately before contact, while the predictor is
+aligned with the event-ending future.  This prevents an earlier teleport from
+revealing the episode's destination and distinguishes anticipation from
+reading the already teleported pixel location.
 
-\subsection{Counting transitions to acquisition}
+\section{A Risk View of Feature Retention}
 
-We convert an onset epoch into cumulative sampled prediction intervals rather
-than reporting epochs alone.  If an epoch contains $B$ batches, each batch has
-$M$ clips, and each clip supplies $K$ prediction intervals, then
+Let $Z_i$ denote a candidate generative factor, $B$ the remaining information
+available to a predictor, and
 \begin{equation}
-  N_{\mathrm{seen}}(e)=eBMK,
-  \qquad
-  N_k(e)=\rho_k N_{\mathrm{seen}}(e),
-  \label{eq:onset-count}
+  Y_{t+1}^{(e)}=z_{\theta_e}(X_{t+1})
+  =g_{\theta_e}\!\left(f_{\theta_e}(X_{t+1})\right)
 \end{equation}
-where $N_k$ is the expected number of intervals containing objective $k$.
-The present matrix uses $M=128$ and $K=3$.  With 3,701 Chaser batches per
-epoch, one epoch contains 1,421,184 sampled intervals, of which approximately
-1,419,750 contain chase dynamics and 122,404 cross a teleport.  With 3,255
-Tunnel Rooms batches, the corresponding counts are 1,249,920 total,
-1,019,690 approach-bearing, and 111,914 teleport-crossing intervals.  These
-are cumulative sampled exposures, not unique dataset transitions; later
-epochs revisit clips under a new shuffle.
+the projected future embedding at training epoch $e$.  Holding the learned
+target mapping fixed at that epoch, define the squared-error oracle risks
+\begin{align}
+ R_e(B)&=\inf_q\;\mathbb E\|Y_{t+1}^{(e)}-q(B)\|_2^2,\\
+ R_e(B,Z_i)&=\inf_q\;\mathbb E\|Y_{t+1}^{(e)}-q(B,Z_i)\|_2^2.
+\end{align}
+If the function class contains the conditional mean, the population value of
+retaining $Z_i$ is
+\begin{equation}
+ \begin{aligned}
+ \Delta_i^{(e)}&=R_e(B)-R_e(B,Z_i)\\
+ &=\mathbb E\big\|\mathbb E[Y\mid B,Z_i]-\mathbb E[Y\mid B]\big\|_2^2.
+ \end{aligned}
+ \label{eq:feature-value}
+\end{equation}
+Suppose the factor changes the conditional target only during an event $E$
+whose status is included in $B$.  Then
+\begin{equation}
+ \Delta_i^{(e)}=\rho_i\,
+ \mathbb E[\|\delta_i^{(e)}\|_2^2\mid E=1],\qquad
+ \rho_i=\Pr(E=1).
+ \label{eq:event-value}
+\end{equation}
+Here $\delta_i^{(e)}=\mathbb E[Y\mid B,Z_i]-\mathbb E[Y\mid B]$ on event
+intervals and is zero otherwise.
+Event frequency is therefore one multiplier, not a sufficient explanation.
+This factorization concerns the incremental cue-conditioned transition branch,
+not raw color appearance.  Because color is visible and persistent, it can
+contribute outside event intervals whenever the learned target preserves it.
+The effect size in target space, competition with other factors, the
+representation bottleneck, and optimization all affect retention.  This view
+is consistent with analyses in which joint-embedding objectives prioritize
+high-influence features \citep{littwin2024jepa} and with broader evidence for
+feature suppression and gradient competition
+\citep{xue2023features,pezeshki2021gradient}.
 
-For categorical probes, the registered onset is the first epoch whose 95\%
-confidence-interval lower bound exceeds balanced chance and whose next epoch
-confirms the crossing.  For this single-seed pilot, continuous onset is
-exploratory: both $R^2>0$ and MAE below the frozen mean baseline must hold for
-two consecutive epochs.  Final sample-complexity claims require the same
-crossing to recur across seeds.
+There is an additional caveat: $Y^{(e)}$ is endogenous.  In the objectives
+evaluated here, the same trainable encoder and projector produce context and
+future embeddings, and the squared prediction term is not stopped at the
+future target.  Both target geometry and its gradient path therefore evolve.
+If the target mapping becomes invariant to $Z_i$, then $\Delta_i^{(e)}$ can be
+zero even when the raw factor changes the future.  Equations
+\ref{eq:feature-value}--\ref{eq:event-value} are thus a mechanistic lens, not a
+theorem that predicts acquisition time.  Tunnel and Chaser test whether
+matched event frequency produces matched retention when binding structure and
+target geometry differ.
 
 \section{Models and Controlled Protocol}
 
-We compare four global-state predictive world models under their native
-training objectives.  \lewm{} uses prediction MSE and SIGReg
-\citep{maes2026leworldmodel}.  \pldm{} uses prediction, variance/covariance,
-and temporal-alignment terms \citep{sobal2025latentplanning}.  \lpwm{} uses a
-non-negative projector and rectified distribution matching inspired by
-Rectified LpJEPA \citep{kuang2026rectified}.  \smwm{} uses forward dynamics
-and its published inverse-dynamics anti-collapse objective.  All models select
-the backbone's actual CLS token and consume image observations plus actions.
-Each family retains its native published objective.
+\subsection{Shared representation path}
 
-The primary matrix contains four models on two datasets using the same seed,
-episode split, number of viewed examples, and optimizer updates.  Decoder
-training is diagnostic and detached from the world state.  Subsequent sweeps
-vary only realized event exposure and training duration.
-
-\section{Failure Localization}
-
-We fit episode-disjoint readouts at four stages: native encoder CLS,
-projected current state, predicted state, and decoded pixels.  Let $C$ denote
-the persistent cue, $G$ geometric state, and $Y$ the cue-conditioned
-destination.  The evidence is classified as follows:
-
-\paragraph{Encoder or projector abstraction.}
-$G$ is accurately decoded, but $C$ is near its balanced null and cue-only
-counterfactuals weakly change the current state.
-
-\paragraph{Predictor failure.}
-The current state retains $C$, but $Y$ or future cue information is lost in
-$\hat z$.
-
-\paragraph{Energy failure.}
-Current and predicted states retain $Y$, but the correct destination does not
-receive a favorable terminal energy.
-
-\paragraph{Success.}
-Geometry, cue, destination prediction, decoded transition, and energy ranking
-are all consistent on matched event scenarios.
-
-\section{Results}
-
-\subsection{Preliminary transition-to-onset accounting}
-
-Table~\ref{tab:pilot-onset} reports the first confirmed frozen-encoder
-crossings available while the 50-epoch matrix is still running.  Objective~1
-requires both Chaser positions or, in Tunnel Rooms, agent localization plus
-nearest-tunnel identity.  Objective~2 requires destination-quadrant decoding
-in Chaser and semantic color-to-slot binding in Tunnel Rooms.  Counts are
-computed with Equation~\ref{eq:onset-count} and are rounded to three decimal
-places.
+All native models consume normalized $224\times224$ RGB frames and actions.
+A randomly initialized ViT-Tiny/14 produces 192-dimensional tokens.  The
+native condition selects the actual final-layer CLS token, followed by a
+$192\rightarrow2048\rightarrow192$ projector and an action-conditioned causal
+predictor.  Four-frame clips use history size three, one future prediction,
+and frameskip five, yielding three adjacent latent prediction intervals per
+clip.  The data, CLS protocol, dimensions, batch size, and update exposure are
+shared.  Native family-specific heads and objectives are retained; in
+particular, LpWM uses its rectified projector rather than the standard MLP.
 
 \begin{table}[t]
-  \caption{Single-seed pilot onset at the native encoder.  ``O1 intervals''
-  counts expected dominant-objective intervals at its crossing; ``O2
-  intervals'' counts expected event-crossing intervals at its crossing.
-  These are preliminary crossings, not final sample-complexity estimates.}
-  \label{tab:pilot-onset}
-  \centering
-  \small
-  \resizebox{\columnwidth}{!}{%
-  \begin{tabular}{llrrrr}
-    \toprule
-    Env. & Model & O1 ep. & O1 intervals & O2 ep. & O2 intervals \\
-    \midrule
-    Chaser & \lewm{} & 1 & 1.420M & 1 & 0.122M \\
-    Chaser & \pldm{} & 2 & 2.840M & 1 & 0.122M \\
-    Chaser & \lpwm{} & 1 & 1.420M & 1 & 0.122M \\
-    Chaser & \smwm{} & 1 & 1.420M & 2 & 0.245M \\
-    Tunnel & \smwm{} & 6 & 6.118M & 8 & 0.895M \\
-    \bottomrule
-  \end{tabular}
-  }
+\caption{Native objective retained for each experimental condition.  SMWM is
+the only condition with nonzero inverse dynamics; \pldm{} deliberately removes
+the inverse-dynamics term from published PLDM.}
+\label{tab:model-objectives}
+\centering
+\small
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lll}
+\toprule
+Model & Prediction term & Anti-collapse / alignment \\
+\midrule
+\lewm{} & latent MSE & $0.09\,$SIGReg \\
+\pldm{} & latent MSE & VCReg + temporal alignment \\
+\lpwm{} & latent MSE & rectified InfoReg \\
+\smwm{} & forward MSE & $0.1\,$inverse-dynamics MSE \\
+\bottomrule
+\end{tabular}
+}
 \end{table}
 
-Cue identity in the Chaser encoder is already linearly separable at
-initialization for all four models, corresponding to zero training
-transitions.  The pilot therefore does not support the statement that the
-encoder becomes able to ``see'' color only late in training.  The qualitative
-decoder trajectory instead motivates a narrower question: when does color
-become reconstructable and when is it bound to the correct rare transition?
-The destination readout in Table~\ref{tab:pilot-onset} measures the latter.
+In all four implementations, the prediction term compares the predicted state
+with the projected future state and does not detach the future branch.  The
+family-specific regularizers in \cref{tab:model-objectives} provide the
+remaining anti-collapse or alignment pressure.
 
-For native-CLS Tunnel Rooms, \smwm{} is currently the only model with both
-objectives crossing the pilot criteria: the frequent geometry objective
-crosses after about 6.118 million approach-bearing intervals, whereas color
-binding crosses after about 0.895 million event-bearing intervals.  The
-remaining native-CLS cells are still running and are not converted into
-failure claims.  In the completed 10-epoch spatial-$8\times8$ ablation,
-several geometry and color readouts cross at initialization.  Such a
-zero-transition result indicates that the architecture exposes the feature to
-a linear readout before learning; it must not be interpreted as learned sample
-complexity.
+SMWM follows the published forward-plus-inverse objective, but locally reuses
+the shared encoder, projector, and predictor to preserve the controlled visual
+path.  It should therefore be read as an objective-faithful integration, not a
+complete architectural reproduction of every external implementation detail.
 
-\pending{Populate the native 4-by-2 baseline table with dataset hashes,
-episode denominators, decoder metrics, stagewise probes, event-transition
-error, and confidence intervals.}
+\subsection{Training and provenance}
 
-\pending{Add exposure sweeps at 1\%, 10\%, 50\%, and 200\% of the matched
-event-target rate while holding examples and optimizer updates constant.}
+The primary matrix is $4$ models $\times$ $2$ datasets $\times$ $50$ epochs.
+It contains one stochastic realization per cell.  Every run uses batch size
+128, seed label 3072, the same dataset-specific
+shuffle generator, and a frozen source dataset.  We save model weights after
+epochs 1--50 and a probe artifact at initialization and after every completed
+epoch.  All eight
+native 50-epoch cells completed with final weights and 51 probe files; the
+four spatial Tunnel controls completed the same 50-epoch protocol.
 
-\pending{Add duration sweeps only after the native baseline establishes which
-stage loses the cue.}
+The training split is over legal clips and is not episode-disjoint.  Probe
+fitting and testing use whole-episode isolation; encoder pretraining saw the
+full source HDF5, including episodes later assigned to the probe-test split.
+Thus ``held-out'' below means held out from probe fitting, not encoder-unseen
+or out-of-distribution.  Chaser fitting combines 512 fit and 512
+validation first-contact examples, drawn from 1,645 and 856 episode pools;
+testing uses 512 examples from 857 held-out episodes.  Tunnel location probes
+use 640 fit-plus-validation and 256 test examples from a fixed sidecar whose
+episode isolation and hashes are checked before evaluation.
+
+\subsection{Readouts and onset rules}
+
+We fit standardized ridge regressors/classifiers with fixed $\alpha=10$
+separately to encoder, projector, and predictor features.  Classification uses
+balanced accuracy (BA).  Its analytic standard error averages independent
+per-class binomial-recall variances, and the clipped 95\% normal interval is
+BA $\pm1.96$ standard errors.  A nominal categorical checkpoint passes when
+the lower endpoint exceeds balanced chance.  For the Chaser destination, the
+label has four classes (nominal chance .25), but contact quadrant plus the two
+possible cue rotations narrows a cue-blind prediction to two destinations.  We
+therefore fit a privileged contact-quadrant-only ridge on 1,024
+fit-plus-validation episodes, freeze it, and score it once on the 512 test
+episodes; its BA is .511.  At each checkpoint we compare the model probe and
+this baseline on identical targets via a destination-class-stratified
+fixed-prediction bootstrap.  Continuous localization passes when
+$R^2>0$ and MAE is below the frozen target-matched mean-only baseline.  A
+\emph{first confirmed crossing} requires two consecutive passing checkpoints.
+
+For Tunnel geometry, the family criterion is the conjunction of passing agent
+localization and nearest-entrance identity.  Agent localization alone becomes
+persistent earlier in one run, but it does not establish that the global state
+organizes the geometry needed to choose an entrance.
+
+Two checkpoints can still be a transient fluctuation.  We therefore also
+report \emph{persistent joint onset}: the first epoch after which both the
+categorical binding and its corresponding localization criterion remain true
+through epoch 50.  This stricter measure is descriptive and was selected after
+observing a transient Tunnel crossing; multi-seed work should prespecify the
+stability window.  These dense-51 and Tunnel onset summaries are retrospective;
+the scheduled Chaser follow-up below freezes a separate rule before inspecting
+its checkpoint outcomes.
+
+An onset epoch is converted to sampled exposure by
+\begin{equation}
+  N_{\mathrm{seen}}(e)=eBMK,\qquad
+  N_k(e)=\rho_kN_{\mathrm{seen}}(e),
+  \label{eq:onset-count}
+\end{equation}
+where $B$ is batches per epoch, $M=128$, and $K=3$.  One Chaser epoch contains
+1,421,184 intervals (approximately 1,419,750 chase-bearing and 122,404
+teleport-bearing).  One Tunnel epoch contains 1,249,920 intervals
+(approximately 1,019,690 approach-bearing and 111,914 teleport-bearing).
+Counts are repeated sampled exposures, not unique transitions; checkpoint
+onsets are interval-censored within an epoch.
+
+\subsection{Detached decoder}
+
+A learned global decoder reads the detached projected state and reconstructs
+each frame through spatial patch queries.  Detachment ensures reconstruction
+does not alter the world-model representation.  The decoder is trained from
+scratch alongside each run, so its learning curve confounds representational
+accessibility with decoder optimization.  Average pixel MSE is also dominated
+by the white background.  We therefore use the decoder as a visual audit, not
+as an onset statistic.  Conditional-mean blur under MSE is a
+known limitation of pixel prediction \citep{mathieu2016video}.
+
+\subsection{Prespecified post-training controls}
+
+After auditing the checkpoint trajectories, we froze each epoch-50 native
+Tunnel encoder and compared three readouts of the same final-frame tokens:
+the 192-dimensional CLS, all $16\times16$ patch tokens flattened to 49,152
+dimensions, and parameter-free $2\times2$ average pooling followed by an
+$8\times8$ flattening to 12,288 dimensions.  We fit the same $\alpha=10$
+standardized ridge probes on the episode-disjoint split.  The spatial readouts
+have 256 and 64 times the CLS dimension, so this first control localizes
+surviving information to patch tokens but does not by itself make a
+capacity-matched representation ranking.
+
+We therefore ran a prespecified fixed-width follow-up on those same tokens.
+Every readout is 192-dimensional: native CLS; the mean of 256 patch tokens; a
+fixed Gaussian random projection of the spatial $8\times8$ map; or the top 192
+unwhitened randomized principal components of that map.  PCA is fit without
+labels on the 640 fit-plus-validation episodes; neither transform sees the 256
+test episodes.  Transform and bootstrap seeds are fixed at 20260830, and all
+  four readouts use the same $\alpha=10$ probe.  We call PCA binding accessible
+  when its interval is above .5, and call PCA superior to CLS when the
+  10,000-resample paired, binding-stratified interval for
+  $\mathrm{BA}_{\mathrm{PCA}}-\mathrm{BA}_{\mathrm{CLS}}$ is positive.  The
+  stricter hidden-from-CLS label additionally requires the CLS interval to
+  contain .5.  These intervals condition on each frozen model
+run; they do not quantify training-run variation.
+
+For the globally seeded epoch-1 replication, the outcome-blind protocol fixes
+the same 896 probe examples and four width-192 readouts for three \lewm{} and
+three SMWM checkpoints.  We apply 99.1667\% intervals to PCA accessibility and
+paired PCA-minus-CLS improvement, a Bonferroni-six sensitivity analysis over
+the six checkpoint cells.  The design uses three paired seed values: within a
+seed, \lewm{} and SMWM share the encoder initialization and data order before
+their objectives drive the runs apart.  The cells also share test episodes,
+and the intervals
+still condition on frozen runs; they do not estimate a population distribution
+over training seeds.
+
+A second outcome-blind protocol fixes the epoch-10 anchor before those
+checkpoints exist.  It evaluates the same 896 examples and four width-192
+readouts in the same six observed runs.  PCA accessibility and paired
+PCA-minus-CLS improvement use separate Bonferroni-six 99.1667\% intervals.
+We also bootstrap paired epoch-10-minus-epoch-1 changes and prespecify a
+five-point noninferiority sensitivity rule: its adjusted lower bound must
+exceed $-.05$ in every cell.  PCA is refit without labels in each checkpoint;
+the Gaussian projection remains fixed.  Access at epochs 1 and 10 is an
+anchor comparison, not evidence of continuous retention or an onset between
+them.
+
+We then froze a separate reconstruction protocol before extracting any
+initialization patch token.  It replays the original globally seeded dataset,
+transform, split-loader, and model-construction order for each run.  Because no
+epoch-0 weights were saved, patch extraction is allowed only after all six
+reconstructed native-CLS probe artifacts reproduce the saved epoch-0 results:
+the nested structure, supports, and confusion matrices must match exactly and
+every floating metric must agree within $10^{-6}$.  All six gates pass with
+maximum error zero over 106 floating metrics per artifact.  The same-seed \lewm{}/SMWM
+models are identical before objective training, so this design contains three
+unique initial encoders, not six independent initialization draws.  We apply
+the same width-192 readouts, paired bootstraps, and Bonferroni-six sensitivity
+rules at reconstructed epoch 0 and compare their held-out predictions with
+epoch 1.  This is a validated post-hoc reconstruction, not a saved checkpoint.
+
+For Chaser, we replayed 3,155 first-contact episodes twice with identical
+scenario state and recorded actions, changing only the two-valued runner cue.
+Replays reproduced the inspected factual states and pixels exactly.  Let
+$q_c$, $p_c$, and $z_c$ be the projected current state, predicted state, and
+projected future target under cue $c$, and define residuals
+$u_c=p_c-q_c$ and $v_c=z_c-q_c$.  The primary statistic is the global cosine
+alignment between $u_1-u_0$ and $v_1-v_0$ at contact minus the same alignment
+in a matched window five primitive steps earlier, where no event occurs.  We
+evaluate 492 matched held-out episodes with a 2,000-resample paired episode
+  bootstrap fixed before model evaluation.  The completed epoch-50 evaluation
+  motivated a post-hoc checkpoint follow-up.  Its schedule and analysis rules
+  were frozen before evaluating epochs $1,2,3,5,10,20,36,45,50$; because the
+  epoch-50 outcome was already known, it is not an independent confirmation.
+  For cue response and encoder destination
+advantage separately, we construct a one-sided 95\% maximum-deviation bootstrap
+lower band over the full 36-cell family.  A cell is jointly positive only when
+that lower bound exceeds zero.  First confirmed acquisition requires two
+successive scheduled positive cells; persistent onset additionally requires
+every later scheduled cell to remain positive.  Pointwise intervals are
+descriptive.  A non-positive cue result does not rule out nonlinear use or
+remove dependence on checkpoint-specific latent geometry.
+
+For Tunnel, we additionally replay 184 held-out first-teleport episodes under
+an exact green/orange rendering swap.  Factual and swapped clips share
+underlying simulator state, geometry, actions, physical portal pairing, and
+destination; only the
+four marker rectangles differ.  We compute the pooled cosine alignment between
+input-side and next-frame factual-to-swapped response deltas.  The
+primary statistic subtracts the alignment on the immediately preceding
+ordinary prediction from the alignment across first teleport.  A shared
+5,000-resample paired bootstrap yields a two-sided 95\% simultaneous band over
+all 12 model--stage cells.  Because the intervention exchanges the
+green/orange identities of all four marker patches without changing routing,
+it measures visual swap sensitivity
+and transition-specific reorganization, not semantic binding or
+counterfactual destination use.
+
+\section{Four Feature-Access Regimes}
+
+\subsection{Chaser separates cue visibility, outcome access, and predictor response}
+
+Runner color is linearly separable from every encoder at initialization
+(BA $=1.000$), before any training transition.  This is a property of the
+randomly initialized visual path and must not be described as learned sample
+complexity.  \lewm{}, \pldm{}, and \lpwm{} retain perfect cue decoding.  \smwm{} instead
+falls to BA .520 at epoch 2 and approximately chance at epochs 3--6, then
+recovers to .656 at epoch 7, .861 at epoch 8, and 1.000 by epochs 12--13.  This
+is transient forgetting and reacquisition, not first pickup from an
+uninformative initialization.
+
+Destination has four labels, but contact quadrant already narrows a cue-blind
+prediction to two destinations.  The frozen contact-quadrant baseline scores
+BA .511.  Relative to it, the simultaneous 36-cell encoder band is positive
+for \lewm{} by the earliest saved checkpoint, \lpwm{} in $(1,2]$, and \pldm{} in
+$(2,3]$.  SMWM remains right-censored beyond epoch 50.  These are
+scheduled-checkpoint intervals from one run each, not exact training times or
+model-family estimates.  Moreover, beating the contact-only baseline can
+exploit any additional visual context; it does not identify cue use.
+\Cref{fig:chaser-trajectories} retains the denser 51-checkpoint descriptive
+paths.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/chaser_encoder_trajectories.pdf}
+  \caption{Checkpoint-resolved Chaser encoder readouts from one run per model.
+  Top: post-event position MAE, with the 44.203-pixel frozen mean baseline.
+  Middle: destination BA, with nominal four-class chance (.25, dotted), the
+  frozen contact-quadrant baseline (.511, dashed), and its fixed-prediction
+  episode-bootstrap interval (gray).  Bottom:
+  cue BA immediately before first contact, showing SMWM's transient forgetting
+  and recovery.  Colored bands are analytic sample-level 95\% intervals; the
+  gray null band is an episode bootstrap.  Model intervals are not
+  corrected across 51 correlated checkpoints.  The top exposure axis reports
+  repeated sampled event-bearing intervals, not unique examples.}
+  \label{fig:chaser-trajectories}
+\end{figure*}
+
+\begin{table}[t]
+\caption{Final Chaser encoder readouts.  Motion MAE averages red and runner
+position.  Post MAE evaluates the first-contact future.  All cue BAs are
+1.000.  Nominal destination chance is .25; the frozen contact-only baseline is
+.511.}
+\label{tab:chaser-final}
+\centering
+\small
+\setlength{\tabcolsep}{3.2pt}
+\begin{tabular}{lrrrrr}
+\toprule
+Model & Motion & Motion & Dest. & Post & Post \\
+ & MAE & $R^2$ & BA & MAE & $R^2$ \\
+\midrule
+\lewm{} & 2.90 & .990 & .863 & \textbf{8.71} & .956 \\
+\pldm{} & 11.71 & .784 & \textbf{.879} & 9.64 & .947 \\
+\lpwm{} & 8.50 & .889 & .866 & 11.07 & .923 \\
+\smwm{} & \textbf{1.25} & \textbf{.999} & .553 & 29.92 & .511 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The endpoint stage structure is already asymmetric.  \lewm{}, \pldm{}, and \lpwm{}
+reach encoder destination BA .863--.879.  Their epoch-50 predictor BAs are
+.970, .974, and .965.  SMWM's encoder is excellent for motion but reaches only
+.553 destination BA; after nonlinear processing, its projector and predictor
+reach .878 and .950.  Thus weak linear organization in the encoder CLS does
+not imply loss from the full predictive path.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/chaser_checkpointed_intervention.pdf}
+  \caption{Checkpointed Chaser intervention, one trained run per model.
+  Top: cue-swapped contact residual alignment minus a matched no-event control.
+  Bottom: encoder destination BA minus the frozen contact-quadrant-only
+  baseline.  Solid curves are estimates; light ribbons are descriptive
+  pointwise 95\% bootstrap intervals; dashed curves are one-sided 95\%
+  simultaneous lower bands over the corresponding prespecified
+  $4\times9$ family.  Filled markers denote jointly positive cells.
+  First/persistent uses the two-successive/all-later scheduled-checkpoint
+  rules.  Cue response and destination access are corrected as separate
+  36-cell families.  Intervals condition on fixed weights and probes, not
+  training-run variation.}
+  \label{fig:chaser-intervention-trajectory}
+\end{figure*}
+
+\begin{table}[t]
+\caption{Scheduled Chaser onsets under the simultaneous lower bands.  Epoch 0
+was not saved for the intervention, so $\leq1$ is left-censored.}
+\label{tab:chaser-onsets}
+\centering
+\small
+\setlength{\tabcolsep}{3.8pt}
+\begin{tabular}{lrrrr}
+\toprule
+& \multicolumn{2}{c}{Cue response} & \multicolumn{2}{c}{Encoder $-$ baseline} \\
+Model & First & Persistent & First & Persistent \\
+\midrule
+\lewm{} & $>50$ & $>50$ & $\leq1$ & $\leq1$ \\
+\pldm{} & $>50$ & $>50$ & $(2,3]$ & $(2,3]$ \\
+\lpwm{} & $>50$ & $>50$ & $(1,2]$ & $(1,2]$ \\
+\smwm{} & $(10,20]$ & $(10,20]$ & $>50$ & $>50$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Checkpointed cue intervention.}
+The trajectory reverses the destination-access ranking
+(\Cref{fig:chaser-intervention-trajectory,tab:chaser-onsets}).  \lewm{}, \pldm{}, and
+\lpwm{} show no positive simultaneous cue-response band in the observed runs
+through epoch 50,
+despite early encoder access.  SMWM starts near zero, becomes strongly
+anti-aligned at the scheduled epochs 2, 3, and 5 ($-.282$ to $-.501$), and then changes sign:
+.391 at epoch 20, .489 at 36, and .507 at 50.  Its first-confirmed and
+persistent response interval is $(10,20]$, corresponding to
+$(1.224\mathrm{M},2.448\mathrm{M}]$ repeated event-bearing intervals.  This is
+a learned reorganization of predictor response, not when raw color first
+becomes visible.
+
+At epoch 50, the pointwise event-minus-control estimates are $-.0108$
+[$-.0137,-.0079$], .0013 [$-.0028,.0057$], .0009
+[$-.0021,.0042$], and .5069 [.4538,.5496].  The older endpoint evaluation in
+\Cref{fig:same-checkpoint-control} is the same final slice under an independent
+bootstrap draw.  A non-positive value does not exclude every nonlinear cue
+path, and the residual statistic changes with learned latent target geometry.
+It nevertheless provides the direct within-run cue manipulation that the
+destination probe lacks.
+
+\paragraph{Takeaway.}
+Chaser color is not a first-acquisition result.  Simple outcome access appears
+early in three encoders without supported cue response; SMWM develops the
+event-specific response in $(10,20]$ while its encoder remains below the
+contact-only baseline criterion.  Accessibility and predictive response are
+empirically distinct training trajectories.
+
+\subsection{Most native Tunnel CLS states do not expose durable color binding}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/tunnel_cls_vs_spatial_trajectories.pdf}
+  \caption{Tunnel encoder trajectories with columns denoting model family and
+  rows denoting current-agent MAE, four-location color-conditioned-place MAE,
+  and color-to-slot binding BA.  Solid blue is native CLS and dashed red is
+  spatial $8\times8$; these are separately trained architectures with
+  independent initialization, not two readouts of one checkpoint.  Filled
+  bands are analytic sample-level 95\% intervals for
+  BA only.  Horizontal lines mark the 31.187-pixel semantic null and .5
+  binding chance.  Epoch-0 markers show that spatial color/place is accessible
+  before training.  Vertical guides in the SMWM column mark native-CLS geometry
+  persistence (6), first confirmed binding crossing (8), and joint persistence
+  (13).  The exposure axis reports repeated sampled event intervals.}
+  \label{fig:tunnel-aggregation-trajectories}
+\end{figure*}
+
+Tunnel Rooms produces the opposite global-readout result in three observed runs.  After 50
+epochs, \lewm{}, \pldm{}, and \lpwm{} have negative agent-position $R^2$, nearest-slot
+BA near chance, color-binding BA near chance, and semantic-place MAE at or
+near the 31.187-pixel mean baseline.  LeWM's MAE narrowly beats the baseline,
+but its negative $R^2$ fails the joint localization rule.  These are
+right-censored CLS failures: no persistent joint onset is observed by 62.496
+million total sampled intervals, including approximately 5.596 million
+teleport-bearing intervals.
+
+\begin{table}[t]
+\caption{Final native-CLS Tunnel encoder readouts.  ``Near'' is nearest-tunnel
+BA, ``Bind'' maps semantic green to its positional slot, and semantic MAE/$R^2$
+average green/orange hubs and leaves.  Classification chance is .5.}
+\label{tab:tunnel-final}
+\centering
+\small
+\setlength{\tabcolsep}{2.5pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+Model & Agent & Agent & Near & Bind & Sem. & Sem. \\
+ & MAE & $R^2$ & BA & BA & MAE & $R^2$ \\
+\midrule
+\lewm{} & 44.49 & $-.115$ & .517 & .531 & 30.67 & $-.002$ \\
+\pldm{} & 44.75 & $-.106$ & .514 & .495 & 32.39 & $-.138$ \\
+\lpwm{} & 45.85 & $-.229$ & .458 & .492 & 32.34 & $-.060$ \\
+\smwm{} & \textbf{15.08} & \textbf{.713} & \textbf{.725} & \textbf{.844} & \textbf{25.50} & \textbf{.221} \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+The observed SMWM run is the decisive exception.  Agent localization passes
+persistently from epoch 4; the complete geometry-family criterion, including
+nearest-entrance identity, becomes persistent at epoch 6.  An isolated binding
+pass occurs at epoch 6; the first confirmed
+two-checkpoint crossing starts at epoch 8.  Binding drops below the confidence
+threshold at epochs 10--12, and its sample-level confidence lower bound remains
+above .5 from epoch 13.  Under the target-matched four-location null, binding and semantic-place
+localization are jointly persistent from epoch 13.  At that checkpoint, SMWM
+has seen approximately 16.249 million total intervals, 13.256 million
+approach-bearing intervals, and 1.455 million
+teleport-bearing intervals.
+
+\paragraph{Trajectory shape.}
+The observed SMWM run is also the only native-CLS Tunnel trajectory with an
+acquisition-shaped profile.  Descriptive four-parameter logistic fits place the agent-MAE
+midpoint at epoch 5.8 and the binding-BA midpoint at epoch 15.3 (scale 4.8),
+the latter corresponding to approximately 1.71 million event-bearing
+intervals.  Semantic-place MAE has a broader nominal midpoint at 9.1; a
+broken-linear alternative is slightly preferred by BIC.  These post-hoc
+midpoints are not onset estimates: checkpoint residuals are autocorrelated,
+the same probe examples recur across epochs, and there is only one model run.
+The descriptive sequence at epochs 6, 8, and 13 remains the primary within-run
+result; \Cref{fig:smwm-curve-shape} shows why no single sigmoid onset is used.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/smwm_tunnel_curve_shape.pdf}
+  \caption{Observed native-CLS Tunnel SMWM trajectories with descriptive
+  logistic fits and the best non-logistic alternative by BIC.  Geometry has a
+  sharp logistic-shaped trajectory; semantic-place MAE changes more broadly;
+  binding is fit by a later positive logistic.  The vertical guides are threshold
+  landmarks at epochs 6, 8, and 13, not fitted midpoints.  Fits are
+  single-run descriptions and carry no run-level uncertainty.}
+  \label{fig:smwm-curve-shape}
+\end{figure*}
+
+LeWM illustrates why the distinction between first and persistent onset
+matters.  Its binding interval lower bound exceeds chance at epochs 32 and 33,
+which satisfies the original two-checkpoint rule after approximately 3.581
+million teleport intervals.  The lower bound falls below chance at epoch 34
+and never recovers persistently.  The target-matched semantic criterion also
+passes at epochs 32--33, so we label the joint result a transient crossing
+rather than acquisition.
+
+\begin{table}[t]
+\caption{Descriptive native-CLS Tunnel onset summary.  Event counts are
+cumulative sampled event-bearing intervals.  ``None'' means no persistent
+joint onset by epoch 50.}
+\label{tab:onset}
+\centering
+\small
+\setlength{\tabcolsep}{2.0pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrr}
+\toprule
+Model & Freq. ep. & Event first & Persistent & Event count \\
+\midrule
+\lewm{} & -- & 32$^\dagger$ & None & cens. 5.596M \\
+\pldm{} & -- & None & None & cens. 5.596M \\
+\lpwm{} & -- & None & None & cens. 5.596M \\
+\smwm{} & 6 & 8 & 13 & 1.455M \\
+\bottomrule
+\end{tabular}
+}
+\\[-1mm]
+{\scriptsize $^\dagger$Transient at epochs 32--33; not persistent.}\par
+\end{table}
+
+These results support the broad H1 prediction that native global CLS can be an
+unreliable substrate for Tunnel binding, but they reject its selective form
+for \lewm{}, \pldm{}, and \lpwm{}: those encoders also fail the frequent geometry
+criteria at CLS.  The observed SMWM run alone supports the proposed curriculum
+at the native CLS readout: it organizes geometry before stable joint
+color--place structure, with the persistent criteria separated by seven epochs.
+
+\paragraph{Takeaway.}
+The motivating geometry-first, binding-later native-CLS trajectory occurs in one
+condition.  The other native Tunnel encoders do not linearly expose the broader
+global-state task within the observed budget.
+
+\subsection{Same-checkpoint patches expose binding absent from CLS readouts}
+
+The fixed readout control changes the interpretation of those CLS failures.
+At the identical epoch-50 checkpoints, \lewm{}, \pldm{}, and \lpwm{} binding BA changes
+from .531, .495, and .492 at CLS to .909, .930, and .949 with fixed
+$8\times8$ pooled patch tokens.  Semantic-hub $R^2$ changes from $-.059$,
+$-.178$, and $-.073$ to .867, .846, and .955.  Their patch tokens therefore
+retain linearly accessible color--geometry relations even when the native
+global state, projector, and predictor do not organize them linearly.  SMWM is
+different: its CLS already supports binding BA .844 and semantic-hub $R^2=.435$,
+which rise to .949 and .853 under the same fixed pooling.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/same_checkpoint_and_cue_swap.pdf}
+  \caption{Prespecified controls at epoch 50, one trained checkpoint per
+  condition.  Left and middle: held-out Tunnel ridge readouts from the same
+  encoder output.  Raw and fixed-$8\times8$ patch features have 256 and 64
+  times the CLS dimension; they establish survival in patch tokens, not a
+  capacity-matched pooling advantage.  Right: Chaser cue-swap residual
+  alignment at contact minus a matched no-event window for 492 held-out
+  episodes; bars are paired episode-bootstrap 95\% intervals.  Only the
+  observed SMWM run satisfies the prespecified positive event-specific-response
+  criterion.}
+  \label{fig:same-checkpoint-control}
+\end{figure*}
+
+This control rules out absence of linearly decodable color--place binding from
+all final-layer tokens at the final Tunnel checkpoints.  Its feature-dimension
+difference could nevertheless increase
+ridge capacity, which motivates the fixed-width control below.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/capacity_matched_tunnel_readouts.pdf}
+  \caption{Dimension-matched Tunnel readouts from the same frozen epoch-50
+  encoders.  Every point has width 192.  PCA and Gaussian random projection
+  compress the fixed spatial $8\times8$ patch map; mean pooling removes the
+  external token index.  Left: binding BA with analytic conditional 95\% intervals.
+  Middle and right: semantic-hub and agent-position $R^2$.  The dotted lines
+  denote chance BA or zero $R^2$.  PCA is fit without labels on
+  fit-plus-validation features only.  The plotted intervals condition on one
+  trained run per model.}
+  \label{fig:capacity-matched}
+\end{figure*}
+
+Matching width strengthens the localization result.  PCA-compressed spatial
+tokens reach binding BA .934, .934, .969, and .968 for \lewm{}, \pldm{}, \lpwm{}, and
+\smwm{}.  The paired improvements over CLS are .403 [.336,.470], .439
+[.371,.506], .477 [.411,.542], and .125 [.077,.173].  Thus every run passes
+the prespecified improvement rule; the first three additionally have CLS
+intervals containing chance and PCA intervals wholly above it.  A fixed,
+data- and label-independent Gaussian projection also improves every run
+(BA .831--.944).  Mean pooling remains near chance for LeWM,
+\pldm{}, and \lpwm{} and improves only \smwm{}.  A location-sensitive sketch of ordered,
+contextual patch tokens preserves the relation; output width and global token
+averaging are insufficient explanations.  The prespecified
+modelwise intervals were not multiplicity-adjusted.
+
+The target specificity is informative.  PCA semantic-hub $R^2$ is
+.746, .679, .922, and .850, yet current-agent $R^2$ is $-.124$, .263, .173,
+and .720.  A compact patch readout can expose portal identity and location
+without becoming a generally sufficient state.  PCA remains an after-training,
+unlabeled basis, so this establishes compact accessibility rather than a
+causal benefit of a particular aggregation architecture.  ViT patch tokens are
+contextual and position-aware, so the control also does not distinguish the
+external token index from positional information carried inside each token;
+mean pooling exhausts linear permutation-invariant set summaries but says
+nothing about nonlinear invariant probes.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/capacity_matched_tunnel_trajectory.pdf}
+  \caption{Fixed-width readouts at Tunnel epochs 1, 10, and 50, one historical
+  run per model.  All readouts are 192-dimensional.  Top: binding BA with
+  analytic conditional 95\% intervals.  Middle: semantic-hub $R^2$.
+  Bottom: current-agent $R^2$.  Epoch 1 follows one completed training epoch;
+  no initialization weight was saved.  Lines connect only the three audited
+  anchors and should not be read as continuous trajectories.}
+  \label{fig:capacity-matched-trajectory}
+\end{figure*}
+
+The temporal control makes the conclusion left-censored rather than late
+(\Cref{fig:capacity-matched-trajectory}).  At epoch 1, CLS binding BA is
+.471, .462, .500, and .506, while PCA-192 reaches .961, .957, .976, and .976.
+The paired PCA-minus-CLS improvements are .489 [.425,.554], .495
+[.431,.558], .477 [.414,.539], and .470 [.404,.534].  Every PCA cell also
+passes the prespecified four-cell 98.75\% sensitivity lower bound
+(.925--.952).  No epoch-1-to-50 PCA binding-change interval excludes zero.
+The nominal adjacent-anchor intervals do show nonmonotonic changes: SMWM falls
+by .072 [.036,.110] from epoch 1 to 10 and recovers .065 [.027,.103] from 10
+to 50, while \pldm{} falls .032 [.004,.060] from 10 to 50.  PCA-minus-CLS and all
+epoch-change intervals are secondary nominal 95\% intervals without
+multiplicity adjustment; only epoch-1 PCA accessibility receives the four-cell
+98.75\% sensitivity check.
+PCA is fit separately for each model--checkpoint cell; only the Gaussian random
+projection matrix is identical across cells.
+Thus compact patch binding is available by one completed epoch; the data
+cannot say whether training created it within that epoch or it existed at
+initialization in these historical runs.
+
+The globally seeded control resolves this left-censoring for the two primary
+contrasting families (\Cref{fig:seeded-epoch0-epoch10-capacity}).  At validated
+reconstructed initialization, the three unique encoder draws have CLS binding
+BA .466--.502 and mean-token BA .452--.511, while PCA reaches .965--.969 and a
+fixed Gaussian projection reaches .856--.882.  Every CLS interval contains
+.5; every PCA Bonferroni-six 99.1667\% lower bound is at least .935, and every
+adjusted PCA-minus-CLS lower bound is at least .376.  The same-seed \lewm{} and
+SMWM cells are exact duplicates at initialization, so the six-cell sensitivity
+test is conservative bookkeeping across three unique draws, not six
+independent replications.
+
+After one training epoch, \lewm{} CLS/PCA binding is
+.460--.496/.957--.968 and SMWM is .476--.488/.965--.984.  PCA's paired
+epoch-1-minus-epoch-0 changes range from $-.008$ to .016; every nominal and
+adjusted PCA interval contains zero, as do all 24 six-cell-sensitivity
+readout-change intervals.  Thus compact, position-sensitive binding access
+precedes training in this control.  Epoch 1 does not acquire it.  Objective
+training instead begins from spatial random features that already expose the
+relation and may later preserve, erode, or reorganize global access.  The
+control does not cover the other two objective families or predictive use.
+
+At epoch 10, PCA binding remains high in all six observed checkpoints:
+.911--.962 for \lewm{} and .960--.983 for SMWM.  Every adjusted PCA lower
+bound exceeds .5 and every adjusted PCA-minus-CLS lower bound is positive, so
+the prespecified all-six accessibility and PCA-over-CLS rules both pass at
+epochs 1 and 10.  This is anchor persistence, not evidence of uninterrupted
+access.  The five-point noninferiority rule fails because \lewm{} seed 3074
+falls by .047 with an adjusted interval $[-.093,-.002]$; the other five
+adjusted intervals include zero and have lower bounds above $-.05$.
+
+Global access is heterogeneous.  \lewm{} CLS remains low (.423--.483), with
+seed 3074's nominal interval below rather than containing chance.  SMWM CLS
+spans .467--.918: seed 3072 rises by .433 from epoch 1
+and its mean-token readout reaches .929, while the other two CLS cells remain
+near chance.  Consequently, the stronger ``hidden from CLS in all six'' rule
+does not pass.  These six checkpoints use three paired seed values and do not
+support architecture-population rankings.
+
+A post-hoc native-CLS audit over every saved epoch from 0 through 10 explains
+the SMWM spread (\Cref{fig:seeded-smwm-native-cls}).  Seed 3072 changes binding
+BA from .486 at epoch 4 to .910 at
+epoch 5 and remains above the frozen criterion through epoch 10 (.918).  Its
+agent and semantic-location criteria become persistent earlier, while the full
+geometry and binding criteria begin at epoch 5.  Seed 3073 develops persistent
+geometry at epoch 5 but never passes binding; seed 3074 has unstable geometry
+and no confirmed binding.  Under this loader, epoch 5 corresponds to about
+.560M repeated teleport-bearing interval exposures; the two non-binding seeds
+remain right-censored beyond 1.119M at epoch 10.  Thus geometry without
+confirmed binding appears in two observed runs, but a
+geometry-first/binding-later sequence is not a uniform
+SMWM property.  These landmarks were specified after the epoch-10 endpoint
+was known and are descriptive, not prospective onset estimates.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/seeded_smwm_native_cls_epoch0_10.pdf}
+  \caption{Post-hoc native-CLS Tunnel trajectories for three globally seeded
+  SMWM runs through epoch 10.  Columns are paired seed values; rows separate
+  agent localization, nearest-tunnel geometry, and color--place binding.
+  Seed 3072 organizes geometry and binding from epoch 5, seed 3073 organizes
+  geometry without binding, and seed 3074 loses transient geometry by epoch
+  10.  Thresholds are frozen probe criteria; trajectories are descriptive and
+  right-censored, not prospective onset estimates.}
+  \label{fig:seeded-smwm-native-cls}
+\end{figure*}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/seeded_epoch0_1_10_capacity.pdf}
+  \caption{Fixed-width Tunnel binding at validated reconstructed
+  initialization (left), after one epoch (middle), and after ten epochs
+  (right).  Rows show the \lewm{} and SMWM runs; all readouts have width 192.
+  Same-seed cells across rows share the exact
+  initial model, so epoch 0 contains three unique encoder draws.  At epoch 0,
+  every PCA adjusted lower bound exceeds .5 and every adjusted PCA-minus-CLS
+  lower bound exceeds zero; all nominal CLS intervals contain chance.  PCA
+  satisfies the adjusted all-six accessibility rule again at epochs 1 and 10;
+  points are observed anchors, not continuous trajectories.}
+  \label{fig:seeded-epoch0-epoch10-capacity}
+\end{figure*}
+
+SMWM shows the later global-access change.  Its CLS BA is .506, .525, and .844
+at epochs 1, 10, and 50; the epoch-10-to-50 increase is .319
+[.246,.389].  Access is therefore bracketed between those anchors, not
+timestamped at a particular step.  The lower rows also show target-specific
+erosion: early PCA agent $R^2$ is high in all four runs, then falls sharply for
+\lewm{}, \pldm{}, and \lpwm{} while their patch binding stays high.
+
+\paragraph{Takeaway.}
+The Tunnel failure is not simply ``color absent from the encoder.''  A
+CLS-sized compression of spatial tokens exposes the relation before training;
+the native CLS state fails to expose it linearly in three observed runs,
+while SMWM later reorganizes the relation into CLS.
+
+\paragraph{Exact color swap.}
+A pixel-audited green/orange swap exposes a further distinction at the frozen
+epoch-50 checkpoints (\Cref{fig:tunnel-exact-swap}).  For \lewm{}, \pldm{}, and
+\lpwm{}, event and ordinary-step swap alignments are both nearly one, and the
+simultaneous event-minus-control intervals contain zero at encoder, projector,
+and predictor.  These models are highly sensitive to exchanging the persistent
+portal colors, but the simultaneous band provides no evidence that first
+teleport selectively recruits that response.
+For SMWM, alignment falls from .920 to .723 in the encoder, .569 to .265 in
+the projector, and .557 to .369 in the predictor.  The corresponding
+event-minus-control estimates are $-.197$, $-.304$, and $-.188$; all three
+intervals under the 12-cell familywise band are negative.  Thus SMWM reduces
+response--target alignment or reorganizes its visual swap-response direction
+at teleport rather than merely amplifying it.
+Across all stage and target response RMS diagnostics, SMWM spans .008--.219
+(.008--.022 at projector/predictor and .176--.219 at encoder), whereas the
+other three models span 1.119--1.509.  Learned stage scales are not comparable,
+so the cosine result cannot rank response magnitude across families.  Because
+the swap leaves physical pairing and destination fixed while changing every
+colored marker, neither near-unit sensitivity nor negative event enrichment
+establishes semantic binding or counterfactual routing.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/tunnel_exact_binding_swap.pdf}
+  \caption{Exact Tunnel green/orange rendering swap at epoch 50, using 184
+  held-out first-teleport episodes per model.  Top: pooled alignment between
+  factual-to-swapped response deltas at the input stage and next-frame target,
+  on the teleporting event and immediately preceding ordinary control.  Bottom:
+  event minus control with one two-sided
+  95\% simultaneous band over all 12 model--stage cells; filled markers exclude
+  zero.  Underlying simulator state, geometry, actions, physical portal pairing, and destination are
+  fixed within each pair.  The intervention measures visual swap sensitivity
+  and transition-specific reorganization, not a changed destination.}
+  \label{fig:tunnel-exact-swap}
+\end{figure*}
+
+\subsection{Spatial readouts expose a different boundary}
+
+The $8\times8$ condition replaces the native global readout with a learned
+LayerNorm--linear aggregator over final-layer patch tokens.  It is a separately
+trained architecture, adds approximately 2.38M trainable parameters in every
+192-dimensional run, and does not share initialization with the CLS runs.  It
+is therefore not a same-checkpoint pooling probe or a causal readout swap.
+Each observed spatial-aggregator run passes color binding and
+semantic-place localization at epoch 0.  This is zero-transition linear
+accessibility, not evidence that training learned color.  The ablation instead
+shows that an architecture exposing local spatial structure can make the information available and
+whether training preserves it.  \Cref{fig:tunnel-aggregation-trajectories}
+shows that the answer is model- and target-specific: training can improve agent
+geometry while eroding binding, or retain binding while destroying geometry.
+
+\begin{table}[t]
+\caption{Final spatial-$8\times8$ Tunnel encoder readouts.  Every color/place
+row already passes at initialization; final values describe retention.}
+\label{tab:spatial-final}
+\centering
+\small
+\setlength{\tabcolsep}{2.8pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrr}
+\toprule
+Model & Agent $R^2$ & Near BA & Bind BA & Sem. MAE & Sem. $R^2$ \\
+\midrule
+\lewm{} & $-.109$ & .584 & .706 & 24.49 & .371 \\
+\pldm{} & .645 & .688 & .768 & 19.51 & .450 \\
+\lpwm{} & $-.377$ & .501 & \textbf{.829} & \textbf{14.59} & \textbf{.502} \\
+\smwm{} & \textbf{.959} & \textbf{.803} & .565 & 25.08 & .257 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+No single spatial family dominates both factor families.  \pldm{} retains geometry
+and color-place structure; LpWM strongly retains semantic portals but not the
+agent; SMWM strongly retains the agent and nearest entrance but has weaker
+final binding; LeWM retains portal structure while failing agent localization.
+This factorization is consistent with H3 and warns against summarizing representation
+quality with one averaged score.
+
+\paragraph{Takeaway.}
+Spatial color-place accessibility is an architecture-level boundary condition;
+the same-checkpoint control separately establishes patch-token survival, but
+neither experiment identifies pooling as the cause.
+
+\subsection{Stagewise readouts differ across encoder, projector, and predictor}
+
+SMWM's two environments reveal opposite stage effects.  In Chaser, the
+encoder destination is weak at epoch 50 while the projector and predictor are
+strong.  In native Tunnel, SMWM remains strong at all three stages: encoder,
+projector, and predictor binding BA are .844, .806, and .838, with semantic
+MAE 25.50, 25.76, and 25.94.  The learned nonlinear path can therefore expose
+information that is not linearly organized in one encoder without necessarily
+destroying another environment's binding.
+
+The non-SMWM Tunnel models show no analogous hidden success.  At epoch 50,
+their projector and predictor semantic $R^2$ values remain negative, and
+their binding BAs remain near chance (\lewm{} .545/.548, \pldm{} .497/.515, \lpwm{}
+.410/.402).  Their failure is not confined to an unlucky encoder readout.
+
+\subsection{Reconstruction and binding dissociate}
+
+Average decoder MSE improves for every model.  Final Chaser MSE is .0064,
+.0269, .0246, and .0198 for \lewm{}, \pldm{}, \lpwm{}, and \smwm{}; final native Tunnel
+MSE is .1096, .1656, .1114, and .1455.  These rankings do not match semantic
+binding.  LeWM has the best Tunnel pixel MSE but chance-level binding, whereas
+SMWM has the strongest binding despite worse pixel MSE.
+
+The deterministic validation videos make the mismatch visible.  LeWM and
+LpWM eventually reconstruct recognizable green and orange portals in native
+Tunnel even though their semantic binding probes remain at chance.  SMWM
+reconstructs the red agent clearly but its portal hues are faint despite a
+strong binding probe.  \pldm{}'s portal reconstruction is also faint.  In
+Chaser, decoder colors become visually sharp only after the probe already
+passes.  Because the decoder itself is still learning, this lag cannot be
+converted into encoder transition complexity.  \Cref{fig:tunnel-decoder-progression}
+shows the fixed visual audit across training.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/decoder_tunnel_cls_progression.pdf}
+  \caption{Detached projected-CLS decoder reconstructions of the third frame
+  (index 2) from each of the same six deterministic Tunnel validation clips,
+  re-tiled without color enhancement.
+  Rows are model families; columns are ground truth and completed training
+  epochs.  Epochs 6, 8, and 13 are SMWM probe landmarks, not decoder
+  thresholds.  LeWM and LpWM reconstruct portal hues despite lacking
+  persistent semantic binding, whereas SMWM reconstructs the agent strongly
+  while portal hues remain faint despite its binding-probe crossing.  The
+  decoder is trained concurrently from scratch on detached embeddings, so the
+  grid audits appearance but cannot establish binding, supported event-specific
+  predictor response, or a
+  transition count.}
+  \label{fig:tunnel-decoder-progression}
+\end{figure*}
+
+The evidence therefore supports a hierarchy rather than one binary notion of
+``color blindness'':
+appearance does not imply semantic binding; patch-token access does not imply
+global-CLS access; and destination decodability does not imply supported
+event-specific predictor response.  Conversely, a strong linear binding probe need not yield a
+high-fidelity pixel decoder.  Each diagnostic answers a different question.
+
+\paragraph{Takeaway.}
+Rendering the right hue does not establish semantic binding, and a probeable
+relation does not guarantee vivid reconstruction.
+
+\begin{table}[t]
+\caption{Four feature-access regimes observed in the checkpoint audit.}
+\label{tab:regimes}
+\centering
+\small
+\begin{tabular}{p{.38\columnwidth}p{.51\columnwidth}}
+\toprule
+Regime & Example \\
+\midrule
+Initial accessibility & Chaser cue; spatial Tunnel color/place \\
+Delayed organization & Native Tunnel SMWM binding \\
+Transient loss/crossing & Tunnel LeWM crossing; Chaser SMWM cue \\
+No supported native-CLS onset by epoch 50 & Tunnel \lewm{}, \pldm{}, \lpwm{} \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Discussion}
 
-The intended conclusion is conditional rather than universal.  A model that
-fails one cue-conditioned benchmark may still preserve the same feature when
-its consequence is more frequent, when a different anti-collapse objective is
-used, or when optimization continues longer.  Conversely, a clear decoder is
-not sufficient evidence of correct causal use.  The paired environments and
-stagewise diagnostics are designed to identify these boundaries without
-conflating representation, prediction, energy, and planning.
+\subsection{What remains plausible about color retention?}
 
-\section{Limitations}
+Transition rarity alone does not explain the results.  Chaser and Tunnel have
+nearly equal event-bearing interval rates, yet their native CLS trajectories
+are qualitatively different.  The environments differ in how the cue enters
+the dominant dynamics.  Chaser color belongs to the moving runner, whose
+position must be represented on nearly every interval.  Tunnel color belongs
+to static portals; most approach dynamics can be predicted from agent and
+entrance geometry without assigning the semantic labels green and orange.
 
-The environments are deliberately simple, and the first baseline uses one
-training seed.  Model families differ in anti-collapse objective as well as
-optimization geometry, so family comparisons do not isolate one mechanism.
-Training windows, rather than raw frames, are the statistical unit that enters
-the loss.  Final claims will require multiple seeds, episode-stratified
-intervals, and a prespecified exposure intervention.
+The evidence narrows the candidate bottleneck to converting spatially indexed
+token information into the native global state.  Whether moving-object coupling
+helps this conversion remains untested.  Same-checkpoint probes establish the
+global-access contrast: a 192-dimensional random or PCA projection of the
+ordered contextual-token map greatly exceeds CLS binding in the first three
+runs and improves SMWM, while simple mean pooling usually does not.
+The reconstructed-initialization control sharpens this bottleneck: ordered
+random spatial features already expose binding before objective training, but
+CLS and token means do not.  Local linear access is therefore not itself an
+achievement of the predictive objective.  The learned questions are whether
+the relation is preserved and organized into the global state, and whether it
+is recruited by the predictor at the event.  The seeded epoch-10 anchor makes
+that organization visibly run-dependent: one SMWM seed exposes binding
+strongly in CLS while two do not, even though all six PCA readouts remain
+strong.  The post-hoc per-epoch audit further separates persistent geometry
+without binding from unstable global organization; it does not support a
+single SMWM acquisition schedule.
+The checkpointed Chaser swaps show SMWM response emerging in $(10,20]$, while
+the other three runs remain non-positive despite early destination access.
+The exact Tunnel swap gives a different stage signature: three models show a
+stable visual response on both ordinary and teleporting predictions, whereas
+SMWM's response--target alignment is selectively reduced or its direction is
+reorganized at teleport.  This
+reinforces that visual sensitivity, semantic binding, and event-specific
+prediction are not interchangeable measurements.
+They do not identify inverse dynamics as the cause.  SMWM also differs in
+optimization and nonlinear organization; the spatial training condition adds
+capacity; and the environments differ in cue size, count, motion, and
+relational complexity.  A learned capacity-matched aggregation intervention,
+cue-motion control, and inverse-weight intervention remain necessary for a
+mechanism claim.
+
+\subsection{The frequent-first story is conditional}
+
+The motivating story was that a model first organizes factors represented
+by most transitions and later organizes a rarer relation in its global state.
+Only the observed native Tunnel SMWM run cleanly exhibits that native-CLS
+sequence: geometry is persistent at epoch 6,
+the first confirmed binding crossing starts at 8, and joint binding/place is
+stable at 13.  Tunnel
+\lewm{}, \pldm{}, and \lpwm{} do not expose both factor families in native CLS within the observed
+budget.  Chaser raw color does not exhibit a first-acquisition delay because it
+is visible at initialization.  Destination advantage over the contact-only
+baseline is early for three encoders, but their cue-response trajectories are
+right-censored beyond epoch 50.  SMWM shows the opposite sequence: its encoder
+advantage is right-censored, while event-specific predictor response is
+persistent from the scheduled interval $(10,20]$.
+
+The appropriate claim is therefore not a universal curriculum induced by
+frequency.  The data instead show a conditional set of regimes: early global
+organization, no supported native-CLS onset within budget, transient
+accessibility, or initialization-level accessibility can all occur under the
+same nominal event rate.
+
+\subsection{Implications for world-model evaluation}
+
+Endpoint planning or average prediction loss would miss the main distinctions
+in this study.  A low reconstruction loss can coexist with failed semantic
+binding.  A raw cue classifier can be perfect before training even though an
+event outcome is not yet accessible.  A separately trained spatially structured aggregator can
+expose color while agent state is poor; at a fixed checkpoint, patch tokens
+can expose binding that CLS hides.  A destination readout can also improve even
+when a paired intervention finds no event-specific predictor response.
+World-model evaluation should therefore report token source, stage, target
+semantics, event exposure, and baseline rather than one undifferentiated score.
+
+The transition counts also need careful interpretation.  They measure
+sampled loss exposures under repeated shuffles.  They are not unique examples
+and are not an independent-sample complexity theorem.  Their value is to make
+epoch comparisons concrete and to support future exposure interventions.
+
+\section{Limitations and Next Tests}
+
+Most training-time and family comparisons still contain one historical
+world-model run per cell.  Seed 3072 fixed the historical data split and loader
+generators but did not globally seed every parameter initialization and
+stochastic operation.  We implemented and validated global seeding and
+validated the initialization/epoch-1/epoch-10 fixed-width patch result across
+three unique initial encoders and six paired \lewm{}/SMWM checkpoints at each
+saved anchor.  The
+initial states are validated reconstructions rather than saved weights.  This
+supports the narrow anchor-accessibility claim, but full onset
+curves, Chaser interventions, the other two objective families, and every
+epoch-50 swap remain single-run.  Population onset or family-level rankings
+are therefore unsupported.
+
+The two environments are not a single-factor intervention.  Chaser presents
+one episode-level runner color, whereas Tunnel displays both colors
+simultaneously and asks which color is bound to which randomized slot.  The
+verified contrast is therefore between global cue-conditioned prediction and
+relational spatial binding; moving-versus-static cue attachment remains a
+mechanistic hypothesis until a factorial cue-motion/binding experiment holds
+the number of visible colors and target relation fixed.
+
+The dense 51-checkpoint analytic probe intervals treat samples as independent,
+and multiple targets create a look-elsewhere problem.  The checkpointed Chaser
+control instead uses episode resampling and simultaneous bands over two
+prespecified 36-cell families, but still conditions on a single training run.
+The Tunnel epoch-32 LeWM fluctuation demonstrates why future replicated onset
+tests should use episode-clustered uncertainty and prespecified stability.
+
+Probe test episodes are isolated from probe fitting but were available during
+self-supervised encoder training.  The study therefore audits in-distribution
+representation organization, not encoder generalization to unseen episodes.
+A frozen evaluation dataset excluded from world-model training is needed to
+separate those questions.
+
+Linear readouts establish accessibility, not causal use.  Chaser destination
+decoding is aligned to the first-contact future, and both paired interventions
+hold state, geometry, and actions fixed.  Their residual statistics are still
+specific latent-space operationalizations: scale and geometry of the learned
+target can affect cosine alignment, and a non-positive value does not prove
+absence of every nonlinear cue pathway.  The Tunnel swap exchanges all four
+marker colors but deliberately keeps physical pairing and destination fixed;
+it establishes visual sensitivity and event-specific reorganization, not a
+counterfactual routing effect.  Raw swap-response scale also differs sharply
+across objectives, so cosine direction must not be read as cross-family
+sensitivity magnitude.  The detached decoder is nonlinear and trained concurrently,
+so its learning curve cannot timestamp encoder access.  The .511 contact-only
+baseline is fit on fit-plus-validation episodes and frozen on test, but it is
+not a Bayes or all-pixel oracle; model advantage can use any extra visual
+context.  Initialization weights were not saved for the historical Chaser
+intervention or four-family fixed-width Tunnel analysis, so those
+weight-dependent analyses begin at epoch 1.  Native epoch-0 probe artifacts
+still measure raw CLS access, and the seeded fixed-width control uses a
+validated reconstruction.  Cue-residual sufficient statistics were not saved in the
+final JSON, limiting artifact-only recomputation of its bootstrap bands.
+
+The completed controls localize the next tests.  Both exact interventions
+should be replicated across globally seeded training runs, and Tunnel still
+needs a destination-changing counterfactual that preserves a valid dynamical
+trajectory.  A learned readout
+intervention can test whether preserving spatial organization during training,
+rather than recovering it after training with PCA or random projection,
+changes the predictive state.  With validated global seeding, an
+exposure intervention can vary event-target rates while holding unique
+examples, optimizer updates, initialization, and non-event sampling fixed.  A
+monotonic onset shift would support frequency as a causal control parameter;
+its absence would weaken a simple frequency-only account without identifying
+which alternative mechanism is responsible.
+
+Finally, these synthetic environments deliberately isolate one cue and one
+event.  Richer scenes may create competition among several rare factors,
+which is the regime ultimately motivating this work.  The present benchmarks
+provide a controlled unit test, not evidence that natural video models follow
+the same transition counts.
+
+\section{Conclusion}
+
+This experiment matrix does not support a shared number of transitions at
+which JEPA world models learn color.  In Chaser, color is visible at
+initialization.  \lewm{}, \pldm{}, and \lpwm{} gain encoder destination access by epochs
+1--3, but in the observed runs show no positive simultaneous cue-response band
+through epoch 50.  SMWM shows the
+opposite: event-specific response becomes persistent in $(10,20]$ while its
+encoder advantage remains right-censored beyond 50.  In
+native global-CLS Tunnel Rooms, the observed \lewm{}, \pldm{}, and \lpwm{} runs do not
+linearly expose both geometry and durable color-place binding after 50 epochs; the observed
+SMWM run organizes geometry in CLS before stable joint CLS binding.  Fixed-width
+location-sensitive projections of ordered patch tokens make binding linearly
+accessible at validated reconstructed initialization across three unique
+encoder draws.  PCA satisfies the all-six accessibility rule again at saved
+epochs 1 and 10, while native CLS organization is seed-dependent and one LeWM
+seed shows a modest adjusted PCA decline.  The historical four-family trajectories have no conclusive
+end-to-end PCA binding change from epoch 1 to 50.  Exact Tunnel swaps and
+decoder videos show that endpoint visual swap sensitivity
+and appearance can coexist with weak or unsupported global linear binding and
+without supported transition-specific recruitment.  The central result is a conditional representation boundary, not
+generic color blindness or a universal frequency curriculum: spatial
+availability, global relational access, and supported event-specific predictor
+response are different properties.  Replicated cue interventions, learned aggregation controls, and
+controlled event exposure are the next causal tests.
+
+\section*{Data Availability}
+
+The anonymized supplement will contain resolved configurations, dataset
+hashes, checkpoint-level probe JSON files, compact result tables, and
+deterministic decoder media.  Large source datasets and checkpoints are
+retained on the research cluster and will be released subject to the
+workshop's anonymity and storage policies.
+
+\section*{Ethics, Conflicts, Funding, and Contributions}
+
+The study uses synthetic environments and no human-subject or personal data.
+The authors declare no competing interests.  Funding information and CRediT
+roles are withheld during anonymous review and will be supplied in the final
+version.  AI-assisted tools were used for language revision and codebase
+navigation; the authors verified the experiments, numerical values, citations,
+and scientific claims.
 
 \bibliography{references}
 \bibliographystyle{icml2026}
 
 \appendix
 
-\section{Reproducibility Checklist}
+\section{Reproducibility Record}
 
-For every reported run we record the source commit, resolved configuration,
-dataset path and SHA-256, episode split, seed, viewed examples, optimizer
-updates, checkpoint, W\&B run ID, and diagnostic completion.  Missing metrics
-remain missing and are never converted to zero.
+Every reported run records the source commit, resolved configuration, dataset
+path and SHA-256, seed label, batch size, epoch budget, W\&B run identifier,
+checkpoint path, and probe completion.  Missing metrics are never encoded as
+zero.  All primary Chaser, Tunnel native-CLS, and Tunnel spatial-$8\times8$
+50-epoch jobs completed with exit code zero and final weights.
 
-\section{Planned Tables and Figures}
+\begin{table}[h]
+\caption{Primary run material passport.}
+\label{tab:passport}
+\centering
+\small
+\begin{tabular}{ll}
+\toprule
+Field & Value \\
+\midrule
+Source commit & \texttt{7b9ec26560ae9986} \\
+Seed label & 3072 \\
+Epochs / batch size & 50 / 128 \\
+History / predictions & 3 / 1 \\
+Frameskip / intervals per clip & 5 / 3 \\
+Chaser dataset SHA prefix & \texttt{c6d8a9abaf9c3fb6} \\
+Tunnel dataset SHA prefix & \texttt{e134677f2c74d17d} \\
+Chaser probe sample hash & \texttt{dca44b9838cca8ca} \\
+Tunnel probe sample hash & \texttt{1d2b74dcee68a631} \\
+Tunnel four-point null MAE & 31.187048 px \\
+Chaser contact baseline BA & .511184 [.480269,.541883]$^\dagger$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\begin{enumerate}
-  \item A benchmark schematic showing the frequent smooth objective and rare
-  cue-conditioned teleport in both environments.
-  \item A complete native-baseline table for all eight model--dataset cells.
-  \item Stagewise geometry/cue/destination probes with explicit nulls.
-  \item Matched original/decoded event frames and predicted rollouts.
-  \item Event-exposure and training-duration dose-response curves.
-\end{enumerate}
+\noindent$^\dagger$Privileged contact-quadrant baseline; 50,000-resample
+fixed-prediction bootstrap interval.
 
-\balance
+\section{Full SMWM Stagewise Results}
+
+\begin{table}[h]
+\caption{Epoch-50 SMWM readouts by stage.  Predictor locations use the aligned
+future; encoder/projector use the current state.}
+\label{tab:smwm-stagewise}
+\centering
+\small
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llrrrr}
+\toprule
+Data & Stage & Geometry MAE & Geometry $R^2$ & Event BA & Event MAE \\
+\midrule
+\multirow{3}{*}{Chaser}
+ & Encoder & 1.25 & .999 & .553 & 29.92 \\
+ & Projector & .98 & .999 & .878 & 9.45 \\
+ & Predictor & 2.56 & .980 & .950 & 5.11 \\
+\midrule
+\multirow{3}{*}{Tunnel}
+ & Encoder & 15.08 & .713 & .844 & 25.50 \\
+ & Projector & 14.11 & .719 & .806 & 25.76 \\
+ & Predictor & 21.41 & .555 & .838 & 25.94 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+For Chaser, ``geometry'' is mean red/runner motion localization and the event readout is
+destination BA plus post-teleport MAE.  For Tunnel, the table's geometry columns
+report agent localization; the onset family used in the main text additionally
+requires nearest-entrance identity.  The event readout is semantic binding BA plus the mean of four
+color-conditioned portal locations.  These quantities have different target
+scales and should not be compared numerically across environments.
+
+\section{Historical Controls and Scope Boundary}
+
+The repository also contains an earlier LeWM-focused Tunnel Rooms study with
+inverse-dynamics sweeps, temporal-alignment sweeps, three-seed global-readout
+controls, palette swaps, shape controls, nonlinear probes, counterfactual
+marker interventions, and decoder color-fidelity audits.  That work motivated
+the present benchmark and supports two qualitative design decisions: portal
+geometry must be randomized to prevent fixed-slot shortcuts, and averaged
+pixel reconstruction cannot establish semantic binding.
+
+Those archived runs are not pooled into the primary tables.  They use
+different objective variants, update budgets, aggregators, and in some cases
+different room counts or pretrained features.  Their role is provenance and
+boundary discovery.  The present claims are based on the matched native
+50-epoch matrix and its within-run checkpoint trajectories.
+
+\section{Prespecified Fixed-Checkpoint Controls}
+
+The post-training evaluation completed as Slurm job 16624453 (exit 0:0).  Its
+prespecification, fixed artifact paths, source hashes, and result JSON are
+retained with the supplement; the result JSON has SHA-256 prefix
+\texttt{f42540bf387f124b}.  These identifiers document provenance and carry no
+scientific meaning.
+
+\begin{table*}[h]
+\caption{Tunnel same-checkpoint readouts at epoch 50.  Every row uses the same
+frozen native encoder checkpoint and held-out episodes.  Binding is balanced
+accuracy; semantic and agent columns are $R^2$.}
+\label{tab:same-checkpoint-full}
+\centering
+\small
+\begin{tabular}{llrrrr}
+\toprule
+Model & Readout (dimension) & Binding BA & Semantic hubs $R^2$ & Agent $R^2$ & Nearest BA \\
+\midrule
+\multirow{3}{*}{LeWM} & CLS (192) & .531 & $-.059$ & $-.115$ & .517 \\
+ & Raw patches (49,152) & .882 & .799 & .194 & .572 \\
+ & Fixed $8\times8$ (12,288) & .909 & .867 & .340 & .620 \\
+\midrule
+\multirow{3}{*}{\pldm{}} & CLS (192) & .495 & $-.178$ & $-.106$ & .514 \\
+ & Raw patches (49,152) & .903 & .731 & .449 & .666 \\
+ & Fixed $8\times8$ (12,288) & .930 & .846 & .549 & .707 \\
+\midrule
+\multirow{3}{*}{LpWM} & CLS (192) & .492 & $-.073$ & $-.229$ & .458 \\
+ & Raw patches (49,152) & .942 & .931 & .387 & .665 \\
+ & Fixed $8\times8$ (12,288) & .949 & .955 & .451 & .684 \\
+\midrule
+\multirow{3}{*}{SMWM} & CLS (192) & .844 & .435 & .713 & .725 \\
+ & Raw patches (49,152) & .916 & .808 & .725 & .686 \\
+ & Fixed $8\times8$ (12,288) & .949 & .853 & .854 & .750 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The separate fixed-width follow-up completed as Slurm job 16633844 (exit
+0:0).  Its atomic result JSON has SHA-256 prefix
+\texttt{9ef906c7ded66641}; the prespecification and runner have SHA-256 prefixes
+\texttt{c4de5bc101bb395e} and \texttt{54f7fbc8927026e8}.  It reuses the same
+896 probe examples and four frozen checkpoints; these identifiers are
+provenance only.
+
+The epoch-1/10 outcome-blind three-anchor extension, anchored by the
+already-observed epoch-50 result, completed as Slurm job 16642019
+(exit 0:0).  Its atomic result JSON has SHA-256 prefix
+\texttt{222acd9f282a5e8a}; the prespecification and runner have prefixes
+\texttt{1ddefa3178990b68} and \texttt{1bc906a97fc00616}.  It evaluates epochs
+1, 10, and 50 and records every held-out prediction.  Epoch 1 follows one
+completed training epoch; no epoch-0 checkpoint exists.  Independent
+recomputation reproduced all 48 binding BAs, 84 paired bootstraps, primary
+decisions, and the frozen epoch-50 result exactly.
+
+The globally seeded epoch-1 replication completed as Slurm job 16644629
+(exit 0:0).  Its atomic result, prespecification, and runner have SHA-256
+prefixes \texttt{908153cbe9db0795}, \texttt{2af767b04ac5040c}, and
+\texttt{bbbebd68629db0d9}.  It evaluates three \lewm{} and three SMWM
+checkpoints trained under globally seeded initializations 3072--3074 on the
+same 896-example split.  An independent audit verified 24 artifact hashes,
+all 24 binding confusion matrices, and all 18 paired 10,000-resample
+bootstraps with zero discrepancies.
+
+The reconstructed-initialization control completed as Slurm job 16648080
+(exit 0:0).  Its atomic result, frozen protocol, and evaluator have SHA-256
+prefixes \texttt{42671ac5d3c5afd5}, \texttt{e84de75ee6df59aa}, and
+\texttt{7c529d046c90fa6e}.  Before extracting any patch token, it reproduced
+each saved epoch-0 native probe artifact exactly (106 floating metrics per artifact,
+maximum error zero).  Two independent audits then reproduced 24 confusion
+matrices and intervals, 42 paired bootstraps, all cell decisions, and the
+all-six aggregation with zero discrepancies.  Same-seed \lewm{}/SMWM states
+and predictions are identical at initialization, leaving three unique draws.
+
+The prospectively specified epoch-10 anchor completed as Slurm job 16652597
+(exit 0:0).  Its atomic result and manifest-v2 have SHA-256 prefixes
+\texttt{afa2229cd941ed5c} and \texttt{dd7930c5cd62a79d}; the first frozen
+manifest was preserved but not used after an outcome-blind audit requested a
+stronger absence-at-freeze record.  Two independent implementations reproduced
+24 readout metrics, 18 within-checkpoint bootstraps, 24 paired epoch-10-minus-1
+bootstraps, every decision, and every summary with zero mismatches.  The design
+contains six observed checkpoints across three paired seed values, not six
+independent architecture replications.
+
+The descriptive SMWM native-CLS epoch-0--10 audit has result SHA-256 prefix
+\texttt{d31cd6eb42e84afe}.  An independent implementation reproduced 33 rows,
+66 classifier records, 132 location records, 18 series, 36 landmarks, 45
+hashes, and 83 provenance checks with zero mismatches.  Its frozen semantic
+threshold is the six-decimal value 31.187048; direct float64 recomputation is
+31.1870489686, with no row close enough for the rounding to change a decision.
+
+\begin{table*}[h]
+\caption{Capacity-matched Tunnel binding at epoch 50.  Every representation is
+192-dimensional.  Brackets in the last column are 10,000-resample paired,
+binding-stratified 95\% intervals over the same 256 held-out episodes.}
+\label{tab:capacity-matched-full}
+\centering
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+Model & CLS BA & Mean-patch BA & Gaussian-RP BA & PCA BA & PCA $-$ CLS [95\% CI] \\
+\midrule
+\lewm{} & .531 & .482 & .831 & .934 & .403 [.336,.470] \\
+\pldm{} & .495 & .532 & .895 & .934 & .439 [.371,.506] \\
+\lpwm{} & .492 & .455 & .921 & .969 & .477 [.411,.542] \\
+\smwm{} & .844 & .899 & .944 & .968 & .125 [.077,.173] \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[h]
+\caption{Chaser paired cue-swap control.  The primary estimate is contact
+residual alignment minus its matched no-event control; intervals use 2,000
+paired episode bootstraps over 492 held-out episodes.  Destination MAE is a
+secondary linear readout.}
+\label{tab:cue-swap-full}
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Model & Event alignment & No-event alignment & Difference [95\% CI] & Current $\rightarrow$ predicted MAE \\
+\midrule
+LeWM & .968 & .978 & $-.0108$ [$-.0138,-.0078$] & $8.36\rightarrow1.95$ \\
+\pldm{} & .980 & .978 & .0013 [$-.0031,.0057$] & $9.88\rightarrow4.02$ \\
+LpWM & .979 & .978 & .0009 [$-.0024,.0040$] & $9.89\rightarrow4.72$ \\
+SMWM & .828 & .321 & .5069 [.4512,.5498] & $8.69\rightarrow4.60$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The checkpointed Chaser follow-up completed as Slurm job 16634274 (exit 0:0).
+Its result, prespecification, runner, and shared-runner SHA-256 prefixes are
+\texttt{06799748ee8a4b78}, \texttt{1914362d2d58d7c3},
+\texttt{0fc329bf5bb768f1}, and \texttt{16607262f1313a09}.  It uses 3,155 exact
+cue-swap pairs, 492 matched held-out controls, a 1,024-example
+fit-plus-validation contact baseline, 512 test episodes, and 2,000 bootstrap
+resamples.  Independent audit reproduced all 108 saved destination BAs,
+destination intervals, and encoder simultaneous decisions exactly; raw cue
+residual sufficient statistics were not retained, so cue-bootstrap intervals
+remain runner-derived.
+
+The exact Tunnel rendering-swap evaluation completed as Slurm job 16644903
+(exit 0:0).  Its result, prespecification, and runner have SHA-256 prefixes
+\texttt{1fb81c7b6dec5151}, \texttt{a622278089e7b618}, and
+\texttt{6f4a4185c9248524}.  Across 920 unique replayed frames, the pixel audit
+found zero factual mismatches, zero ineffective swaps, and zero changes
+outside the four marker rectangles.  Independent reconstruction from saved
+per-episode sufficient statistics reproduced all estimates and the 12-cell
+maximum-deviation band to maximum absolute error $4.44\times10^{-16}$.
+
+\begin{figure*}[h]
+  \centering
+  \includegraphics[width=\textwidth]{figures/chaser_destination_stage_trajectories.pdf}
+  \caption{Chaser destination BA minus the frozen contact-quadrant baseline
+  across encoder, projector, and predictor.  Bands are pointwise paired
+  destination-stratified 95\% intervals.  Projector and predictor curves are
+  secondary diagnostics; only the encoder received the simultaneous
+  acquisition analysis in \Cref{fig:chaser-intervention-trajectory}.}
+  \label{fig:chaser-stage-trajectories}
+\end{figure*}
+
+\section{Audited DINO Control and Partial Bottleneck Intervention}
+
+One run originally labeled as a DINO CLS-projector-plus-IDM experiment resolves
+instead to a frozen DINOv2-small raw CLS encoder, with no learned CLS projector
+and inverse dynamics disabled.  We correct the label here rather than pooling
+it with the primary matrix.  At fit end, a ridge probe on the frozen encoder
+has current-agent MAE 7.86 pixels and $R^2=.961$; the learned predictor has
+future-agent MAE 13.49 and $R^2=.844$.  Thus pretrained CLS already exposes
+current agent position, while the learned predictor makes future agent
+position linearly decodable.  This
+hidden-TR3 control contains no color manipulation and supports no color claim.
+
+The intended learned $384\!\rightarrow\!1536\!\rightarrow\!384$ CLS-projector
+sweep was stopped after roughly 10--12 epochs, before final probes or planning.
+At the last available checkpoint, current-agent encoder $R^2$ is .774, $-.328$,
+.290, .141, $-.002$, .975, .979, and .980 for inverse-dynamics weights
+$0,.005,.025,.125,.625,3.125,15.625,78.125$, respectively.  The three largest
+weights yield .975--.980, whereas the five lower weights range from $-.328$ to
+.774.  Because cells stop at different epochs and lack globally matched
+initialization, this is an incomplete endpoint pattern, not evidence of an IDM
+threshold or retention effect.
+
+\yash{TODO: Replicate a globally seeded 50-epoch DINO projector sweep at IDM
+weights 0, .025 or .125, and 15.625, then evaluate the same fit-end probes.}
+
+\yash{TODO: Add a color-bearing DINO control before drawing any conclusion
+about pretrained features and semantic color binding.}
+
+\section{Actionable Evidence Gaps}
+
+The completed 192-dimensional PCA and random-projection controls rule out raw
+output coordinate count as a sufficient explanation.  The globally seeded
+control shows compact patch binding at validated reconstructed initialization
+in three unique encoder draws shared across the paired \lewm{}/SMWM runs; no
+adjusted readout change is established after one epoch.  At epoch 10, PCA
+accessibility and PCA-over-CLS pass the adjusted all-six rules, but the
+five-point noninferiority rule and the strict hidden-from-CLS all-six tier do
+not.
+
+\yash{TODO: Complete the epoch-50 fixed-width follow-up for the three seeded
+\lewm{} and SMWM trajectories, and add three globally seeded \pldm{}/\lpwm{}
+replicas before making a four-family population-level aggregation claim.}
+
+\yash{TODO: Replicate the completed Chaser cue-swap trajectory across globally
+seeded training runs; replicate the completed Tunnel rendering swap across
+seeds and design a valid destination-changing Tunnel counterfactual.}
+
+\yash{TODO: Repeat the primary matrix with global initialization and stochastic
+seeding before reporting population onset distributions or model rankings.}
+
+\section{Statistical Interpretation Checklist}
+
+We distinguish evidence from inference as follows.  Verified artifact facts
+include completion status, checkpoint metrics, sample hashes, dataset hashes,
+and sampled transition counts.  The Tunnel--Chaser asymmetry and the
+decoder--probe dissociation are empirical descriptions.  The claim that
+moving-object coupling or inverse dynamics causes retention is a hypothesis
+for intervention, not an established mechanism.
+
+The principal statistical risks are repeated checkpoint testing, uncorrected
+multiple targets, sample-level confidence intervals, temporal autocorrelation,
+and one historical world-model run per cell outside the paired epoch-1/10
+controls with three unique initial encoders.  No $p$-value is interpreted as an independent
+population-level test.  Non-acquisition is stated only within the observed
+50-epoch budget, and zero-transition spatial results are described as initial
+accessibility rather than learning.
+
+\section{Additional Checkpoint and Decoder Audits}
+
+\Cref{fig:tunnel-native-expanded,fig:tunnel-spatial-decoder,fig:chaser-decoder}
+provides the expanded trajectory and reconstruction audits omitted from the
+main narrative.
+
+\begin{figure*}[h]
+  \centering
+  \includegraphics[width=\textwidth]{figures/tunnel_native_cls_trajectories.pdf}
+  \caption{Expanded native-CLS Tunnel audit.  In addition to the MAE and
+  binding curves summarized in the main text, this view shows agent and
+  semantic-place $R^2$.  Only the observed SMWM run crosses and persistently remains above the
+  zero-$R^2$ thresholds.  BA bands are per-checkpoint analytic intervals; MAE
+  and $R^2$ have no run-level uncertainty.}
+  \label{fig:tunnel-native-expanded}
+\end{figure*}
+
+\begin{figure*}[h]
+  \centering
+  \includegraphics[width=\textwidth]{figures/decoder_tunnel_spatial8x8_progression.pdf}
+  \caption{Spatial-$8\times8$ Tunnel decoder progression using the third frame
+  (index 2) from the same six deterministic clips as
+  \cref{fig:tunnel-decoder-progression}.  Portal hues
+  become visually available earlier and more consistently than under native
+  CLS, but the spatial linear probes already pass at initialization.  The
+  visual emergence therefore reflects decoder fitting to an accessible state,
+  not transition-driven acquisition.}
+  \label{fig:tunnel-spatial-decoder}
+\end{figure*}
+
+\begin{figure*}[h]
+  \centering
+  \includegraphics[width=\textwidth]{figures/decoder_chaser_cls_progression.pdf}
+  \caption{Native-CLS Chaser decoder progression using the third frame
+  (index 2) from six deterministic validation clips.  Cue color is linearly
+  accessible at initialization, yet
+  the detached decoder is nearly blank at epoch 1 and usually renders colors
+  clearly only around epochs 5--10.  This lag directly demonstrates why
+  decoder appearance cannot timestamp representation acquisition.}
+  \label{fig:chaser-decoder}
+\end{figure*}
+
 \end{document}
