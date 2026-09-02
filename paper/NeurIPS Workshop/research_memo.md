@@ -16,35 +16,47 @@ epoch 50.
 
 ## The paper we have now
 
-The stronger result is a decomposition of representation quality:
+The stronger result is two failed implications plus one orthogonal audit:
 
-1. a cue can perturb visual features;
-2. a color--place relation can be accessible in ordered spatial tokens;
-3. the relation can be linearly accessible in native CLS;
-4. a cue-conditioned outcome can be decoded;
-5. a prediction can respond specifically at the event;
-6. a detached decoder can render the appearance.
+1. ordered-patch relational access does not guarantee native-CLS relational
+   access;
+2. positive evidence for pre-contact encoder-CLS outcome access does not
+   guarantee positive evidence for contact-enriched prediction;
+3. detached reconstruction does not establish either property.
 
-These measurements are not interchangeable and do not form a guaranteed
-hierarchy. The shortest statement of the paper is:
+The shortest statement of the paper is:
 
-> Predictive learning does not simply retain or discard a feature. It changes
-> where the feature is organized and how prediction responds when it matters.
+> Diagnostic evidence does not compose: patch-token access need not transfer
+> to native CLS, and positive evidence for outcome decodability need not be
+> accompanied by positive evidence for event-enriched predictive response.
 
-Tunnel Rooms establishes that spatial-token accessibility need not imply
-native-CLS relational access. Chaser establishes that destination decodability
-need not imply positive contact-enriched cue alignment. Decoder results show
-that rendered hue is a separate property again.
+Tunnel Rooms establishes that spatial-token accessibility need not guarantee
+native-CLS relational access. In single-run Chaser trajectories, positive
+simultaneous evidence for destination decodability is not accompanied by
+positive simultaneous evidence for contact-enriched cue alignment in three
+objectives. Decoder results show that rendered hue is a separate property
+again.
 
 ## What the experiments show
 
-### Tunnel Rooms: spatial access versus global organization
+### Tunnel Rooms: spatial access versus native-global readout
 
 - At validated reconstructed initialization, a 192-dimensional PCA of the
   ordered patch map decodes color--place binding at balanced accuracy
   .965--.969 across three unique encoder draws. Native CLS and mean-patch
   readouts remain near chance. A fixed Gaussian random projection gives the
   same qualitative result.
+- At epochs 1 and 10, per-checkpoint PCA-192 binding is .911--.984 across all
+  six paired trajectories at both anchors (12 checkpoint states). LeWM CLS is
+  .423--.496. At epoch 10,
+  SMWM CLS reaches .918, .467, and .504 across the three seeds. PCA is refit
+  without labels per checkpoint, so this establishes high access at the
+  sampled anchors, not uninterrupted persistence or stability of one
+  coordinate basis.
+- In matched seed 3072, the mean-patch readout changes from .511 at
+  initialization to .503 for LeWM and .929 for SMWM at epoch 10. This is a
+  useful exemplar that the contrast is not unique to the native-CLS readout, but
+  it remains an objective-bundle result rather than an IDM effect.
 - In the four historical epoch-50 runs, PCA-192 binding is .934--.969 for all
   objectives. Native CLS remains near chance for LeWM, PLDM-no-IDM, and LpWM;
   the observed SMWM run reaches .844.
@@ -68,14 +80,14 @@ whereas SMWM removes SIGReg and adds IDM .1.
 ### Chaser: outcome access versus event enrichment
 
 - Runner color is perfectly linearly separable from every native encoder at
-  initialization. Later curves concern retention and reorganization, not first
+  initialization. Later curves concern changes in accessibility, not first
   acquisition.
 - LeWM, LpWM, and PLDM-no-IDM exceed a frozen contact-quadrant-only destination
   baseline by the earliest checkpoint, within epochs (1,2], and within epochs
   (2,3], respectively. SMWM's encoder advantage remains unsupported through
   epoch 50 in the observed run.
 - LeWM, PLDM-no-IDM, and LpWM have large cue-swap alignment at both contact and
-  the matched no-event window. Their event-minus-control simultaneous lower
+  the matched pre-contact window. Their contact-minus-pre-contact simultaneous lower
   bands never become positive through epoch 50. This is a lack of supported
   contact enrichment, not a lack of cue response or proof that color is
   unused.
@@ -97,8 +109,10 @@ timestamp or establish semantic binding.
 
 ## Hypotheses that survived
 
-- Visible information need not be organized as a native global relation.
-- Outcome accessibility need not coincide with event-specific enrichment.
+- Spatially accessible information need not be linearly readable as a native
+  global relation.
+- Positive evidence for outcome accessibility need not coincide with positive
+  evidence for contact enrichment.
 - Geometry can emerge before, or persist without, stable color binding.
 - Objective choice and representation structure affect where information is
   accessible.
@@ -114,7 +128,7 @@ timestamp or establish semantic binding.
 - Patch-level binding is not acquired late; it is already accessible before
   training in the validated control.
 - The study does not establish that inverse dynamics, cue motion, or rarity
-  causes the observed organization.
+  causes the observed stagewise accessibility.
 - A non-positive Chaser enrichment statistic does not show that a model has no
   cue response or makes no nonlinear use of color.
 
@@ -122,16 +136,17 @@ timestamp or establish semantic binding.
 
 Random spatial ViT features already provide a rich, position-sensitive basis
 for the color--place relation. The learned problem is therefore not simply to
-create color information. It is to preserve or reorganize that relation in the
-model's chosen global state and, separately, to make the predictive computation
-respond at the relevant event. Frequency, effect size, redundancy, global
-compression, regularization, and endogenous target geometry can all affect
-those steps.
+create color information. Across training, linear accessibility can differ at
+the spatial and native-global stages, and predictive response is a separate
+property again. Frequency, effect size, redundancy, global compression,
+regularization, and endogenous target geometry can all affect those
+observations.
 
 This explanation unifies the environments without pretending they are a
-single-factor comparison. Tunnel diagnoses spatial-to-global organization.
-Chaser diagnoses decodability-to-event-enrichment. Together they establish the
-dissociations; they do not yet identify one mechanism.
+single-factor comparison. Tunnel diagnoses spatial-to-native-global access.
+Chaser diagnoses a decodability-to-event-enrichment evidence mismatch.
+Together they establish the diagnostic gaps; they do not yet identify one
+mechanism.
 
 ## Highest-value next experiments
 
@@ -153,10 +168,12 @@ dissociations; they do not yet identify one mechanism.
 The main paper should remain a four-figure argument:
 
 1. diagnostic map and environments;
-2. Tunnel binding at initialization and spatial-versus-CLS access;
+2. matched Tunnel binding at initialization, epochs 1 and 10, plus a separate
+   historical epoch-50 spatial-versus-CLS comparison;
 3. completed paired Tunnel training trajectories;
 4. Chaser destination access versus contact-enriched cue alignment.
 
 Decoder grids, exact thresholds, bootstrap mechanics, hashes, job identifiers,
 and incomplete DINO sweeps belong in the appendix. The headline should remain
-precise: visible is not bound, and decodable is not necessarily event-specific.
+precise: visible is not bound, and positive decodability evidence does not by
+itself establish event-enriched predictive response.

@@ -16,6 +16,12 @@ Decoder grids use the chronologically ordered validation media, because the
 numeric W&B filename component is a logger step rather than an epoch.
 `environment_overview` uses an unmodified held-out frame from the deterministic
 validation media; it is a benchmark illustration, not a model output.
+The representation-diagnostic map uses the same held-out environment frames
+and places each diagnostic on the native architecture. Ordered patch tokens
+and native CLS are sibling ViT outputs; the Chaser destination probe attaches
+to pre-contact encoder CLS, while contact enrichment compares the predicted
+and target branches. The selected deterministic Tunnel and Chaser GIFs have
+SHA-256 prefixes adb409b42daac907 and d8bd84aeaa1ea246.
 The dense Chaser destination panels show the contact-quadrant-only BA
 (.5112) and its fixed-mapping episode-bootstrap interval [.4803,.5419], read
 from the audited values preserved in `../data/chaser_contact_null.csv`.
@@ -39,6 +45,20 @@ exports `../data/seeded_epoch0_1_10_capacity.csv` and compares four
 one epoch, and after ten epochs. Same-seed model cells are identical at
 initialization, so the left column has three unique encoder draws; the trained
 columns contain six model-specific states.
+The Tunnel-accessibility summary combines those matched initialization,
+epoch-1, and epoch-10 cells with the separate historical epoch-50 capacity
+result. Its compact inputs are ../data/seeded_epoch0_1_10_capacity.csv and
+../data/capacity_matched_tunnel_readouts.csv. Thin early-checkpoint traces are
+seeds and thick traces are means. PCA
+is refit without labels for each frozen representation; it therefore tests a
+fixed readout class rather than a single fixed coordinate map. The Gaussian
+projection in the underlying table is the shared nonadaptive control.
+The seeded Tunnel CLS trajectories read all 51 checkpoints from each of the
+six completed paired runs and export
+../data/seeded_tunnel_cls_trajectories.csv. Five-epoch markers are visual
+anchors; bottom rugs retain every epoch that passes the row criterion,
+including the isolated seed-3074 binding passes that a five-epoch sampling
+would hide.
 `seeded_smwm_native_cls_epoch0_10` reads the independently verified post-hoc
 native-CLS analysis for SMWM seeds 3072--3074 through epoch 10
 (`posthoc_smwm_native_cls_epoch0_10_results.json`, SHA-256 prefix
