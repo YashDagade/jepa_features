@@ -1,0 +1,6 @@
+experiment_id,palette,idm_weight,analysis_protocol,episodes,frames,cue_instances,macro_class_accuracy,macro_accuracy_ci95_low,macro_accuracy_ci95_high,centroid_separation_retention,retention_ci95_low,retention_ci95_high,source_table
+E024,green_orange,3.125,heldout_episode_audit,150,300,1127,0.542347765,0.518889950,0.566858705,0.048496858,0.035711092,0.061650384,tr2_unseen_diagnostic_decoder_summary.csv
+E014,green_orange,0.0,logged_media_support_mean,NA,NA,86,0.5,NA,NA,0.073750895,NA,NA,decoder_color_run_summary.csv
+E022,green_orange,0.625,logged_media_support_mean,NA,NA,86,0.5,NA,NA,0.068800533,NA,NA,decoder_color_run_summary.csv
+E008,blue_green,0.0,logged_media_support_mean,NA,NA,86,0.5,NA,NA,0.029143104,NA,NA,decoder_color_run_summary.csv
+E009,blue_green,0.625,logged_media_support_mean,NA,NA,86,0.5,NA,NA,0.021009069,NA,NA,decoder_color_run_summary.csv
