@@ -116,18 +116,16 @@ different stages and require different evidence (\cref{fig:pipeline}).
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{figures/lewm_tunnel_pipeline.pdf}
-  \caption{\textbf{The paper localizes where a visible relation stops guiding
-  action choice.}  This is a diagnostic-stage schematic, not a complete computation
-  graph.  Tunnel geometry predicts frequent motion, while the cue--place
-  relation selects the destination.  We find strong linear accessibility in
-  ordered patch features and weak accessibility in LeWM's native global
-  feature.  In a separate checkpoint, static cue locations are linearly accessible, but
-  future-agent prediction, native route ranking among three prespecified,
-  physically replayed candidates, and first-plan optimization each fail a more
-  demanding test.  The hub/agent probes use one training step;
-  cost and search use a five-block rollout.  Shading separates the two
-  experimental audits; only measurements inside the second region share a
-  checkpoint.}
+  \caption{\textbf{A visible cue--place relation can become ineffective before
+  action choice.}  (a) Before training, ordered patch features make cue--place
+  binding strongly accessible, whereas LeWM's native global feature is near
+  chance; BA denotes balanced accuracy.  (b) At a separate position-aware checkpoint, the global state
+  localizes static cue locations, but future-agent prediction is weak, the
+  native cost ranks the correct route first in only 4 of 20 cases among three
+  physically replayed candidates, and fresh CEM and GD runs select no correct
+  first plan.  The first two boxes use a one-training-step probe; route cost
+  and planning use five action blocks.  Panels (a) and (b) report different
+  experiments and checkpoints.}
   \label{fig:pipeline}
 \end{figure*}
 
