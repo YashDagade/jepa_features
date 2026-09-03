@@ -1,17 +1,24 @@
 # Figures
 
-Only final, paper-referenced figures belong here. Plotting scripts must read a
+This directory retains the current paper figures together with audited legacy
+assets that remain useful for provenance.  Plotting scripts must read a
 canonical compact table or manifest, never a W&B screenshot or mutable run
-display name.
+display name.  Temporary builders remain under ignored `runs/` directories in
+accordance with the repository artifact policy.
 
-The current LeWM-focused manuscript uses five main figures:
+The current LeWM-focused manuscript uses four main figures and retains three
+supporting figures in the appendix:
 
-- `lewm_tunnel_pipeline` is a diagnostic-stage schematic of the Tunnel task and the measured
-  patch-feature versus global-feature boundary. Patch and global features are
-  drawn as sibling ViT outputs; only the global branch continues through the
-  projector, action-conditioned predictor, cost/search loop, and action. It is
-  not intended as a complete tensor-level computation graph. The downstream
-  stages are explicitly marked as partly audited or open.
+- `lewm_tunnel_pipeline` is a diagnostic-stage schematic of the Tunnel task and
+  the failure-localization chain. Patch and global features are drawn as sibling
+  ViT outputs; only the global branch continues through the projector,
+  action-conditioned predictor, native latent distance, numerical search, and
+  execution. It is not a complete tensor-level computation graph. The bracket
+  separates the primary three-seed representation audit from the checkpoint-
+  matched planning audit. The latter now summarizes the static-hub probe,
+  future-agent probe, route ranking, first-plan trace, and action-bound check.
+  Its exact vector builder is retained under ignored
+  `runs/action-margin-v1/build_pipeline_figure.py`.
 - `lewm_patch_global_accessibility` reads
   `../data/seeded_epoch0_1_10_capacity.csv` and
   `../data/capacity_matched_tunnel_readouts.csv`. Panel (a) contains three
@@ -22,14 +29,33 @@ The current LeWM-focused manuscript uses five main figures:
   `../data/lewm_tr2_stagewise_hue_factorial.csv`,
   `../data/shape_identity_probe_summary.csv`, and
   `../data/lewm_alternate_palette_probe.csv`. Its three panels use different
-  evidence types and are not pooled statistically.
-- `lewm_planning_open_problem` reads
+  evidence types and are not pooled statistically.  The exact vector builder
+  is retained under ignored `runs/stagewise-figure-v2/`.
+- `lewm_planning_open_problem` is an appendix figure that reads
   `../data/lewm_planning_cue_ablation.csv`. It shows the completed historical
   one-seed, three-room visible-versus-hidden Color and Shape planning controls.
   CEM and GD are shown separately. The runs are separately trained and geometry
   is matched within each audit, so neither the title nor caption interprets
   episodic differences as a direct representation-use test.
-- `lewm_native_global_decoder_progression` is a resized, re-tiled LeWM-only
+- `lewm_action_margin` is an appendix figure that reads
+  `../data/lewm_action_margin_cases.csv` and
+  `../data/lewm_action_margin_summary.csv`. It shows every primary native-cost
+  margin, the correct route's cost-rank distribution, and the immediate-route
+  timing sensitivity. The source audit uses three newly prespecified,
+  physically replayed portal candidates for each frozen case; it does not
+  reconstruct historical optimizer candidates.
+- `lewm_failure_localization` combines the checkpoint-matched probe,
+  coupled cue-to-route intervention, rank-2 route audit, and fresh first-replan
+  solver trace. It shows that static cue hubs are accessible while future-agent
+  state is weak, that re-encoded replayed outcomes respond on average to the
+  semantic intervention while predicted rollouts do not, that replay does not
+  rescue native route ranking, and that all retained first plans violate the
+  physical action bounds. The vector builder under ignored
+  `runs/failure-localization-figure-v1/` reads and asserts raw artifacts; no
+  fitted semantic-head rescue result is plotted because its held-out competence
+  gate failed.
+- `lewm_native_global_decoder_progression` is an appendix figure: a resized,
+  re-tiled LeWM-only
   strip derived from the audited `decoder_tunnel_cls_progression` grid. It retains the ground
   truth and epochs 1, 6, 8, 13, and 50 for the same six deterministic clips.
   No hue, contrast, or saturation enhancement is applied. The source frames and

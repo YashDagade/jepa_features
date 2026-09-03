@@ -13,7 +13,7 @@
 \usepackage{cleveref}
 \usepackage{icml2026}
 \hypersetup{
-  pdftitle={Seen in Patches, Weak Globally: Color--Place Binding in LeWM},
+  pdftitle={Seen in Patches, Misranked in Latent Space: Localizing Cue Failure in LeWM Planning},
   pdfsubject={Anonymous NeurIPS workshop submission}
 }
 
@@ -24,15 +24,13 @@
 \newcommand{\trtwo}{\textsc{TR2}}
 \newcommand{\trthree}{\textsc{TR3}}
 \newcommand{\lewm}{\textsc{LeWM}}
-\definecolor{pendingred}{HTML}{B93835}
-\newcommand{\yash}[1]{\textcolor{pendingred}{\textbf{#1}}}
 
-\icmltitlerunning{Seen in Patches, Weak Globally}
+\icmltitlerunning{Seen in Patches, Misranked in Latent Space}
 
 \begin{document}
 
 \twocolumn[
-\icmltitle{Seen in Patches, Weak Globally:\\Color--Place Binding in LeWM}
+\icmltitle{Seen in Patches, Misranked in Latent Space:\\Localizing Cue Failure in LeWM Planning}
 
 \begin{icmlauthorlist}
   \icmlauthor{Anonymous Author(s)}{anon}
@@ -46,28 +44,33 @@
 \printAffiliationsAndNotice{}
 
 \begin{abstract}
-Latent-space planning assumes that task-relevant distinctions exposed by a
-visual encoder are also accessible from the global state used for prediction.
-We test this precondition in LeWM using Tunnel Rooms, where portal geometry
-predicts most motion but color--place binding determines the destination.  At
-validated reconstructed initialization, a 192-dimensional unsupervised readout
-of ordered patch features decodes binding with .965--.969 balanced accuracy
-across three encoder draws; the matched native global feature scores
-.466--.502.  At epochs 1 and 10, patch readouts remain .911--.968 while native
-global readouts remain .423--.496.  A separate historical epoch-50 checkpoint
-shows the same qualitative contrast (.934 versus .531).  Binding is therefore
-not acquired late in the patch field; the same encoder can expose it through
-one sibling output while leaving it weak in another.  Separate historical
-audits show that a position-aware global state localizes geometry to
-$6.41\pm0.34$ pixels while color-conditioned localization remains
-$25.97\pm0.20$ pixels, near a 30.02-pixel reference, and that projected-state
-hue accuracy is .450--.563 across twelve one-seed settings.  Shape and
-alternate-palette controls are consistent with this identity--geometry gap.
-Historical one-seed planning runs differ between cue-visible and cue-hidden
-conditions in some cells, but the hardest cases remain nearly unsolved; the
-design does not identify the cause.  The main result is stage-specific:
-strong patch accessibility does not imply native-global accessibility, and
-neither certifies planning competence.
+Latent planning requires task-relevant distinctions to survive vision,
+global-state construction, future prediction, cost, and search.  We localize a
+failure along this chain in LeWM using Tunnel Rooms,
+where portal geometry predicts most motion but color--place binding determines
+the destination.  At reconstructed initialization, a 192-dimensional
+label-free linear patch readout decodes binding with .965--.969
+balanced accuracy across three draws; the matched
+native global feature scores .466--.502.  Patch accessibility remains
+.911--.968 at epochs 1 and 10 while native-global accessibility remains
+.423--.496.  Shape and alternate-palette controls weaken a rendering-specific
+explanation.  We then audit a separate position-aware LeWM checkpoint.  It
+localizes static color-conditioned hubs to 8.05 pixels after projection and
+8.06 after one-step prediction, yet its future-agent error is 46.35 pixels.  Its
+native predicted-rollout cost ranks the semantically correct route first among
+three candidates in only 4/20 prespecified rank-2 cases.  A coupled cue-to-route counterfactual moves the
+environment-replayed cost toward the newly correct route (mean interaction
+.604, 95\% CI [.357,.856]), but produces no supported shift through the
+predictor ($-.063$ [$-.439,.312$]).  Replacing the prediction with the
+environment-replayed final frame still ranks the correct route first in only
+4/20 cases, so substituting the realized endpoint does not rescue the native
+metric.  Fresh CEM and
+gradient-descent traces select no correct route in a 20-case first-replan audit,
+and every returned plan exceeds the environment's action bounds.  At this one
+checkpoint and fixed five-block audit, cue information can be linearly
+accessible while predicted cost fails to reproduce a replayed cost shift,
+native latent geometry misranks outcomes in the three-route set, and numerical
+planning adds a feasibility mismatch.
 \end{abstract}
 
 \section{Introduction}
@@ -84,6 +87,11 @@ that is unnecessary for prediction rather than reconstruct every input pixel
 \citep{lecun2022path,assran2023ijepa,bardes2024vjepa,assran2025vjepa2}.
 Which visible distinctions survive into the operative state is therefore an
 empirical question.
+
+We use two complementary experiments.  A three-seed cohort asks where
+color--place binding is linearly accessible.  A separate checkpoint-matched
+planning audit asks whether a LeWM state that linearly exposes the static cue map also
+predicts and ranks cue-conditioned outcomes correctly.
 
 Tunnel Rooms provides a controlled test.  Each observation contains a central
 room, destination rooms, an agent, and colored portals whose locations vary
@@ -108,14 +116,18 @@ different stages and require different evidence (\cref{fig:pipeline}).
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{figures/lewm_tunnel_pipeline.pdf}
-  \caption{\textbf{The paper localizes a feature-accessibility gap before
-  planning.}  This is a diagnostic-stage schematic, not a complete computation
+  \caption{\textbf{The paper localizes where a visible relation stops guiding
+  action choice.}  This is a diagnostic-stage schematic, not a complete computation
   graph.  Tunnel geometry predicts frequent motion, while the cue--place
   relation selects the destination.  We find strong linear accessibility in
   ordered patch features and weak accessibility in LeWM's native global
-  feature.  Neither implication to the right is automatic: global
-  accessibility, predicted-state geometry, the latent objective, search, and
-  execution must be tested separately.}
+  feature.  In a separate checkpoint, static cue locations are linearly accessible, but
+  future-agent prediction, native route ranking among three prespecified,
+  physically replayed candidates, and first-plan optimization each fail a more
+  demanding test.  The hub/agent probes use one training step;
+  cost and search use a five-block rollout.  Shading separates the two
+  experimental audits; only measurements inside the second region share a
+  checkpoint.}
   \label{fig:pipeline}
 \end{figure*}
 
@@ -128,59 +140,33 @@ uses the target, that a single semantic coordinate exists, or that the
 planner's distance gives the target sufficient weight
 \citep{hewitt2019probes,dubois2021lossy}.
 
-The primary experiment reconstructs three independently seeded LeWM encoders
-at initialization and follows the same seeds at epochs 1 and 10.  A
-192-dimensional label-free compression of ordered patch features decodes
-color--place binding at .965--.969 balanced accuracy (BA) before predictive
-training and .911--.968 at the two post-training anchors.  The native global
-feature remains near chance: .466--.502 at initialization and .423--.496
-after training.  A separate historical epoch-50 checkpoint yields the same
-qualitative contrast, .934 versus .531.  The sampled curves show no negative
-sigmoid or identifiable acquisition threshold for patch access: the relation
-is already accessible at initialization.  Nor do they show global acquisition
-for LeWM.
+Across three seeds, ordered patch features expose binding almost perfectly at
+initialization and remain strong at the sampled training anchors, while native
+global features remain near chance.  Historical position-aware states show a
+more selective failure: geometry survives, but identity--place binding is much
+weaker.  Shape and palette controls weaken the explanation that this is peculiar
+to one RGB rendering.  These protocols remain separate and are not presented as
+one checkpoint trajectory.
 
-Complementary historical experiments sharpen the localization without being
-pooled into the primary trajectory.  A position-aware LeWM global state
-localizes position-defined hubs to $6.41\pm0.34$ pixels across three seeds but
-leaves color-conditioned hub error at $25.97\pm0.20$ pixels.  Across twelve
-one-seed objective settings, native patch features preserve visible hue at
-96--100\% BA, while the projected global state supplied to prediction remains
-at 45.0--56.3\%.  Thus simple visual blindness is not the best description.
-The primary gap is between patch accessibility and native-global accessibility;
-separate historical audits extend the observation to projected states.  These
-measurements do not by themselves identify the mechanism.
-
-Two scoped ablations test whether this observation is tied to one cue rendering.  A
-shape version of Tunnel Rooms again yields accurate position but near-null
-shape-conditioned localization in one seed.  Two blue/green runs reproduce
-the decoder's tendency to merge cue appearances.  These are corroborating
-controls rather than replications of every primary measurement: Shape is
-single-seed, and a detached pixel decoder does not establish semantic binding.
-
-Finally, we connect the representation audit to planning without overclaiming.
-In historical one-seed evaluations, cue-visible runs have higher observed
-success than separately trained cue-hidden runs in some rank-2 cells, but both
-remain nearly unsolved when geometry directs search through two wrong portals
-first.  A visible cue is therefore not sufficient to solve the benchmark in
-these controls.  The comparison does \emph{not} determine why planning fails:
-the planner consumes a projected global state, predicted rollouts, an
-unweighted latent distance, a numerical optimizer, and clipped actions.  A
-matched action-ranking intervention is required to separate those stages.
+The planning audit then follows one checkpoint through later stages.  Its
+static cue map is linearly accessible, yet predicted cost does not track a coupled
+cue-to-route change, and native distance misranks most re-encoded replayed
+outcomes within a fixed three-route, five-block audit.  Fresh first-replan
+solver traces reveal a further action-feasibility mismatch.
+The evidence therefore does not support attribution to visual blindness or one
+audited stage alone.
 
 \paragraph{Contributions.}
 \begin{itemize}
-  \item We show that LeWM patch features make color--place binding strongly
-  linearly accessible at initialization and sampled post-training checkpoints,
-  while its native global feature remains near chance.
-  \item We combine the primary result with historical position, stagewise, and
-  decoder audits that localize the loss of cue identity downstream of visual
-  availability, while keeping their protocols separate.
-  \item We include Shape and alternate-palette ablations and state exactly what
-  their one-seed and decoder-based evidence can establish.
-  \item We report descriptive cue-visible versus cue-hidden planning differences
-  while leaving their cause open, and define the action-ranking experiments
-  needed to test whether accessible information is used by the planner.
+  \item Color--place binding is strongly linearly accessible from LeWM patch
+  features before predictive training, yet remains unreliable in its native
+  global feature.
+  \item Position, Shape, palette, and stagewise controls distinguish visual
+  availability from global relational organization without treating decoder
+  appearance as semantic evidence.
+  \item Checkpoint-matched action ranking, a coupled semantic intervention, and
+  solver traces localize additional failures in action-conditioned prediction,
+  native latent cost, and the optimizer--execution interface.
 \end{itemize}
 
 \section{Tunnel Rooms and Stage-Specific Evidence}
@@ -242,7 +228,8 @@ directly test raw patch features or the unprojected global feature.
 
 We fit standardized ridge classifiers and regressors on episode-disjoint
 splits with fixed regularization.  Classification reports BA; localization
-reports mean absolute error (MAE) and $R^2$.  Chance BA is .5 in \trtwo{}.
+reports mean absolute $x/y$-coordinate error in pixels (MAE) and $R^2$.  Chance
+BA is .5 in \trtwo{}.
 The frozen bias-only semantic-hub reference is 30.02 pixels in the historical
 two-room audit.  ``Accessible'' always means accessible to the stated held-out
 linear readout.  A failed ridge probe is not an information-theoretic absence
@@ -263,8 +250,10 @@ the same trajectories.  The epoch-50 result and the historical position-aware
 global-state audits use different training recipes and are displayed as
 separate evidence rather than a continuous curve.
 
-\section{Color--Place Binding Is Accessible in Patch Features}
+\section{Hypothesis 1: Does the Visual Encoder Expose the Cue Relation?}
 \label{sec:patches}
+
+\paragraph{Verdict: yes.}
 
 \begin{figure*}[t]
   \centering
@@ -275,7 +264,8 @@ separate evidence rather than a continuous curve.
   means and shaded regions span the observed seeds.  (b) A separate
   historical epoch-50 checkpoint with nominal 95\% intervals.  The historical
   point is not a continuation of panel (a).  Every readout is 192-dimensional;
-  the dotted line is chance.}
+  ``ordered patches'' denotes label-free PCA-192 compression rather than the
+  raw patch field.  The dotted line is chance.}
   \label{fig:patch-global}
 \end{figure*}
 
@@ -318,8 +308,10 @@ weak in these runs.  It would be incorrect to describe them as preserving
 geometry while selectively discarding color.  The selective geometry--identity
 gap appears in a separate historical global-state construction, studied next.
 
-\section{Color--Place Binding Is Weak in Global Features}
+\section{Hypothesis 2: Does LeWM Preserve the Relation in Its Global Path?}
 \label{sec:global}
+
+\paragraph{Verdict: not reliably.}
 
 The patch result rules out simple visual unavailability, but it does not by
 itself localize the bottleneck.  Two historical audits follow information
@@ -329,15 +321,17 @@ farther along the LeWM path.
 
 The first audit trains LeWM with a position-aware 192-dimensional global state
 and evaluates three seeds at the end of training.  This state localizes
-position-defined hubs to $6.41\pm0.34$ pixels, far below the 19.27-pixel
-position-only reference.  Color-conditioned hub localization remains
-$25.97\pm0.20$ pixels against a 30.02-pixel semantic reference.  Thus this
+position-defined hubs to $6.41\pm0.34$ pixels (mean$\pm$SD across seeds), far
+below the 19.27-pixel position-only reference.  Color-conditioned hub
+localization remains $25.97\pm0.20$ pixels against a 30.02-pixel semantic
+reference.  Thus this
 global state is not generally uninformative: it represents the scene's
 geometry accurately while exposing much less of the identity--place relation.
 
 This experiment and the native-global trajectories answer different questions.
 The newer native global state remains weak for both geometry and binding.  The
-historical position-aware global state preserves geometry but not identity.
+historical position-aware global state preserves geometry much more strongly
+than identity.
 Together they show two failure modes downstream of patch visibility; they do
 not establish one universal bottleneck shared by every LeWM configuration.
 
@@ -346,14 +340,19 @@ not establish one universal bottleneck shared by every LeWM configuration.
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{figures/lewm_stagewise_and_ablations.pdf}
-  \caption{\textbf{Geometry survives more reliably than cue identity.}
-  (a) Visible-hue BA across twelve historical LeWM objective settings from one
-  training seed.  Points are settings, not independent seeds, and black
+  \caption{\textbf{Cue information weakens downstream, and the
+  identity--geometry gap survives alternate renderings.}
+  (a) Visible-hue BA across twelve historical LeWM configurations spanning six
+  auxiliary weights and two global-feature constructions, from one training
+  seed.  Points are configurations, not independent seeds, and black
   segments are medians.  Patch features preserve hue;
   the projected state supplied to prediction is near chance.  The selected
   global feature varies because the historical matrix uses two global-state
-  constructions.  (b) In a one-seed Shape audit, mean endpoint position error
-  is low while identity-conditioned error approaches its bias-only reference.
+  constructions.  (b) In a historical one-seed Shape audit, mean
+  per-coordinate position error is low while identity-conditioned error
+  approaches its bias-only reference; both are averaged over hub and
+  destination endpoints.  The retained original sidecars do not independently
+  reconstruct the position columns.
   (c) In separately trained palettes with matched trajectories, replacing
   orange with blue leaves hub localization nearly unchanged.  Panels (b) and
   (c) report current-state results.  The three panels use different protocols
@@ -361,7 +360,7 @@ not establish one universal bottleneck shared by every LeWM configuration.
   \label{fig:stages-ablations}
 \end{figure*}
 
-Across twelve one-seed LeWM settings, native patch features classify visible
+Across twelve one-seed LeWM configurations, patch features classify visible
 hue at 96.0--100\% BA (\cref{fig:stages-ablations}a).  The selected global
 feature varies from .502 to .927 because the matrix includes both native and
 position-aware global states.  After the learned projector, however, hue BA is
@@ -372,151 +371,84 @@ prediction head before scoring.  This stagewise pattern makes ``the encoder
 sees color'' true but incomplete.
 
 One selected checkpoint illustrates the semantic boundary.  Its patch features
-classify visible hue at 96.0\%, but the projected state reaches 51.6\%; target
-color and correct-portal readouts from that state are 50.6\% and 52.1\%.
+classify visible hue at 96.0\%, while projected-state hue and target-color
+readouts reach 51.6\% and 50.6\%.
 The result is not that hue is present and a planner demonstrably ignores it.
 Rather, the target relation is already weak by the state on which prediction
 and planning operate.
 
-\subsection{Decoder averaging is a symptom, not a mechanism}
+\paragraph{Decoder control.}
+A detached pixel decoder retains only 4.85\% [3.57\%,6.17\%] of the original
+green--orange separation on 300 frames, despite recognizable geometry.  Because
+decoder capacity and pixelwise MSE can favor averages under ambiguity
+\citep{mathieu2016video}, this is only a compatible appearance audit, not
+evidence about binding or planning use.  The full progression is retained in
+\cref{fig:decoder-progression-app}.
 
-A separately trained pixel decoder reconstructs the same selected LeWM state.
-On 300 prespecified frames from 150 episodes, its decoded green and orange
-centroids retain 4.85\% [3.57\%,6.17\%] of the original separation, although
-room boundaries and marker locations remain recognizable.  In a separate
-decoder audit across six position-aware LeWM settings, retained separation is
-approximately 4.0--7.5\%.  This is visually consistent with a state that
-makes two plausible appearances hard to distinguish.
-
-The decoder is optimized concurrently through a separate optimizer on detached
-projected embeddings; its loss cannot update the encoder, projector, or
-predictor.  Its output can be affected by decoder capacity and pixelwise MSE,
-which favors averages under conditional ambiguity \citep{mathieu2016video}.
-We therefore use the decoder only as a qualitative and colorimetric audit.
-Reconstruction neither proves nor refutes linear binding, and it cannot
-establish planning use.  The progression in \cref{fig:decoder-progression}
-makes this measurement boundary visible across training.
-
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=\textwidth]{figures/lewm_native_global_decoder_progression.pdf}
-  \caption{\textbf{Decoder appearance changes during training but does not
-  define a feature-acquisition time.}  Each column shows the same six
-  deterministic validation clips (frame 2) for LeWM's native-global path,
-  re-tiled without hue, contrast, or saturation enhancement.  There is no
-  epoch-zero decoder artifact.  Portal colors become more recognizable by the
-  later columns, although the native-global binding probe remains near chance.
-  The decoder consumes detached projected features and is optimized concurrently,
-  so the progression mixes representation accessibility with decoder learning.}
-  \label{fig:decoder-progression}
-\end{figure*}
-
-\section{Cue-Appearance Ablations}
+\section{Hypothesis 3: Is the Gap Specific to One Cue Rendering?}
 \label{sec:ablations}
+
+\paragraph{Verdict: weakened by Shape and palette controls.}
 
 \subsection{Shape identity}
 
 The Shape variant replaces portal colors with distinct shapes while retaining
 the routing problem and randomized layouts.  In the one-seed LeWM audit,
-two-room current/predicted identity-conditioned mean endpoint MAE is
+two-room current/predicted identity-conditioned mean per-coordinate MAE,
+averaged over hub and destination endpoints, is
 28.05/28.10 pixels, compared with a 31.16-pixel bias-only reference.  Mean
-endpoint position MAE is 4.57/4.41.  In three rooms, identity-conditioned mean
-endpoint MAE is 29.99/29.80 against a 30.20-pixel reference, while mean endpoint
-position MAE is 2.66/2.56
+per-coordinate position MAE is 4.57/4.41.  In three rooms,
+identity-conditioned mean per-coordinate MAE is 29.99/29.80 against a
+30.20-pixel reference, while mean per-coordinate position MAE is 2.66/2.56
 (\cref{fig:stages-ablations}b).  The same-state current and predicted results
 therefore repeat the geometry--identity separation with a non-color cue.
 
 This ablation weakens a palette-specific explanation, but it does not prove a
-LeWM-specific mechanism.  The corresponding historical PLDM and DINO-based
-controls also show poor shape identity under their tested global features.
-Moreover, the Shape result uses one training seed.  We treat it as evidence for
-a broader relational-identity difficulty, not as a fully replicated model
-comparison.
+LeWM-specific mechanism.  The Shape result uses one training seed.  We treat
+it as evidence for a broader relational-identity difficulty, not as a fully
+replicated result; its historical position columns were not independently
+reconstructed from the retained original sidecars.
 
 \subsection{Alternate palette}
 
-Two verified two-room runs replace orange with blue while preserving the green
-identity.  They use the same training seed and match all 10,000 recorded
-scenario rows after excluding two palette fields and the palette-dependent
-scenario hash.  At auxiliary weights 0
-and .625, current identity-conditioned hub MAE is 25.87 and 25.48 pixels for
-blue/green, versus 25.79 and 24.84 for the matched green/orange runs.  Position
-MAE is 5.75 and 4.37 versus 6.06 and 4.50
-(\cref{fig:stages-ablations}c).  Changing to the more separated blue/green
-palette therefore does not materially improve identity-conditioned
-localization.
+Two blue/green runs use the same seed and trajectories as matched green/orange
+runs.  Across auxiliary weights 0 and .625, changing the palette leaves
+identity-conditioned hub MAE essentially unchanged (25.87/25.48 versus
+25.79/24.84 pixels), while position MAE remains low
+(\cref{fig:stages-ablations}c).  Their detached decoders also merge the two
+appearances.  Together with Shape, this weakens an explanation tied to the
+original colors, although neither control is a planning replication.
 
-Both detached blue/green decoders also achieve only 50\% nearest-prototype
-accuracy and retain 2.9\% and 2.1\% of the original palette separation.  Their
-decoded markers move toward a common teal appearance.  The standard and
-alternate palettes share both the identity--geometry gap and the decoder
-signature.
-
-This is a small final-checkpoint localization and decoder audit, not a new
-training-time binding trajectory or planning replication.  The current
-repository and logged Tunnel projects contain the blue/green runs but no
-separately identified red/green experiment.  We preserve that provenance
-rather than substituting one palette name for another; the recovery task is
-recorded in the appendix.
-
-\section{Planning: Descriptive Cue Differences, Unresolved Mechanism}
+\section{Where Does Planning Fail?}
 \label{sec:planning}
 
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=\textwidth]{figures/lewm_planning_open_problem.pdf}
-  \caption{\textbf{Cue-visible and cue-hidden planning runs differ, but the
-  hardest cases remain largely unsolved.}  Three-room success for historical position-aware
-  LeWM global states, evaluated with one training seed and separately trained
-  cue-visible and cue-hidden models.  Geometry-ranked scenarios are matched
-  within each audit: Color uses an exact shared manifest; Shape uses matched
-  case identifiers and geometry.  Rank is the online nearest-unexplored search
-  order, so ranks 2 and 3 encounter one or two wrong portals first.  Cue-visible
-  runs have higher rank-2 success in several cells, while the hardest cells
-  remain at 0--15\%.  Color and Shape are separate historical audits, so their
-  absolute scores should not be compared.  The design does not causally localize
-  the source of any difference.}
-  \label{fig:planning}
-\end{figure*}
+We now move from accessibility to use.  The following audits hold one
+checkpoint, planning manifest, route library, and native objective fixed, then
+intervene successively on predicted outcomes, outcome scoring, and solver
+return.  Probe and planning populations remain separate.  Descriptive
+cue-visible/hidden controls are retained in the appendix.
 
-Planning difficulty is stratified by the correct portal's geometric search
-rank.  At rank 1, a geometry-only strategy can enter the correct portal first.
-At rank 2 or 3, the online nearest-unexplored order reaches one or two incorrect
-portals first.  The historical evaluation uses geometry-matched scenarios
-within each cue audit and reports 20 episodes per rank in three rooms.
+\subsection{Hypothesis 4: Does a Decodable Static Cue Map Certify Planning?}
 
-For Color at rank 2, the cue-visible run records 40\% CEM success versus 5\%
-for its hidden-cue counterpart; GD records 45\% versus 20\%
-(\cref{fig:planning}).  Yet rank-3 success is 0\% versus 0\% for CEM and 5\%
-versus 0\% for GD.  Rank-1 success is lower in the cue-visible run (80\%) than
-in the hidden run (100\%/95\%).  In the separate Shape audit, cue-visible and
-hidden rank-2 success is 25\% versus 15\% for both optimizers, with nonuniform
-rank-3 differences.  Two-room results show analogous descriptive differences
-without eliminating the difficulty gap (appendix).
+\paragraph{Verdict: rejected.}
+A three-room position-aware LeWM checkpoint trained with a .125-weight
+inverse-dynamics auxiliary loss linearly localizes static color-conditioned hubs after
+projection and one-step prediction to 8.05/8.06 pixels.  It does not accurately
+localize the current or future agent: MAE is 39.59/46.35 pixels, with
+$R^2=.003/-.045$.  Static map accessibility therefore rejects simple cue
+blindness, but does not imply an accessible action-conditioned consequence or
+successful planning.
 
-These results support one direct conclusion: cue-visible and cue-hidden runs
-can differ while both fail the hardest cases.  They do not establish that the
-cue caused the difference, because the conditions are separately trained and
-use one seed.  Nor do they support the stronger statement that ``color is
-represented but ignored.''  The global binding measurement is not matched to
-every planning run, and episodic success conflates the state, predictor, cost,
-search, action conversion, clipping, and replanning.
+\subsection{Hypothesis 5: Does the Native Cost Prefer the Correct Route?}
 
-A separate historical checkpoint provides a promising but still preliminary
-bridge.  In three-room color, a position-aware LeWM+IDM state at weight .125
-localizes color-conditioned hubs to 8.05 pixels in the current state and 8.06
-pixels in its prediction, while CEM and GD reach only 10\% rank-2 success.
-This is the same checkpoint; the probe and planner use their respective
-prespecified held-out probe set and fixed planning manifest.  It is one seed,
-uses an auxiliary objective, and decodes color-conditioned location rather than
-directly proving the planner's correct-portal preference.  We report it as a hypothesis-generating
-utilization gap, not as the paper's primary claim.
+\paragraph{Verdict: rejected in the matched checkpoint.}
+Before examining numerical optimization, we freeze one deterministic candidate
+per portal for each of 60 held-out states.  Each candidate maps to the planner's
+five action blocks, and physical replay confirms that all 180 routes first
+enter their intended portal on primitive step 25.  These semantic diagnostic
+routes are not samples recovered from CEM or GD.
 
-\subsection{The decisive planning test}
-
-The missing experiment is action-level.  For each held-out state, construct
-physically valid, horizon-matched portal-directed candidates and score them with
-the model's own objective.  For a prespecified candidate set $\mathcal A$, let
+For a candidate set $\mathcal A$, let
 $\mathcal A_{\mathrm{correct}}$ and $\mathcal A_{\mathrm{wrong}}$ denote
 candidates whose first hub entry is correct or wrong, and define
 \begin{equation}
@@ -524,19 +456,104 @@ candidates whose first hub entry is correct or wrong, and define
       -\min_{a^+\in\mathcal A_{\mathrm{correct}}}J(a^+).
   \label{eq:margin}
 \end{equation}
-Within this non-exhaustive candidate set, $m<0$ means its lowest-cost wrong
-route beats every certified correct route.  A positive margin rules out that
-specific initial ranking failure, but leaves candidate construction,
-optimization, action conversion, and later replanning unresolved.  The appendix
-specifies the standardized-candidate and executed-action rescoring audit.  An
-oracle cue coordinate or frozen semantic metric can then test whether changing
-only the planning geometry changes the observed failure.
+Within this non-exhaustive candidate set, $m<0$ means the lowest-cost wrong
+route beats the certified correct route.  We use the exact checkpoint action
+scaler and final-step latent squared distance under the historical CUDA BF16
+autocast regime.  Rank 2 is the prespecified primary population because the
+correct destination requires bypassing one geometrically earlier portal.
 
-Until this matched analysis is complete, the planning conclusion remains open:
-patch accessibility is not a certificate of planning competence, but the
-present paper does not identify the downstream component that limits control.
+In the primary rank-2 cases, the correct route is uniquely lowest-cost in only
+4/20 states.  Its median margin is $-1.45$, mean margin $-1.71$, and it is
+highest-cost in 9/20 cases (\cref{fig:failure-localization}c).  FP32 scoring and
+the immediate-execution timing control preserve the margin sign in 19/20 cases
+each.  Complete strata, intervals, and certification details appear in the
+appendix.
 
-\section{Interpretation: Acquisition and Stage-Specific Selection}
+Exact selection among these three candidates would therefore choose a wrong
+portal in most focal states.  This localizes the measured failure before search,
+but not within the native cost, which combines action-conditioned prediction
+with latent distance.  We separate those terms next.
+
+\subsection{Hypothesis 6: Does Predicted Cost Track a Semantic Rerouting?}
+
+\paragraph{Verdict: not supported through the predictor.}
+For every frozen state, we hold room geometry, agent state, hub cue markers,
+and the three candidate action sequences fixed.  We cyclically change the
+cue-to-route pairing by swapping two leaf marker identities and changing the
+physical hub-to-leaf routing consistently, so the same identity-matching rule
+remains valid.  Every candidate is physically replayed to its routed leaf under
+both rules.
+
+Let ``old'' and ``new'' denote the endpoints that are correct before and after
+the intervention.  We measure the paired interaction
+\begin{equation}
+  I=[J_{\mathrm{cf}}(\mathrm{old})-J_{\mathrm{cf}}(\mathrm{new})]
+    -[J_{\mathrm{f}}(\mathrm{old})-J_{\mathrm{f}}(\mathrm{new})],
+  \label{eq:interaction}
+\end{equation}
+so $I>0$ means the cost shifts toward the newly correct endpoint.  Across all
+60 cases, the BF16 native cost on environment-replayed outcomes moves in the
+expected direction: mean $I=.604$ with a paired bootstrap 95\% interval
+[.357,.856].  Through the predictor, the mean is $-.063$
+[$-.439,.312$].  FP32 reproduces the contrast (.583 versus $-.033$).
+Thus the predicted-cost path does not reproduce the shift observed when the
+same cost is applied to re-encoded physically replayed endpoints.
+
+This is not a metric rescue.  In the focal factual rank-2 cases, replacing the
+prediction with the environment-replayed final frame leaves only 4/20 correct
+routes uniquely best in BF16 and 3/20 in FP32.  Moreover, the continuous
+counterfactual shift produces the stringent desired change from old-correct to
+new-correct best route in only 3/60 replayed-outcome pairs.  The native latent
+geometry therefore remains poorly aligned with the task when the model rollout
+is replaced by a re-encoded realized endpoint.  A prespecified fitted semantic
+head did not pass its held-out competence gate and is not used to make a rescue
+claim (appendix).
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/lewm_failure_localization.pdf}
+  \caption{\textbf{Audited deficits occur at multiple stages.}  All panels use
+  the same position-aware LeWM checkpoint; probe
+  and planning populations are separate.  Panel (a) uses the one-training-step
+  location-probe target; panels (b)--(d) use the five-block planning horizon,
+  and (b)--(c) show the primary BF16 regime.  (a) Static color-conditioned hubs
+  are accurately localized, whereas current and future agent location are not.
+  (b) A coupled cue-to-route change shifts
+  native cost on environment-replayed outcomes toward the new route but has no
+  supported effect through the predictor; points and error bars show paired
+  means and 95\%
+  bootstrap intervals over 60 cases.  (c) Neither predicted nor
+  environment-replayed native costs reliably rank the correct route among three
+  prespecified, physically replayed candidates in the 20 focal rank-2
+  cases.  (d) In fresh first-plan traces, neither the lowest-cost
+  observed candidate nor the returned plan enters the correct portal; all
+  returns exceed physical action bounds.  The solver trace is a first-replan
+  diagnostic, not a full closed-loop evaluation.}
+  \label{fig:failure-localization}
+\end{figure*}
+
+\subsection{Hypothesis 7: Does the Solver Return Convention Explain the First-Plan Error?}
+
+\paragraph{Verdict: rejected in fresh first-plan traces; feasibility remains
+misaligned.}
+We replay the maintained CEM and GD implementations on all 20 focal cases.  CEM
+evaluates 9,000 candidates per case and GD 3,000.  For both solvers, neither the
+lowest-cost observed plan nor the returned plan enters the correct portal
+within 25 primitive actions.  Best and returned first-entry outcomes agree in
+18/20 CEM cases and all GD cases.  Returning the best evaluated candidate would
+therefore not repair first-route selection in this realization.
+
+All 40 returned plans contain actions outside the environment's physical
+bounds.  Converting, clipping, and re-standardizing them increases native cost
+in every case, by .485 for CEM and .616 for GD on average.  The environment
+clips during execution, so raw and explicitly clipped physical replays are
+action-equivalent; the discrepancy is between what the optimizer scores and
+what the environment can execute.  This establishes a downstream feasibility
+mismatch, not that clipping causes the semantic error.  The trace covers one
+fresh first replan, not the full receding-horizon episodes, and does not
+determine whether any nonbest sampled route was physically correct.
+
+\section{Evidence Across the Planning Chain}
 
 Let an observation be rendered from geometry $s_t$ and a cue--place assignment
 $c_t$, $x_t=r(s_t,c_t)$.  The ViT produces sibling patch and global features,
@@ -555,140 +572,108 @@ or the directions emphasized by the prediction loss.  This architectural fact
 matches the initialization result: color--place binding need not be acquired by
 the patch field before it can nevertheless be weak in the global path.
 
-The original frequency hypothesis remains useful as one component of this
-selection.  Suppose the cue affects prediction loss only on an event set
-$e_t=1$ with probability $\rho$.  If two otherwise matched predictors differ
-only in whether they exploit the cue on that set, their population loss gap can
-be written
-\begin{equation}
-  \Delta\mathcal L
-  =\rho\,\mathbb E[\ell_{\mathrm{without}\ c}-
-  \ell_{\mathrm{with}\ c}\mid e_t=1].
-  \label{eq:event-risk}
-\end{equation}
-Rarity scales the incentive, but it does not determine it.  The conditional
-gain also depends on whether the consequence is predictable, whether geometry
-offers a competing solution, whether $G_t$ and $q$ make the relation accessible,
-and which
-directions dominate the learned target.  Equation~\ref{eq:event-risk} therefore
-motivates an intervention on event frequency; it does not predict a universal
-sigmoid or transition count.
+The original frequency hypothesis remains possible but unidentified here.  If
+a cue matters on events of probability $\rho$, its contribution to population
+risk scales with $\rho$ times its conditional benefit.  Rarity is therefore one
+factor, not a prediction of a universal sigmoid or transition count; the formal
+decomposition is given in the appendix.
 
-Planning adds another selection step.  Even if a probe extracts $c_t$ from the
-projected state, the Euclidean cost in Equation~\ref{eq:planner} need not give
-the cue-sensitive direction enough weight to reverse the ordering of two action
-sequences.  Conversely, planning failure can occur after a correct latent
-ordering through candidate generation, optimization, conversion, or replanning.
-This is why the paper's measured result is a patch-versus-global accessibility gap,
-while cue recruitment by planning remains the action-ranking question in
-Equation~\ref{eq:margin}.
+Planning imposes several selection steps after visual accessibility.  Global
+state construction may fail to organize a local relation; the predictor may
+fail to express its action-conditioned consequence; latent distance may fail to
+reward the correct outcome; and optimization may score actions the environment
+cannot execute.  The coupled intervention partially separates the middle
+stages: re-encoded replayed native costs show a supported mean shift under
+rerouting, whereas predicted costs show no supported shift; even the replayed
+costs usually misrank the correct candidate in the fixed three-route set.  The
+solver trace then exposes a later feasibility mismatch without repairing
+first-route selection.  These audits do not isolate a single causal source.
 
 \section{Related Work}
 
 \paragraph{Predictive representations and JEPAs.}
 JEPA-style objectives predict in representation space rather than reconstructing
 every pixel \citep{lecun2022path,assran2023ijepa,bardes2024vjepa,
-assran2025vjepa2}.  LeJEPA studies regularized joint embeddings
-\citep{balestriero2025lejepa}; LeWM and related latent world models extend the
-idea to action-conditioned dynamics and planning
+assran2025vjepa2,balestriero2025lejepa}.  LeWM and related latent world models
+extend this idea to action-conditioned dynamics and planning
 \citep{maes2026leworldmodel,sobal2025latentplanning,ivashkov2026sensorimotor,
-kuang2026rectified}.  DINO-based world models provide a complementary route
-through pretrained visual features \citep{caron2021dino,oquab2023dinov2,
-zhou2025dinowm}.  We focus on the information transition between a visual
-encoder's patch features and the compact state actually supplied to prediction.
+kuang2026rectified,zhou2025dinowm}.  We ask which information survives from a
+visual encoder's ordered patch features into the compact global path, predicted
+future, and planning objective.
 
-\paragraph{Selective invariance and feature order.}
+\paragraph{Selective learning and probing.}
 Predictive learning can preserve nuisance variables, suppress task variables,
 or exploit shortcuts depending on objective geometry and data
 \citep{sobal2022slow,hermann2024shortcut,littwin2024jepa,klindt2026when}.
-Work on gradient starvation, spectral bias, simplicity bias, and learning
-dynamics explains why features can emerge at different rates
+Gradient starvation, spectral and simplicity biases, and information
+bottlenecks offer accounts of unequal feature dynamics
 \citep{pezeshki2021gradient,rahaman2019spectral,kalimeris2019sgd,
-saxe2014exact,xue2023features}.  Information-bottleneck accounts likewise
-emphasize the tension between compression and task-relevant invariance
-\citep{tishby1999information,achille2018invariance,dubois2021lossy}.  Our
-initial frequency-first hypothesis belongs to this family, but the
-initialization result shows that feature acquisition and global organization
-must be separated.
-
-\paragraph{Probing and spatial representations.}
-Linear probes are controlled accessibility tests, not proofs of causal use
+saxe2014exact,xue2023features,tishby1999information,achille2018invariance,
+dubois2021lossy}.  Linear probes likewise test controlled accessibility rather
+than causal use
 \citep{hewitt2019probes,shah2020pitfalls}.  Vision-transformer studies likewise
 distinguish information carried by patch fields and global tokens
-\citep{raghu2021vision,assran2023ijepa}.  Our contribution is to connect that
-distinction to a relational predictive variable and then state the additional
-action-ranking evidence required for planning.
+\citep{raghu2021vision,assran2023ijepa}.  Our initialization control separates
+visual availability from learning, and our interventions test later stages.
 
 \paragraph{World models for control.}
 Self-predictive, contrastive, and temporal representation objectives are widely
 used for model-based or representation-based control
 \citep{tang2023selfpredictive,kipf2020contrastive,nguyen2021temporal,
 schwarzer2021spr,robinson2021contrastive}.  Successful planning depends on both
-dynamics and the geometry of the planning cost.  Tunnel Rooms makes that
-interface explicit without treating episodic success as a direct measure of
-what any one representation stage contains.
+dynamics and cost geometry; Tunnel Rooms exposes that interface without treating
+episodic success as a direct measure of any one representation stage.
 
 \section{Discussion and Limitations}
 
-The most important result is not that LeWM is literally color blind.  Its patch
-features expose color--place structure even before training, and its historical
-global states can represent geometry with high precision.  The stronger and
-more useful statement is stage-specific: information accessible from the patch
-field need not be accessible from the global state used for prediction.  In the
-separate historical matrix, linear hue accessibility is also lower after the
-projector.
-
-The data also clarify what ``when is a feature learned?'' can mean.  For patch
-access, the answer is ``already at initialization'' at the evaluated capacity.
-For the native global feature, the three LeWM seeds show no acquisition through
-the evaluated training anchors and no persistent geometry or binding through
-epoch 50.  We therefore find no support for a sigmoid threshold in LeWM color
-binding.  A feature can be available early in one representation and never
-become accessible in another.
+LeWM is not literally color blind.  Its patch features expose color--place
+structure before training, while its native global feature shows no acquisition
+through the evaluated anchors or persistent binding through epoch 50.  A
+separate checkpoint makes static cue locations linearly accessible, yet its
+action-conditioned agent outcome is inaccurate; the predicted-cost path shows
+no supported rerouting shift; native distance misranks replayed outcomes within
+the fixed three-route, five-block audit; and every CEM/GD returned plan violates
+physical bounds in the 20-case first-replan trace.  Thus ``when is a feature learned?'' has no
+single answer here: availability, global organization, predicted consequence,
+cost preference, and execution follow different dynamics.  We find no support
+for a universal sigmoid threshold in LeWM color binding.
 
 Several limitations remain.  The environments are synthetic.  The primary
 probe has three seeds but only three sampled patch checkpoints; the historical
-global-state, Shape, palette, and planning controls use different recipes and
-mostly one training seed.  Linear accessibility is readout-dependent.
-Detached decoders can average for reasons unrelated to the representation.
-Finally, planning success is a compound outcome,
-and the present controls do not isolate the planner's latent metric from model
-rollout, numerical search, or action execution.
+global-state, Shape, and palette controls use different recipes and mostly one
+training seed.  Every planning localization uses one seed and checkpoint.  The
+route library contains three deterministic non-exhaustive candidates per state,
+and the solver audit covers only the first replan.  Linear accessibility is
+readout-dependent, and the fitted semantic head in our attempted metric rescue
+does not pass its held-out competence gate.  Detached decoders can average for
+reasons unrelated to the representation.  Most importantly, these audits do
+not show that repairing any one stage solves the closed-loop benchmark.
 
-These limitations point to a compact next experiment rather than a broad new
-sweep: train matched LeWM states that span global binding accessibility, score
-certified correct and incorrect portal-directed actions under the native
-objective, and compare those margins with CEM/GD behavior under identical
-scenarios.  A cue-changing counterfactual that also changes the environment's
-routing semantics would then test whether the preference flips for the right
-reason.
+The next tests should intervene on the localized failures rather than add more
+generic probes.  Optimize physically bounded actions and score the clipped
+sequence inside the loop; match the planner's observation history to the
+three-state predictive context used in training; improve or replace the
+action-conditioned predictor while holding the native metric fixed; and test a
+competent frozen semantic cost while holding prediction fixed.  The full chain
+should then be replicated across LeWM seeds.  Whether cue information that is
+available during planning can be made reliably useful in receding-horizon
+control remains an open problem.
 
 \section{Conclusion}
 
-Tunnel Rooms reveals a gap hidden by the phrase ``the model represents color.''
-LeWM's patch features make color--place binding strongly linearly accessible
-before and after predictive training, while its native global feature remains
-near chance.  Historical global-state and Shape audits are consistent with a
-broader identity--geometry separation; decoder averaging is only a compatible
-appearance-level symptom.  Cue-visible runs exceed
-cue-hidden runs in some planning cells, but difficult cases remain nearly
-unsolved and the cause of the difference is not identified.  World-model
-evaluation should therefore name the stage being
-tested---patch features, global state, predicted state, or planning objective---
-and should not treat evidence at one stage as a certificate for the next.
-
-\section*{Data Availability}
-
-The anonymized submission includes compact CSV tables for every plotted value,
-figure assets, probe provenance, and the exact run identifiers used for the
-historical planning controls.  Checkpoints and datasets are retained outside
-the paper repository because of size.
-
-\section*{Ethics, Conflicts, Funding, and Contributions}
-
-The work uses synthetic environments and raises no human-subject or personal-
-data concerns.  The submission is anonymous.  Funding, conflicts, and author
-contributions will be completed in the camera-ready version.
+Tunnel Rooms reveals a chain hidden by the phrase ``the model represents
+color.''  LeWM's patch features make color--place binding strongly linearly
+accessible before and after predictive training, while its native global
+feature remains near chance.  In a separate checkpoint, static cue locations
+are accessible but future-agent location is not; predicted native cost shows no
+supported response to a coupled cue-to-route change; native distance misranks
+most replayed outcomes within a fixed three-route, five-block audit; and all
+CEM/GD returned plans violate physical action bounds in the 20-case first-replan
+trace.  No single probe certifies the next stage, and the evidence does not
+support attributing behavior to one audited stage.  World-model evaluation should name
+the stage being tested---patch feature, global state, predicted consequence,
+native action ordering, numerical search, or execution---and intervene on that
+stage before attributing behavior to what the model ``knows.''
 
 \typeout{MAIN-END-PAGE=\thepage}
 \clearpage
@@ -698,15 +683,32 @@ contributions will be completed in the camera-ready version.
 \typeout{APPENDIX-START-PAGE=\thepage}
 \appendix
 
+\section{Sparse-Event Risk Decomposition}
+
+Suppose the cue affects prediction loss only on an event set $e_t=1$ with
+probability $\rho$.  If two otherwise matched predictors differ only in whether
+they exploit the cue on that set, their population loss gap is
+\begin{equation}
+  \Delta\mathcal L
+  =\rho\,\mathbb E[\ell_{\mathrm{without}\ c}-
+  \ell_{\mathrm{with}\ c}\mid e_t=1].
+\end{equation}
+Rarity scales the incentive, but the conditional gain also depends on whether
+the consequence is predictable, whether geometry offers a competing solution,
+whether the operative global state exposes the relation, and which directions
+dominate the learned target.  The expression motivates an intervention on event
+frequency; it does not establish a universal acquisition order.
+
 \section{Exact Experimental Protocol}
 \label{app:protocol}
 
 \paragraph{Primary feature audit.}
 Frames are normalized to $224\times224$ RGB.  ViT-Tiny/14 produces 257 tokens
 of width 192: one native global feature and a $16\times16$ ordered patch field.
-For the capacity-matched patch readout, the patch field is reduced to an
-$8\times8$ position-aware map and projected to 192 unwhitened principal
-components.  PCA is fit without labels on fit-plus-validation episodes and
+For the probe only, the $16\times16$ ordered patch field is deterministically
+reduced to an $8\times8$ position-aware field, flattened, and projected to 192
+unwhitened principal components.  PCA is fit without labels on
+fit-plus-validation episodes and
 refit independently for each checkpoint.  A single Gaussian random matrix,
 drawn independently of the data, supplies the nonadaptive control.  The probe
 is a standardized ridge classifier with $\alpha=10$.  Whole episodes are
@@ -814,30 +816,11 @@ Bias-only reference & 30.02 & 19.27 \\
 \end{tabular}}
 \end{table}
 
-\begin{table}[h]
-\caption{Selected historical LeWM checkpoint.  BA is reported for visible hue,
-target color, and correct portal; MAE is current-agent localization.  These are
-single-checkpoint readouts.}
-\label{tab:stagewise}
-\centering
-\small
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{lrrrr}
-\toprule
-Stage & Hue BA & Target-color BA & Portal BA & Agent MAE \\
-\midrule
-Patch features & .960 & .480 & .582 & 19.25 \\
-Position-aware global & .711 & .567 & .532 & 50.20 \\
-Learned global feature & .660 & .567 & .542 & 11.28 \\
-Projected state & .516 & .506 & .521 & 34.00 \\
-\bottomrule
-\end{tabular}}
-\end{table}
-
-The table emphasizes why visible hue cannot substitute for binding.  Patch
-features preserve hue but do not reliably decode the target color or correct
-portal in this selected model.  The projected state is near chance on all three
-categorical targets.
+In the selected position-aware LeWM checkpoint (E024), patch hue BA is .960,
+while the learned global feature reaches .660 and the projected state .516.
+Projected-state target-color BA is .506.  These sourced readouts emphasize why
+visible hue cannot substitute for binding; exact rows and provenance are in the
+tracked stagewise-hue and projector-color factorial tables.
 
 \paragraph{Decoder metric.}
 Cue pixels are identified from the original rendered frame and evaluated in
@@ -851,6 +834,21 @@ used for control.  Exact summarized values are stored in
 \texttt{data/lewm\_palette\_decoder\_summary.csv}; the six-setting logged-media
 support means underlying the descriptive main-text range are stored in
 \texttt{data/metric\_sensitivity.csv}.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/lewm_native_global_decoder_progression.pdf}
+  \caption{\textbf{Decoder appearance changes during training but does not
+  define a feature-acquisition time.}  Each column shows the same six
+  deterministic validation clips (frame 2) for LeWM's native-global path,
+  re-tiled without hue, contrast, or saturation enhancement.  There is no
+  epoch-zero decoder artifact.  Portal colors become more recognizable by the
+  later columns although the native-global binding probe remains near chance.
+  The decoder consumes detached projected features and is optimized
+  concurrently, so the progression mixes representation accessibility with
+  decoder learning.}
+  \label{fig:decoder-progression-app}
+\end{figure*}
 
 \paragraph{Alternate palette.}
 The two blue/green runs use seed 3072 and match all 10,000 scenario records
@@ -870,9 +868,9 @@ the agent, not a portal identity.  Exact rows are stored in
 \section{Shape Ablation}
 
 \begin{table}[h]
-\caption{One-seed Shape localization, averaged over hub and destination
-endpoints.  Identity targets name the shape occupying each endpoint; position
-targets ignore identity.}
+\caption{One-seed Shape localization.  Entries are mean per-coordinate MAE,
+averaged over hub and destination endpoints.  Identity targets name the shape
+occupying each endpoint; position targets ignore identity.}
 \label{tab:shape}
 \centering
 \small
@@ -894,6 +892,45 @@ with shape identities.  Results use seed 3072 and source commit
 main paper because the scientific question here is the LeWM stage boundary,
 not model ranking.
 
+The retained original run summaries and sidecars contain identity targets only.
+Later combined cue-and-position sidecars make a frozen-checkpoint re-evaluation
+possible; until that re-evaluation is archived, the position columns are
+historical rather than independently revalidated.  We therefore use them only
+as historical support for the within-run identity--geometry contrast.
+
+\begin{table}[h]
+\caption{Completed one-seed Shape follow-ups at the final checkpoint.  Values
+are mean per-coordinate MAE, averaged over identity-conditioned or
+position-only hub and destination targets; parentheses give identity $R^2$.
+The DINO encoder is pretrained and frozen; its ridge probe mean-pools the
+patch-mode tokens to one 384-dimensional vector per frame.}
+\label{tab:shape-followups}
+\centering
+\small
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llrrr}
+\toprule
+Rooms & Feature path & Current identity & Predicted identity & Current position \\
+\midrule
+Two & DINO patch mode, mean-token probe & 14.22 (.717) & 15.12 (.688) & 6.57 \\
+Three & DINO patch mode, mean-token probe & 14.94 (.600) & 15.17 (.604) & 4.73 \\
+Two & LpWM learned global & 32.17 ($-.179$) & 31.93 ($-.160$) & 15.08 \\
+Three & LpWM learned global & 33.10 ($-.297$) & 32.90 ($-.299$) & 8.65 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+These follow-ups were prespecified as representation-location checks and have
+now finished.  The mean-token DINO readout makes the Shape relation linearly
+accessible on held-out, episode-disjoint samples, whereas the tested LpWM
+global state is weak on identity and, in three rooms, position.  The associated
+DINO decoder consumes the full patch field and preserves recognizable
+silhouettes; that appearance result is distinct from the mean-token probe.
+Because objective, feature path, and pretraining differ, the comparison
+localizes information within the pipeline; it is not an acquisition curve or
+an architectural ranking.  Exact values and summary hashes are stored in
+\texttt{data/shape\_followup\_results.csv}.
+
 \section{Planning Protocol and Complete Cue Controls}
 \label{app:planning}
 
@@ -905,6 +942,20 @@ geometry in condition-specific manifests.  The runs use
 one training seed, a historical position-aware global LeWM state with auxiliary
 inverse-dynamics weight 3.125, horizon five, receding horizon five, action
 blocks of five primitive steps, and budget 500 in three rooms.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/lewm_planning_open_problem.pdf}
+  \caption{\textbf{Historical cue-visible and cue-hidden runs differ, but the
+  hardest cases remain largely unsolved.}  Three-room success for separately
+  trained one-seed LeWM checkpoints.  Geometry-ranked scenarios are matched
+  within each audit: Color uses an exact shared manifest; Shape uses matched
+  case identifiers and geometry.  Cue-visible runs improve some rank-2 cells,
+  while rank-3 success remains at 0--15\%.  Color and Shape are separate audit
+  suites and are not compared absolutely.  This descriptive control does not
+  causally localize the difference.}
+  \label{fig:planning-app}
+\end{figure*}
 
 \begin{table*}[h]
 \caption{Historical LeWM planning success (\%).  These one-seed results use
@@ -956,31 +1007,144 @@ The audited maintained policy also receives a singleton observation-time axis
 before autoregressive rollout, although training uses three-state predictive
 context.  This context mismatch is another plausible downstream failure mode.
 
-\paragraph{Matched preliminary utilization case.}
-For the historical three-room auxiliary-weight-.125 checkpoint, current and
-predicted color-conditioned hub MAE is 8.05/8.06 pixels and position MAE is
-3.19/3.21.  The identical checkpoint obtains rank-2 success of 10\% with both
-CEM and GD.  CEM/GD overall success is 26.7/31.7\%.  This is the closest
-existing probe--planning match, but it remains one seed and does not directly
-measure the correct-action cost margin.
+\paragraph{Checkpoint-matched bridge.}
+For the historical three-room auxiliary-weight-.125 checkpoint, mean
+post-projector-current/predictor-output color-conditioned hub MAE is 8.05/8.06
+pixels ($R^2=.658/.655$) and position MAE is 3.19/3.21.  Current/future-agent
+MAE is 39.59/46.35 ($R^2=.003/-.045$).  The location probe is
+episode-disjoint and tests a one-training-step predictor
+target, whereas the action audits below use a five-block rollout on a separate
+planning manifest.  Compact metrics and hashes are stored in
+\texttt{data/lewm\_checkpoint\_bridge\_probe.csv} and its provenance table.
 
-\section{Context Beyond the Main LeWM Study}
+\paragraph{Matched action-margin audit.}
+The audit uses source revision \texttt{cf65948b}, the frozen 60-case three-room
+manifest, the checkpoint's full-data action scaler, and the exact final-step
+latent squared distance.  There are 20 cases at each natural rank.  Three
+deterministic routes per case target the three hub portals.  Leading physical
+no-ops make every primary route enter its intended portal at primitive step 25;
+all 180 horizons are environment-replayed before scoring and then reshaped from
+$25\times2$ primitive actions to $5\times10$ standardized action blocks.  Rank
+2 under CUDA BF16 autocast is the sole primary population.  The routes were
+specified and hashed before any model cost was evaluated and are not historical
+optimizer samples.
 
-The repository contains additional experiments with PLDM, LpWM, a
-sensorimotor objective, DINO features, and the Chaser environment.  They were
-central to an earlier, broader manuscript about diagnostic evidence across
-model families.  We move them outside the main argument because their
-single-run objective comparisons and target geometries do not identify the
-LeWM patch-versus-global boundary studied here.
+\begin{table}[h]
+\caption{Native-cost route ranking in the event-time-matched BF16 audit.  The
+rank columns count the correct route's position among three candidates.}
+\label{tab:action-margin}
+\centering
+\scriptsize
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Target & Best & Cost ranks 1/2/3 & Median $m$ & Mean $m$ \\
+\midrule
+1 & 13/20 & 13/7/0 & .456 & .338 \\
+2 (primary) & 4/20 & 4/7/9 & $-1.446$ & $-1.710$ \\
+3 & 4/20 & 4/5/11 & $-2.919$ & $-2.747$ \\
+All & 21/60 & 21/19/20 & $-.747$ & $-1.373$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-Two contextual observations remain useful.  First, other model objectives can
-organize Tunnel binding in a global state under some seeds, so the effect is
-not a property of the rendering alone.  Second, Chaser demonstrates a distinct
-measurement gap: a future destination can be linearly decodable without a
-simultaneously supported contact-specific predictor response.  Neither result
-changes the claim boundary of the present paper: feature availability,
-global organization, predicted-state response, and planning use are separate
-empirical questions.
+FP32 event-time scoring yields 5/20 correct-best cases at rank 2 with median
+$m=-1.413$.  The immediate-route BF16 sensitivity yields 5/20 and
+$m=-1.042$.  Event-time BF16 versus FP32, and event-time versus immediate BF16,
+each agree on the margin sign in 19/20 primary cases.  In the immediate
+sensitivity, two nonprimary correct candidates terminate successfully before
+the fixed horizon; their remaining zero actions are model-only padding, not
+claimed as physically replayed.  Compact values are stored in
+\texttt{data/lewm\_action\_margin\_cases.csv} and
+\texttt{data/lewm\_action\_margin\_summary.csv}; the ignored raw JSON retains
+all actions and costs, and the compact provenance table records its hashes.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/lewm_action_margin.pdf}
+  \caption{\textbf{Detailed native predicted-rollout route audit.}  Three
+  prespecified candidates are scored for each frozen state; all primary
+  event-time horizons are physically replayed for 25 steps and first-entry
+  certified.  (a) Positive margins favor the correct route.  (b) Correct-route
+  ranks among three candidates.  (c) Moving the same physical route before
+  rather than after no-op padding preserves the margin sign in 59/60 cases
+  ($r=.992$).  FP32 gives 5/20 correct-best rank-2 cases and median margin
+  $-1.41$.}
+  \label{fig:action-margin-app}
+\end{figure*}
+
+\paragraph{Coupled cue-to-route intervention.}
+For each of the 60 cases, the audit swaps two leaf cue identities and changes
+the corresponding hub-to-leaf routing while keeping geometry, agent state, hub
+markers, target position, and candidate actions fixed.  Between factual and
+counterfactual conditions, each rendered image differs only in the two swapped
+leaf markers, exactly $2\times18\times18=648$ pixels.  All 360 candidate
+condition replays enter their intended hub at step 25 and are replayed through
+the routed leaf.  The factual BF16 rank-2 result reproduces the action-margin
+audit exactly before any counterfactual result is interpreted.
+
+\begin{table}[h]
+\caption{Coupled-intervention interaction $I$ over 60 paired states.  Positive
+values move native cost toward the newly correct endpoint.  ``Replayed'' means
+the final environment frame is re-encoded in place of the model prediction.}
+\label{tab:semantic-interaction}
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Path & Mean $I$ & 95\% interval & Desired flips \\
+\midrule
+Predicted, BF16 & $-.063$ & [$-.439$,.312] & 2/60 \\
+Replayed, BF16 & .604 & [.357,.856] & 3/60 \\
+Predicted, FP32 & $-.033$ & [$-.415$,.350] & 2/60 \\
+Replayed, FP32 & .583 & [.317,.849] & 3/60 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The desired-flip column counts only the stringent change from old-correct to
+new-correct best route.  Any best endpoint changes in 8/60 replayed BF16 pairs.
+At factual rank 2, replaying the final frame yields 4/20 correct-best routes in
+BF16 and 3/20 in FP32, so the intervention's mean shift is not a route-ranking
+rescue.  A prespecified ridge head for the composite routed-endpoint label also
+fails its held-out competence gate: predicted/replayed BA is .350/.350 on the
+factual rank-2 split and the factual goal-head BA is .162, against chance .333.
+Its apparent downstream rankings are therefore uninterpretable and excluded
+from the main results.  Exact interaction, rank, and provenance rows are in
+\texttt{data/lewm\_semantic\_routing\_*.csv}.
+
+\paragraph{Fresh objective-versus-search trace.}
+The maintained CEM and GD implementations are rerun from the frozen manifest's
+original six rank-interleaved batches and filtered to the 20 rank-2 cases after
+the trace.  CEM evaluates $30\times300=9{,}000$ candidates per case; GD evaluates
+$30\times100=3{,}000$.  Callback-observed costs define the lowest-cost evaluated
+plan because fresh four-plan BF16 rescoring has small batch-shape differences.
+
+\begin{table}[h]
+\caption{Fresh first-replan solver audit on 20 rank-2 cases.  Route outcome is
+correct/wrong/no entry within 25 primitive actions.}
+\label{tab:solver-trace}
+\centering
+\small
+\begin{tabular}{llrrr}
+\toprule
+Solver & Plan & Outcome & Bounds & Clip $\Delta J$ \\
+\midrule
+CEM & best observed & 0/10/10 & 20/20 & +.516 \\
+CEM & returned & 0/10/10 & 20/20 & +.485 \\
+GD & best observed & 0/7/13 & 20/20 & +.636 \\
+GD & returned & 0/7/13 & 20/20 & +.616 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Best and returned first-entry outcomes match in 18/20 CEM cases and 20/20 GD
+cases.  ``Bounds'' counts plans with at least one physical action outside
+$[-1,1]$; the environment clips such actions internally.  Explicit clipping
+raises freshly recomputed native cost in every case.  This first-replan result
+does not recover historical solver tensors, evaluate full MPC, establish that
+clipping causes the semantic error, or determine whether a nonbest sampled
+candidate followed the correct route.  Exact values and provenance are in
+\texttt{data/lewm\_solver\_trace\_*.csv}.
 
 \section{Reproducibility and Claim Ledger}
 
@@ -1004,11 +1168,17 @@ Binding is accessible in ordered patch features before training & Supported & Th
 Patch accessibility is high at epochs 1 and 10 & Supported at anchors & Three seeds; BA .911--.968; no claim between anchors \\
 Native LeWM globally acquires binding late & Not supported & Native global remains near chance and never persistently passes through epoch 50 \\
 Geometry can survive while identity is weak & Historical support & Three-seed position-aware global state; separate recipe \\
-Shape repeats the identity--geometry gap & Preliminary & One seed; similar failures in tested comparators \\
+Shape repeats the identity--geometry gap & Preliminary & One seed; non-color cue; historical position columns await archived frozen re-evaluation \\
 Alternate palette shows similar final-checkpoint localization and decoder behavior & Scoped support & Two blue/green runs; not a training-time trajectory or planning replication \\
 Visible cues are sufficient to solve latent planning & Not supported in tested historical controls & Rank-3 success remains 0--15\% \\
-Globally decodable color is ignored by planning & Open & Needs matched correct-action cost rank and margin \\
-The latent metric, rather than search, causes failure & Open & Needs candidate re-scoring and oracle metric/state controls \\
+The native rollout cost reliably prefers the correct route & Rejected in one checkpoint & Correct route is best in 4/20 primary rank-2 cases; three prespecified routes per state \\
+The measured misranking occurs before numerical search & Supported in tested candidates & Exact native-cost selection among the three routes would choose wrong in 16/20 primary cases \\
+Predicted rollout preserves a coupled semantic change & Not supported in one checkpoint & Predicted interaction $-.063$ [$-.439$,.312]; 60 paired cases \\
+Re-encoded replayed outcomes rescue route ranking & Rejected in one checkpoint & Mean interaction is positive, but factual rank-2 correct-best remains 4/20 \\
+A frozen semantic metric rescues ranking & Inconclusive & Prespecified endpoint and goal heads fail held-out competence \\
+Solver return semantics explain the first-plan error & Rejected in fresh trace & Best observed and returned plans are both 0/20 correct for CEM and GD \\
+The score/execution interface is action-feasible & Rejected in fresh trace & Every retained first plan violates physical bounds; clipping raises recomputed cost \\
+Repairing one audited stage solves closed-loop planning & Open & Requires controlled intervention, replication, and full receding-horizon evaluation \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -1016,24 +1186,28 @@ The latent metric, rather than search, causes failure & Open & Needs candidate r
 \section{Actionable Open Experiments}
 
 \begin{enumerate}
-  \item \textbf{Correct-action margin.}  Score certified portal-directed
-  candidates under Equation~\ref{eq:planner} and report Equation~\ref{eq:margin}
-  on matched held-out states.
-  \item \textbf{Objective versus search.}  Compare the best evaluated
-  standardized candidate and solver return, then re-standardize the physically
-  clipped executed-equivalent sequence before model scoring.
-  \item \textbf{Frozen semantic metric.}  Add an oracle cue coordinate or a
-  held-out semantic distance without retraining the dynamics model.
-  \item \textbf{Semantic counterfactual.}  Swap cue identities and the actual
-  routing rule together while holding geometry fixed; test whether the
-  preferred action flips.
-  \item \textbf{Replication.}  Repeat Shape, blue/green, and planning controls
-  across seeds, and locate the separately mentioned red/green artifact before
-  making palette-wide claims.
+  \item \textbf{Feasible optimization.}  Enforce physical action bounds inside
+  CEM and GD, score the clipped sequence during optimization, and compare full
+  receding-horizon behavior with the frozen implementation.
+  \item \textbf{Context match.}  Give planning the three-state predictive
+  history used during training rather than the maintained singleton reset
+  context, holding every other component fixed.
+  \item \textbf{Prediction and metric interventions.}  Improve or replace the
+  action-conditioned predictor under the native distance, and separately fit a
+  semantic metric that passes its held-out competence gate while freezing the
+  dynamics model.
+  \item \textbf{Replication.}  Repeat the action-margin result across LeWM
+  seeds, then replicate the coupled intervention and bounded-planning repair.
 \end{enumerate}
 
-\yash{TODO: Locate the separately mentioned red/green Tunnel artifact, then
-validate its checkpoint, episode split, binding probe, decoder, and planning
-manifest before adding it as a palette ablation.}
+\section{Data Availability and Ethics}
+
+The anonymized submission includes compact CSV tables for every plotted value,
+figure assets, probe provenance, and exact run identifiers for the historical
+planning controls and matched audits.  Checkpoints, datasets, and raw action
+tensors are retained outside the paper tree because of size.  The work uses
+synthetic environments and raises no human-subject or personal-data concerns.
+Funding, conflicts, and author contributions will be completed in the
+camera-ready version.
 
 \end{document}

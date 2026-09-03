@@ -1,0 +1,22 @@
+representation_stage,target_group,target,value_status,mae_px,r2,num_targets,derivation
+post_projector_current,color_conditioned_hub,tunnel_blue_hub,raw_target,7.470073173878455,0.7051148691986375,1,direct metric from source JSON
+post_projector_current,color_conditioned_hub,tunnel_green_hub,raw_target,8.615030279445843,0.6254206865337316,1,direct metric from source JSON
+post_projector_current,color_conditioned_hub,tunnel_orange_hub,raw_target,8.052751969640662,0.6447847737691217,1,direct metric from source JSON
+post_projector_current,color_conditioned_hub,mean_across_three_targets,derived_unweighted_mean,8.045951807654987,0.6584401098338303,3,arithmetic mean of the three raw target rows
+post_projector_current,position_only_hub,tunnel_bottom_hub,raw_target,2.7564006872866536,0.44944133107640694,1,direct metric from source JSON
+post_projector_current,position_only_hub,tunnel_middle_hub,raw_target,4.189131176782146,0.7977135750618349,1,direct metric from source JSON
+post_projector_current,position_only_hub,tunnel_top_hub,raw_target,2.62311920878615,0.3720854950091985,1,direct metric from source JSON
+post_projector_current,position_only_hub,mean_across_three_targets,derived_unweighted_mean,3.1895503576183164,0.5397468003824801,3,arithmetic mean of the three raw target rows
+predictor_output,color_conditioned_hub,tunnel_blue_hub,raw_target,7.392384233355294,0.708329416952844,1,direct metric from source JSON
+predictor_output,color_conditioned_hub,tunnel_green_hub,raw_target,8.590936513562252,0.6169471819449412,1,direct metric from source JSON
+predictor_output,color_conditioned_hub,tunnel_orange_hub,raw_target,8.189380851413105,0.6405649129260306,1,direct metric from source JSON
+predictor_output,color_conditioned_hub,mean_across_three_targets,derived_unweighted_mean,8.05756719944355,0.655280503941272,3,arithmetic mean of the three raw target rows
+predictor_output,position_only_hub,tunnel_bottom_hub,raw_target,2.770881817156399,0.44811280756914174,1,direct metric from source JSON
+predictor_output,position_only_hub,tunnel_middle_hub,raw_target,4.214842156775747,0.7886950360484565,1,direct metric from source JSON
+predictor_output,position_only_hub,tunnel_top_hub,raw_target,2.6362564987945447,0.36437299830802994,1,direct metric from source JSON
+predictor_output,position_only_hub,mean_across_three_targets,derived_unweighted_mean,3.20732682424223,0.5337269473085428,3,arithmetic mean of the three raw target rows
+post_projector_current,agent_state,agent_current,raw_target,39.59030487266732,0.00333986779651535,1,direct metric from source JSON
+predictor_output,agent_state,agent_future,raw_target,46.34541585315875,-0.044810165073870645,1,direct metric from source JSON
+bias_only_current_and_predictor,color_conditioned_hub,mean_across_three_targets,derived_constant_baseline,30.252325693766277,,3,fit-plus-validation target mean evaluated by MAE on the fixed test split then averaged across three hub identities
+bias_only_current,agent_state,agent_current,derived_constant_baseline,43.029396057128906,,1,fit-plus-validation target mean evaluated by MAE on the fixed test split
+bias_only_predictor,agent_state,agent_future,derived_constant_baseline,48.79222869873047,,1,fit-plus-validation target mean evaluated by MAE on the fixed test split
