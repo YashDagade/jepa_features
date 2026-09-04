@@ -1,0 +1,9 @@
+dataset:
+  name: ${oc.env:JEPA_FEATURES_TR2_GREEN_BLUE_DATASET,/scratch/yd3062/memory-for-jepa/datasets/tunnel_room_color_blue_green_noise_filled18x18.h5}
+  num_steps: ${eval:'${wm.num_preds} + ${wm.history_size}'}
+  frameskip: 5
+  keys_to_load:
+    - pixels
+    - action
+  keys_to_cache:
+    - action

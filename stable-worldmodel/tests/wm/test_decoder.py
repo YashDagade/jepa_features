@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 import torch
@@ -51,7 +52,9 @@ def test_global_decoder_reconstructs_expected_image_shape():
 
 
 def test_detached_decoder_diagnostic_trains_only_the_head():
-    module = type('Module', (), {'decoder': _small_decoder()})()
+    module = SimpleNamespace(
+        decoder=_small_decoder(), trainer=SimpleNamespace(is_last_batch=False)
+    )
     embedding = torch.randn(2, 3, 32, requires_grad=True)
     output = {'emb': embedding, 'loss': embedding.new_zeros(())}
     batch = {'pixels': torch.randn(2, 3, 3, 28, 28)}

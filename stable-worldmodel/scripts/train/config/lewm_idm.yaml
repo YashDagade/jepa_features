@@ -1,0 +1,17 @@
+defaults:
+  - lewm
+  - _self_
+
+output_model_name: lewm_idm
+
+# Historical LeWM adaptation: LayerNorm/GELU two-linear-layer inverse head.
+# Runtime data resolution supplies 2 * embed_dim and the action-block width.
+idm:
+  _target_: stable_worldmodel.wm.lewm.module.MLP
+  input_dim: ???
+  hidden_dim: 512
+  output_dim: ???
+
+loss:
+  idm:
+    weight: 3.125

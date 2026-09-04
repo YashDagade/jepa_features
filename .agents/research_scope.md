@@ -35,3 +35,14 @@ an inverse objective because that term defines the method.
 - Do not infer representation use from planner success alone.
 - Preserve dataset hashes, source commit, resolved configuration, seed,
   checkpoint, and W&B run ID for every result.
+
+## Explicit LeWM + IDM ablation
+
+The user authorized a matched Color/Shape/green-blue cue study with a uniform
+auxiliary IDM weight of 3.125, paired with native no-IDM controls. The separate
+`lewm_idm` training entry implements this historical adaptation; it must never
+be described as native LeWM. It uses projected `[next, current]` states and a
+512-wide LayerNorm/GELU head to predict the full normalized action block.
+Keep `lewm.py` and its native prediction + SIGReg objective unchanged. Use the
+same source revision, seed, data interfaces, budget, and CLS readout across the
+six conditions. Spatial aggregation is a separate supporting ablation.
