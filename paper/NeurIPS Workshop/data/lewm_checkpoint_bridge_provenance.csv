@@ -1,9 +1,9 @@
 field,value,value_status,notes
 run_id,jepa-color-lewm-8x8-idm0p125-tr3-color-color-room-count-s3072-r1,raw_metadata,one LeWM seed and checkpoint
-raw_metrics_path,/scratch/yd3062/memory-for-jepa/runs/Aug02/jepa-color/checkpoints/jepa-color-lewm-8x8-idm0p125-tr3-color-color-room-count-s3072-r1/location_probe/metrics_v3_fit_end.json,raw_artifact_path,external retained result
-raw_sidecar_path,/scratch/yd3062/memory-for-jepa/runs/tunnel_rooms_filled18x18/three_leaf/paired_color/tunnel_room_color_three_noise_filled18x18_location_probe_cue_and_position.h5,raw_artifact_path,external retained result
-raw_feature_cache_path,/scratch/yd3062/memory-for-jepa/runs/Aug02/jepa-color/checkpoints/jepa-color-lewm-8x8-idm0p125-tr3-color-color-room-count-s3072-r1/location_probe/features/location_features_v3_fit_end_517d85460811.h5,raw_artifact_path,source of the constant-prediction baselines plotted in the failure-localization figure
-checkpoint_path,/scratch/yd3062/memory-for-jepa/runs/Aug02/jepa-color/checkpoints/jepa-color-lewm-8x8-idm0p125-tr3-color-color-room-count-s3072-r1/weights_epoch_10.pt,raw_artifact_path,external retained result
+raw_metrics_path,artifact://jepa-color-lewm-8x8-idm0p125-tr3-color-color-room-count-s3072-r1/location_probe/metrics_v3_fit_end.json,raw_artifact_locator,external result
+raw_sidecar_path,artifact://datasets/tunnel_room_color_three_noise_filled18x18_location_probe_cue_and_position.h5,raw_artifact_locator,external result
+raw_feature_cache_path,artifact://jepa-color-lewm-8x8-idm0p125-tr3-color-color-room-count-s3072-r1/location_probe/features/location_features_v3_fit_end_517d85460811.h5,raw_artifact_locator,source of the constant-prediction baselines plotted in the failure-localization figure
+checkpoint_path,artifact://jepa-color-lewm-8x8-idm0p125-tr3-color-color-room-count-s3072-r1/weights_epoch_10.pt,raw_artifact_locator,external result
 source_revision,cf65948b159c0967ca2dc73d9879490e88a7c6db,raw_metadata,declared by run_info.txt
 seed,3072,raw_metadata,
 checkpoint_epoch,10,raw_metadata,fit_end after 20820 training batches

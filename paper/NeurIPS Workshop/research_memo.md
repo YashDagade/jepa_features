@@ -20,7 +20,8 @@ task-relevant relation stops helping LeWM choose an action:
 
 > LeWM can expose color--place structure in ordered patch features without
 > reliably organizing it in its native global feature.  In a separate
-> checkpoint, the static cue map is linearly accessible, but the dynamic agent
+> checkpoint, static color-conditioned hub locations are linearly accessible,
+> but the dynamic agent
 > consequence is not.  Re-encoded replayed native costs show a supported mean
 > shift under rerouting, whereas predicted costs do not; native latent
 > geometry still misranks those outcomes and first-plan optimization adds an action-feasibility
@@ -36,7 +37,7 @@ pixels -> ViT encoder -> patch features (diagnostic branch)
 
 The evidence establishes four distinct empirical separations.  The primary probe audit separates
 patch accessibility from native-global accessibility.  The matched checkpoint
-separates static cue-map accessibility from action-conditioned future-agent
+separates static hub-location accessibility from action-conditioned future-agent
 accessibility.  The coupled cue-to-route intervention partially separates the
 predicted-cost path from native scoring of replayed outcomes.  The fresh
 solver trace then separates objective misranking from return semantics while
@@ -156,13 +157,13 @@ A closer historical probe--planning match exists at auxiliary weight .125:
 post-projector-current/predictor-output color-conditioned hub MAE is 8.05/8.06
 pixels (`R²=.658/.655`) on an episode-disjoint probe set.  Yet current/future-
 agent MAE is 39.59/46.35 pixels (`R²=.003/-.045`).  The eight-pixel result is
-therefore evidence for an accessible static cue map, not for an accessible
-action-conditioned consequence.  We used this exact checkpoint for the
-remaining planning audits.
+therefore evidence for accessible static cue-conditioned hub locations, not
+for the complete current-goal routing rule or an accessible action-conditioned
+consequence.  We used this exact checkpoint for the remaining planning audits.
 
 ### Matched native-cost action ranking
 
-For each of 60 frozen held-out three-room states, we prespecified three
+For each of 60 rank-stratified, clean-oracle-certified three-room states, we prespecified three
 deterministic portal-directed action sequences before evaluating model costs.
 Each sequence spans the exact 25-primitive-action planning horizon.  In the
 primary library, leading no-ops align portal entry to primitive step 25 for all
@@ -307,6 +308,10 @@ The highest-value remaining audits all keep this exact model and frozen cases:
    passes a held-out competence gate while freezing prediction.
 4. **Replication.** Repeat the action-margin, coupled intervention, and bounded
    planning comparison across matched LeWM seeds.
+5. **Action-conditioned cost surfaces.** Perturb each certified route under a
+   shared native-cost scale and report relative dynamic range, basin volume,
+   correlation with geometric displacement, and correct-versus-wrong contrast.
+   Static encoder-similarity maps are not substitutes for this measurement.
 
 ## Current manuscript decision
 
@@ -318,9 +323,11 @@ replayed native costs but no supported shift in predicted costs, plus persistent
 native-metric misranking, without treating either as the sole bottleneck.
 Chaser and broad model comparisons are absent from the main narrative.
 
-The decoder progression and descriptive historical planner comparison now live
-in the appendix, along with the detailed action-margin sensitivities.  The four
-main figures focus on the stage schematic, patch/global accessibility, cue
-robustness, and the multi-stage planning audit.
+The decoder progression and descriptive cue-visibility planner comparison live
+in the appendix, along with the detailed action-margin sensitivities.  The five
+main figures show a real matched task/cost example, patch/global accessibility,
+actual cue renderings and robustness, aggregate route-cost geometry, and the
+sequence of increasingly demanding planning requirements.  The opening cost panel is an action-conditioned
+three-route profile rather than a static encoder-similarity map.
 The target remains nine pages of main text before references, with unrestricted
 appendix length.

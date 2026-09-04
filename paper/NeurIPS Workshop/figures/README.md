@@ -1,149 +1,44 @@
 # Figures
 
-This directory retains the current paper figures together with verified legacy
-assets that remain useful for provenance.  Plotting scripts must read a
-canonical compact table or manifest, never a W&B screenshot or mutable run
-display name.  Temporary builders remain under ignored `runs/` directories in
-accordance with the repository artifact policy.
+The active manuscript uses five main figures and two appendix figures. PDF and
+PNG versions are tracked; LaTeX includes the vector PDF, and PNG supports quick
+visual inspection. Temporary builders remain under ignored `runs/` paths.
 
-The current LeWM-focused manuscript uses five main figures and retains three
-supporting figures in the appendix:
+## Main figures
 
-- `lewm_tunnel_pipeline` is a diagnostic-stage schematic of the Tunnel task and
-  the failure-localization chain. Patch and global features are drawn as sibling
-  ViT outputs; only the global branch continues through the projector,
-  action-conditioned predictor, native latent distance, numerical search, and
-  execution. It is not a complete tensor-level computation graph. The bracket
-  separates the primary three-seed representation study from the checkpoint-
-  matched planning study. The latter summarizes the static-hub probe,
-  future-agent probe, route ranking, first-plan trace, and action-bound check.
-  Its exact vector builder is retained under ignored
-  `runs/action-margin-v1/build_pipeline_figure.py`.
-- `lewm_patch_global_accessibility` reads
-  `../data/seeded_epoch0_1_10_capacity.csv` and
-  `../data/capacity_matched_tunnel_readouts.csv`. Panel (a) contains three
-  matched LeWM seeds at reconstructed initialization, epoch 1, and epoch 10.
-  Panel (b) is a separate epoch-50 run and is visually separated rather than
-  drawn as a continuation. Its exact vector builder is retained under ignored
-  `runs/final-paper-figures-v1/`.
-- `lewm_stagewise_and_ablations` reads
-  `../data/lewm_tr2_stagewise_hue_factorial.csv`,
-  `../data/shape_identity_probe_summary.csv`, and
-  `../data/lewm_alternate_palette_probe.csv`. Its three panels use different
-  evidence types and are not pooled statistically.  The exact vector builder
-  is retained under ignored `runs/stagewise-figure-v2/`.
-- `lewm_planning_open_problem` is an appendix figure that reads
-  `../data/lewm_planning_cue_ablation.csv`. It shows the completed historical
-  one-seed, three-room visible-versus-hidden Color and Shape planning controls.
-  CEM and GD are shown separately. The runs are separately trained and geometry
-  is matched within each comparison, so neither the title nor caption interprets
-  episodic differences as a direct representation-use test.
-- `lewm_action_margin` is a main figure that reads
-  `../data/lewm_action_margin_cases.csv` and
-  `../data/lewm_action_margin_summary.csv`. It shows every primary native-cost
-  margin, the correct route's cost-rank distribution, and the immediate-route
-  timing sensitivity. The source analysis uses three fixed, replay-validated
-  portal candidates for each frozen case; it does not
-  reconstruct historical optimizer candidates.
-- `lewm_failure_localization` combines the checkpoint-matched probe,
-  coupled cue-to-route intervention, rank-2 route comparison, and fresh first-replan
-  solver trace. It shows that static cue hubs are accessible while future-agent
-  state is weak, that re-encoded replayed outcomes respond on average to the
-  semantic intervention while predicted rollouts do not, that replay does not
-  rescue native route ranking, and that all retained first plans violate the
-  physical action bounds. The vector builder under ignored
-  `runs/failure-localization-figure-v1/` reads and asserts raw artifacts; no
-  fitted semantic-head rescue result is plotted because its held-out competence
-  gate failed.
-- `lewm_native_global_decoder_progression` is an appendix figure: a resized,
-  re-tiled LeWM-only
-  strip derived from the audited `decoder_tunnel_cls_progression` grid. It retains the ground
-  truth and epochs 1, 6, 8, 13, and 50 for the same six deterministic clips.
-  No hue, contrast, or saturation enhancement is applied. The source frames and
-  checkpoint ordering are validated by the color-onset report builder.
+- `lewm_tunnel_pipeline` shows a real three-room factual/counterfactual pair
+  with fixed geometry and an exact three-route native-cost profile. The cost
+  panel is action-conditioned; it is not a relabeled static encoder-similarity
+  map. Builder: `runs/action-margin-v1/build_pipeline_figure.py`.
+- `lewm_patch_global_accessibility` compares 192-dimensional ordered-patch and
+  native-global readouts at initialization and epochs 1 and 10, with a separate
+  epoch-50 checkpoint. Builder: `runs/final-paper-figures-v1/build_patch_global.py`.
+- `lewm_stagewise_and_ablations` pairs actual standard-color, Shape, and
+  alternate-palette frames with their corresponding hue or localization
+  results. The columns are separate experiments and are not pooled.
+  Builder: `runs/stagewise-figure-v2/build_stagewise_figure.py`.
+- `lewm_action_margin` plots every fixed-candidate cost margin, the correct
+  route's cost-rank distribution, and the route-timing sensitivity. Positive
+  margins favor the cue-correct route. Builder:
+  `runs/action-margin-v1/build_paper_assets.py`.
+- `lewm_failure_localization` compares successive planning requirements: static
+  cue-hub accessibility, predicted/replayed semantic response, replayed route
+  ranking, and first-replan solver outcomes. Its semantic panel includes the direct
+  within-case replay-minus-prediction contrast. Builder:
+  `runs/failure-localization-figure-v1/build_failure_localization.py`.
 
-Both PDF and PNG versions are tracked. The PDF is used by LaTeX; PNG is retained
-for quick visual audit.
+## Appendix figures
 
-The color-onset figures are generated by
-`runs/color-onset-v1/report/build_report.py`. The builder resolves local
-run-name directories, validates the expected checkpoint/media counts and
-audited null CSV values, exports the
-long-form `trajectory_metrics.csv`, and then writes both PDF and PNG assets.
-The exposure-axis constants are validated against
-`../data/objective_exposure.csv`, regenerated with the repository's
-`audit_objective_exposure.py` loader-contract audit.
-Decoder grids use the chronologically ordered validation media, because the
-numeric W&B filename component is a logger step rather than an epoch.
-`environment_overview` uses an unmodified held-out frame from the deterministic
-validation media; it is a benchmark illustration, not a model output.
-The representation-diagnostic map uses the same held-out environment frames
-and places each diagnostic on the native architecture. Ordered patch tokens
-and native CLS are sibling ViT outputs; the Chaser destination probe attaches
-to pre-contact encoder CLS, while contact enrichment compares the predicted
-and target branches. The selected deterministic Tunnel and Chaser GIFs have
-SHA-256 prefixes adb409b42daac907 and d8bd84aeaa1ea246.
-The dense Chaser destination panels show the contact-quadrant-only BA
-(.5112) and its fixed-mapping episode-bootstrap interval [.4803,.5419], read
-from the audited values preserved in `../data/chaser_contact_null.csv`.
-`capacity_matched_tunnel_readouts` reads the completed, prespecified
-same-checkpoint result (`capacity_matched_results.json`, SHA-256 prefix
-`9ef906c7ded66641b`) and exports its compact numeric source to
-`../data/capacity_matched_tunnel_readouts.csv`. Every plotted readout has width
-192; PCA uses fit-plus-validation features without labels, and Gaussian random
-projection is fixed independently of the data values.
-`capacity_matched_tunnel_trajectory` reads the audited epoch-1/10/50 result
-(`capacity_matched_checkpoint_trajectory_results.json`, SHA-256 prefix
-`222acd9f282a5e8a`) and exports
-`../data/capacity_matched_tunnel_trajectory.csv`. Epoch 1 follows one completed
-training epoch; no initialization weight is available.
-`seeded_epoch0_1_10_capacity` reads the audited reconstructed-initialization
-result (`epoch0_reconstruction_capacity_results.json`, SHA-256 prefix
-`42671ac5d3c5afd5`) and the six-checkpoint epoch-1 result (prefix
-`908153cbe9db0795`) and epoch-10 result (prefix `afa2229cd941ed5c`). It
-exports `../data/seeded_epoch0_1_10_capacity.csv` and compares four
-192-dimensional readouts for LeWM/SMWM seeds 3072--3074 before training, after
-one epoch, and after ten epochs. Same-seed model cells are identical at
-initialization, so the left column has three unique encoder draws; the trained
-columns contain six model-specific states.
-The Tunnel-accessibility summary combines those matched initialization,
-epoch-1, and epoch-10 cells with the separate historical epoch-50 capacity
-result. Its compact inputs are ../data/seeded_epoch0_1_10_capacity.csv and
-../data/capacity_matched_tunnel_readouts.csv. Thin early-checkpoint traces are
-seeds and thick traces are means. PCA
-is refit without labels for each frozen representation; it therefore tests a
-fixed readout class rather than a single fixed coordinate map. The Gaussian
-projection in the underlying table is the shared nonadaptive control.
-The seeded Tunnel CLS trajectories read all 51 checkpoints from each of the
-six completed paired runs and export
-../data/seeded_tunnel_cls_trajectories.csv. Five-epoch markers are visual
-anchors; bottom rugs retain every epoch that passes the row criterion,
-including the isolated seed-3074 binding passes that a five-epoch sampling
-would hide.
-`seeded_smwm_native_cls_epoch0_10` reads the independently verified post-hoc
-native-CLS analysis for SMWM seeds 3072--3074 through epoch 10
-(`posthoc_smwm_native_cls_epoch0_10_results.json`, SHA-256 prefix
-`d31cd6eb42e84afe`). It exports
-`../data/seeded_smwm_native_cls_epoch0_10.csv`. Columns distinguish seeds; rows
-show agent-position MAE, nearest-tunnel identity balanced accuracy, and
-color--place binding balanced accuracy. Filled markers pass every prespecified
-criterion for that metric, hollow markers do not, and classification error bars
-are pointwise 95% intervals. The horizon is right-censored at epoch 10; this is
-a descriptive seed comparison, not evidence of a sigmoid or a population-level
-acquisition time.
-`tunnel_exact_binding_swap` reads the audited 184-episode rendering-swap result
-(`tunnel_exact_binding_swap_results.json`, SHA-256 prefix
-`1fb81c7b6dec5151`) and exports `../data/tunnel_exact_binding_swap.csv`. Its
-bottom row uses one two-sided simultaneous band over all 12 model--stage cells;
-the CSV also preserves the mandatory control/event stage and target response
-RMS diagnostics used to qualify cosine interpretation.
-`chaser_checkpointed_intervention` and
-`chaser_destination_stage_trajectories` read the audited nine-checkpoint
-intervention (`chaser_cue_trajectory_results.json`, SHA-256 prefix
-`06799748ee8a4b78`). Its contact-quadrant baseline is fit on
-fit-plus-validation episodes and frozen on test. The primary figure separates
-pointwise bands from simultaneous 36-cell lower bands; stage curves beyond the
-encoder are pointwise diagnostics only. Compact numeric sources are exported
-to `../data/chaser_checkpointed_primary.csv`,
-`../data/chaser_destination_stages.csv`, and
-`../data/chaser_scheduled_onsets.csv`.
+- `lewm_native_global_decoder_progression` is a qualitative decoder control.
+  The decoder is detached from the world-model features and is not used for
+  planning, so the image strip does not define an acquisition time.
+- `lewm_planning_open_problem` reports one-seed, separately trained
+  cue-visible/cue-hidden planning controls for Color and Shape. Scenario
+  geometry is matched within comparisons, but checkpoint variation is not.
+  Builder: `runs/paper-revision-v3/build_planning_control_figure.py`.
+
+Every quantitative plot reads compact paper tables or frozen experiment
+outputs and checks expected populations or values before writing. Continuous
+colors use perceptually ordered maps; categorical encodings pair color with
+marker, line style, hatching, or direct labels. No panel contains author names,
+account URLs, workstation paths, or mutable run-display titles.

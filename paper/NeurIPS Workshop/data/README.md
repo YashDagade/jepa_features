@@ -22,16 +22,18 @@ Files added for the LeWM-focused revision:
   held-out E024 audit in `lewm_palette_decoder_summary.csv` is the stronger
   inferential result.
 - `historical_lewm_global_probe_rows.csv` records the nine seed-by-feature
-  LeWM rows behind the historical native-global, learned-global-MLP, and
+  LeWM rows behind the native-global, learned-global-MLP, and
   position-aware-patch-feature localization comparison. Identity-conditioned
   hub MAE is the unweighted mean of the green- and orange-hub target MAEs;
   position-only hub MAE is the unweighted mean of the top- and bottom-hub
   target MAEs. The companion summary reports arithmetic means and sample
   standard deviations over seeds 3072, 4072, and 5072. The six native/MLP
   sources are local fit-end metric JSONs; the position-aware runs were reused
-  from the earlier objective-swap grid and are provenance-locked by W&B run,
-  downloaded summary/config hashes, and source commit. Their checkpoints are
-  no longer local, so the checkpoint-hash cells are intentionally empty.
+  from the objective-swap grid and are locked by run, downloaded summary/config
+  hashes, and source commit. The `current_projected_*` columns correct the
+  source metric's legacy `encoder` label: the location extractor reads the
+  post-projector current state. Checkpoints for the position-aware rows are no
+  longer local, so their checkpoint-hash cells are intentionally empty.
 - `lewm_planning_cue_ablation.csv` records the completed historical LeWM
   visible-versus-hidden Color and Shape planning evaluations. Every row includes
   the exact W&B run identifier, project, seed, solver, rank, and episode count.
@@ -65,6 +67,14 @@ Files added for the LeWM-focused revision:
   the descriptive rank-2 candidate-ranking slice. The provenance table records
   raw hashes, validation gates, and the failed semantic-head competence check;
   fitted-head rescue results are therefore intentionally excluded.
+- `lewm_semantic_routing_path_contrast.csv` records the direct within-case
+  difference between replayed-outcome and predicted-rollout interactions in
+  BF16 and FP32. Intervals use 20,000 paired bootstrap resamples with seed
+  20260903; this is the inferential comparison of the two paths shown in the
+  revised failure-localization figure.
+- `lewm_semantic_routing_path_contrast_cases.csv` contains the 60 paired
+  predicted, replayed, and replay-minus-prediction interactions used to
+  regenerate those means, medians, and bootstrap intervals.
 - `lewm_semantic_routing_rank2_cases.csv` is the case-level source for the
   predicted-versus-environment-replay margin panel. For each frozen rank-2 case,
   margin is the minimum wrong-route native cost minus the correct-route native
