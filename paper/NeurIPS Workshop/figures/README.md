@@ -1,12 +1,12 @@
 # Figures
 
-This directory retains the current paper figures together with audited legacy
+This directory retains the current paper figures together with verified legacy
 assets that remain useful for provenance.  Plotting scripts must read a
 canonical compact table or manifest, never a W&B screenshot or mutable run
 display name.  Temporary builders remain under ignored `runs/` directories in
 accordance with the repository artifact policy.
 
-The current LeWM-focused manuscript uses four main figures and retains three
+The current LeWM-focused manuscript uses five main figures and retains three
 supporting figures in the appendix:
 
 - `lewm_tunnel_pipeline` is a diagnostic-stage schematic of the Tunnel task and
@@ -14,8 +14,8 @@ supporting figures in the appendix:
   ViT outputs; only the global branch continues through the projector,
   action-conditioned predictor, native latent distance, numerical search, and
   execution. It is not a complete tensor-level computation graph. The bracket
-  separates the primary three-seed representation audit from the checkpoint-
-  matched planning audit. The latter now summarizes the static-hub probe,
+  separates the primary three-seed representation study from the checkpoint-
+  matched planning study. The latter summarizes the static-hub probe,
   future-agent probe, route ranking, first-plan trace, and action-bound check.
   Its exact vector builder is retained under ignored
   `runs/action-margin-v1/build_pipeline_figure.py`.
@@ -23,8 +23,9 @@ supporting figures in the appendix:
   `../data/seeded_epoch0_1_10_capacity.csv` and
   `../data/capacity_matched_tunnel_readouts.csv`. Panel (a) contains three
   matched LeWM seeds at reconstructed initialization, epoch 1, and epoch 10.
-  Panel (b) is a separate historical epoch-50 protocol and is visually
-  separated rather than drawn as a continuation.
+  Panel (b) is a separate epoch-50 run and is visually separated rather than
+  drawn as a continuation. Its exact vector builder is retained under ignored
+  `runs/final-paper-figures-v1/`.
 - `lewm_stagewise_and_ablations` reads
   `../data/lewm_tr2_stagewise_hue_factorial.csv`,
   `../data/shape_identity_probe_summary.csv`, and
@@ -35,17 +36,17 @@ supporting figures in the appendix:
   `../data/lewm_planning_cue_ablation.csv`. It shows the completed historical
   one-seed, three-room visible-versus-hidden Color and Shape planning controls.
   CEM and GD are shown separately. The runs are separately trained and geometry
-  is matched within each audit, so neither the title nor caption interprets
+  is matched within each comparison, so neither the title nor caption interprets
   episodic differences as a direct representation-use test.
-- `lewm_action_margin` is an appendix figure that reads
+- `lewm_action_margin` is a main figure that reads
   `../data/lewm_action_margin_cases.csv` and
   `../data/lewm_action_margin_summary.csv`. It shows every primary native-cost
   margin, the correct route's cost-rank distribution, and the immediate-route
-  timing sensitivity. The source audit uses three newly prespecified,
-  physically replayed portal candidates for each frozen case; it does not
+  timing sensitivity. The source analysis uses three fixed, replay-validated
+  portal candidates for each frozen case; it does not
   reconstruct historical optimizer candidates.
 - `lewm_failure_localization` combines the checkpoint-matched probe,
-  coupled cue-to-route intervention, rank-2 route audit, and fresh first-replan
+  coupled cue-to-route intervention, rank-2 route comparison, and fresh first-replan
   solver trace. It shows that static cue hubs are accessible while future-agent
   state is weak, that re-encoded replayed outcomes respond on average to the
   semantic intervention while predicted rollouts do not, that replay does not
