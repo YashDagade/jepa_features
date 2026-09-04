@@ -9,8 +9,13 @@ Files added for the LeWM-focused revision:
 - `short_paper_probe_results.csv` is the compact, common-contract source for
   the 4-page paper's LeWM-only affine-probe table. Cue and position values are
   unweighted four-endpoint means; legacy `encoder` keys are correctly labeled
-  as current post-projector states. Blank Shape position R2 cells are
-  intentionally withheld pending a matched composite-sidecar re-probe.
+  as current post-projector states. Shape position $R^2$ was reconstructed
+  post hoc from the retained immutable feature cache under the original ridge
+  contract; the same reconstruction reproduces the archived MAE before adding
+  $R^2$.
+- `short_paper_probe_reconstructions.csv` freezes the Shape reconstruction's
+  per-target MAE and coordinate-wise $R^2$, together with checkpoint, feature
+  cache, composite sidecar, and source-dataset hashes.
 - `short_paper_transition_diversity.csv` freezes the exact one-seed
   transition-window pilot. It records both the non-monotonic affine-probe
   results and the approximate epoch-compute multiplier, so the associated
@@ -18,6 +23,10 @@ Files added for the LeWM-focused revision:
 - `short_paper_decoder_sources.csv` maps every source image in the active
   decoder figures to a W&B run, source revision, tracked file, hash, and claim
   boundary.
+- `short_paper_protocol.csv` freezes the active TR2 trajectory-collection,
+  temporal-sampling, and rank-planning settings.  In particular, collector
+  action repetition is separated from the five distinct primitive actions in
+  each model action block.
 
 - `lewm_alternate_palette_probe.csv` records the matched green/orange and
   green/blue global localization controls at auxiliary weights 0 and .625. The
@@ -55,7 +64,8 @@ Files added for the LeWM-focused revision:
 - `lewm_planning_protocols.csv` records source commits, checkpoint epochs,
   manifest hashes, and the within-pair matching scope. Color uses exact shared
   manifests. Shape uses condition-specific manifests with matched case
-  identifiers and geometry.
+  identifiers and geometry. The TR2 commit comes from archived W&B metadata;
+  its evaluator is identical to the later TR3 revision.
 - `lewm_action_margin_cases.csv` contains the compact, case-level result from
   the frozen correct-versus-wrong portal-route audit. It reports the native
   cost margin and correct-route rank for the event-time-matched primary library

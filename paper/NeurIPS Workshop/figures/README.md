@@ -1,11 +1,14 @@
 # Figures
 
-The active four-page manuscript uses three LeWM-only figures. PDF and PNG
+The active four-page manuscript uses four LeWM-only figures. PDF and PNG
 versions are tracked; LaTeX includes the vector PDF, and PNG supports quick
 visual inspection. Temporary builders remain under ignored `runs/` paths.
 
 ## Active main figures
 
+- `tunnel_variants_and_rank` shows real standard Color, Shape, and green/blue
+  TR2 frames plus an oracle-certified TR2 rank-2 scenario.  The numbered
+  portal order is computed from the evaluation manifest, not from the model.
 - `tr2_color_mae_scale` places per-coordinate MAE on an actual 224x224 TR2
   Color frame. It visualizes exact L1 contours at 4, 15, 27, and 30 pixels. The
   caption and paper use task-specific null MAE and R2 rather than defining a

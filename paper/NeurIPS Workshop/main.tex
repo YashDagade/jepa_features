@@ -8,6 +8,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
+\usepackage{float}
 \usepackage{graphicx}
 \usepackage{microtype}
 \usepackage{xcolor}
@@ -16,7 +17,6 @@
 
 \newcommand{\lewm}{LeWM}
 \newcommand{\trtwo}{TR2}
-\newcommand{\trthree}{TR3}
 \newcommand{\curpred}[2]{#1\,/\,#2}
 
 \title{When a JEPA World Model Misses the Cue That Changes the Future}
@@ -63,6 +63,24 @@ the color--location binding is required to predict the portal transition and
 to route to the requested destination.  Shape (triangle/diamond) and
 green/blue variants hold the logic fixed while changing the visual cue.
 
+Figure~\ref{fig:taskrank} shows the three two-room renderings and a rank
+example.  The Color, Shape, and green/blue datasets are
+image-only counterfactuals over the same trajectories, geometry, and targets;
+they therefore isolate the cue rendering rather than behavior.
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=\linewidth]{figures/tunnel_variants_and_rank.pdf}
+  \caption{\textbf{Tunnel Rooms variants and rank.}  Panels (a--c) are real
+  aligned frames from image-only counterfactual datasets constructed over the
+  same trajectories.  In (d), R1 and R2 label the portals' deterministic
+  geometry-only search order; the teal outline
+  marks the cue-correct portal (R2 here).  Panel (d) uses the historical
+  evaluator's outline rendering.  Rank is certified from the scenario and
+  does not use the learned model.}
+  \label{fig:taskrank}
+\end{figure}
+
 Our finding is deliberately narrower than ``the encoder cannot see color.''
 The tested LeWM backbone's native patches classify visible hue at 96--100\%
 balanced accuracy, but hue falls to near chance after the learned global and
@@ -74,6 +92,16 @@ consistent with cue underuse and a strong proximity bias; it does not prove
 that cue information is absent or identify a unique optimization mechanism.
 
 \section{Tunnel Rooms and diagnostics}
+
+\paragraph{Trajectory collection.}
+We retain 10,000 successful trajectories from a scripted cue-aware waypoint
+oracle.  At every simulator step it takes a unit direction toward the matched
+portal or goal, adds independent Gaussian action noise ($\sigma=2$), clips
+each component to $[-1,1]$, and replaces it with the previous action with
+probability .05.  Before wall/portal handling, a unit action proposes 5 pixels
+of motion.  Collection stores every step; model clips sample observations five
+steps apart and retain all five intervening actions.  Full collection and
+rendering provenance is in Appendix~\ref{app:collection}.
 
 \paragraph{World-model state.}
 We analyze LeWM \citep{maes2026leworldmodel}, trained from pixels with a
@@ -133,7 +161,7 @@ Cue variant & State & Cue MAE $\downarrow$ & Cue $R^2\uparrow$ & Location MAE $\
 \midrule
 Color & $8\!\times\!8$ & \curpred{27.40}{27.57} & \curpred{.224}{.226} & \curpred{3.83}{3.66} & \curpred{.934}{.939} \\
 Color & CLS & \curpred{27.44}{27.86} & \curpred{.307}{.292} & \curpred{7.42}{7.49} & \curpred{.684}{.677} \\
-Shape & $8\!\times\!8$ & \curpred{28.05}{28.10} & \curpred{.203}{.214} & \curpred{4.57}{4.41} & -- \\
+Shape & $8\!\times\!8$ & \curpred{28.05}{28.10} & \curpred{.203}{.214} & \curpred{4.57}{4.41} & \curpred{.907}{.915} \\
 Shape & CLS & \multicolumn{4}{c}{matched run in progress} \\
 Green/blue & $8\!\times\!8$ & \curpred{28.50}{28.47} & \curpred{.151}{.156} & \curpred{4.85}{4.89} & \curpred{.894}{.893} \\
 Green/blue & CLS & \multicolumn{4}{c}{matched run in progress} \\
@@ -156,15 +184,21 @@ is the large, repeatable cue--location accessibility gap at the state consumed
 by prediction and planning.
 
 \paragraph{Rank-based planning.}
-We additionally group episodes by the correct portal's position in a
-deterministic nearest-unexplored search order: rank 1 is nearest; after a wrong
-portal, rank is recomputed from the return position.  CEM and gradient-descent
-(GD) planners use the same five-model-step horizon.  Success means reaching the
-requested terminal destination within 400 (\trtwo{}) or 500 (\trthree{})
-primitive steps.  Table~\ref{tab:rank} shows a steep, optimizer-independent
-rank drop.  This is consistent with proximity-dominated ``enter a portal''
-behavior and weak cue-conditioned routing, although rank also changes route
-difficulty and cannot by itself identify the learned mechanism.
+For each oracle-certified scenario, the target and cue pairing first identify
+the correct portal.  Independently, a deterministic geometry-only policy
+orders portals by choosing the nearest unvisited one; after a hypothetical
+wrong traversal, it excludes that portal and recomputes distance from the
+prescribed hub return point.  \emph{Rank} is the correct portal's one-indexed
+position in this order (Figure~\ref{fig:taskrank}d), not a model score or the
+portal actually chosen by a rollout.  We evaluate balanced rank strata with
+full episodic planning.  CEM and gradient descent (GD) minimize final-step
+latent MSE over five latent steps, each containing five separately parameterized
+primitive actions; up to 25 execute before replanning.  Success requires
+agent--target center distance $<16$ px within 400 primitive steps.  Exact
+solver settings are in Appendix~\ref{app:planning}.
+Table~\ref{tab:rank} shows a steep drop for both optimizers.  This is
+consistent with proximity-dominated routing and weak cue use, although rank
+also changes route difficulty and cannot by itself identify the mechanism.
 
 \begin{table}[t]
 \centering
@@ -175,13 +209,11 @@ difficulty and cannot by itself identify the learned mechanism.
 Rooms & CEM success by rank (\%) & GD success by rank (\%) & Episodes/rank \\
 \midrule
 \trtwo{} Color & 72 / 32 & 72 / 48 & 25 \\
-\trthree{} Color & 80 / 40 / 0 & 80 / 45 / 5 & 20 \\
 \bottomrule
 \end{tabular}
-\caption{\textbf{Rank-stratified planning with visible color cues.}  These
-historical $8\!\times\!8$+IDM 3.125 runs use one seed and the same July
-protocol family; hidden-cue variants and other models are intentionally
-omitted.}
+\caption{\textbf{Rank-stratified planning with visible color cues.}  This
+historical $8\!\times\!8$+IDM 3.125 run uses one seed; hidden-cue variants and
+other models are intentionally omitted.}
 \label{tab:rank}
 \end{table}
 
@@ -229,7 +261,7 @@ not monotonic, and added windows also increase epoch compute.  We therefore
 interpret the pilot as motivation for a compute-matched exposure experiment,
 not evidence that diversity alone solves the problem.
 
-\begin{figure}[t]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/lewm_transition_diversity_decoder.pdf}
   \caption{\textbf{Exploratory transition-exposure ablation.}  Representative
@@ -241,17 +273,12 @@ not evidence that diversity alone solves the problem.
 \end{figure}
 
 \paragraph{Limitations and outlook.}
-The study centers on one JEPA world-model family, and most controlled
-ablations use one seed.  Probe failure means ``not linearly accessible under
-this split and state,'' not absent information; decoders combine representation
-and decoder capacity; rank combines representation, dynamics, distance,
-optimization, and route length.  The active IDM term in the main Color/Shape
-runs also limits generalization to the original LeWM recipe.  Future work
-should vary the ratio of cue-diagnostic transitions at fixed updates, probe
-causal cue interventions, and test multiple JEPA objectives, state interfaces,
-and environments.  The present observation is nonetheless coherent across
-three diagnostics: a predictive state can preserve dominant spatial structure
-while making a sparse, action-critical cue difficult to use.
+Results use one model family and mostly one seed.  Probe failure is not
+information absence; decoders confound state and capacity; rank also includes
+distance and optimization; and the active IDM term limits recipe
+generalization.  Future work should vary cue-diagnostic exposure at fixed
+updates and test causal interventions, objectives, interfaces, and
+environments.
 
 \clearpage
 \bibliographystyle{plainnat}
@@ -274,6 +301,37 @@ probe on raw encoder tokens.
 
 \section{Evaluation and provenance details}
 
+\subsection{Trajectory collection and temporal interface}
+\label{app:collection}
+
+Each two-room scenario randomizes portal geometry, color--position pairing,
+agent start, target leaf, and target position.  The source job collected 55,000
+paired hidden/visible scenarios with a 500-step cap and retained the first
+50,000 for which both scripted routes succeeded; the active corpus is the
+first 10,000 episodes (651,357 stored steps), all terminal successes.  Scenario
+seeds are $41021+$episode index; each condition's policy RNG is initialized
+once with seed 41021.
+
+The visible-condition collector is a scripted cue-aware oracle, not a learned
+image policy: it queries the scenario pairing, chooses the hub portal paired
+with the target leaf, and follows unit-vector waypoints, using a left-lane
+waypoint when needed to avoid triggering a non-target portal.
+Independent $\mathcal N(0,2^2)$ noise is added to each 2-D action component,
+then components are clipped to $[-1,1]$; with probability .05, the previously
+executed action replaces the new action.  Before collision and portal handling,
+the proposed displacement is the clipped action times 5 pixels.  Shape redraws
+the same portals as neutral
+triangle/diamond markers, while green/blue replaces orange with blue; all
+non-image arrays are byte-identical to standard Color.
+
+Collection stores every primitive step.  Training constructs four-frame
+clips---three context observations and one prediction target---at
+\texttt{frameskip}=5.  For each latent transition the five intervening 2-D
+actions are preserved and flattened to a 10-D action block.  Thus
+MPC sets \texttt{action\_block}=5 to match this interface: each latent planning
+step contains five potentially different primitive actions.  This is distinct
+from the collector's .05 previous-action repeat probability.
+
 All coordinate metrics use held-out episodes rather than held-out frames from
 training episodes.  The fixed ridge penalty is applied after standardizing
 features on the fit split.  $R^2$ is computed independently for coordinate
@@ -282,11 +340,39 @@ standard Color four-endpoint constant MAE is 31.19 px; its two-hub constant is
 30.02 px.  Raw patches, selected global states, projected states, and predicted
 states are reported separately wherever stagewise claims are made.
 
-Rank manifests are oracle-certified.  The historical table in the main text
-uses a single internally consistent July data/protocol family: \trtwo{} has 25
-episodes per rank and a 400-step budget; \trthree{} has 20 episodes per rank
-and a 500-step budget.  Both planners use horizon five, repeat each planned
-action for five primitive steps, and count timeouts or truncations as failure.
+\subsection{Rank-based planning protocol}
+\label{app:planning}
+
+The target rank is computed before evaluation.  Starting at the initial hub
+position, the certifier chooses the closest unvisited portal (endpoint index
+breaks exact ties).  After each hypothetical wrong portal, it excludes that
+portal and recomputes from its prescribed hub-side return position.  The
+correct portal's index in this search is R1 or R2.  We naturally sample
+target-independent scenarios, then select 25 oracle-solvable episodes per
+rank.
+
+Both planners minimize
+$\lVert\hat z_{t+5}-z_{\mathrm{goal}}\rVert_2^2$, summed over projected-state
+dimensions.  A planning step contains five consecutive 2-D primitive actions,
+so horizon 5 spans 25 primitive steps; receding horizon 5 executes all 25
+before replanning unless the episode terminates.  CEM draws 300 Gaussian
+sequences per iteration from an
+initial zero-mean, unit-variance distribution, forces one sample to the mean,
+keeps 30 elites, and refits mean and standard deviation for 30 iterations.  GD
+optimizes 100 initial sequences for 30 AdamW steps at learning rate .1; the
+first starts at zero and the other 99 receive unit-scale Gaussian noise; added
+action noise is zero and gradient clipping is disabled.  Both use seed 3072
+and solver sub-batch size one.  Optimized normalized coordinates are not
+box-projected; they are inverse-standardized before execution, and the
+environment clips each 2-D action to $[-1,1]^2$.
+
+Evaluation uses agent speed 5, batches 10 environments, and allows 400
+primitive steps (at most 16 planning calls).  Success is terminal entry within
+strict center distance $<16$ px of the requested target; timeouts and
+truncations are failures.  Rank manifests are hash-locked, and every selected
+scenario is oracle-certified in hidden-search and visible-direct modes against
+the expected portal-entry trace.  The reported run uses the epoch-10
+$8\!\times\!8$+IDM 3.125 checkpoint, seed 3072, and BF16 evaluation.
 
 The transition audit counts 10,000 episodes, 641,357 raw transitions, 463,033
 legal training clips, and 1,389,099 predicted intervals.  Event exposure is
@@ -298,6 +384,8 @@ equating the two sampling distributions.
 The decoder Color audit detects cue-marker support in original frames, excludes
 agent overlap, and evaluates matched decoded pixels using nearest input-color
 centroids in CIE L$^*$a$^*$b$^*$ space.  Bootstrap intervals resample episodes.
+Shape location $R^2$ is recomputed post hoc from retained epoch-10 features
+under the original ridge contract, which exactly reproduces the archived MAE.
 The green/blue support-media audit is smaller and yields 50\% macro accuracy
 and 2.9\% separation retention for the IDM-0 run; it has no episode-level
 confidence interval and is treated as descriptive.  Shape decoder media have
