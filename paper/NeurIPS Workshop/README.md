@@ -1,15 +1,16 @@
-# NeurIPS workshop draft
+# NeurIPS 2026 short workshop paper
 
-This anonymous draft develops one claim: task-relevant information can be
-linearly accessible without inducing the action ordering required by latent
-planning. `main.tex` follows the chain from ordered patch features to the native
-global state, action-conditioned prediction, native cost, and numerical search.
+This anonymous 4-page extended abstract studies one narrow finding in Tunnel
+Rooms: LeWM's compact predictive state preserves portal location much better
+than cue-conditioned portal identity. The paper uses only LeWM evidence and
+triangulates the finding with affine probes, rank-stratified planning, and
+detached decoders. It explicitly distinguishes cue underuse in the projected
+state from early visual perception: native patch tokens retain visible hue.
 
-The supplied venue style is still provisional: the paper uses the ICML 2026
-two-column package while awaiting a confirmed workshop template. The current
-build has 9 pages of main text and 16 pages total, including references and the
-appendix. A venue-specific formatting pass and deliberate length decision are
-still required before submission.
+`main.tex` uses the official unmodified NeurIPS 2026 style in
+double-blind-workshop mode for the workshop *From Pretrained Representations to
+Acting Agents*. The complete argument is contained in four content pages;
+references and optional technical appendices follow.
 
 ## Build
 
@@ -36,10 +37,13 @@ compilation.
 
 - `data/` contains compact machine-readable values and experiment records for
   every active quantitative figure and table.
-- `figures/` contains five main figures and two appendix figures in PDF and PNG
-  form. LaTeX uses the vector PDFs; PNGs support quick visual inspection.
-- `research_memo.md` records the evidence-backed argument, experiment
-  boundaries, and next interventions.
+- `figures/` contains the active MAE-scale, three-cue decoder, and
+  transition-exposure figures in PDF and PNG form. LaTeX uses the vector PDFs;
+  PNGs support quick visual inspection.
+- `data/short_paper_*.csv` contains the active compact table values and exact
+  decoder provenance. Older tables remain as supporting audit records.
+- `research_memo.md` records the broader evidence history; it is not the scope
+  of the short paper.
 - `archive/` preserves superseded drafts and is not included by `main.tex`.
 
 The manuscript intentionally omits workstation paths, account URLs, and long

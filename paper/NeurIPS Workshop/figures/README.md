@@ -1,10 +1,28 @@
 # Figures
 
-The active manuscript uses five main figures and two appendix figures. PDF and
-PNG versions are tracked; LaTeX includes the vector PDF, and PNG supports quick
+The active four-page manuscript uses three LeWM-only figures. PDF and PNG
+versions are tracked; LaTeX includes the vector PDF, and PNG supports quick
 visual inspection. Temporary builders remain under ignored `runs/` paths.
 
-## Main figures
+## Active main figures
+
+- `tr2_color_mae_scale` places per-coordinate MAE on an actual 224x224 TR2
+  Color frame. It visualizes exact L1 contours at 4, 15, 27, and 30 pixels. The
+  caption and paper use task-specific null MAE and R2 rather than defining a
+  universal pixel cutoff.
+- `lewm_three_cue_decoder_composite` shows input and detached-decoder rows for
+  standard green/orange, triangle/diamond Shape, and alternate green/blue cue
+  variants. It includes LeWM only. Exact source hashes and W&B provenance are
+  in `data/short_paper_decoder_sources.csv`.
+- `lewm_transition_diversity_decoder` shows representative LeWM decoder
+  snapshots at baseline and +10/50/100% transition-centered windows. This is a
+  qualitative, compute-confounded pilot; the non-monotonic probe results are
+  frozen in `data/short_paper_transition_diversity.csv`.
+
+## Archived supporting figures
+
+The remaining tracked figures support older, broader drafts and appendices but
+are not included by the active `main.tex`.
 
 - `lewm_tunnel_pipeline` shows a real three-room factual/counterfactual pair
   with fixed geometry and an exact three-route native-cost profile. The cost

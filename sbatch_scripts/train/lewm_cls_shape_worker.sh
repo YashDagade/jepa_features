@@ -16,8 +16,9 @@ set -euo pipefail
 
 SOURCE=/scratch/yd3062/worktrees/paper-shape-cls-8353c2b
 SOURCE_COMMIT=8353c2b8835da17af3335aff07cf2dcc29394378
+WORKER=/scratch/yd3062/jepa_features/sbatch_scripts/train/lewm_cls_shape_worker.sh
 DATA_ROOT=/scratch/yd3062/memory-for-jepa
-RUN_ID=tunnel-room-shape-lewm-cls-idm3p125-tr2-shape-s3072-r1
+RUN_ID=tunnel-room-shape-lewm-cls-idm3p125-tr2-shape-s3072-r2
 RUN_BASE=/scratch/yd3062/jepa_features/runs/paper-cls-cue-v1/shape
 RUN_DIR=${RUN_BASE}/${RUN_ID}
 DATASET=${DATA_ROOT}/datasets/tunnel_room_shape_noise.h5
@@ -73,11 +74,12 @@ if [[ "${JEPA_CUE_ABLATION_CONTAINER:-0}" != 1 ]]; then
     "sigreg_weight=0.09" \
     "idm_weight=3.125" \
     "wandb_project=Tunnel Room Shape" \
-    "wandb_id=${RUN_ID}" > "${RUN_DIR}/run_info.txt"
+    "wandb_id=${RUN_ID}" \
+    "supersedes_pretraining_failure_job=16958908" > "${RUN_DIR}/run_info.txt"
   exec singularity exec --nv \
     --overlay /scratch/yd3062/singularity/overlay-50G-10M-stable-wm.ext3:ro \
     /share/apps/images/cuda12.6.3-cudnn9.5.1-ubuntu22.04.5.sif \
-    env JEPA_CUE_ABLATION_CONTAINER=1 /bin/bash "$0"
+    env JEPA_CUE_ABLATION_CONTAINER=1 /bin/bash "${WORKER}"
 fi
 
 source /ext3/env.sh

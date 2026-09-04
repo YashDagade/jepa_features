@@ -6,6 +6,19 @@ the paper tree.
 
 Files added for the LeWM-focused revision:
 
+- `short_paper_probe_results.csv` is the compact, common-contract source for
+  the 4-page paper's LeWM-only affine-probe table. Cue and position values are
+  unweighted four-endpoint means; legacy `encoder` keys are correctly labeled
+  as current post-projector states. Blank Shape position R2 cells are
+  intentionally withheld pending a matched composite-sidecar re-probe.
+- `short_paper_transition_diversity.csv` freezes the exact one-seed
+  transition-window pilot. It records both the non-monotonic affine-probe
+  results and the approximate epoch-compute multiplier, so the associated
+  decoder strip is not misrepresented as a causal recovery result.
+- `short_paper_decoder_sources.csv` maps every source image in the active
+  decoder figures to a W&B run, source revision, tracked file, hash, and claim
+  boundary.
+
 - `lewm_alternate_palette_probe.csv` records the matched green/orange and
   green/blue global localization controls at auxiliary weights 0 and .625. The
   standard rows come from the historical LeWM color-identity factorial and the
