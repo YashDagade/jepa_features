@@ -1,6 +1,6 @@
 # Figures
 
-The active four-page manuscript uses four LeWM-only figures. PDF and PNG
+The active four-page manuscript uses three LeWM-based main figures and one appendix figure. PDF and PNG
 versions are tracked; LaTeX includes the vector PDF, and PNG supports quick
 visual inspection. Temporary builders remain under ignored `runs/` paths.
 
@@ -9,17 +9,19 @@ visual inspection. Temporary builders remain under ignored `runs/` paths.
 - `tunnel_variants_and_rank` shows real standard Color, Shape, and green/blue
   TR2 frames plus an oracle-certified TR2 rank-2 scenario.  The numbered
   portal order is computed from the evaluation manifest, not from the model.
-- `tr2_color_mae_scale` places per-coordinate MAE on an actual 224x224 TR2
-  Color frame. It visualizes exact L1 contours at 4, 15, 27, and 30 pixels. The
-  caption and paper use task-specific null MAE and R2 rather than defining a
-  universal pixel cutoff.
+- `lewm_cls_cue_decoders` shows all six logged final-epoch clips (frame 2)
+  for Color and Shape under CLS + IDM 3.125. Exact sources are in
+  `data/short_paper_cls_decoder_sources.csv`.
+
+## Historical spatial decoder figure
+
 - `lewm_three_cue_decoder_composite` shows input and detached-decoder rows for
   standard green/orange, triangle/diamond Shape, and alternate green/blue cue
   variants. It includes LeWM only. Exact source hashes and W&B provenance are
   in `data/short_paper_decoder_sources.csv`.
 - `lewm_transition_diversity_decoder` shows representative LeWM decoder
   snapshots at baseline and +10/50/100% transition-centered windows. This is a
-  qualitative, compute-confounded pilot; the non-monotonic probe results are
+  qualitative, compute-confounded pilot with different frames across conditions; the non-monotonic probe results are
   frozen in `data/short_paper_transition_diversity.csv`.
 
 ## Archived supporting figures
@@ -48,7 +50,14 @@ are not included by the active `main.tex`.
   within-case replay-minus-prediction contrast. Builder:
   `runs/failure-localization-figure-v1/build_failure_localization.py`.
 
-## Appendix figures
+## Active appendix figure
+
+- `tr2_color_mae_scale` places per-coordinate MAE on an actual 224x224 TR2
+  Color frame. It visualizes exact L1 contours at 4, 15, 27, and 30 pixels. The
+  caption and paper use task-specific null MAE and R2 rather than defining a
+  universal pixel cutoff.
+
+## Archived appendix figures
 
 - `lewm_native_global_decoder_progression` is a qualitative decoder control.
   The decoder is detached from the world-model features and is not used for

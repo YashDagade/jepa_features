@@ -1,0 +1,3 @@
+variant,checkpoint_path,checkpoint_file_sha256,checkpoint_state_sha256
+blue-green,artifact://paper-cls-cue-v1/blue-green/checkpoints/jepa-color-blue-green-probe-lewm-cls-idm0p0-tr2-color-blue-green-probe-s3072-r2/weights_epoch_10.pt,c40001f7930e1af9a85cdb7b02f0e529153a32d325576e2e60ced7406dd4d6f9,1c8a60bbd5751ea9ba7de003363aab76f20557d79f02cf1c913f5fab373af4e8
+shape,artifact://paper-cls-cue-v1/shape/checkpoints/tunnel-room-shape-lewm-cls-idm3p125-tr2-shape-s3072-r2/weights_epoch_10.pt,46fa52008e636b425175b1e037e911f71a1bc7bc2728f62b7069aea942e6afc1,427f44705a2442b0fb3be5cbaf71c9b912691623d0ca0c2e8f8ca6c67c77244b

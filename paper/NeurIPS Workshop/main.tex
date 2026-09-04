@@ -19,266 +19,234 @@
 \newcommand{\trtwo}{TR2}
 \newcommand{\curpred}[2]{#1\,/\,#2}
 
-\title{When a JEPA World Model Misses the Cue That Changes the Future}
+\title{Learning Where, but Not Reliably Which:\\Cue Binding in a JEPA World Model}
 \author{Anonymous Authors}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Joint-embedding predictive architectures (JEPAs) learn states by predicting in
-representation space, but prediction need not make every causal visual cue
-usable by the compact state supplied to planning.  We introduce Tunnel Rooms,
-a controlled visual navigation task in which colored portals share geometry
-but lead to color-matched destinations.  A LeWorldModel (LeWM) accurately
-encodes portal location while making cue-conditioned location far less
-linearly accessible.  Frozen-state affine probes, rank-stratified planning,
-and detached pixel decoders agree: geometry is strong, whereas routing by cue
-is weak and performance is dominated by the nearest portal.  Shape cues and a
-green/blue palette reproduce the probe and decoder pattern.  Native patch
-tokens still contain hue, localizing the failure to the learned compact
-predictive path rather than early perception.  Portal crossings are sparse,
-suggesting that average prediction loss can underweight the brief transitions
-that reveal which cue matters.  A transition-exposure pilot is suggestive but
-not conclusive.  These results motivate explicit tests of whether learned
-world-model states preserve rare but action-critical factors.
+A visual world model may localize an object yet struggle to distinguish
+which one an agent should use. We study this gap in Tunnel Rooms, a controlled
+navigation task where portal position determines how to approach a tunnel,
+but a persistent visual cue determines where it leads. Using the CLS-based
+state of LeWorldModel augmented with inverse dynamics (LeWM+IDM), affine
+probes recover position more accurately than coordinates indexed by color
+or shape identity. Detached reconstructions weaken cue distinctions, and
+planning success falls when the correct portal is farther away. Without
+IDM, both location and cue readouts are poor in the tested native LeWM runs;
+the selective gap therefore concerns the augmented model, not the unmodified
+method. We hypothesize that infrequent cue-dependent crossings contribute
+to this imbalance. An exploratory transition-exposure pilot changes selected
+decoder outputs but provides no consistent probe recovery and changes compute.
+This case study motivates evaluating cue binding separately from location,
+while leaving the mechanism and generality open.
 \end{abstract}
 
 \section{Introduction}
 
-JEPAs learn by predicting target representations instead of pixels
-\citep{lecun2022path,assran2023ijepa,bardes2024vjepa}.  This objective can
-support visual world models and latent-space planning
-\citep{maes2026leworldmodel,sobal2025latentplanning}, but a low average
-prediction error does not guarantee that every factor needed for action is
-accessible in the selected state.  The concern is sharp when a cue is visible
-for many frames yet reveals its causal role only during a rare transition.
+Knowing where an object is need not be enough to act on it. Consider two
+portals whose positions vary between episodes: an agent can learn to approach
+either portal while failing to use the color that specifies its destination.
+This distinction matters for joint-embedding predictive architectures
+(JEPAs), which learn by predicting representations rather than reconstructing
+pixels \citep{lecun2022path,assran2023ijepa,bardes2024vjepa}. Latent prediction
+can support planning \citep{maes2026leworldmodel,sobal2025latentplanning}, but
+the learned state must retain distinctions that change the outcome of an
+action, including those that matter only occasionally.
 
-We study this case with \emph{Tunnel Rooms}.  In the two-room Color task
-(\trtwo{} Color), a red agent starts in a central hub.  Two portals have the
-same geometry but different colors, and entering a portal transports the agent
-to the destination bearing the matching color.  Layouts and color--position
-assignments vary by episode.  Thus position predicts ordinary motion, while
-the color--location binding is required to predict the portal transition and
-to route to the requested destination.  Shape (triangle/diamond) and
-green/blue variants hold the logic fixed while changing the visual cue.
+We introduce \emph{Tunnel Rooms} to study one such distinction. A red agent
+starts in a hub with two portals. Each portal transports it to a destination
+with the matching cue; reaching a requested goal therefore requires binding
+cue identity to portal location. Portal geometry and cue assignments vary
+across episodes. Color (green/orange) and Shape (triangle/diamond) share trajectories and
+geometry while changing the rendered cue. Figure~\ref{fig:taskrank} also
+shows an alternate green/blue palette for testing sensitivity to appearance. The cues are visible throughout
+the task, although their effect on dynamics is concentrated at crossings.
 
-Figure~\ref{fig:taskrank} shows the three two-room renderings and a rank
-example.  The Color, Shape, and green/blue datasets are
-image-only counterfactuals over the same trajectories, geometry, and targets;
-they therefore isolate the cue rendering rather than behavior.
+Our contribution is a controlled empirical observation: in the tested
+CLS-based LeWorldModel with an inverse-dynamics auxiliary loss (LeWM+IDM), the state supplied to prediction supports
+accurate position readout but much weaker cue-conditioned localization.
+We compare these two targets with the same affine probe, inspect detached
+reconstructions, and assess planning by whether the correct portal is near
+or far. We then examine a transition-exposure pilot. The aim is to establish
+the phenomenon and its boundaries, rather than claim a general failure of
+JEPAs or a validated remedy.
 
-\begin{figure}[!ht]
+\begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{figures/tunnel_variants_and_rank.pdf}
-  \caption{\textbf{Tunnel Rooms variants and rank.}  Panels (a--c) are real
-  aligned frames from image-only counterfactual datasets constructed over the
-  same trajectories.  In (d), R1 and R2 label the portals' deterministic
-  geometry-only search order; the teal outline
-  marks the cue-correct portal (R2 here).  Panel (d) uses the historical
-  evaluator's outline rendering.  Rank is certified from the scenario and
-  does not use the learned model.}
+  \caption{\textbf{One routing rule, three visual cues.} (a--c) Aligned
+  frames from Color, Shape, and green/blue renderings of the same trajectories.
+  (d) A separate planning scenario: the cue-correct portal is second (R2) in a
+  geometry-only search order; R1 is nearer. The teal annotation marks the
+  correct choice. Color planning uses the historical outline-marker rendering.}
   \label{fig:taskrank}
 \end{figure}
 
-Our finding is deliberately narrower than ``the encoder cannot see color.''
-The tested LeWM backbone's native patches classify visible hue at 96--100\%
-balanced accuracy, but hue falls to near chance after the learned global and
-projector path.  At that planning interface, cue-conditioned coordinates are
-only weakly linearly accessible even though fixed portal slots are accurately
-localized.  We establish this dissociation with affine probes, then connect it
-to rank-skewed planning and conditional-mean decoder outputs.  The evidence is
-consistent with cue underuse and a strong proximity bias; it does not prove
-that cue information is absent or identify a unique optimization mechanism.
+\section{Experimental setup}
 
-\section{Tunnel Rooms and diagnostics}
+\paragraph{Data and model.}
+The corpus contains 10,000 successful trajectories from a scripted cue-aware
+oracle with noisy actions. Training uses four observations spaced five
+simulator steps apart, preserving all intervening actions. We train from
+random initialization for ten epochs with batch size 128 and seed 3072.
+The model has a ViT-tiny encoder, its native 192-dimensional CLS token,
+a projector, and an action-conditioned predictor. All primary Color and Shape
+results use the same objective: prediction MSE, SIGReg weight .09, and an
+auxiliary inverse-dynamics loss (IDM) of weight 3.125. The auxiliary head
+predicts the intervening actions from adjacent projected states; it is not
+used by the planner. This is an explicitly augmented LeWM recipe, since
+native LeWM has no IDM term \citep{maes2026leworldmodel}. We use it because
+the native recipe has weak readouts of both location and cue in this setting;
+Appendix~\ref{app:ablations} reports the no-IDM and spatial-readout controls.
+Collection and sampling details appear in Appendix~\ref{app:collection}.
 
-\paragraph{Trajectory collection.}
-We retain 10,000 successful trajectories from a scripted cue-aware waypoint
-oracle.  At every simulator step it takes a unit direction toward the matched
-portal or goal, adds independent Gaussian action noise ($\sigma=2$), clips
-each component to $[-1,1]$, and replaces it with the previous action with
-probability .05.  Before wall/portal handling, a unit action proposes 5 pixels
-of motion.  Collection stores every step; model clips sample observations five
-steps apart and retain all five intervening actions.  Full collection and
-rendering provenance is in Appendix~\ref{app:collection}.
+\paragraph{Matched readout diagnostics.}
+We freeze each model and fit affine ridge probes $\hat y=Wz+b$ with
+standardized features and $\alpha=10$, using 640 fitting and 256 test examples
+from disjoint episodes within the world-model corpus. This tests accessibility
+to a new readout, not generalization to episodes unseen during world-model
+training. \emph{Location} targets index the top and bottom portal slots;
+\emph{cue} targets index the same endpoints by their color or shape identity.
+We average errors over both hub and destination endpoints, reporting
+per-coordinate MAE in pixels and $R^2$ for the current \emph{projected} state
+and one-step predicted state. CLS in the table denotes the encoder readout
+used to construct that state, not a probe directly on the raw CLS token.
+The four-endpoint Color constant baseline has MAE 31.19 px; $R^2\leq0$
+indicates no improvement in squared error over the test-target mean.
+These $R^2$ scores evaluate coordinate probes, not pixel decoders.
 
-\paragraph{World-model state.}
-We analyze LeWM \citep{maes2026leworldmodel}, trained from pixels with a
-ViT-tiny encoder, a learned global readout, a projector, and an action-
-conditioned one-step predictor.  The main matched Color and Shape checkpoints
-use prediction MSE, SIGReg weight .09, and an auxiliary inverse-dynamics loss
-of weight 3.125; the green/blue control uses the original no-IDM objective.
-All reported runs use seed 3072, batch size 128, and ten epochs.  We compare
-the native CLS token with a learned spatial $8\!\times\!8$ patch aggregator.
-These are within-condition readout comparisons, not a population-level model
-ranking.
+\section{Location is more accessible than cue binding}
 
-\paragraph{Cue and location probes.}
-We freeze the world model and fit a standardized affine ridge probe
-$\hat y=Wz+b$ (ridge $\alpha=10$) to either the current projected state $z_t$
-or predicted state $\hat z_{t+1}$.  Episode-disjoint splits contain 640 fitting
-and 256 test examples.  \emph{Cue probes} predict coordinates indexed by
-identity (green/orange, triangle/diamond, or green/blue); \emph{location
-probes} predict the coordinates of fixed top/bottom slots.  We report mean
-per-coordinate absolute error,
-$\mathrm{MAE}=\tfrac12(|\Delta x|+|\Delta y|)$, and test $R^2$.  A value
-$R^2\leq0$ means no squared-error improvement over a constant test-mean
-predictor.  MAE alone has no universal failure threshold: Figure~\ref{fig:mae}
-shows its scale, while comparison to the task-specific constant baseline and
-$R^2$ determines whether a probe localizes.
-
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\linewidth]{figures/tr2_color_mae_scale.pdf}
-  \caption{\textbf{MAE at Tunnel Rooms scale.}  The gold diamond is the locus
-  of predictions with exactly the stated per-coordinate MAE; the blue point is
-  one diagonal example.  The observed spatial-state location error is about
-  4 px, whereas cue error is about 27 px, near the 30--31 px constant baseline.
-  Errors above 15 px are visibly coarse here, but the conclusion relies on the
-  baseline and $R^2$, not a universal pixel cutoff.}
-  \label{fig:mae}
-\end{figure}
-
-\section{The compact state preserves location better than cue binding}
-
-Table~\ref{tab:probes} combines all cue variants under one target contract:
-each number averages both hub and destination endpoints for the two cue
-identities or two positional slots.  For the spatial state, location MAE is
-3.8--4.9 px with $R^2=.89$--$.94$, but cue MAE is 27.4--28.5 px with
-$R^2=.15$--$.23$.  The gap recurs for color, shape, and the alternate palette.
-The matched Color CLS state retains coarser location ($R^2\approx.68$), while
-cue-conditioned localization remains weak.  The remaining matched CLS
-controls are running and will replace the marked cells before submission.
+\paragraph{The gap and its boundaries.}
+On standard Color, the CLS-based state yields location $R^2=.684$ but cue
+$R^2=.307$, with MAE 7.42 versus 27.44 px (Table~\ref{tab:probes}).
+Shape shows the same ordering, with location $R^2=.437$ versus cue
+$R^2=.157$ and MAE 11.79 versus 29.73 px. Shape localization is coarser,
+but in both variants identity-indexed coordinates are substantially less
+accessible than fixed slots. The one-step predictions retain this imbalance.
+Positive cue $R^2$ establishes partial coordinate predictability, not recovered
+identity: geometry common to both cue assignments can also explain variance.
 
 \begin{table}[t]
 \centering
-\scriptsize
-\setlength{\tabcolsep}{2.7pt}
-\begin{tabular}{@{}llcccc@{}}
+\small
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}lcccc@{}}
 \toprule
-Cue variant & State & Cue MAE $\downarrow$ & Cue $R^2\uparrow$ & Location MAE $\downarrow$ & Location $R^2\uparrow$ \\
+Cue variant & Cue MAE $\downarrow$ & Cue $R^2\uparrow$ & Location MAE $\downarrow$ & Location $R^2\uparrow$ \\
 \midrule
-Color & $8\!\times\!8$ & \curpred{27.40}{27.57} & \curpred{.224}{.226} & \curpred{3.83}{3.66} & \curpred{.934}{.939} \\
-Color & CLS & \curpred{27.44}{27.86} & \curpred{.307}{.292} & \curpred{7.42}{7.49} & \curpred{.684}{.677} \\
-Shape & $8\!\times\!8$ & \curpred{28.05}{28.10} & \curpred{.203}{.214} & \curpred{4.57}{4.41} & \curpred{.907}{.915} \\
-Shape & CLS & \multicolumn{4}{c}{matched run in progress} \\
-Green/blue & $8\!\times\!8$ & \curpred{28.50}{28.47} & \curpred{.151}{.156} & \curpred{4.85}{4.89} & \curpred{.894}{.893} \\
-Green/blue & CLS & \multicolumn{4}{c}{matched run in progress} \\
+Color & \curpred{27.44}{27.86} & \curpred{.307}{.292} & \curpred{7.42}{7.49} & \curpred{.684}{.677} \\
+Shape & \curpred{29.73}{29.58} & \curpred{.157}{.161} & \curpred{11.79}{12.18} & \curpred{.437}{.405} \\
 \bottomrule
 \end{tabular}
-\caption{\textbf{LeWM affine probes at epoch 10.}  Each cell is current
-projected / one-step predicted state.  Color and Shape use matched IDM 3.125
-checkpoints; green/blue uses IDM 0.  Results are one seed.  The cue constant
-baseline is 31.19 px for the standard four-endpoint target.}
+\caption{\textbf{Location and cue binding differ in the CLS-based state.}
+Each cell reports current projected / predicted state at epoch 10 (one seed).
+Both variants use LeWM+IDM 3.125 and native CLS selection. Shape location
+scores are reconstructed from retained frozen features under the same ridge
+contract.}
 \label{tab:probes}
 \end{table}
 
-This is not an early-vision failure.  On the same Color checkpoints, a
-validation-selected hue probe reaches 96--100\% on native patches and 100\%
-after fixed $8\!\times\!8$ pooling, but only 53.3\% after the learned
-projector (chance 50\%).  The measured failure is therefore a loss of usable
-cue identity along the compressed predictive path.  Nor is cue geometry
-strictly absent: positive cue $R^2$ indicates coarse signal.  The salient fact
-is the large, repeatable cue--location accessibility gap at the state consumed
-by prediction and planning.
+\paragraph{Visible hue remains accessible in patch tokens.}
+A separate binary hue-classification audit of the standard Color checkpoint
+achieves 100\% balanced accuracy from native patch tokens but 45.3\% from the
+projected state (chance 50\%), using an episode-disjoint validation split.
+The contrast places the observed accessibility gap along the compact-state
+path, rather than establishing an inability to perceive color. Different
+feature dimensions and readout capacities prevent an information-loss claim.
 
-\paragraph{Rank-based planning.}
-For each oracle-certified scenario, the target and cue pairing first identify
-the correct portal.  Independently, a deterministic geometry-only policy
-orders portals by choosing the nearest unvisited one; after a hypothetical
-wrong traversal, it excludes that portal and recomputes distance from the
-prescribed hub return point.  \emph{Rank} is the correct portal's one-indexed
-position in this order (Figure~\ref{fig:taskrank}d), not a model score or the
-portal actually chosen by a rollout.  We evaluate balanced rank strata with
-full episodic planning.  CEM and gradient descent (GD) minimize final-step
-latent MSE over five latent steps, each containing five separately parameterized
-primitive actions; up to 25 execute before replanning.  Success requires
-agent--target center distance $<16$ px within 400 primitive steps.  Exact
-solver settings are in Appendix~\ref{app:planning}.
-Table~\ref{tab:rank} shows a steep drop for both optimizers.  This is
-consistent with proximity-dominated routing and weak cue use, although rank
-also changes route difficulty and cannot by itself identify the mechanism.
-
-\begin{table}[t]
-\centering
-\scriptsize
-\setlength{\tabcolsep}{6pt}
-\begin{tabular}{@{}lccc@{}}
-\toprule
-Rooms & CEM success by rank (\%) & GD success by rank (\%) & Episodes/rank \\
-\midrule
-\trtwo{} Color & 72 / 32 & 72 / 48 & 25 \\
-\bottomrule
-\end{tabular}
-\caption{\textbf{Rank-stratified planning with visible color cues.}  This
-historical $8\!\times\!8$+IDM 3.125 run uses one seed; hidden-cue variants and
-other models are intentionally omitted.}
-\label{tab:rank}
-\end{table}
-
-\paragraph{Detached decoder evidence.}
-An MSE decoder is trained on frozen states, so it cannot change what the world
-model retains.  The population MSE solution is the conditional mean
-$d^*(z)=\mathbb E[X\mid z]$; indistinguishable cue classes therefore mix at
-the marker pixels \citep{mathieu2016video}.  Figure~\ref{fig:decoders} shows
-accurate coarse layout but mixed colors and softened shapes across all three
-cue variants.  In a held-out standard-Color audit (150 episodes, 300 frames,
-1,127 cue instances), decoded macro color accuracy is 54.2\% and only 4.85\%
-of the input green--orange centroid separation is retained (95\% CI
-[3.57, 6.17]).  Decoder capacity remains a confound; agreement with the affine
-probes is what makes the observation useful.
+\paragraph{Reconstructions weaken cue distinctions.}
+Detached pixel decoders trained on frozen states reconstruct the shared room
+layout but weaken distinctions between cue markers (Figure~\ref{fig:decoders}).
+The fixed walls alone do not establish state-dependent geometry recovery.
+Cue mixing is compatible with MSE reconstruction averaging over unresolved
+alternatives \citep{mathieu2016video}; decoder capacity and optimization can
+produce similar effects. The qualitative evidence agrees with the coordinate
+probes but does not establish information absence. A separate quantitative
+color audit of the spatial readout is reported in the appendix and is not
+attributed to these CLS reconstructions.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{figures/lewm_three_cue_decoder_composite.pdf}
-  \caption{\textbf{LeWM detached-decoder composites.}  Inputs (top) and
-  representative epoch-10 reconstructions (bottom) for standard Color, Shape,
-  and the alternate green/blue palette.  Layout survives, while cue identity
-  is mixed or softened.  The green/blue panel is an exploratory IDM-0 run; the
-  other panels use IDM 3.125.}
+  \includegraphics[width=.88\linewidth]{figures/lewm_cls_cue_decoders.pdf}
+  \caption{\textbf{CLS reconstructions weaken cue distinctions.} Inputs
+  (top) and detached-decoder outputs (bottom) from LeWM+IDM for Color and
+  Shape. Both columns show frame 2 of all six clips in the logged final-epoch
+  montage; no decoded example is removed. The shared room layout is clear, whereas
+  cue markers are mixed or faint. These are qualitative diagnostics.}
   \label{fig:decoders}
 \end{figure}
 
-\section{Discussion}
+\paragraph{Planning is worse when the correct portal is farther away.}
+We evaluate 25 oracle-solvable episodes per rank. Rank is the correct portal's
+position in a deterministic geometry-only search order, computed before
+planning: R1 is the nearer portal and R2 is the other one. Both CEM and
+gradient descent (GD) minimize terminal latent MSE over five latent steps
+(25 primitive actions). With the CLS Color checkpoint, CEM succeeds on
+17/25 R1 episodes (68\%) but 2/25 R2 episodes (8\%); GD succeeds on 13/25
+(52\%) and 7/25 (28\%). The completed Shape CLS run also has lower R2
+success: CEM obtains 20/25 versus 7/25 (80\%/28\%), and GD 12/25 versus 8/25
+(48\%/32\%). These are separate supporting runs, not a paired comparison
+of cue renderings.
 
-\paragraph{A sparse-consequence hypothesis.}
-Portal crossings are 12,180 of 641,357 raw Tunnel Rooms transitions (1.90\%),
-whereas approach motion is 23.9 times more frequent.  A sample of 128 raw
-adjacent pairs would therefore contain only 2.4 crossings in expectation.
-The actual overlapping training clips expose more event-adjacent target
-intervals (8.95\%, about 11.5 per batch), but ordinary approach motion still
-dominates (81.6\% of intervals).  Average prediction MSE can thus be reduced by
-modeling where the agent and portals are while assigning less capacity to the
-brief transition that reveals which cue controls the future.  This offers a
-plausible explanation for strong position readouts and weak cue-conditioned
-routing; it is a hypothesis, not a causal result.
+The small, one-seed samples are consistent with proximity-biased routing,
+but rank also changes route difficulty. Color planning uses outline markers
+rather than the filled markers in the primary probe/decoder data; Shape uses
+shape markers. Optimized actions can also exceed bounds before execution
+clips them. Planning therefore supplies behavioral context, not a causal
+test of cue loss (Appendix~\ref{app:planning}).
 
-We made a one-seed pilot that added transition-centered windows.  Decoder
-snapshots become more color-separated as exposure rises
-(Figure~\ref{fig:diversity}), but cue-coordinate MAE, $R^2$, and planning are
-not monotonic, and added windows also increase epoch compute.  We therefore
-interpret the pilot as motivation for a compute-matched exposure experiment,
-not evidence that diversity alone solves the problem.
+\section{Does exposure to cue-dependent transitions matter?}
+
+\paragraph{Hypothesis: visibility is not diagnostic exposure.}
+The cue is present in ordinary frames, and the oracle uses it to select a
+route. Nevertheless, most transitions describe approaching a portal rather
+than experiencing its cue-dependent destination. Of 641,357 raw transitions,
+12,180 (1.90\%) are crossings. Accounting for the actual overlapping training
+clips raises event-adjacent target exposure to 8.95\%; approach motion still
+accounts for 81.6\% of target intervals. We hypothesize that this imbalance
+makes spatial regularities easier to learn than cue-dependent outcomes under
+an average latent prediction objective. The counts motivate the hypothesis;
+they do not establish why the learned state has this structure.
+
+\paragraph{An exposure pilot gives mixed evidence.}
+An earlier pilot adds transition-centered windows to a spatial-readout
+Color training set, also with IDM 3.125, in
+amounts equal to 10\%, 50\%, or 100\% of its original windows.
+Selected decoder outputs show more separated colors
+(Figure~\ref{fig:diversity}), but these are different frames, so saturation
+alone does not demonstrate correct recovered identity. Quantitatively,
+current-state cue $R^2$ is .224, .222, .174, and .200 at 0/10/50/100\%
+additional windows; predicted-state scores are .226, .244, .213, and .231.
+Thus the pilot does not show consistent probe recovery. Holding epochs fixed
+also increases training work by approximately $1.1\times$, $1.5\times$, and
+$2\times$. A controlled test must match optimizer updates and evaluate cue
+identity and planning on a shared held-out set.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figures/lewm_transition_diversity_decoder.pdf}
-  \caption{\textbf{Exploratory transition-exposure ablation.}  Representative
-  LeWM detached-decoder snapshots after adding 10--100\% transition-centered
-  windows.  Color separation improves qualitatively, but affine cue probes and
-  planning do not improve monotonically; the intervention also changes
-  compute.}
+  \caption{\textbf{More transition exposure is suggestive, not a verified
+  fix.} Selected spatial-state decoder outputs show stronger color separation.
+  Frames differ across conditions; correct identity recovery is not measured
+  by this visual comparison. Coordinate $R^2$ does not improve consistently,
+  and added windows increase compute.}
   \label{fig:diversity}
 \end{figure}
 
-\paragraph{Limitations and outlook.}
-Results use one model family and mostly one seed.  Probe failure is not
-information absence; decoders confound state and capacity; rank also includes
-distance and optimization; and the active IDM term limits recipe
-generalization.  Future work should vary cue-diagnostic exposure at fixed
-updates and test causal interventions, objectives, interfaces, and
-environments.
+\paragraph{Scope and next steps.}
+This study concerns one model family, one training seed per main condition,
+and one environment family. Auxiliary IDM, decoder capacity,
+and planning mechanics limit attribution to the JEPA objective itself.
+The no-IDM controls rule out a uniform selective-cue account across objectives.
+The next test is to vary cue-diagnostic exposure at fixed updates, separate
+identity recognition from identity--location binding, and measure whether
+both improve action selection. Replication across native objectives, models,
+and environments is needed before generalizing. The present result is a
+reason to evaluate \emph{which} object a world-model state distinguishes,
+alongside \emph{where} it places that object.
 
 \clearpage
 \bibliographystyle{plainnat}
@@ -286,6 +254,57 @@ environments.
 
 \clearpage
 \appendix
+
+\section{Why add inverse dynamics?}
+\label{app:ablations}
+
+The primary model augments native LeWM uniformly with IDM weight 3.125.
+Native LeWM minimizes prediction MSE plus SIGReg; our auxiliary term is
+\[
+ \mathcal L=\mathcal L_{\mathrm{pred}}+.09\mathcal L_{\mathrm{SIGReg}}
+ +3.125\,\mathbb E\|h([z_{t+1},z_t])-a_t\|_2^2.
+\]
+Here $a_t$ is the normalized block of five two-dimensional primitive actions.
+The auxiliary head concatenates next then current projected state and applies
+Linear$(384,512)$, LayerNorm, GELU, and Linear$(512,10)$. Its loss propagates
+through both states; the action target is detached. This is the historical
+auxiliary head, not the different inverse model used by SMWM.
+
+We include IDM to study cue binding in a model that has learned some spatial
+structure. This is motivated by the completed no-IDM controls, rather than a
+claim that inverse dynamics is necessary for all LeWM training. In the same
+standard-Color campaign, native CLS without IDM has current-state location
+$R^2=-.020$ and cue $R^2=-.007$. Both are below the constant baseline.
+Adding IDM yields location $R^2=.684$ and cue $R^2=.307$; the improvement is
+much larger for fixed positions. The corresponding CLS planning scores
+increase from CEM 8\%/0\% and GD 12\%/4\% (R1/R2) to 68\%/8\% and
+52\%/28\%, respectively, on the same rank manifest (25 episodes per rank).
+These are one-seed comparisons, not evidence of a universal causal mechanism.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+Readout & IDM weight & Cue MAE & Cue $R^2$ & Location MAE & Location $R^2$ \\
+\midrule
+CLS & 0 & 31.16 & -.007 & 17.51 & -.020 \\
+CLS & 3.125 & 27.44 & .307 & 7.42 & .684 \\
+Spatial $8\!\times\!8$ & 0 & 28.40 & .162 & 5.03 & .898 \\
+Spatial $8\!\times\!8$ & 3.125 & 27.40 & .224 & 3.83 & .934 \\
+\bottomrule
+\end{tabular}
+\caption{\textbf{Objective and readout controls on standard Color.}
+Current projected states, epoch 10, seed 3072; identical four-endpoint metrics.
+Spatial aggregation improves location substantially even without IDM, while
+cue-indexed coordinates remain much less precise. It is a separate readout
+ablation and is not used by the primary CLS model.}
+\end{table}
+
+The green/blue CLS control without IDM likewise has location $R^2=-.041$
+and cue $R^2=-.029$, close to the no-IDM standard-Color result. It is therefore
+not evidence of a palette-specific failure relative to Color+IDM. A main
+cross-palette comparison requires the same objective in both conditions.
 
 \section{The spatial patch aggregator}
 
@@ -321,20 +340,24 @@ then components are clipped to $[-1,1]$; with probability .05, the previously
 executed action replaces the new action.  Before collision and portal handling,
 the proposed displacement is the clipped action times 5 pixels.  Shape redraws
 the same portals as neutral
-triangle/diamond markers, while green/blue replaces orange with blue; all
-non-image arrays are byte-identical to standard Color.
+triangle/diamond markers, while green/blue replaces orange with blue.
+Geometry, actions, targets, rewards, and episode boundaries are unchanged;
+image pixels and cue metadata change with the rendering.
 
 Collection stores every primitive step.  Training constructs four-frame
-clips---three context observations and one prediction target---at
-\texttt{frameskip}=5.  For each latent transition the five intervening 2-D
+clips with up to three context observations at
+\texttt{frameskip}=5 and predicts all three shifted target intervals.
+For each latent transition the five intervening 2-D
 actions are preserved and flattened to a 10-D action block.  Thus
 MPC sets \texttt{action\_block}=5 to match this interface: each latent planning
 step contains five potentially different primitive actions.  This is distinct
 from the collector's .05 previous-action repeat probability.
 
-All coordinate metrics use held-out episodes rather than held-out frames from
-training episodes.  The fixed ridge penalty is applied after standardizing
-features on the fit split.  $R^2$ is computed independently for coordinate
+Probe fitting and evaluation use disjoint episodes from the same corpus used
+for world-model training. The world-model data split is over clips, not a
+separate exclusion of probe-test episodes; these are frozen-representation
+readout diagnostics, not unseen-episode generalization results.  The fixed ridge penalty is applied after standardizing
+features on the 640-example fit-plus-validation union.  $R^2$ is computed independently for coordinate
 targets and then averaged under the same endpoint contract as MAE.  The
 standard Color four-endpoint constant MAE is 31.19 px; its two-hub constant is
 30.02 px.  Raw patches, selected global states, projected states, and predicted
@@ -371,19 +394,28 @@ primitive steps (at most 16 planning calls).  Success is terminal entry within
 strict center distance $<16$ px of the requested target; timeouts and
 truncations are failures.  Rank manifests are hash-locked, and every selected
 scenario is oracle-certified in hidden-search and visible-direct modes against
-the expected portal-entry trace.  The reported run uses the epoch-10
-$8\!\times\!8$+IDM 3.125 checkpoint, seed 3072, and BF16 evaluation.
+the expected portal-entry trace.  The primary Color run uses the epoch-10
+CLS+IDM 3.125 checkpoint, seed 3072, and BF16 evaluation.
+The additional Shape CLS run uses the epoch-10 CLS+IDM 3.125 checkpoint
+from Table~\ref{tab:probes}, the same solver settings and episode budget,
+and a separate rank manifest with 20-pixel shape markers. No planning result
+is available for green/blue CLS; its launcher disables post-training planning.
 
 The transition audit counts 10,000 episodes, 641,357 raw transitions, 463,033
 legal training clips, and 1,389,099 predicted intervals.  Event exposure is
 reported both at the raw-transition level and after clip construction to avoid
-equating the two sampling distributions.
+equating the two sampling distributions. An interval can contain both
+approach motion and a crossing; their occurrence fractions are not mutually
+exclusive categories.
 
 \section{Additional quantitative context}
 
-The decoder Color audit detects cue-marker support in original frames, excludes
+The separate spatial-readout decoder Color audit detects cue-marker support in original frames, excludes
 agent overlap, and evaluates matched decoded pixels using nearest input-color
-centroids in CIE L$^*$a$^*$b$^*$ space.  Bootstrap intervals resample episodes.
+centroids in CIE L$^*$a$^*$b$^*$ space.  Bootstrap intervals resample episodes. On 150 episodes, 300 frames, and
+1,127 cue instances, this spatial Color audit gives macro color accuracy
+54.2\% and separation retention 4.85\% (95\% CI [3.57, 6.17]).
+These values do not describe the CLS decoder in the main figure.
 Shape location $R^2$ is recomputed post hoc from retained epoch-10 features
 under the original ridge contract, which exactly reproduces the archived MAE.
 The green/blue support-media audit is smaller and yields 50\% macro accuracy
@@ -397,24 +429,28 @@ Four-endpoint cue MAE remains in the 27.2--28.1 px range and does not improve
 monotonically.  This is why Figure~\ref{fig:diversity} is presented as a visual
 hypothesis-generating ablation rather than a positive quantitative result.
 
-\section{Responsible research statement}
+\section{Reading the diagnostics}
 
-Tunnel Rooms is a synthetic visual environment and uses no human participants,
-personal data, or human-derived labels.  The primary risks are scientific:
-overgeneralizing from one model family, mistaking probe failure for information
-absence, or selecting qualitative decoder frames.  We mitigate these risks by
-freezing numeric summaries, disclosing one-seed boundaries and incompatible
-protocol families, pairing MAE with $R^2$ and null baselines, and treating
-decoder and transition-diversity results as diagnostic rather than causal.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figures/tr2_color_mae_scale.pdf}
+  \caption{\textbf{Coordinate error at the task scale.} The gold contour
+  marks predictions with a fixed per-coordinate MAE; the blue point is one
+  example. The spatial Color location error is approximately 4 px, versus
+  27 px for cue-indexed coordinates. The task-specific constant baseline and
+  $R^2$, not a universal pixel threshold, determine the interpretation.}
+  \label{fig:mae}
+\end{figure}
 
-\paragraph{Data and code availability.}
-The submission artifact contains the evaluation code, compact plotting tables,
-dataset/checkpoint hashes, and figure provenance.  Large generated datasets,
-checkpoints, and videos are referenced by immutable hashes and will be released
-subject to storage and anonymity constraints.
-
-\paragraph{Author contributions, conflicts, and funding.}
-Contributions and funding information are withheld during double-blind review.
-The authors declare no conflicts of interest relevant to this submission.
+The hue classifier and coordinate regressor answer different questions.
+The former asks which hue occupies a portal slot; the latter asks where an
+endpoint indexed by cue identity is located. The hue audit uses 525 fitting,
+75 validation, and 150 test episodes. Ridge selection uses validation data;
+the 640/256 fixed-ridge coordinate protocol is separate. Both use frozen
+features. Neither establishes the absence of information inaccessible to
+that readout. Likewise, a detached MSE decoder can average uncertain outputs
+because of limitations in its input representation, its own capacity, or
+optimization. Its population optimum is $d^*(z)=\mathbb E[X\mid z]$, but the
+trained finite decoder need not reach that optimum.
 
 \end{document}

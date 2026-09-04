@@ -28,7 +28,7 @@ mkdir -p "${RUN_ROOT}"
 RUN_ROOT="$(cd "${RUN_ROOT}" && pwd)"
 
 # --- SWEEP ARRAYS ---
-MODELS=(lewm lewm_idm)
+MODELS=(lewm_idm lewm)
 CUES=(color shape green_blue)
 DATA_CONFIGS=(tunnel_room_two_color tunnel_room_two_shape tunnel_room_two_green_blue)
 DATASETS=(

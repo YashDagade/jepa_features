@@ -4,7 +4,16 @@ This directory contains compact, tracked numeric sources for the manuscript.
 Large datasets, checkpoints, decoder videos, and raw W&B exports remain outside
 the paper tree.
 
-Files added for the LeWM-focused revision:
+
+The current main comparison is CLS + IDM 3.125. `short_paper_noidm_color_*`
+records independently reproduced, same-campaign no-IDM Color probes, planning,
+and provenance. `short_paper_idm_color_cls_planning.csv` holds the actual
+Color CLS+IDM counts (CEM 68/8%, GD 52/28%), which must not be confused with
+spatial planning. `short_paper_cls_decoder_sources.csv` maps the native-CLS
+Color/Shape decoder figure and Color no-IDM source frames to immutable videos.
+New matched six-condition runs are not yet included in these historical tables.
+
+Files used by the LeWM-focused revision:
 
 - `short_paper_probe_results.csv` is the compact, common-contract source for
   the 4-page paper's LeWM-only affine-probe table. Cue and position values are
@@ -13,6 +22,19 @@ Files added for the LeWM-focused revision:
   post hoc from the retained immutable feature cache under the original ridge
   contract; the same reconstruction reproduces the archived MAE before adding
   $R^2$.
+- `short_paper_cls_probe_provenance.csv` and
+  `short_paper_cls_probe_targets.csv` record the completed September 4 Shape
+  and green/blue CLS controls. Exact frozen-feature ridge reconstruction
+  reproduces archived cue scores before supplying Shape slot coordinates.
+  The 640 fitting examples combine the 512 fit and 128 validation examples
+  because alpha is fixed; 256 test examples remain separate. The green/blue
+  CLS control has negative cue and location R² and is not a selective-cue
+  replication. Legacy `encoder` metric keys mean current projected states.
+- `short_paper_cls_checkpoint_provenance.csv` distinguishes serialized-file
+  SHA-256 from the canonical tensor-state hash used in the probe table.
+- `short_paper_cls_planning.csv` freezes completed Shape CLS CEM/GD counts
+  and the separate rank manifest; this is not a matched Color–Shape comparison.
+  Green/blue CLS planning was disabled by configuration, not a failed job.
 - `short_paper_probe_reconstructions.csv` freezes the Shape reconstruction's
   per-target MAE and coordinate-wise $R^2$, together with checkpoint, feature
   cache, composite sidecar, and source-dataset hashes.
