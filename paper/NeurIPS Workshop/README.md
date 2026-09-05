@@ -70,8 +70,15 @@ planning literature; Appendix H develops the connections to identifiability,
 slow features, auxiliary objectives, and value-guided planning. LpWM and
 Rectified LpJEPA are cited as separate papers. Appendix B credits Temporal
 Straightening for the inspiration behind learned patch aggregation and states
-the architectural and objective differences. The main text remains four
-pages; references occupy two pages.
+the architectural and objective differences. The main text ends on page four;
+references follow the conclusion and span pages four through six, with the
+appendix continuing below them. The complete PDF is 17 pages.
+
+Layout uses natural vertical spacing, keeps the planning paragraph together,
+and places tables near their discussion. Landscape figures are interleaved
+with their methods, and the last two atlas panels share a page. References
+use abbreviated author names and compact entry spacing. The official style,
+body font, margins, all research text, and all figure panels are preserved.
 
 Run from this directory:
 

@@ -9,6 +9,7 @@
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
 \usepackage{float}
+\usepackage{placeins}
 \usepackage{graphicx}
 \usepackage{microtype}
 \usepackage{xcolor}
@@ -24,6 +25,9 @@
 
 \begin{document}
 \maketitle
+
+% Keep natural paragraph and heading gaps when large floats constrain a page.
+\raggedbottom
 
 \begin{abstract}
 Predicting in feature space allows a world model to abstract over visual
@@ -124,7 +128,7 @@ explains variance. Separate green/blue and CLS controls show similarly weak
 cue readouts, with their objective differences stated in
 Appendix~\ref{app:ablations}.
 
-\begin{table}[t]
+\begin{table}[!htbp]
 \centering
 \caption{\textbf{Precise location, weak cue-conditioned readout.} Frozen
 LeWM projected states, epoch 10, seed 3072. Both conditions use spatial
@@ -152,7 +156,7 @@ gap without proving that cue information is absent.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=.86\linewidth]{figures/lewm_spatial_primary_decoders.pdf}
+  \includegraphics[width=.95\linewidth]{figures/lewm_spatial_primary_decoders.pdf}
   \caption{\textbf{Spatial reconstructions weaken cue distinctions.}
   Inputs (top) and detached outputs (bottom) from the Color and Shape models
   in Table~\ref{tab:probes}, both spatial $8\times8$ + IDM 3.125. Frame 2
@@ -162,6 +166,7 @@ gap without proving that cue information is absent.
   \label{fig:decoders}
 \end{figure}
 
+\begin{samepage}
 We next evaluate planning according to the correct portal's geometry-only
 search rank: R1 is nearer, and R2 is the other portal. CEM and gradient
 descent (GD) both struggle more on R2 for the final LeWM checkpoints used by
@@ -171,8 +176,10 @@ separates model recipes even when readout and IDM weight agree. Rank also
 changes route difficulty, so this behavioral gap alone does not isolate cue
 binding. Color planning uses outline rather than filled markers; the
 appendix records this rendering difference and the full solver protocol.
+\par
+\end{samepage}
 
-\begin{table}[t]
+\begin{table}[!htbp]
 \centering
 \caption{\textbf{Planning success falls on the farther correct portal.}
 Percent success over 25 episodes per rank; all rows use spatial $8\times8$
@@ -245,11 +252,11 @@ crossings, exposure changes at fixed training updates, and replication across
 seeds, models, and environments. These tests would establish when predictive
 abstraction preserves the distinctions an agent needs to act.
 
-\clearpage
-\bibliographystyle{plainnat}
+% Compact reference entries without changing the body font or page geometry.
+\setlength{\bibsep}{2pt}
+\bibliographystyle{abbrvnat}
 \bibliography{references}
 
-\clearpage
 \appendix
 
 \input{appendix_readout_controls}
@@ -373,6 +380,18 @@ instead compares its \emph{predicted} terminal state with the goal embedding
 (Appendix~\ref{app:planning}). A high similarity peak is therefore not a high
 planning-cost peak, and these static maps are not action-value functions.
 
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\linewidth,height=.72\textheight,keepaspectratio]{figures/lewm_spatial_similarity_appendix.pdf}
+\caption{\textbf{Primary spatial $8\times8$ + IDM 3.125 landscapes.}
+Color and Shape checkpoints match the main probes and planning. Columns
+compare cosine similarity $S$ and squared distance $E$ for both destination
+goals. Yellow denotes high similarity or low cost. Cosine maps share [.6,1];
+each squared-distance pair shares its printed scale. The red disk marks the
+goal agent, and comparisons use encoded observations.}
+\label{fig:spatiallandscapes}
+\end{figure}
+
 \paragraph{Grid and rendering protocol.}
 We use one fixed training-corpus scenario (episode 1893), selected by the
 historical geometry/reference-placement procedure before inspecting model
@@ -405,6 +424,18 @@ one scale per model--cue checkpoint shared across its two destination references
 for low cost and purple for high cost. The numerical upper bound is printed
 for each pair. Absolute distances are not calibrated across models.
 
+\begin{figure}[!htbp]
+\centering
+\includegraphics[page=1,width=\linewidth,height=.78\textheight,keepaspectratio]{figures/lewm_similarity_matched_appendix.pdf}
+\caption{\textbf{Matched CLS+IDM landscapes for both destination references.}
+Rows vary cue rendering; columns show cosine similarity $S$ and squared
+projected distance $E$ for upper- and lower-room reference images. The red
+disk marks the reference-agent position. Yellow means high $S$ or low $E$;
+$S$ has a common scale, and each $E$ pair shares its printed scale. Both
+metrics compare encoded observations, not predicted action outcomes.}
+\label{fig:landscapeidm}
+\end{figure}
+
 \paragraph{Geodesic navigation reference.}
 The right column of Figure~\ref{fig:similarity} is computed from the environment,
 independently of the learned representations. We construct a directed graph
@@ -426,6 +457,17 @@ Reverse Dijkstra computes the shortest remaining distance to the exact goal
 position, accepting any lock state there. Plotted starting states are unlocked.
 This is a point-goal diagnostic, not distance to the 16-pixel success region
 used in planning evaluation, nor a minimum-time objective.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[page=2,width=\linewidth,height=.78\textheight,keepaspectratio]{figures/lewm_similarity_matched_appendix.pdf}
+\caption{\textbf{Matched native no-IDM landscapes.} The same geometry,
+reference positions, and cosine scale as Figure~\ref{fig:landscapeidm}.
+Native Color and green/blue cosine maps are nearly uniform. Distance scales
+are printed separately and must not be compared as calibrated planning
+costs across models.}
+\label{fig:landscapenative}
+\end{figure}
 
 The shortest paths are exact on this finite graph, which approximates the
 continuous action space. It contains 34,062 states and 549,911 directed edges.
@@ -452,41 +494,6 @@ The maps describe goal discrimination in one scene, not a mechanism in which
 teleportation is learned but endpoint pairing is ignored. Testing that claim
 requires matched cue swaps and action-conditioned portal rollouts.
 
-\begin{figure}[p]
-\centering
-\includegraphics[width=\linewidth,height=.72\textheight,keepaspectratio]{figures/lewm_spatial_similarity_appendix.pdf}
-\caption{\textbf{Primary spatial $8\times8$ + IDM 3.125 landscapes.}
-Color and Shape checkpoints match the main probes and planning. Columns
-compare cosine similarity $S$ and squared distance $E$ for both destination
-goals. Yellow denotes high similarity or low cost. Cosine maps share [.6,1];
-each squared-distance pair shares its printed scale. The red disk marks the
-goal agent, and comparisons use encoded observations.}
-\label{fig:spatiallandscapes}
-\end{figure}
-
-\begin{figure}[p]
-\centering
-\includegraphics[page=1,width=\linewidth,height=.78\textheight,keepaspectratio]{figures/lewm_similarity_matched_appendix.pdf}
-\caption{\textbf{Matched CLS+IDM landscapes for both destination references.}
-Rows vary cue rendering; columns show cosine similarity $S$ and squared
-projected distance $E$ for upper- and lower-room reference images. The red
-disk marks the reference-agent position. Yellow means high $S$ or low $E$;
-$S$ has a common scale, and each $E$ pair shares its printed scale. Both
-metrics compare encoded observations, not predicted action outcomes.}
-\label{fig:landscapeidm}
-\end{figure}
-
-\begin{figure}[p]
-\centering
-\includegraphics[page=2,width=\linewidth,height=.78\textheight,keepaspectratio]{figures/lewm_similarity_matched_appendix.pdf}
-\caption{\textbf{Matched native no-IDM landscapes.} The same geometry,
-reference positions, and cosine scale as Figure~\ref{fig:landscapeidm}.
-Native Color and green/blue cosine maps are nearly uniform. Distance scales
-are printed separately and must not be compared as calibrated planning
-costs across models.}
-\label{fig:landscapenative}
-\end{figure}
-
 \paragraph{Historical model atlas.}
 Fifteen selected final-epoch cases cover five model families and relevant
 readout, cue, and exposure variants. Objectives, architectures, and layouts
@@ -498,34 +505,31 @@ inconsistent numerical bars. Panels are independently rescaled, with yellow
 indicating relatively high cosine similarity. Brightness is not numerically
 comparable across panels or with the fresh fixed-scale maps.
 
-\begin{figure}[p]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[page=1,width=\linewidth,height=.80\textheight,keepaspectratio]{figures/lewm_similarity_historical_atlas.pdf}
+\includegraphics[page=1,width=.94\linewidth,height=.80\textheight,keepaspectratio]{figures/lewm_similarity_historical_atlas.pdf}
 \caption{\textbf{Historical similarity atlas, part 1 of 3.}
 Condition labels identify the checkpoint family and adaptation. Reference
 positions are marked in each scene; each map is independently rescaled.
 These are static cosine diagnostics, not action-conditioned planning costs.}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[page=2,width=\linewidth,height=.80\textheight,keepaspectratio]{figures/lewm_similarity_historical_atlas.pdf}
+\includegraphics[page=2,width=.86\linewidth,height=.80\textheight,keepaspectratio]{figures/lewm_similarity_historical_atlas.pdf}
 \caption{\textbf{Historical similarity atlas, part 2 of 3.}
 Condition labels identify the checkpoint family and adaptation. Reference
 positions are marked in each scene; each map is independently rescaled.
 These are static cosine diagnostics, not action-conditioned planning costs.}
-\end{figure}
-
-\begin{figure}[p]
+\par\medskip
 \centering
-\includegraphics[page=3,width=\linewidth,height=.80\textheight,keepaspectratio]{figures/lewm_similarity_historical_atlas.pdf}
+\includegraphics[page=3,width=.86\linewidth,height=.80\textheight,keepaspectratio]{figures/lewm_similarity_historical_atlas.pdf}
 \caption{\textbf{Historical similarity atlas, part 3 of 3.}
 Condition labels identify the checkpoint family and adaptation. Reference
 positions are marked in each scene; each map is independently rescaled.
 These are static cosine diagnostics, not action-conditioned planning costs.}
 \end{figure}
 
-\clearpage
 \section{Additional quantitative context}
 \label{app:quantitative}
 
@@ -546,6 +550,7 @@ and 2.9\% separation retention for the IDM-0 run; it has no episode-level
 confidence interval and is treated as descriptive.  Shape decoder media have
 not received a quantitative identity audit.
 
+\FloatBarrier
 \section{Transition-diversity ablation}
 \label{app:exposure}
 
@@ -595,12 +600,12 @@ visual recovery changes predicted destinations and action selection.
   \label{fig:diversity}
 \end{figure}
 
-\clearpage
+\FloatBarrier
 \section{Reading the diagnostics}
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth]{figures/tr2_color_mae_scale.pdf}
+  \includegraphics[width=.80\linewidth]{figures/tr2_color_mae_scale.pdf}
   \caption{\textbf{Coordinate error at the task scale.} The gold contour
   marks predictions with a fixed per-coordinate MAE; the blue point is one
   example. The spatial Color location error is approximately 4 px, versus
@@ -628,7 +633,7 @@ because of limitations in its input representation, its own capacity, or
 optimization. Its population optimum is $d^*(z)=\mathbb E[X\mid z]$, but the
 trained finite decoder need not reach that optimum.
 
-\clearpage
+\FloatBarrier
 \input{appendix_related_work}
 
 \end{document}
