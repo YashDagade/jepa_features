@@ -192,16 +192,16 @@ reference; latent energies need not equal path length.
 
 ## Historical TR2 readout and IDM sweep
 
-`lewm_tr2_idm_readout_decoders.pdf/png` presents the twelve TR2 conditions
-from the first two groups of the archived factorial. It rearranges the six
-IDM weights into two three-column groups, with CLS and spatial rows and a
-shared input. All panels use frame 0 of the first montage clip. Four 30×30 cue
+`lewm_tr2_idm_readout_decoders.pdf/png` presents six selected TR2 conditions
+from the archived factorial: IDM weights 0, .125, and 3.125, with CLS and
+spatial rows and a shared input. All panels use frame 0 of the first montage clip. Four 30×30 cue
 crops use coordinates derived only from that input. The underlying videos
 have identical input bytes. No hue, saturation, contrast, or content was changed.
 
 Snapshots are retained periodic training media with filename label 90001,
 not final-checkpoint reconstructions. The source report selected a common
 periodic snapshot and a non-occluded frame using the input only. The new
-figure fixes frame 0 across every condition and retains all twelve models.
-`../data/lewm_tr2_idm_readout_decoder_frames.npz` retains the image arrays;
-its companion provenance JSON identifies every source and the figure builder.
+figure fixes frame 0 across every displayed condition.
+`../data/lewm_tr2_idm_readout_decoder_frames.npz` retains all twelve original
+conditions; its companion provenance JSON identifies every source, the six
+displayed conditions, and the figure builder.

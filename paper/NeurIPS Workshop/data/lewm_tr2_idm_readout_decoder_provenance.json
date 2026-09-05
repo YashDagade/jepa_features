@@ -434,9 +434,46 @@
   "timing": "retained periodic training-media snapshot; filename label is not a verified optimizer step or exported checkpoint",
   "historical_chart": "artifact://Aug02/jepa-color-analysis/figures/decoder_lewm_factorial.png",
   "historical_chart_sha256": "b6c70cae043fc8101ae4ab0a0e872d905261e7a3362708529c1e8555473e2c14",
-  "builder": "artifact://pta_revision_audit/build_tr2_idm_readout_figure.py",
-  "builder_sha256": "6c6f8407f3490e8ca079f77daa1c7d48caf0dcf1d1a06b3a0667c2a1dd595deb",
+  "builder": "artifact://pta_revision_audit/build_tr2_idm_selected_figure.py",
+  "builder_sha256": "63f8271e4d7885e5c8a71e0e3c837054495abfde7d97e87c5d0ffe65a854480e",
   "input_frame_sha256": "1e89eb07ec2aaab85451488f4eea228a9ac19bf95a2ca48a9a7d6f1e8246c607",
   "rendering": "Native RGB decoded from archived MP4s; no contrast, hue, saturation, or content changes; nearest-neighbor display. Crops use input-derived fixed coordinates.",
-  "scope": "One illustrative input, all six weights and both readouts; no statistical identity metric or proof that either adaptation is necessary."
+  "scope": "One illustrative input; displayed weights 0, 0.125, 3.125 for both readouts, selected by user request. All twelve original conditions remain in the retained arrays and source records. No statistical identity metric or proof that either adaptation is necessary.",
+  "displayed_idm_weights": [
+    0.0,
+    0.125,
+    3.125
+  ],
+  "displayed_conditions": [
+    {
+      "readout": "native_cls",
+      "idm_weight": 0.0,
+      "decoded_frame_sha256": "b04c99d202c659c6fec9d62df627f8f7ec8db76e75f691a8a82dd02b02b05423"
+    },
+    {
+      "readout": "native_cls",
+      "idm_weight": 0.125,
+      "decoded_frame_sha256": "98e73ec5869ea722516749e486a205df4c57528867b1c676127f30eff7fa239a"
+    },
+    {
+      "readout": "native_cls",
+      "idm_weight": 3.125,
+      "decoded_frame_sha256": "ce5557b4b68c6460cccaab273d491c94cfb2e8ad2f3408930ea055b55c954c9d"
+    },
+    {
+      "readout": "spatial_8x8",
+      "idm_weight": 0.0,
+      "decoded_frame_sha256": "b7abd83929bb3e5e5a1726d32d535db5764d92bab89b1c4bf47884b867349c8f"
+    },
+    {
+      "readout": "spatial_8x8",
+      "idm_weight": 0.125,
+      "decoded_frame_sha256": "5d6456467133ec4cc6d04ba209826b3faf48ab987bd96136cf55cbd04e845b8d"
+    },
+    {
+      "readout": "spatial_8x8",
+      "idm_weight": 3.125,
+      "decoded_frame_sha256": "af650ea034cce3f889449a903eafd40105cddeb77996a6feb2805c59e54cfdf6"
+    }
+  ]
 }

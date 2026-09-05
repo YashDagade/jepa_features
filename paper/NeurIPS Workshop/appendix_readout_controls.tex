@@ -66,8 +66,8 @@ Spatial $8\!\times\!8$ & 3.125 & 27.40 & .224 & 3.83 & .934 \\
 \end{tabular*}
 \end{table}
 
-Figure~\ref{fig:idmreadoutdecoder} compares reconstructions across six IDM
-weights. Portal markers are more visible with spatial aggregation in this
+Figure~\ref{fig:idmreadoutdecoder} compares reconstructions at IDM weights 0,
+.125, and 3.125. Portal markers are more visible with spatial aggregation in this
 example, including at weight zero. Increasing the IDM weight also changes
 the CLS reconstructions, but neither readout consistently restores the
 green/orange distinction. These images complement the probe results: stronger
@@ -78,8 +78,8 @@ that either adaptation is necessary.
 \centering
 \includegraphics[width=\linewidth,height=.78\textheight,keepaspectratio]{figures/lewm_tr2_idm_readout_decoders.pdf}
 \caption{\textbf{Readout and IDM change reconstruction without reliably restoring cue identity.}
-The historical TR2 comparison includes six IDM weights with both CLS and
-spatial $8\times8$ readouts, showing all twelve conditions for the same input
+Three IDM weights (0, .125, and 3.125) from the historical TR2 sweep are
+shown with both CLS and spatial $8\times8$ readouts, giving six conditions for the same input
 (frame 0, first clip). Strips enlarge the same four cue locations without
 altering their pixels. The images are training snapshots from one seed
 (3072), rather than final-checkpoint reconstructions or quantitative tests of

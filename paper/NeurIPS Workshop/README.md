@@ -144,9 +144,10 @@ contains superseded drafts; neither defines the short paper's current scope.
 
 ## Readout and IDM decoder sweep
 
-The appendix now includes all twelve TR2 conditions from the historical
-factorial: CLS/spatial 8×8 crossed with IDM weights 0, .005, .025, .125, .625,
-and 3.125. One identical input is used throughout, with unchanged cue crops.
+The appendix displays six TR2 conditions from the historical factorial:
+CLS/spatial 8×8 crossed with IDM weights 0, .125, and 3.125. One identical
+input is used throughout, with unchanged cue crops. The full twelve-condition
+source arrays and provenance remain available.
 The figure uses retained periodic training media; filename label 90001 is
 not treated as an optimizer-step count or final-checkpoint identifier.
 Spatial aggregation improves marker visibility even without IDM. The text
