@@ -208,31 +208,41 @@ reproduce the change in destination may also reflect general rollout error;
 Appendix~\ref{app:portal-swap} gives controls and the full protocol.
 
 \Needspace{8\baselineskip}
-We rank the two central-room entrances by distance from the initial agent
-position. In R1 tasks, the nearer entrance leads to the goal room; in R2
-tasks, the agent must choose the farther entrance instead. These ranks
-describe tasks, not fixed colors or tunnel positions. Both cross-entropy
-method (CEM) and gradient-descent (GD) planning are less successful on R2
-across all variants (Table~\ref{tab:rankplanning}). On Color, CEM success
-falls from 80\% to 16\%, and GD from 64\% to 52\%. Longer routes may themselves
-be harder to plan, so this contrast does not isolate cue binding as the
-cause. Appendix~\ref{app:planning} gives the full protocol.
+We rank the two hub entrances by distance from the initial agent position.
+In R1 tasks, the nearer entrance leads to the goal room; in R2 tasks, the
+farther one does. Success drops on R2 for every required cue and both
+planners (Table~\ref{tab:rankplanning}). On Color, overall cross-entropy
+method (CEM) success falls from 80\% to 16\%, and gradient descent (GD)
+from 64\% to 52\%. The entrance traces reveal a proximity bias: on R2,
+CEM enters the nearer, incorrect tunnel first in 72--88\% of cases across
+variants; GD does so in 52--72\%. The tendency is strongest under CEM; longer routes may also be harder
+to plan. Appendix~\ref{app:planning}
+gives the entrance counts and protocol.
 
 \begin{table}[!htbp]
 \centering
-\caption{\textbf{Planning is less successful when the correct tunnel is farther away.}
-LeWM success over 25 episodes per rank, using the checkpoints evaluated by
-the linear probes. R1: the nearer entrance reaches the goal room; R2: the
-farther entrance does. CEM: cross-entropy method; GD: gradient descent.}
+\caption{\textbf{Success falls on the farther entrance for both cue identities.}
+Task success (\%) by the cue required to reach the goal room.
+$n_1/n_2$ gives R1/R2 case counts; All pools both ranks.
+Cue groups have unequal rank support, including only four R2 cases for
+Green/Triangle.}
 \label{tab:rankplanning}
-\renewcommand{\arraystretch}{1.12}
-\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrr@{}}
+\renewcommand{\arraystretch}{1.08}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}llrrrrrrr@{}}
 \toprule
-Variant & CEM R1 $\uparrow$ & CEM R2 $\uparrow$ & GD R1 $\uparrow$ & GD R2 $\uparrow$ \\
+Variant & Required cue & $n_1/n_2$ & \multicolumn{3}{c}{CEM success $\uparrow$} & \multicolumn{3}{c}{GD success $\uparrow$} \\
+\cmidrule(lr){4-6}\cmidrule(l){7-9}
+ & & & All & R1 & R2 & All & R1 & R2 \\
 \midrule
-Color & 80\% & 16\% & 64\% & 52\% \\
-Shape & 88\% & 24\% & 76\% & 40\% \\
-Palette & 80\% & 28\% & 84\% & 32\% \\
+Color & Green & 12/4 & 56.3 & 75.0 & 0.0 & 62.5 & 66.7 & 50.0 \\
+ & Orange & 13/21 & 44.1 & 84.6 & 19.0 & 55.9 & 61.5 & 52.4 \\
+\addlinespace[2pt]
+Shape & Triangle & 12/4 & 68.8 & 91.7 & 0.0 & 56.3 & 66.7 & 25.0 \\
+ & Diamond & 13/21 & 50.0 & 84.6 & 28.6 & 58.8 & 84.6 & 42.9 \\
+\addlinespace[2pt]
+Palette & Green & 12/4 & 56.3 & 75.0 & 0.0 & 75.0 & 91.7 & 25.0 \\
+ & Blue & 13/21 & 52.9 & 84.6 & 33.3 & 50.0 & 76.9 & 33.3 \\
 \bottomrule
 \end{tabular*}
 \end{table}

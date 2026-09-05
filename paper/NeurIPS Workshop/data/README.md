@@ -365,3 +365,25 @@ as the full appendix plot.
 example in Figure 1(d). Its ranking is verified from the true start-to-portal
 distances; the goal star uses the sampled target coordinates. Selection uses
 geometry alone, and the other three panels remain pixel-identical.
+
+### Required-cue success and first-entrance choices
+
+- `lewm_planning_cue_cases.csv` preserves all 300 episode records across the
+  three primary variants and two planners. Required cue comes from the
+  manifest pairing and cue assignment, not the misleading legacy
+  `target_shape` label in color-mode metrics.
+- `lewm_planning_cue_success.csv` gives exact successes and denominators for
+  each required cue, pooled and separated by rank. Table 2 reports these
+  percentages rounded to one decimal.
+- `lewm_planning_first_entrance.csv` summarizes the first actual hub-to-leaf
+  teleport, including episodes without one. On R2, nearer means incorrect;
+  on R1 it means correct. These are entrance choices, not final task outcomes.
+- `lewm_planning_cue_provenance.json` records the six input metric hashes,
+  checkpoint/source identifiers, manifest hashes, mapping, validation, and
+  output hashes. Joins verify case IDs, seeds, ranks, nearest order, correct
+  endpoints, and every original rank-success count.
+
+The required-cue groups have unequal rank support: Green (both palettes) and
+Triangle have 12 R1/four R2 cases; Orange, Blue, and Diamond have 13 R1/21 R2.
+All 50 cases per solver remain in the analysis. Strata are post hoc, use one
+checkpoint per variant, and do not isolate a preference for individual cues.

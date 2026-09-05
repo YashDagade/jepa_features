@@ -106,7 +106,7 @@ the appendices; the main text identifies the LeWM adaptations in plain language.
 protocols and interpretation, and literature discussion respectively.
 The main text ends on page four;
 references follow the conclusion and span pages five through six, with the
-appendix continuing below them. The complete PDF is 19 pages.
+appendix continuing below them. The complete PDF is 20 pages.
 
 Layout uses natural vertical spacing, keeps the planning paragraph together,
 and places tables near their discussion. Landscape figures are interleaved
@@ -188,7 +188,7 @@ validation after epoch 10 training and align with those final model weights.
 
 Both follow-ups are complete on main; the anonymous code branch and earlier
 code ZIP remain a separate snapshot. Updated PDF and LaTeX upload files are
-in `runs/pta_feedback/naming/submission/`. The main paper remains four pages.
+in `runs/pta_feedback/cue_planning/submission/`. The main paper remains four pages.
 
 A validation-selected two-hidden-layer MLP uses the same frozen checkpoints
 and endpoint targets as the main probes. Across Color/Shape/Palette, current
@@ -223,3 +223,19 @@ Figure 3 combines the unchanged goal landscapes with portal-swap divergence
 curves for all three variants. The main text explains the intervention,
 pre-crossing initialization, static sensitivity, forecast attenuation, and
 remaining alternative explanation; the full controls remain in Appendix I.
+
+## Planning by required cue and first entrance
+
+Table 2 now reports task success for each required color or shape, both pooled
+and separately for R1/R2, with case counts. All 300 episode records were joined
+to their exact hashed manifests and checked against the original rank totals.
+Every cue/solver has lower observed success on R2. Pooled cue success spans
+44.1–75.0%; these groups are not rank-balanced (12/4 versus 13/21 R1/R2
+cases), so pooled differences cannot establish a color or shape preference.
+
+The appendix reports actual first hub-to-leaf teleports. On R2, CEM enters
+the nearer, incorrect tunnel first in 22/25, 19/25, and 18/25 Color/Shape/Palette
+cases; GD does so in 13/25, 14/25, and 18/25. No-entry cases remain in the
+denominator. This supports a proximity bias, strongest for CEM, rather than
+a universal nearest-tunnel policy. These are new analyses of completed runs,
+not additional model evaluations.

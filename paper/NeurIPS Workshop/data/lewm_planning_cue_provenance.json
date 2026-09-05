@@ -1,0 +1,99 @@
+{
+  "inputs": [
+    {
+      "cue_variant": "standard_green_orange",
+      "solver": "cem",
+      "checkpoint_file_sha256": "9991c7f227cd20f40ac853bb7e690498bbaf5e3fdc4c8d21b953b01774cc4667",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "manifest_sha256": "58cbd330adcfc75bc7d5938f475c847ebfd9ccb97515504431e7438b4178fc0e",
+      "metrics_path": "artifact://Aug02/jepa-color/jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1/post_training_eval/cem/metrics.json",
+      "metrics_sha256": "74a18b92ee208834f73754aa7a2b08f6f0e4ada3fd1c7257567be2b9f92a01f8"
+    },
+    {
+      "cue_variant": "standard_green_orange",
+      "solver": "gd",
+      "checkpoint_file_sha256": "9991c7f227cd20f40ac853bb7e690498bbaf5e3fdc4c8d21b953b01774cc4667",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "manifest_sha256": "58cbd330adcfc75bc7d5938f475c847ebfd9ccb97515504431e7438b4178fc0e",
+      "metrics_path": "artifact://Aug02/jepa-color/jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1/post_training_eval/gd/metrics.json",
+      "metrics_sha256": "791b867b91ece6387e067f6c9de959bcf192056b51f26bdd8d5648b8290b2dbc"
+    },
+    {
+      "cue_variant": "triangle_diamond",
+      "solver": "cem",
+      "checkpoint_file_sha256": "6c58e2a7a7b4bef07e77f09b9cb201f4963f08a5febb310d0a53f0e31d007d5c",
+      "source_commit": "8353c2b8835da17af3335aff07cf2dcc29394378",
+      "manifest_sha256": "5372d49d15e13c4b29371b8d545684ba849d3d96bab475de20e6d52d548d9c2e",
+      "metrics_path": "artifact://Jul19/tunnel-room-shape/tunnel-room-shape-lewm-tr2-shape-s3072-r1/post_training_eval/cem/metrics.json",
+      "metrics_sha256": "ef2c394435917b62631ba88a15380b523552fe2be2aeb98d4a61f9b81d0cc91b"
+    },
+    {
+      "cue_variant": "triangle_diamond",
+      "solver": "gd",
+      "checkpoint_file_sha256": "6c58e2a7a7b4bef07e77f09b9cb201f4963f08a5febb310d0a53f0e31d007d5c",
+      "source_commit": "8353c2b8835da17af3335aff07cf2dcc29394378",
+      "manifest_sha256": "5372d49d15e13c4b29371b8d545684ba849d3d96bab475de20e6d52d548d9c2e",
+      "metrics_path": "artifact://Jul19/tunnel-room-shape/tunnel-room-shape-lewm-tr2-shape-s3072-r1/post_training_eval/gd/metrics.json",
+      "metrics_sha256": "769acfbd303b04f3dfef9c16a46adee050a28ec516e80d6e514d6f9e4889d039"
+    },
+    {
+      "cue_variant": "alternate_green_blue",
+      "solver": "cem",
+      "checkpoint_file_sha256": "959597c50837be014ef45e490e1076b06139db43e3a44cee40943900c350edf9",
+      "source_commit": "c4a2df269e16a905a9d31d189de9b71aa5e784b3",
+      "manifest_sha256": "46f286bdf73197afb45f6ebdbfb0b88a34d215d2fc0685befed078bfc5c81926",
+      "metrics_path": "artifact://pta_revision_audit/palette_continuity/planning/outputs/cem/metrics.json",
+      "metrics_sha256": "d0dc753a357165c4653396ac118521286c53449bc02c6703195a2dbe43f53ede"
+    },
+    {
+      "cue_variant": "alternate_green_blue",
+      "solver": "gd",
+      "checkpoint_file_sha256": "959597c50837be014ef45e490e1076b06139db43e3a44cee40943900c350edf9",
+      "source_commit": "c4a2df269e16a905a9d31d189de9b71aa5e784b3",
+      "manifest_sha256": "46f286bdf73197afb45f6ebdbfb0b88a34d215d2fc0685befed078bfc5c81926",
+      "metrics_path": "artifact://pta_revision_audit/palette_continuity/planning/outputs/gd/metrics.json",
+      "metrics_sha256": "5e589f694024637237666bafb8ad0351e19db9f38d2a43302483d99b9d4fc59c"
+    }
+  ],
+  "cases": 300,
+  "cue_index_mapping": {
+    "Color": {
+      "0": "Green",
+      "1": "Orange"
+    },
+    "Shape": {
+      "0": "Triangle",
+      "1": "Diamond"
+    },
+    "Palette": {
+      "0": "Green",
+      "1": "Blue"
+    }
+  },
+  "grouping": "required cue derived from true pairing and target leaf; not the legacy target_shape string in Color/Palette logs",
+  "rank_group_counts": {
+    "cue_index_0": {
+      "R1": 12,
+      "R2": 4
+    },
+    "cue_index_1": {
+      "R1": 13,
+      "R2": 21
+    }
+  },
+  "first_entrance": "first recorded hub_entry_trace endpoint; nearest is defined by initial start-to-entrance Euclidean distance",
+  "no_entry": "kept in denominator; not classified as choosing near or correct",
+  "validation": "All six source hashes, three manifest hashes, 300 case joins, ranks, true pairings, episode outcomes, and twelve published rank success counts verified",
+  "limitations": [
+    "posthoc descriptive subgroup analysis",
+    "cue-by-rank frequencies unbalanced",
+    "four R2 cases for green/triangle",
+    "one checkpoint per variant",
+    "first-entrance preference does not establish complete cue invariance or a universal nearest-only policy"
+  ],
+  "outputs_sha256": {
+    "lewm_planning_cue_cases.csv": "9c340669420629905153fb3ee900e57473bb6966f7e835faf2dd0066ebc58557",
+    "lewm_planning_cue_success.csv": "f6b628937a0122b003832615f297e25ebc6bf73dd14a349e0958ef4c35a00f1e",
+    "lewm_planning_first_entrance.csv": "d968ded3f057197711052d68485133898ef8cf0402af4a00f0cae41a29b5723c"
+  }
+}

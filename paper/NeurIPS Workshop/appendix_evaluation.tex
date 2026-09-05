@@ -105,6 +105,46 @@ with CEM, and 19/25 and 10/25 with GD. Palette succeeds on 20/25 and
 7/25 cases with CEM, and 21/25 and 8/25 with GD. The six matched CLS checkpoints in
 Table~\ref{tab:matchedidm} have no corresponding planning evaluation.
 
+\paragraph{Required cues and entrance choices.}
+Table~\ref{tab:rankplanning} groups the same evaluation episodes by the cue
+on the entrance that leads to the requested goal room, not by the entrance
+actually chosen. Green in Color and Palette, and Triangle in Shape, each
+have 12 R1 and four R2 cases; Orange, Blue, and Diamond each have 13 R1 and
+21 R2 cases. Thus the pooled cue rates compare different mixtures of ranks.
+These descriptive strata were formed after evaluation and do not establish
+a preference for a particular color or shape. Each variant uses one model
+checkpoint, and the four-case R2 strata are especially imprecise.
+
+To test whether proximity influences entrance choice, we also inspect the
+first actual hub-to-leaf teleport in each episode. On R2, the nearer entrance
+is incorrect by construction. Table~\ref{tab:firstentrance} shows that CEM
+usually enters it first, whereas GD is more mixed: on Color, GD chooses
+the nearer entrance in 13 cases and the farther one in 12. Episodes with
+no hub entry remain in the denominator. First entrance and final success
+measure different behaviors: an agent can recover after entering the wrong
+room, or enter the correct room but fail to reach the goal position.
+
+\begin{table}[!htbp]
+\centering
+\caption{\textbf{The nearer, wrong entrance is often chosen first on R2.}
+Counts out of 25 episodes per row. Columns are mutually exclusive and
+include every episode. These are actual teleport events, not visits near
+a portal.}
+\label{tab:firstentrance}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}llrrr@{}}
+\toprule
+Variant & Planner & Nearer (wrong) & Farther (correct) & No entry \\
+\midrule
+Color & CEM & 22 & 1 & 2 \\
+ & GD & 13 & 12 & 0 \\
+Shape & CEM & 19 & 5 & 1 \\
+ & GD & 14 & 9 & 2 \\
+Palette & CEM & 18 & 7 & 0 \\
+ & GD & 18 & 7 & 0 \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
 \section{Representation landscapes and their relation to planning}
 \label{app:landscapes}
 
