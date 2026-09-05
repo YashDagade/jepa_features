@@ -1,0 +1,56 @@
+{
+  "evaluation": "ranked episodic; independently generated scenarios frozen before solver evaluation",
+  "start_sampling": "valid position in central hub",
+  "goal_sampling": "random target leaf and valid position inside that leaf",
+  "goal_image": "same-layout render at target position; no recorded-frame temporal offset",
+  "dataset_based_goal_offset_steps_25_used": false,
+  "planner_horizon_primitive_steps": 25,
+  "planning_blocks": 5,
+  "primitive_actions_per_block": 5,
+  "evaluation_budget_primitive_steps": 400,
+  "manifests": {
+    "Color": {
+      "sha256": "58cbd330adcfc75bc7d5938f475c847ebfd9ccb97515504431e7438b4178fc0e",
+      "cases": 50,
+      "hub_starts": 50,
+      "leaf_goals": 50,
+      "unique_starts": 50,
+      "unique_goals": 50,
+      "upper_leaf_goals": 24,
+      "lower_leaf_goals": 26,
+      "rank1_cases": 25,
+      "rank2_cases": 25
+    },
+    "Shape": {
+      "sha256": "5372d49d15e13c4b29371b8d545684ba849d3d96bab475de20e6d52d548d9c2e",
+      "cases": 50,
+      "hub_starts": 50,
+      "leaf_goals": 50,
+      "unique_starts": 50,
+      "unique_goals": 50,
+      "upper_leaf_goals": 24,
+      "lower_leaf_goals": 26,
+      "rank1_cases": 25,
+      "rank2_cases": 25
+    },
+    "Palette": {
+      "sha256": "46f286bdf73197afb45f6ebdbfb0b88a34d215d2fc0685befed078bfc5c81926",
+      "cases": 50,
+      "hub_starts": 50,
+      "leaf_goals": 50,
+      "unique_starts": 50,
+      "unique_goals": 50,
+      "upper_leaf_goals": 24,
+      "lower_leaf_goals": 26,
+      "rank1_cases": 25,
+      "rank2_cases": 25
+    }
+  },
+  "geometry_start_goal_pairing_and_rank_identical_across_variants": true,
+  "implementation_evidence": {
+    "sampling": "stable-worldmodel/stable_worldmodel/envs/tunnel_rooms/env.py:_sample_two_leaf_scenario",
+    "goal_rendering": "stable-worldmodel/stable_worldmodel/envs/tunnel_rooms/env.py:reset",
+    "separate_temporal_goal_evaluator": "stable-worldmodel/stable_worldmodel/world/world.py:_extract_init_goal",
+    "palette_execution": "artifact://pta_revision_audit/palette_continuity/planning/run.py:main"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "source_landscape": "figures/lewm_spatial_three_cue_goal_distance.pdf",
+  "source_landscape_sha256": "48d67e23d4abbf29511461fd4ee5ad2329616f85dd0f4663cc2d401b96474153",
+  "source_arrays": "data/lewm_portal_swap_arrays.npz",
+  "source_arrays_sha256": "d4a4916d3dd25c9ebb0a12661c6b8e88e30172d51b47db3dfec545e8c99823bd",
+  "output": "figures/lewm_goal_landscape_and_portal_swap.pdf",
+  "output_sha256": "dbaa4b89ccbb08785eb7057808d147f56188561e717881f7b8be4d7bcca0aaa8",
+  "geometries": 16,
+  "illustration_excluded": true,
+  "event_alignment": "first sampled step at or after crossing; event lies in preceding five-step gray interval",
+  "statistic": "median and interquartile band; raw squared latent distance interpreted within each model",
+  "composition": "unchanged vector landscape plus new plots from retained numerical arrays; all three cue variants retained"
+}

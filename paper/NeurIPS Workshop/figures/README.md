@@ -238,3 +238,13 @@ zero is the first five-step sample at or after crossing; raw latent scales
 are only comparable within each model. `data/lewm_portal_swap_arrays.npz`
 retains the numerical plotting inputs. Source plots and larger artifacts are
 under ignored `runs/pta_feedback/portal_swap/`.
+
+
+`lewm_goal_landscape_and_portal_swap.pdf` is the current main Figure 3.
+Panel (a) embeds `lewm_spatial_three_cue_goal_distance.pdf` unchanged;
+panel (b) plots observed/predicted paired squared latent distances from
+`data/lewm_portal_swap_arrays.npz`. Curves are medians and interquartile bands
+over 16 evaluation geometries. The full appendix plot retains the additional
+physical-position separation panel. `data/lewm_main_swap_figure_provenance.json`
+records source and output hashes. The temporary builder is under ignored
+`runs/pta_feedback/presentation/`.

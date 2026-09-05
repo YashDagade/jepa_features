@@ -49,13 +49,16 @@ states are reported separately wherever stagewise claims are made.
 \subsection{Rank-based planning protocol}
 \label{app:planning}
 
-R1 and R2 describe the goal-reaching task, not fixed tunnel identities.
-Before the first action, we order the two central-room entrances by their
-Euclidean distance from the agent, breaking exact ties by endpoint index.
-R1 means that the nearer entrance connects to the goal room; R2 means that
-the farther entrance does. Thus, choosing the nearest entrance is sufficient
-for R1 but selects the wrong destination for R2. We sample scenarios
-independently of rank, then select 25 oracle-solvable episodes per rank.
+Evaluation samples portal geometry and pairing, a valid hub start, a target
+leaf, and a valid position in that leaf. The goal image renders the agent at
+this target in the same layout. Goals are not chosen from recorded trajectories
+at \texttt{goal\_offset\_steps=25}; the 25-step planning horizon below is separate.
+
+We rank the two hub entrances by Euclidean distance from the initial agent
+position, breaking ties by endpoint index. R1 means the nearer entrance
+reaches the goal room; R2 means the farther one does. Ranks describe tasks,
+not fixed colors or tunnel identities. Scenarios are sampled before rank
+stratification, which retains 25 oracle-solvable cases per rank.
 
 Both planners minimize
 $\lVert\hat z_{t+5}-z_{\mathrm{goal}}\rVert_2^2$, summed over projected-state

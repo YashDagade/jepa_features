@@ -344,3 +344,18 @@ Static cue sensitivity is nonzero. Forecast attenuation does not by itself
 isolate a cue-specific mechanism or exclude general open-loop prediction
 error. Raw feature arrays, checkpoint weights, fitted probe heads and run
 scripts are stored under ignored `runs/pta_feedback/`.
+
+
+`lewm_planning_goal_sampling_audit.json` verifies the exact Color, Shape,
+and Palette manifests: each contains 50 distinct hub starts and 50 distinct
+leaf goals, with identical geometry, starts, targets, pairing, and ranks
+across variants. Goal images are rendered from sampled targets; the separate
+dataset evaluator's temporal offset is not used. Its 25-step value must not
+be conflated with the primary planner's 5×5 action horizon.
+
+`lewm_main_swap_figure_provenance.json` links the main composite to the
+unchanged vector goal-landscape PDF and retained per-case swap arrays.
+All three variants and all 16 evaluation geometries enter the curves;
+the extra illustration geometry is excluded. Distances and percentile
+bands are computed in the same units and with the same event alignment
+as the full appendix plot.

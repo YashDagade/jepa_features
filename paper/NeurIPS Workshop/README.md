@@ -188,7 +188,7 @@ validation after epoch 10 training and align with those final model weights.
 
 Both follow-ups are complete on main; the anonymous code branch and earlier
 code ZIP remain a separate snapshot. Updated PDF and LaTeX upload files are
-in `runs/pta_feedback/submission/`. The main paper remains four pages.
+in `runs/pta_feedback/presentation/submission/`. The main paper remains four pages.
 
 A validation-selected two-hidden-layer MLP uses the same frozen checkpoints
 and endpoint targets as the main probes. Across Color/Shape/Palette, current
@@ -211,3 +211,15 @@ is excluded from these aggregates. General forecast error remains an
 alternative explanation. Compact per-case arrays, protocol, input/output
 hashes and validation are in `data/lewm_portal_swap_*`; full experiment
 artifacts and runners remain under ignored `runs/pta_feedback/`.
+
+
+The main paper now explicitly distinguishes randomized spatial goals from
+fixed temporal goal offsets. All primary evaluations start in the hub and
+end at a sampled position in a randomly chosen leaf, with the goal image
+rendered directly. The 25-primitive-step planning horizon does not determine
+goal selection. `data/lewm_planning_goal_sampling_audit.json` verifies all
+50 cases per variant and their shared geometry, starts, goals, and ranks.
+Figure 3 combines the unchanged goal landscapes with portal-swap divergence
+curves for all three variants. The main text explains the intervention,
+pre-crossing initialization, static sensitivity, forecast attenuation, and
+remaining alternative explanation; the full controls remain in Appendix I.

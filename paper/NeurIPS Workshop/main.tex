@@ -52,89 +52,71 @@ become useful for predicting and choosing routes.
 \section{Introduction}
 
 Joint-embedding predictive architectures (JEPAs) have become a prominent
-approach to learning visual representations and world models
+approach to visual representations and world models
 \citep{assran2023ijepa,bardes2024vjepa,assran2025vjepa2,murlabadia2026vjepa21}.
-Their appeal is abstraction: predicting in feature space can avoid spending
-capacity on pixel details that are irrelevant or difficult to predict
-\citep{lecun2022path,balestriero2025lejepa}. This principle also supports
-planning from learned dynamics \citep{sobal2025latentplanning,maes2026leworldmodel}.
-For an acting agent, however, a visually small detail can determine which
-action reaches the goal. Learning to ignore detail is useful only when the
-right distinctions survive.
+Predicting in feature space can avoid spending capacity on irrelevant or
+unpredictable pixel details \citep{lecun2022path,balestriero2025lejepa}, while
+supporting planning from learned dynamics
+\citep{sobal2025latentplanning,maes2026leworldmodel}. Yet a visually small
+detail can determine which action reaches a goal. Useful abstraction must
+preserve that distinction.
 
-We investigate this tension with \emph{Tunnel Rooms Color}. Two tunnels
-connect a central room to different destinations, and their colors reveal
-which destination each tunnel reaches. A model can therefore learn the
-room geometry, locate every tunnel, and still lack a reliable basis for
-choosing between them. The environment separates these abilities with
-minimal visual complexity. Shape and alternate-palette variants let us
-ask whether the difficulty is specific to one choice of colors.
+\emph{Tunnel Rooms Color} isolates this problem. Matching colors determine
+which of two tunnels reaches the goal room, so accurate localization need
+not imply correct route selection. Shape and alternate-palette variants
+test whether the difficulty depends on the cue rendering.
 
-We study LeWorldModel (LeWM) through coordinate probes, image
-reconstructions, goal-energy maps, and planning. These tests reveal a gap
-between locating tunnels and recovering their cue-dependent destinations.
-Controlled swaps further distinguish a response to changed cues from a
-prediction of where they lead. We contribute the benchmark and this
-empirical finding; its cause remains open.
+We contribute this benchmark and a documented gap in LeWorldModel (LeWM).
+Coordinate probes, reconstructions, goal-energy maps, and planning expose
+difficulty recovering cue-dependent destinations. Controlled swaps further
+separate sensitivity to changed cues from prediction of their consequences.
+The cause of this gap remains open.
 
 \section{Tunnel Rooms: the cue determines the destination}
 
-A central room contains two tunnel entrances, each paired with an endpoint
-in a separate destination room. Entering a green tunnel teleports the agent
-beside the other green endpoint; orange follows the same rule. A goal image
-shows the requested agent position in a destination room. The direct route
-requires matching that room's tunnel to the corresponding entrance in the
-central room (Figure~\ref{fig:taskrank}).
+Two entrances in a central room (hub) connect to separate destination rooms
+(leaves). Matching cues determine the pairings: entering a green tunnel
+teleports beside the other green endpoint, and likewise for orange
+(Figure~\ref{fig:taskrank}). Tunnel positions and assignments vary across
+episodes, so knowing where an entrance is does not reveal where it leads.
+We call its association with a cue-matched destination \emph{cue binding}.
 
-Tunnel positions and color assignments vary across episodes. Knowing which
-entrance is higher, lower, or nearer is therefore different from knowing
-where it leads. We call the association between a tunnel's cue and its
-paired destination \emph{cue binding}. A scripted agent that knows the
-pairings collects successful trajectories, so the training data contain
-examples of cue-guided routes. Exploratory behavior may still reach the
-goal without using the cue; our evaluation distinguishes cases where the
-correct tunnel is nearer from those where it is farther away.
+For planning evaluation, we sample a start in the hub and a goal position in
+a randomly chosen leaf. We render the goal image directly from that position;
+we do not select a frame 25 steps after the start in a recorded trajectory.
 
-We consider three renderings of the same trajectories. \emph{Color} uses
-green and orange markers. \emph{Shape} replaces them with triangles and
-diamonds, while \emph{Palette} uses green and blue. These changes preserve
-the underlying positions, actions, and teleportation pairings. We train LeWM
-from scratch on 10,000 trajectories per rendering. It predicts the next
-latent state from an observation history and an action sequence. Our primary
-model uses spatial features and an auxiliary inverse-dynamics loss, which
-predicts actions from consecutive states. Appendix~\ref{app:ablations}
-compares both additions with the native model.
+A scripted policy collects successful trajectories demonstrating cue-guided
+routes. We train LeWM from scratch on 10,000 trajectories per rendering:
+\emph{Color} uses green/orange, \emph{Shape} uses triangles/diamonds, and
+\emph{Palette} uses green/blue. Positions, actions, and pairings are shared.
+The model predicts future latent states from observation histories and
+actions. Our primary recipe uses spatial features and an auxiliary
+inverse-dynamics loss that predicts actions from consecutive states;
+Appendix~\ref{app:ablations} compares these additions with the native model.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{figures/tunnel_variants_and_rank.pdf}
   \caption{\textbf{The same geometry supports different cue-guided routes.}
-  (a--c) Color, Shape, and Palette renderings of one trajectory.
-  Matching cues identify paired tunnels. (d) An R2 task: the entrance leading
-  to the goal room is farther from the agent than the other entrance.
-  R1/R2 rank the correct entrance; they are not fixed tunnel identities.}
+  (a--c) Color, Shape, and Palette share a geometry; matching cues identify
+  paired tunnels. (d) R2: the correct entrance is farther from the agent.}
   \label{fig:taskrank}
 \end{figure}
 
 \section{LeWM learns locations more reliably than cues}
 
-We first ask what LeWM's representation makes accessible. We freeze the
-model and fit identical linear probes to predict the same four tunnel
-endpoints in two ways: by their top/bottom positions, or by their color or
-shape identities. Both tasks recover coordinates; only the second requires
-binding the cue to the correct endpoint. Mean absolute error (MAE) measures
-coordinate error in pixels, and $R^2$ measures explained variance.
+We freeze LeWM and fit identical linear probes to recover four tunnel
+endpoints, indexed either by top/bottom position or by color/shape identity.
+Both tasks predict coordinates; only the latter requires cue binding.
+Mean absolute error (MAE) measures pixel error, and $R^2$ explained variance.
 
-The contrast is substantial (Table~\ref{tab:probes}). Averaging the four endpoints on
-Color gives location MAE of 3.83 pixels and $R^2=.934$, versus cue MAE of
-27.40 pixels and $R^2=.224$. The cue error is only modestly below
-the constant cue predictor's 31.19 pixels. Shape and Palette show the same ordering.
-The representation thus supports accurate localization much more readily
-than cue-conditioned localization. The probes test accessibility to a
-linear readout, not the complete absence of cue information. A small MLP
-also leaves a wide location--cue gap (Appendix~\ref{app:nonlinear}).
-Appendix~\ref{app:ablations} reports controls for the model adaptations
-and additional palette conditions.
+On Color, four-endpoint means are 3.83 pixels and $R^2=.934$ for location,
+versus 27.40 pixels and $R^2=.224$ for cues (Table~\ref{tab:probes}). Cue MAE
+is only modestly below the constant predictor's 31.19 pixels. Shape and
+Palette show the same ordering. A small MLP also leaves a wide gap
+(Appendix~\ref{app:nonlinear}). These probes establish unequal accessibility,
+not absence of all cue information. Appendix~\ref{app:ablations} reports
+readout and objective controls.
 
 \begin{table}[!htbp]
 \centering
@@ -169,15 +151,11 @@ Palette & Top & 4.79 & .913 & 2.63 & .962 \\
 \end{tabular*}
 \end{table}
 
-Image reconstructions make the difficulty visible. A separate decoder
-learns to reconstruct observations from LeWM's representation without
-letting reconstruction change that representation. The decoded images
-retain the room layout, but tunnel colors become mixed and shape markers
-become faint (Figure~\ref{fig:decoders}). Reconstruction can blur distinctions
-because of uncertainty or limitations of the decoder itself
-\citep{mathieu2016video}. These images complement the coordinate probes:
-both suggest that the scene's broad structure is easier to recover than
-the cues that distinguish routes.
+A separate decoder reconstructs observations without updating LeWM.
+It retains the room layout but mixes tunnel colors and weakens shape markers
+(Figure~\ref{fig:decoders}), consistent with the probe gap. Uncertainty or
+limitations of the decoder can also blur distinctions \citep{mathieu2016video};
+reconstruction alone does not establish information loss.
 
 \begin{figure}[t]
   \centering
@@ -190,40 +168,45 @@ the cues that distinguish routes.
   \label{fig:decoders}
 \end{figure}
 
+\FloatBarrier
 \section{From cues to predicted destinations}
 
-A cue must do more than change an image representation: it must distinguish
-routes to a goal. We first compare each observed state's representation
-with a fixed goal image while moving the agent through the rooms.
-Lower \emph{goal energy} means greater similarity to that goal; this static
-map does not use the dynamics predictor.
-
-Figure~\ref{fig:similarity} contrasts these maps with an approximate geodesic
-reference through the true paired tunnels. Switching the goal room changes
-which entrance the reference favors. LeWM retains broad low-energy regions
-near both entrances and destination endpoints. The maps do change with the
-goal, but distinguish the routes less clearly in this scene. The reference
-illustrates a routing distinction; it does not prescribe latent energy values.
-Appendix~\ref{app:landscapes} gives the sampling procedure and further maps.
+We compare observed-state representations with a fixed goal image as the
+agent moves through the rooms. Lower \emph{goal energy} means greater
+similarity; these static maps do not use the dynamics predictor.
+Changing the goal room switches which entrance the geodesic reference favors,
+but LeWM retains broad low-energy regions near both routes in this scene
+(Figure~\ref{fig:similarity}a). The reference illustrates routing, not
+calibrated latent costs; Appendix~\ref{app:landscapes} gives the full protocol.
 
 \begin{figure}[!t]
   \centering
-  \includegraphics[width=\linewidth]{figures/lewm_spatial_three_cue_goal_distance.pdf}
-  \caption{\textbf{The correct route changes with the goal; LeWM's low-energy regions remain broad.}
-  Left: LeWM goal energies for Color, Shape, and Palette. Right: geodesic travel
-  distance through the true paired tunnels. Rows change the goal (red disk);
-  yellow denotes low cost. Each column shares a scale across goals.
-  Latent energy and travel distance have different units.}
+  \includegraphics[width=\linewidth]{figures/lewm_goal_landscape_and_portal_swap.pdf}
+  \caption{\textbf{Goal similarity and predicted dynamics both weaken route distinctions.}
+  (a) LeWM goal energies and geodesic distance; rows switch the goal room.
+  Yellow denotes low cost. Each column shares a scale across goals;
+  latent energy and travel distance have different units.
+  (b) Cue swaps: squared distance between the two worlds' encoded observations
+  (blue) or open-loop predictions (orange). Medians and interquartile bands cover 16
+  geometries. The gray interval contains teleportation; latent scales are
+  interpreted within each model.}
   \label{fig:similarity}
 \end{figure}
 
-We then exchange the two central-room cues, keeping the unordered portal
-locations fixed and changing which destination each entrance reaches.
-The encoder responds to this swap. Under identical actions, however, the
-observed states separate further after teleportation while open-loop predictions
-understate that separation (Appendix~\ref{app:portal-swap}). This tests a
-cue's consequences more directly, although general rollout error may also
-contribute.
+We then swap the two hub cues while keeping all portal locations and leaf
+cues fixed. The destination reached from each entrance changes with its cue.
+Two agents receive identical actions and occupy the same positions until
+entering that entrance, which sends them to different rooms. Forecasts start
+from observations preceding the crossing and receive no later observed frames.
+
+Static swaps change the encoding by an amount comparable to an eight-pixel
+agent translation: LeWM registers the cue change (Appendix~\ref{app:portal-swap}).
+The predicted trajectories nevertheless separate much less than the observed
+ones after teleportation (Figure~\ref{fig:similarity}b). Over the first three
+post-crossing samples, median predicted/observed squared latent distance is
+.25/.42/.18 for Color/Shape/Palette across 16 geometries. This failure to
+reproduce the change in destination may also reflect general rollout error;
+Appendix~\ref{app:portal-swap} gives controls and the full protocol.
 
 \Needspace{8\baselineskip}
 We rank the two central-room entrances by distance from the initial agent
@@ -255,20 +238,19 @@ Palette & 80\% & 28\% & 84\% & 32\% \\
 \end{tabular*}
 \end{table}
 
+\Needspace{10\baselineskip}
 \section{Discussion and conclusion}
 
 Tunnel Rooms separates locating an entrance from knowing where it leads.
-LeWM's linear and nonlinear probes recover location more reliably than cue
-binding. The encoder detects controlled cue swaps, but predicted rollouts
-understate their consequences after teleportation. Planning is also less
-successful when reaching the goal requires choosing the farther entrance.
+LeWM recovers locations more reliably than cues, detects cue swaps but
+underpredicts their consequences, and plans less successfully when the
+correct entrance is farther away.
 
-One possible explanation is limited exposure to crossings that reveal cue
-binding. Increasing crossing-related training windows produces brighter
-reconstructions without consistent gains in cue MAE or $R^2$; the result is
-inconclusive (Appendix~\ref{app:exposure}). Further work should separate cue
-binding from general prediction error, hold training effort fixed in exposure
-ablations, and replicate these findings across runs and environments.
+Limited exposure to cue-revealing crossings is one possible explanation.
+Increasing that exposure brightens reconstructions without consistent gains
+in cue MAE or $R^2$ (Appendix~\ref{app:exposure}). Further work should separate
+cue binding from general forecast error, hold training effort fixed in
+exposure ablations, and replicate across runs and environments.
 
 \clearpage
 
