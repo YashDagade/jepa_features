@@ -106,7 +106,7 @@ with CEM, and 19/25 and 10/25 with GD. Palette succeeds on 20/25 and
 Table~\ref{tab:matchedidm} have no corresponding planning evaluation.
 
 \paragraph{Required cues and entrance choices.}
-Table~\ref{tab:rankplanning} groups the same evaluation episodes by the cue
+The cue column of Table~\ref{tab:rankplanning} groups episodes by the cue
 on the entrance that leads to the requested goal room, not by the entrance
 actually chosen. Green in Color and Palette, and Triangle in Shape, each
 have 12 R1 and four R2 cases; Orange, Blue, and Diamond each have 13 R1 and
@@ -114,6 +114,36 @@ have 12 R1 and four R2 cases; Orange, Blue, and Diamond each have 13 R1 and
 These descriptive strata were formed after evaluation and do not establish
 a preference for a particular color or shape. Each variant uses one model
 checkpoint, and the four-case R2 strata are especially imprecise.
+Table~\ref{tab:cuebyrank} gives the full breakdown: success is lower on R2
+for every cue and both planners.
+
+\begin{table}[!htbp]
+\centering
+\caption{\textbf{Success falls on the farther entrance for both cue identities.}
+Task success (\%) by the cue required to reach the goal room.
+$n_1/n_2$ gives R1/R2 case counts; All pools both ranks.
+Cue groups have unequal rank support, including only four R2 cases for
+Green/Triangle.}
+\label{tab:cuebyrank}
+\renewcommand{\arraystretch}{1.08}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}llrrrrrrr@{}}
+\toprule
+Variant & Required cue & $n_1/n_2$ & \multicolumn{3}{c}{CEM success $\uparrow$} & \multicolumn{3}{c}{GD success $\uparrow$} \\
+\cmidrule(lr){4-6}\cmidrule(l){7-9}
+ & & & All & R1 & R2 & All & R1 & R2 \\
+\midrule
+Color & Green & 12/4 & 56.3 & 75.0 & 0.0 & 62.5 & 66.7 & 50.0 \\
+ & Orange & 13/21 & 44.1 & 84.6 & 19.0 & 55.9 & 61.5 & 52.4 \\
+\addlinespace[2pt]
+Shape & Triangle & 12/4 & 68.8 & 91.7 & 0.0 & 56.3 & 66.7 & 25.0 \\
+ & Diamond & 13/21 & 50.0 & 84.6 & 28.6 & 58.8 & 84.6 & 42.9 \\
+\addlinespace[2pt]
+Palette & Green & 12/4 & 56.3 & 75.0 & 0.0 & 75.0 & 91.7 & 25.0 \\
+ & Blue & 13/21 & 52.9 & 84.6 & 33.3 & 50.0 & 76.9 & 33.3 \\
+\bottomrule
+\end{tabular*}
+\end{table}
 
 To test whether proximity influences entrance choice, we also inspect the
 first actual hub-to-leaf teleport in each episode. On R2, the nearer entrance

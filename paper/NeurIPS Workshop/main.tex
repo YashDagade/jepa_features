@@ -210,8 +210,9 @@ Appendix~\ref{app:portal-swap} gives controls and the full protocol.
 \Needspace{8\baselineskip}
 We rank the two hub entrances by distance from the initial agent position.
 In R1 tasks, the nearer entrance leads to the goal room; in R2 tasks, the
-farther one does. Success drops on R2 for every required cue and both
-planners (Table~\ref{tab:rankplanning}). On Color, overall cross-entropy
+farther one does. Grouping success by required cue gives mixed rates
+(44--75\%), while grouping by rank reveals a consistent R1 advantage
+across variants and planners (Table~\ref{tab:rankplanning}). On Color, cross-entropy
 method (CEM) success falls from 80\% to 16\%, and gradient descent (GD)
 from 64\% to 52\%. The entrance traces reveal a proximity bias: on R2,
 CEM enters the nearer, incorrect tunnel first in 72--88\% of cases across
@@ -221,28 +222,20 @@ gives the entrance counts and protocol.
 
 \begin{table}[!htbp]
 \centering
-\caption{\textbf{Success falls on the farther entrance for both cue identities.}
-Task success (\%) by the cue required to reach the goal room.
-$n_1/n_2$ gives R1/R2 case counts; All pools both ranks.
-Cue groups have unequal rank support, including only four R2 cases for
-Green/Triangle.}
+\caption{\textbf{Planning success separates more clearly by rank than by cue.}
+All entries show CEM/GD task success (\%; higher is better).
+R1 and R2 have 25 cases each. Cue success pools both ranks: the first cue
+in each row has 16 cases, the second 34. The full cue-by-rank breakdown
+is in Appendix~\ref{app:planning}.}
 \label{tab:rankplanning}
-\renewcommand{\arraystretch}{1.08}
-\setlength{\tabcolsep}{3pt}
-\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}llrrrrrrr@{}}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lccl@{}}
 \toprule
-Variant & Required cue & $n_1/n_2$ & \multicolumn{3}{c}{CEM success $\uparrow$} & \multicolumn{3}{c}{GD success $\uparrow$} \\
-\cmidrule(lr){4-6}\cmidrule(l){7-9}
- & & & All & R1 & R2 & All & R1 & R2 \\
+Variant & R1 $\uparrow$ & R2 $\uparrow$ & Cue success $\uparrow$ \\
 \midrule
-Color & Green & 12/4 & 56.3 & 75.0 & 0.0 & 62.5 & 66.7 & 50.0 \\
- & Orange & 13/21 & 44.1 & 84.6 & 19.0 & 55.9 & 61.5 & 52.4 \\
-\addlinespace[2pt]
-Shape & Triangle & 12/4 & 68.8 & 91.7 & 0.0 & 56.3 & 66.7 & 25.0 \\
- & Diamond & 13/21 & 50.0 & 84.6 & 28.6 & 58.8 & 84.6 & 42.9 \\
-\addlinespace[2pt]
-Palette & Green & 12/4 & 56.3 & 75.0 & 0.0 & 75.0 & 91.7 & 25.0 \\
- & Blue & 13/21 & 52.9 & 84.6 & 33.3 & 50.0 & 76.9 & 33.3 \\
+Color & 80/64 & 16/52 & \shortstack[l]{Green: 56.3/62.5 \\ Orange: 44.1/55.9} \\[3pt]
+Shape & 88/76 & 24/40 & \shortstack[l]{Triangle: 68.8/56.3 \\ Diamond: 50.0/58.8} \\[3pt]
+Palette & 80/84 & 28/32 & \shortstack[l]{Green: 56.3/75.0 \\ Blue: 52.9/50.0} \\[3pt]
 \bottomrule
 \end{tabular*}
 \end{table}
