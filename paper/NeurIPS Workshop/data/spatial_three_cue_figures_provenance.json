@@ -63,9 +63,9 @@
   },
   "builder_sha256": "eb2f96b599c8782b344b2aa6bfc02b9ca5ba7c6eb324de24b60e21d2144ac211",
   "products": {
-    "lewm_spatial_three_cue_decoders.pdf": "603586784525a2addddde76cbc239614bb6ca8475bd26240bd3a975ab63a1942",
+    "lewm_spatial_three_cue_decoders.pdf": "478a028d4a7ce4a908b87cdb6e79aec5926c95cbfed20ee85f5941e30b8ff5fb",
     "lewm_spatial_three_cue_decoders.png": "76df1076022a600abdb5142b0d0ce505a704ea3016035c76ded407af1684e9e0",
-    "lewm_spatial_three_cue_goal_distance.pdf": "fcd160b827c99225fc8bcd63407c7694479827252bf70e5f3c434851f6a55e77",
+    "lewm_spatial_three_cue_goal_distance.pdf": "48d67e23d4abbf29511461fd4ee5ad2329616f85dd0f4663cc2d401b96474153",
     "lewm_spatial_three_cue_goal_distance.png": "9830f28bc97eda9754eb677bafdb1ec053dccde831b4dbe818a1c2f238d84964"
   },
   "palette_checkpoint_sha256": "959597c50837be014ef45e490e1076b06139db43e3a44cee40943900c350edf9",
@@ -289,5 +289,6 @@
       0.0,
       200.73552991843513
     ]
-  }
+  },
+  "pdf_fonttype": 42
 }

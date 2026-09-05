@@ -217,3 +217,11 @@ figure fixes frame 0 across every displayed condition.
 `../data/lewm_tr2_idm_readout_decoder_frames.npz` retains all twelve original
 conditions; its companion provenance JSON identifies every source, the six
 displayed conditions, and the figure builder.
+
+## Submission font audit
+
+All active figure PDFs use embedded TrueType fonts. Seven former Type 3
+figures were regenerated with `pdf.fonttype = 42` for NeurIPS compliance.
+Page dimensions and embedded scientific image bytes are unchanged; rendering
+differences are confined to font rasterization. Before/after hashes and visual
+comparison measurements are in `../data/submission_format_audit.json`.

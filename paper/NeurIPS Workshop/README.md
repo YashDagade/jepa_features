@@ -68,6 +68,14 @@ saturated, but coordinate probes do not consistently improve and training
 compute increases. The conclusion identifies concrete causal and replication
 tests. No paper submission has been made.
 
+## Submission handoff
+
+The September 5 formatting audit is complete. See [SUBMISSION.md](SUBMISSION.md)
+for the upload files, independently verified source archive, OpenReview fields,
+and deadline. The final PDF contains only embedded Type 1/TrueType fonts;
+tables use the official 10-point size. The source archive rebuilds a
+byte-identical PDF. No OpenReview submission has been sent.
+
 ## Venue and format
 
 Verified September 4, 2026 against the [PTA call for papers](https://ptaworkshop.github.io/call-for-papers.html):

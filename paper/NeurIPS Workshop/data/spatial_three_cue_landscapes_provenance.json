@@ -32,7 +32,7 @@
     ]
   },
   "products": {
-    "pdf": "9bc49d5a82f3abfb40461865d7748f20db92a248aea82d8a5fde684e8f0f441b",
+    "pdf": "11e87f403e968f8ca132a800614e7c16b63412d6534533c7cf5b9f5604b46841",
     "png": "523f952e3b65f64506da113eb893330a833d239644a9c24378851109e02cbae2"
   },
   "cosine_rendering": "Apply viridis_r to normalized 1-S in [0,.4]; equivalent to viridis on S in [.6,1]. Floor interpolation unchanged."
