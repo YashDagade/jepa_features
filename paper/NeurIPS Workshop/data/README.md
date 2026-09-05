@@ -9,11 +9,23 @@ The current main comparison is spatial 8×8 + IDM 3.125 on Color and Shape.
 `spatial_primary_probes.csv`, `spatial_primary_planning.csv`, and
 `spatial_primary_provenance.csv` align the primary metrics to exact
 checkpoints, with separate file/state hashes. `spatial_primary_decoder_sources.csv`
-identifies the complete six-clip montage. `spatial_primary_lpwm_planning.csv`
-and `spatial_primary_lpwm_recipe.json` preserve the stronger same-campaign
-LpWM positive control and its objective/activation differences.
+identifies the complete six-clip montage.
 `spatial_alternate_palette_support.csv` retains green/blue runs at IDM0/.625;
 these are appendix support, not matched3.125 primary runs.
+
+`spatial_primary_probe_targets.csv` supplies all 32 individual endpoint records
+for the two primary variants and both current/predicted states. Table 1 displays
+the 16 current endpoints as separate central-room and destination-room columns,
+with top/bottom and explicit color/shape labels. Location endpoints are ordered
+independently within each room group; same-cue endpoints identify a connected
+pair. Each MAE and R² averages the x/y coordinate metrics.
+
+`spatial_primary_probe_mean_audit.json` records a correction to the copied Color
+aggregate row in the primary, historical-summary, and transition-baseline CSVs.
+Its original numerical derivation was undocumented. The corrected aggregates
+are means of the SHA-verified final endpoint metrics, which exactly match the
+retained W&B summary. All printed two-decimal MAE and three-decimal R² values
+are unchanged; checkpoint and feature hashes also remain unchanged.
 
 The following CLS and legacy files remain supporting evidence. `short_paper_noidm_color_*`
 records independently reproduced, same-campaign no-IDM Color probes, planning,
@@ -40,7 +52,7 @@ Files used by the LeWM-focused revision:
 
 - `short_paper_probe_results.csv` is the compact, common-contract source for
   historical affine-probe comparisons (the active main table uses
-  `spatial_primary_probes.csv`). Cue and position values are
+  `spatial_primary_probe_targets.csv`, with means in `spatial_primary_probes.csv`). Cue and position values are
   unweighted four-endpoint means; legacy `encoder` keys are correctly labeled
   as current post-projector states. Shape position $R^2$ was reconstructed
   post hoc from the retained immutable feature cache under the original ridge

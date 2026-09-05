@@ -10,6 +10,7 @@
 \usepackage{booktabs}
 \usepackage{float}
 \usepackage{placeins}
+\usepackage{needspace}
 \usepackage{graphicx}
 \usepackage{microtype}
 \usepackage{xcolor}
@@ -122,9 +123,9 @@ shape identities. Both tasks recover coordinates; only the second requires
 binding the cue to the correct endpoint. Mean absolute error (MAE) measures
 coordinate error in pixels, and $R^2$ measures explained variance.
 
-The contrast is substantial (Table~\ref{tab:probes}). On Color, the location
-probe has an error of 3.83 pixels and $R^2=.934$, whereas the cue probe has
-an error of 27.40 pixels and $R^2=.224$. Its error is only modestly below
+The contrast is substantial (Table~\ref{tab:probes}). Averaging the four endpoints on
+Color gives location MAE of 3.83 pixels and $R^2=.934$, versus cue MAE of
+27.40 pixels and $R^2=.224$. The cue error is only modestly below
 the constant cue predictor's 31.19 pixels. Shape shows the same ordering.
 The representation thus supports accurate localization much more readily
 than cue-conditioned localization. The probes test accessibility to a
@@ -134,19 +135,29 @@ also show weak cue readouts, although their training settings differ.
 
 \begin{table}[!htbp]
 \centering
-\caption{\textbf{Locating a tunnel is easier than identifying its destination by cue.}
-Identical linear probes predict endpoint coordinates from frozen LeWM
-representations. Lower MAE and higher $R^2$ indicate better recovery.}
+\caption{\textbf{The location--cue gap holds across individual endpoints.}
+MAE (pixels) and $R^2$ from frozen representations, averaging $x/y$ scores
+for each endpoint. Top/bottom are ordered independently in the central
+room and destination rooms; same-cue rows identify paired endpoints.}
 \label{tab:probes}
 \small
-\renewcommand{\arraystretch}{1.12}
+\renewcommand{\arraystretch}{1.10}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrr@{}}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}llrrrr@{}}
 \toprule
-Variant & Location MAE $\downarrow$ & Location $R^2\uparrow$ & Cue MAE $\downarrow$ & Cue $R^2\uparrow$ \\
+ & & \multicolumn{2}{c}{Central room} & \multicolumn{2}{c}{Destination rooms} \\
+\cmidrule(lr){3-4}\cmidrule(l){5-6}
+Variant & Endpoint label & MAE $\downarrow$ & $R^2\uparrow$ & MAE $\downarrow$ & $R^2\uparrow$ \\
 \midrule
-Color & 3.83 & .934 & 27.40 & .224 \\
-Shape & 4.57 & .907 & 28.05 & .203 \\
+Color & Top & 4.63 & .919 & 2.72 & .960 \\
+ & Bottom & 5.14 & .900 & 2.82 & .958 \\
+ & Green & 25.05 & .256 & 29.81 & .180 \\
+ & Orange & 25.01 & .289 & 29.72 & .172 \\
+\midrule
+Shape & Top & 5.88 & .868 & 3.19 & .941 \\
+ & Bottom & 6.06 & .872 & 3.14 & .948 \\
+ & Triangle & 25.18 & .229 & 30.75 & .144 \\
+ & Diamond & 25.80 & .253 & 30.47 & .184 \\
 \bottomrule
 \end{tabular*}
 \end{table}
@@ -172,6 +183,7 @@ the cues that distinguish routes.
   \label{fig:decoders}
 \end{figure}
 
+\Needspace{6\baselineskip}
 We next ask whether the representation distinguishes which tunnel leads
 toward a goal. Holding the layout fixed, we move the agent across the rooms
 and measure the distance between each observation's representation and
@@ -201,6 +213,7 @@ additional landscapes.
   \label{fig:similarity}
 \end{figure}
 
+\Needspace{8\baselineskip}
 Do these representation-level difficulties accompany poor planning?
 We group tasks by the correct entrance's distance rank: R1 means it is
 nearer, and R2 means it is farther away. We evaluate two planners,

@@ -1,0 +1,48 @@
+{
+  "reason": "Align copied Color aggregates with the SHA-verified final per-endpoint metrics. Original derivation of the earlier aggregate row is undocumented; final local metrics and W&B summary agree.",
+  "checkpoint_file_sha256": "9991c7f227cd20f40ac853bb7e690498bbaf5e3fdc4c8d21b953b01774cc4667",
+  "source_metrics_sha256": "46e6f55e605f497656649dfc00c11bd3855a74792facafdc73d339cfd1ac5fd5",
+  "exact_endpoint_means": {
+    "current_position_mae": 3.8276796177622896,
+    "current_position_r2": 0.9342183089216503,
+    "current_cue_mae": 27.39799994839938,
+    "current_cue_r2": 0.22413545195791357,
+    "predicted_position_mae": 3.658576643758966,
+    "predicted_position_r2": 0.9393589200834099,
+    "predicted_cue_mae": 27.57083140773973,
+    "predicted_cue_r2": 0.22608325010296004
+  },
+  "previous_rows": {
+    "spatial_primary_probes.csv": {
+      "current_position_mae": "3.828143",
+      "current_position_r2": "0.933736",
+      "current_cue_mae": "27.398205",
+      "current_cue_r2": "0.223784",
+      "predicted_position_mae": "3.658527",
+      "predicted_position_r2": "0.939359",
+      "predicted_cue_mae": "27.570998",
+      "predicted_cue_r2": "0.226306"
+    },
+    "short_paper_probe_results.csv": {
+      "current_position_mae": "3.828143",
+      "current_position_r2": "0.933736",
+      "current_cue_mae": "27.398205",
+      "current_cue_r2": "0.223784",
+      "predicted_position_mae": "3.658527",
+      "predicted_position_r2": "0.939359",
+      "predicted_cue_mae": "27.570998",
+      "predicted_cue_r2": "0.226306"
+    },
+    "short_paper_transition_diversity.csv": {
+      "current_position_mae": "3.828143",
+      "current_position_r2": "0.933736",
+      "current_cue_mae": "27.398205",
+      "current_cue_r2": "0.223784",
+      "predicted_position_mae": "3.658527",
+      "predicted_position_r2": "0.939359",
+      "predicted_cue_mae": "27.570998",
+      "predicted_cue_r2": "0.226306"
+    }
+  },
+  "printed_mae_2dp_and_r2_3dp_unchanged": true
+}

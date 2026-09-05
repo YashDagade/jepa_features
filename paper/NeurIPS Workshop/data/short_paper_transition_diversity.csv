@@ -1,5 +1,5 @@
 added_transition_windows_percent,current_cue_mae,current_cue_r2,predicted_cue_mae,predicted_cue_r2,current_position_mae,current_position_r2,predicted_position_mae,predicted_position_r2,relative_epoch_compute,seed,epoch,wandb_project,wandb_run_id
-0,27.398205,0.223784,27.570998,0.226306,3.828143,0.933736,3.658527,0.939359,1.00,3072,10,JEPA_Color,jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1
+0,27.398000,0.224135,27.570831,0.226083,3.827680,0.934218,3.658577,0.939359,1.00,3072,10,JEPA_Color,jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1
 10,27.615131,0.221723,27.393516,0.244286,4.285485,0.920037,4.042608,0.928075,1.10,3072,10,tunnel_transition_mix,tr2c-transition-mix-lewm-tr2-color-tmix10-s3072-r1
 50,28.053176,0.173982,27.649940,0.213373,4.959489,0.883747,4.554474,0.902011,1.50,3072,10,tunnel_transition_mix,tr2c-transition-mix-lewm-tr2-color-tmix50-s3072-r1
 100,27.386182,0.199847,27.172577,0.230501,5.522868,0.864350,4.993848,0.887864,2.00,3072,10,tunnel_transition_mix,tr2c-transition-mix-lewm-tr2-color-tmix100-s3072-r1

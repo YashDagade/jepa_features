@@ -86,7 +86,7 @@ the appendices; the main text identifies the LeWM adaptations in plain language.
 `appendix_evaluation.tex`, and `appendix_related_work.tex` contain the controls,
 protocols and interpretation, and literature discussion respectively.
 The main text ends on page four;
-references follow the conclusion and span pages four through six, with the
+references follow the conclusion and span pages five through six, with the
 appendix continuing below them. The complete PDF is 16 pages.
 
 Layout uses natural vertical spacing, keeps the planning paragraph together,
@@ -108,6 +108,10 @@ bytes. The current PDF is `main.pdf` (generated and ignored by Git).
 
 ## Evidence and completed follow-ups
 
+- `data/spatial_primary_probe_targets.csv` gives all individual endpoint MAE
+  and R² values for current and predicted states. Table 1 displays each current
+  endpoint separately, distinguishing central and destination rooms; the prose
+  explicitly labels four-endpoint means.
 - `data/spatial_primary_probes.csv`, `spatial_primary_planning.csv`, and
   `spatial_primary_provenance.csv` freeze the aligned main results and
   distinguish serialized checkpoint-file hashes from canonical state hashes.
