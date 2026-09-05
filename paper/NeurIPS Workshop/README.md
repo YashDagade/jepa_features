@@ -129,8 +129,13 @@ bytes. The current PDF is `main.pdf` (generated and ignored by Git).
 
 - `data/spatial_primary_probe_targets.csv` gives all individual endpoint MAE
   and R² values for current and predicted states. Table 1 displays each current
-  endpoint separately, distinguishing central and destination rooms; the prose
-  explicitly labels four-endpoint means.
+  endpoint separately, distinguishing central and destination rooms. Each entry
+  now pairs linear/MLP values, with dotted rules separating location and cue
+  targets. `data/table1_linear_mlp_endpoints.csv` retains the unrounded values
+  and MLP seed variability; its audit verifies every original linear entry.
+  Table 1 preserves the 640-fit linear protocol and identifies the MLP
+  512-fit/128-validation protocol; the appendix retains a matched-budget
+  comparison in prose.
 - `data/spatial_primary_probes.csv`, `spatial_primary_planning.csv`, and
   `spatial_primary_provenance.csv` freeze the aligned main results and
   distinguish serialized checkpoint-file hashes from canonical state hashes.
@@ -188,7 +193,7 @@ validation after epoch 10 training and align with those final model weights.
 
 Both follow-ups are complete on main; the anonymous code branch and earlier
 code ZIP remain a separate snapshot. Updated PDF and LaTeX upload files are
-in `runs/pta_feedback/figure_titles/submission/`. The main paper remains four pages.
+in `runs/pta_feedback/paired_probes/submission/`. The main paper remains four pages.
 
 A validation-selected two-hidden-layer MLP uses the same frozen checkpoints
 and endpoint targets as the main probes. Across Color/Shape/Palette, current

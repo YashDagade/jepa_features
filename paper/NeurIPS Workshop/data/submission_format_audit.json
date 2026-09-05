@@ -24,14 +24,14 @@
   "body_and_table_font": "official normal 10 TeX points",
   "no_overfull_or_undefined_references": true,
   "author_metadata_empty": true,
-  "pdf_bytes": 2650273,
-  "pdf_sha256": "ca82eb8d2d076e250c74c37784a24c7d732dcb1481bfbaac0a53d17cdd7872d7",
-  "source_archive_sha256": "86c73ace9ab16b1d18fe2dc66afbeb11e20ed30481cdd7895e1dd037a59f9c8c",
+  "pdf_bytes": 2654221,
+  "pdf_sha256": "7b2ed645c52d9c4f42004041ae95e2af3c2a5d0805d6b6943bfdfa477d3dc96e",
+  "source_archive_sha256": "94d2a9a6527ecf1ba683d54a086473f6005cb6d6eecc14cd15e383a9f639f671",
   "source_files": {
     "Makefile": "66b7af929a52ca3a705d28108ea5e8a2728cab43a94f97fadfcdef5d78125af8",
     "Tectonic.toml": "a72d0c12eb5b9d5d99750ce2cc8b65d7bdb8d8a2938003b4e36339d883638057",
     "appendix_evaluation.tex": "e3335ea86ffa42d5b159f0bcb4bcdd23040efd01f4a03a2aed5cc0a3e701416f",
-    "appendix_followup_diagnostics.tex": "04ddecd720138430351a4ccab91aeab5c721b7a730c0b40a3d5c4dbc8e145606",
+    "appendix_followup_diagnostics.tex": "a9d38b47356614726ade3aeb0fbd4f1d9a6a02f2f11d8a34d9c986cd25eeb284",
     "appendix_readout_controls.tex": "add0642dc6eea2b37e0c6f9031faca149b2c0a4e63f9addec3393ebea11f4c6f",
     "appendix_related_work.tex": "fcc12cc06524a5294e5460fef5c2f2ea626581b10e8a611a42247d2cab76be50",
     "figures/lewm_cls_cue_decoders.pdf": "83a5ac4188d6157942bdcbb505762b1904c2b65cf906b85a9d9896505ad854c1",
@@ -47,7 +47,7 @@
     "figures/lewm_transition_diversity_decoder.pdf": "db09f8665ebd9f33f04aa40fd2e4576c2798a3828ea183f291e19ab3ffc885fa",
     "figures/tr2_color_mae_scale.pdf": "31a531e98a1a6bba232fcb845616c6b128af9663995af964a8b5fbad57847bf4",
     "figures/tunnel_variants_and_rank.pdf": "ecd3e9558a55c7c3008943afdbbc72fe05b80928bf98f5e563ec8dc85781f420",
-    "main.tex": "566f7dd33939eed784e97e1e223a198829731c97b3a7a9cdec53e3be4f97624a",
+    "main.tex": "0980cf1acb297cfb330b18737ac5b10d6e127aabcdf372352c3a929eb34b641b",
     "neurips_2026.sty": "c3fc2894e83d2517ca18b66741d6c595986d97957dc08ec08bb2125a7ec4555a",
     "references.bib": "528f0f9ddc94bd985c797526390fb0a112edf634fe2895c64417b9e076f28889"
   },
@@ -135,7 +135,7 @@
   "submission_sent": false,
   "remaining_form_fields": "Author profiles/order and author-side sharing/release/license confirmations are not supplied or accepted by this workflow.",
   "build_warning": "Vendored lineno.sty:296 invalid UTF-8 warning only; no PDF text replacement characters detected.",
-  "feedback_revision": "Removed embedded figure titles, subtitles and caption-like prose throughout; retained condition labels and original data; September 5, 2026",
-  "upload_artifact_directory": "artifact://pta_feedback/figure_titles/submission",
+  "feedback_revision": "Table 1 pairs original linear and mean MLP endpoint metrics with dotted location/cue separators; redundant nonlinear appendix table removed; September 5, 2026",
+  "upload_artifact_directory": "artifact://pta_feedback/paired_probes/submission",
   "prior_font_repairs_apply_to_existing_figures": true
 }

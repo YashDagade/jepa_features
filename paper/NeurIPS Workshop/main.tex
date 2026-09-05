@@ -8,6 +8,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
+\usepackage{arydshln}
 \usepackage{float}
 \usepackage{placeins}
 \usepackage{needspace}
@@ -108,52 +109,55 @@ explain these choices and compare them with the native model.
 
 \section{LeWM learns locations more reliably than cues}
 
-We freeze LeWM and fit linear probes to predict the four tunnel endpoints.
-One set identifies endpoints by top/bottom position. The other identifies
-them by color or shape, which requires associating each coordinate with its
-cue. Mean absolute error (MAE) measures pixel error. $R^2$ measures the
-fraction of coordinate variance explained by the probe.
+We freeze LeWM and fit linear and MLP probes to recover tunnel coordinates.
+Location targets index endpoints by top/bottom position; cue targets index
+them by color or shape. Mean absolute error (MAE) measures pixel error.
+$R^2$ measures the fraction of coordinate variance explained.
 
 \begin{table}[!htbp]
 \centering
-\caption{\textbf{The location--cue gap holds across individual endpoints.}
-MAE (pixels) and $R^2$ from frozen representations, averaging $x/y$ scores
-for each endpoint. Top/bottom are ordered independently in the central
-room and destination rooms; same-cue rows identify paired endpoints.}
+\caption{\textbf{Linear and MLP probes recover locations more accurately than cues.}
+Entries are linear/MLP MAE (pixels) and $R^2$, averaged over $x/y$;
+MLP values average three fits. Top/bottom are ordered within each room
+group; cue rows identify paired endpoints. Both use the same test episodes,
+with 640/512 fit episodes (Appendix~\ref{app:nonlinear}).}
 \label{tab:probes}
 \renewcommand{\arraystretch}{1.10}
-\setlength{\tabcolsep}{4pt}
+\setlength{\tabcolsep}{3pt}
 \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}llrrrr@{}}
 \toprule
  & & \multicolumn{2}{c}{Central room} & \multicolumn{2}{c}{Destination rooms} \\
 \cmidrule(lr){3-4}\cmidrule(l){5-6}
-Variant & Endpoint label & MAE $\downarrow$ & $R^2\uparrow$ & MAE $\downarrow$ & $R^2\uparrow$ \\
+Variant & Endpoint & MAE $\downarrow$ & $R^2\uparrow$ & MAE $\downarrow$ & $R^2\uparrow$ \\
 \midrule
-Color & Top & 4.63 & .919 & 2.72 & .960 \\
- & Bottom & 5.14 & .900 & 2.82 & .958 \\
- & Green & 25.05 & .256 & 29.81 & .180 \\
- & Orange & 25.01 & .289 & 29.72 & .172 \\
+Color & Top & \curpred{4.63}{6.14} & \curpred{.919}{.851} & \curpred{2.72}{3.82} & \curpred{.960}{.925} \\
+ & Bottom & \curpred{5.14}{6.34} & \curpred{.900}{.844} & \curpred{2.82}{4.06} & \curpred{.958}{.919} \\
+\cdashline{2-6}[.5pt/2pt]
+ & Green & \curpred{25.05}{25.43} & \curpred{.256}{.275} & \curpred{29.81}{29.47} & \curpred{.180}{.257} \\
+ & Orange & \curpred{25.01}{25.40} & \curpred{.289}{.318} & \curpred{29.72}{29.72} & \curpred{.172}{.240} \\
 \midrule
-Shape & Top & 5.88 & .868 & 3.19 & .941 \\
- & Bottom & 6.06 & .872 & 3.14 & .948 \\
- & Triangle & 25.18 & .229 & 30.75 & .144 \\
- & Diamond & 25.80 & .253 & 30.47 & .184 \\
+Shape & Top & \curpred{5.88}{7.27} & \curpred{.868}{.803} & \curpred{3.19}{4.32} & \curpred{.941}{.905} \\
+ & Bottom & \curpred{6.06}{7.28} & \curpred{.872}{.809} & \curpred{3.14}{4.16} & \curpred{.948}{.911} \\
+\cdashline{2-6}[.5pt/2pt]
+ & Triangle & \curpred{25.18}{25.36} & \curpred{.229}{.284} & \curpred{30.75}{29.91} & \curpred{.144}{.207} \\
+ & Diamond & \curpred{25.80}{25.76} & \curpred{.253}{.310} & \curpred{30.47}{29.95} & \curpred{.184}{.241} \\
 \midrule
-Palette & Top & 4.79 & .913 & 2.63 & .962 \\
- & Bottom & 5.34 & .893 & 2.96 & .952 \\
- & Green & 24.93 & .262 & 29.06 & .217 \\
- & Blue & 24.95 & .315 & 28.88 & .239 \\
+Palette & Top & \curpred{4.79}{6.56} & \curpred{.913}{.830} & \curpred{2.63}{3.68} & \curpred{.962}{.929} \\
+ & Bottom & \curpred{5.34}{7.00} & \curpred{.893}{.821} & \curpred{2.96}{4.04} & \curpred{.952}{.915} \\
+\cdashline{2-6}[.5pt/2pt]
+ & Green & \curpred{24.93}{25.80} & \curpred{.262}{.265} & \curpred{29.06}{30.00} & \curpred{.217}{.211} \\
+ & Blue & \curpred{24.95}{25.89} & \curpred{.315}{.303} & \curpred{28.88}{29.44} & \curpred{.239}{.257} \\
 \bottomrule
 \end{tabular*}
 \end{table}
 
-On Color, location probes achieve a mean MAE of 3.83 pixels and $R^2=.934$.
+On Color, linear location probes achieve a mean MAE of 3.83 pixels and $R^2=.934$.
 Cue probes achieve 27.40 pixels and $R^2=.224$ (Table~\ref{tab:probes}).
 Cue MAE is only modestly below the constant predictor's 31.19 pixels.
 Shape and Palette show the same ordering.
 
 \Needspace{5\baselineskip}
-A small neural-network probe also leaves a wide gap (Appendix~\ref{app:nonlinear}). These results measure
+The MLP also leaves a wide gap (Table~\ref{tab:probes}). These results measure
 how easily the coordinates can be recovered. They do not establish that
 all cue information is absent. Appendices~\ref{app:ablations}--\ref{app:matchedablations}
 report the readout and objective controls.

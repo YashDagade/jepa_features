@@ -1,0 +1,18 @@
+{
+  "source": "data/lewm_nonlinear_probe_endpoints.csv",
+  "source_sha256": "e59539f9511e0f93563f50e95bc76636f676739fc6a24c8cadc0b3afb031be76",
+  "state": "current_projected",
+  "linear_method": "ridge_historical_fixed10_fit640",
+  "mlp_methods": [
+    "mlp_seed3072",
+    "mlp_seed3073",
+    "mlp_seed3074"
+  ],
+  "aggregation": "Arithmetic mean across three MLP fits per endpoint and metric; sample SD retained in CSV.",
+  "comparison_contract": "Same checkpoints, frozen states, endpoint targets and 256 test episodes; linear fit640 alpha10 versus MLP fit512 with128 validation. Matched-budget ridge comparison remains in appendix prose.",
+  "rows": 24,
+  "original_table1_linear_values_unchanged": true,
+  "four_endpoint_means_match_audited_summary": true,
+  "table_data": "data/table1_linear_mlp_endpoints.csv",
+  "table_data_sha256": "5347b6a0905fe7298e216a43abe1d865b737f6450021d2547b67389a83a98623"
+}
