@@ -192,24 +192,35 @@ attributed to these CLS reconstructions.
 \end{figure}
 
 \paragraph{Planning is worse when the correct portal is farther away.}
-Separate historical Color and Shape CLS+IDM checkpoints provide planning
-context, with 25 oracle-solvable episodes per rank. Rank is the correct portal's
-position in a deterministic geometry-only search order, computed before
-planning: R1 is the nearer portal and R2 is the other one. Both CEM and
-gradient descent (GD) minimize terminal latent MSE over five latent steps
-(25 primitive actions). With the CLS Color checkpoint, CEM succeeds on
-17/25 R1 episodes (68\%) but 2/25 R2 episodes (8\%); GD succeeds on 13/25
-(52\%) and 7/25 (28\%). The completed Shape CLS run also has lower R2
-success: CEM obtains 20/25 versus 7/25 (80\%/28\%), and GD 12/25 versus 8/25
-(48\%/32\%). These are separate supporting runs, not a paired comparison
-of cue renderings.
+Table~\ref{tab:rankplanning} groups planning success by the correct portal's
+geometry-only search rank: R1 is nearer and R2 is the other portal. Both
+CEM and gradient descent (GD) perform worse on R2 in separate historical
+Color and Shape CLS+IDM runs. Each uses 25 oracle-solvable episodes per rank
+and a five-step latent horizon (25 primitive actions). These supporting
+checkpoints differ from the new matched probe/decoder models.
 
-The small, one-seed samples are consistent with proximity-biased routing,
-but rank also changes route difficulty. Color planning uses outline markers
-rather than the filled markers in the primary probe/decoder data; Shape uses
-shape markers. Optimized actions can also exceed bounds before execution
-clips them. Planning therefore supplies behavioral context, not a causal
-test of cue loss (Appendix~\ref{app:planning}).
+\begin{table}[t]
+\centering
+\caption{\textbf{Rank-based planning success.} Successes/25 episodes (percent)
+for historical CLS+IDM checkpoints, epoch 10, seed 3072. R1 is nearer; R2 is
+the other portal. Cue variants are separate supporting runs.}
+\label{tab:rankplanning}
+\small
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lcccc@{}}
+\toprule
+Cue variant & CEM R1 & CEM R2 & GD R1 & GD R2 \\
+\midrule
+Color & 17/25 (68\%) & 2/25 (8\%) & 13/25 (52\%) & 7/25 (28\%) \\
+Shape & 20/25 (80\%) & 7/25 (28\%) & 12/25 (48\%) & 8/25 (32\%) \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+Rank also changes route difficulty, and Color planning uses outline rather
+than filled markers. Optimized actions can exceed bounds before execution
+clips them. These small, one-seed samples provide behavioral context, not a
+causal test of cue loss (Appendix~\ref{app:planning}).
 
 \paragraph{Static goal comparisons reveal broad similarity.}
 We move the agent over a $20\times20$ lattice while holding layout and cues
@@ -246,20 +257,13 @@ an average latent prediction objective. The counts motivate the hypothesis;
 they do not establish why the learned state has this structure.
 
 \paragraph{An exposure pilot gives mixed evidence.}
-An earlier pilot adds transition-centered windows to a spatial-readout
-Color training set, also with IDM 3.125, in
-amounts equal to 10\%, 50\%, or 100\% of its original windows.
-Selected decoder outputs show more separated colors
-(Figure~\ref{fig:diversity}), but these are different frames, so saturation
-alone does not demonstrate correct recovered identity. Quantitatively,
-current-state cue $R^2$ is .224, .222, .174, and .200 at 0/10/50/100\%
-additional windows; predicted-state scores are .226, .244, .213, and .231.
-Thus the pilot does not show consistent probe recovery. Holding epochs fixed
-also increases training work by approximately $1.1\times$, $1.5\times$, and
-$2\times$. A controlled test must match optimizer updates and evaluate cue
-identity and planning on a shared held-out set.
-
-
+An earlier spatial-readout pilot adds transition-centered windows equal to
+10\%, 50\%, or 100\% of the Color training set, also with IDM 3.125.
+Selected decoder outputs show stronger color separation (Figure~\ref{fig:diversity}),
+but frames differ and cue $R^2$ does not improve consistently
+(Appendix~\ref{app:quantitative}). Fixed epochs also increase compute by
+$1.1\times$, $1.5\times$, and $2\times$. A controlled test must match updates
+and evaluate cue identity and planning on a shared held-out set.
 
 \paragraph{Scope and next steps.}
 This is a one-seed study of one model and environment family. IDM, decoder
@@ -576,6 +580,7 @@ These are static cosine diagnostics, not action-conditioned planning costs.}
 
 \clearpage
 \section{Additional quantitative context}
+\label{app:quantitative}
 
 The historical spatial-readout decoder Color audit detects cue-marker support in original frames, excludes
 agent overlap, and evaluates matched decoded pixels using nearest input-color
@@ -591,7 +596,10 @@ and 2.9\% separation retention for the IDM-0 run; it has no episode-level
 confidence interval and is treated as descriptive.  Shape decoder media have
 not received a quantitative identity audit.
 
-In the transition-window pilot, adding 10\%, 50\%, and 100\% windows increases
+For the transition-window pilot, current-state cue $R^2$ is .224, .222, .174,
+and .200 at 0/10/50/100\% additional windows; predicted-state scores are
+.226, .244, .213, and .231. Thus the pilot does not show consistent probe
+recovery. Adding 10\%, 50\%, and 100\% windows increases
 epoch compute by roughly $1.10\times$, $1.50\times$, and $2.00\times$.
 Four-endpoint cue MAE remains in the 27.2--28.1 px range and does not improve
 monotonically.  This is why Figure~\ref{fig:diversity} is presented as a visual
