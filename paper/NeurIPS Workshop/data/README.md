@@ -359,3 +359,9 @@ All three variants and all 16 evaluation geometries enter the curves;
 the extra illustration geometry is excluded. Distances and percentile
 bands are computed in the same units and with the same event alignment
 as the full appendix plot.
+
+
+`tunnel_rank_illustration_provenance.json` specifies the filled-marker R2
+example in Figure 1(d). Its ranking is verified from the true start-to-portal
+distances; the goal star uses the sampled target coordinates. Selection uses
+geometry alone, and the other three panels remain pixel-identical.

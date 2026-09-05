@@ -32,6 +32,11 @@ remain archived artifacts and are no longer included by the manuscript.
 - `tunnel_variants_and_rank` shows real standard Color, Shape, and green/blue
   TR2 frames plus an oracle-certified TR2 rank-2 scenario.  The numbered
   portal order is computed from the evaluation manifest, not from the model.
+  Panel (d) uses filled 18-pixel markers from case `tr2-seed-852040`, with
+  R1/R2 labels, approach arrows and a star at the sampled goal. The example
+  is selected for separated portal geometry; panels (a–c) are unchanged.
+  `data/tunnel_rank_illustration_provenance.json` records the exact scenario,
+  distances, marker style and rendering checks.
 - `lewm_cls_cue_decoders` shows all six logged epoch-10 validation clips
   (zero-based frame 2) for Color, Shape, and green/blue under CLS + IDM 3.125.
   All three models use source `c4a2df269e16`, seed 3072, and the matched

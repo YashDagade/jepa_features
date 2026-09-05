@@ -17,16 +17,16 @@
   ],
   "font_types": {
     "Type1": 12,
-    "Type0": 20
+    "Type0": 21
   },
   "all_fonts_embedded": true,
   "type3_fonts": 0,
   "body_and_table_font": "official normal 10 TeX points",
   "no_overfull_or_undefined_references": true,
   "author_metadata_empty": true,
-  "pdf_bytes": 2632391,
-  "pdf_sha256": "1a6345655cd9a9bea25a213aba50fc37916b511d6624f60210ce26572517bb9a",
-  "source_archive_sha256": "3c9f98486b60eaada339f14bac1c4a0157ca7a39a6f418bf7e54339ec1090b1b",
+  "pdf_bytes": 2638191,
+  "pdf_sha256": "267379bb734d427af2c4a2e7ac862ab8a3946777c038261c838e9e68f228750a",
+  "source_archive_sha256": "41c7fc84fb76bc3f5c04a3a5cc1fa12fe38bbbf9a74907252d529a32f4a9f337",
   "source_files": {
     "Makefile": "66b7af929a52ca3a705d28108ea5e8a2728cab43a94f97fadfcdef5d78125af8",
     "Tectonic.toml": "a72d0c12eb5b9d5d99750ce2cc8b65d7bdb8d8a2938003b4e36339d883638057",
@@ -45,7 +45,7 @@
     "figures/lewm_tr2_idm_readout_decoders.pdf": "3d2fff99db1f0f24640ed9b3f307997d60dd11fc5bb341b0ca68498361af2e3a",
     "figures/lewm_transition_diversity_decoder.pdf": "db09f8665ebd9f33f04aa40fd2e4576c2798a3828ea183f291e19ab3ffc885fa",
     "figures/tr2_color_mae_scale.pdf": "208238ab5f67da29e6e8b1a645d7d1da07f89ecd58225914a87b416dbc037193",
-    "figures/tunnel_variants_and_rank.pdf": "4331d26806dc31cfa9838dd679a1401b5df8ebc96ec823366fe123d1a8c9c8ab",
+    "figures/tunnel_variants_and_rank.pdf": "d51e65c4dd703cfad9eb04bbbc7681b7ba5fd21791ba8297f88055d8429ce8f5",
     "main.tex": "09ee5b284b1be739e967f08a62257059271d71c602035d6faf41aa40cd0d1340",
     "neurips_2026.sty": "c3fc2894e83d2517ca18b66741d6c595986d97957dc08ec08bb2125a7ec4555a",
     "references.bib": "528f0f9ddc94bd985c797526390fb0a112edf634fe2895c64417b9e076f28889"
@@ -134,7 +134,7 @@
   "submission_sent": false,
   "remaining_form_fields": "Author profiles/order and author-side sharing/release/license confirmations are not supplied or accepted by this workflow.",
   "build_warning": "Vendored lineno.sty:296 invalid UTF-8 warning only; no PDF text replacement characters detected.",
-  "feedback_revision": "Randomized hub-to-leaf goal protocol and main portal-swap figure; September 5, 2026",
-  "upload_artifact_directory": "artifact://pta_feedback/presentation/submission",
+  "feedback_revision": "Filled-marker rank illustration with clearer R1/R2 and goal labels; September 5, 2026",
+  "upload_artifact_directory": "artifact://pta_feedback/rank_panel/submission",
   "prior_font_repairs_apply_to_existing_figures": true
 }
