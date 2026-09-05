@@ -31,6 +31,18 @@ are under ignored `runs/lewm-spatial-confirmation-v1/`; no unfinished result
 is included in the manuscript. This is a launch snapshot, not a live status
 ledger. Existing CLS job IDs are 16970286–16970291.
 
+The requested Palette extension is being prepared for both main figures and
+both main tables. Matching-recipe Palette training remains job **16981835**;
+its final probes and decoder media are produced by that run. Final static-map
+job **16985126** and CEM/GD planning job **16985224** depend on its successful
+completion. These are submission records, not live completion claims. The
+planning job also extracts verified final-epoch decoder images. Staging tools
+and compatibility checks are under ignored
+`runs/pta_revision_audit/palette_continuity/`. The PDF retains the completed
+Color/Shape results until Palette's final results are checked and the claims
+are revised accordingly. Palette uses a later source revision; the historical
+Color outline-rendering difference also remains a comparison limitation.
+
 The main energy figure changes the goal between both destination rooms for
 the exact primary Color and Shape checkpoints. A third column shows a
 geodesic navigation reference through the true portal pairings, including
