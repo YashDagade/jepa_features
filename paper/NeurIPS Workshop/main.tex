@@ -229,13 +229,15 @@ in each row has 16 cases, the second 34. The full cue-by-rank breakdown
 is in Appendix~\ref{app:planning}.}
 \label{tab:rankplanning}
 \renewcommand{\arraystretch}{1.12}
-\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lccl@{}}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lcccc@{}}
 \toprule
-Variant & R1 $\uparrow$ & R2 $\uparrow$ & Cue success $\uparrow$ \\
+Variant & \multicolumn{2}{c}{Cue-based performance $\uparrow$} & \multicolumn{2}{c}{Rank-based performance $\uparrow$} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+ & & & R1 & R2 \\
 \midrule
-Color & 80/64 & 16/52 & \shortstack[l]{Green: 56.3/62.5 \\ Orange: 44.1/55.9} \\[3pt]
-Shape & 88/76 & 24/40 & \shortstack[l]{Triangle: 68.8/56.3 \\ Diamond: 50.0/58.8} \\[3pt]
-Palette & 80/84 & 28/32 & \shortstack[l]{Green: 56.3/75.0 \\ Blue: 52.9/50.0} \\[3pt]
+Color & \shortstack{Green \\ 56.3/62.5} & \shortstack{Orange \\ 44.1/55.9} & 80/64 & 16/52 \\[4pt]
+Shape & \shortstack{Triangle \\ 68.8/56.3} & \shortstack{Diamond \\ 50.0/58.8} & 88/76 & 24/40 \\[4pt]
+Palette & \shortstack{Green \\ 56.3/75.0} & \shortstack{Blue \\ 52.9/50.0} & 80/84 & 28/32 \\
 \bottomrule
 \end{tabular*}
 \end{table}

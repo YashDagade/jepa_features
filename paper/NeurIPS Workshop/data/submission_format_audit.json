@@ -24,9 +24,9 @@
   "body_and_table_font": "official normal 10 TeX points",
   "no_overfull_or_undefined_references": true,
   "author_metadata_empty": true,
-  "pdf_bytes": 2655935,
-  "pdf_sha256": "d68706c0faf4f32e079c38176c74076677f7ae40f6fb0a135bab4c7474a1ff7d",
-  "source_archive_sha256": "750922fdc1525a37a0a93d4e80f46ad543e30de9d491bb5a58b9ed032039fae9",
+  "pdf_bytes": 2656062,
+  "pdf_sha256": "35688667e87b3af8c14e89e683ae8d064a8103914201c62508a5a1f2de563afa",
+  "source_archive_sha256": "d82ad20d2f46b717c2c3b4f4fee45e887fa46793b2743bd268170ec947c4550f",
   "source_files": {
     "Makefile": "66b7af929a52ca3a705d28108ea5e8a2728cab43a94f97fadfcdef5d78125af8",
     "Tectonic.toml": "a72d0c12eb5b9d5d99750ce2cc8b65d7bdb8d8a2938003b4e36339d883638057",
@@ -46,7 +46,7 @@
     "figures/lewm_transition_diversity_decoder.pdf": "db09f8665ebd9f33f04aa40fd2e4576c2798a3828ea183f291e19ab3ffc885fa",
     "figures/tr2_color_mae_scale.pdf": "208238ab5f67da29e6e8b1a645d7d1da07f89ecd58225914a87b416dbc037193",
     "figures/tunnel_variants_and_rank.pdf": "ecd3e9558a55c7c3008943afdbbc72fe05b80928bf98f5e563ec8dc85781f420",
-    "main.tex": "29dbd846e54311cea7fd03076301071545f3aaac933a3375d2356ca050b0a8a2",
+    "main.tex": "7a296ba7619d1d11babb0a7efc7c7916970f4a583c6fc6765d66e22d218a2a99",
     "neurips_2026.sty": "c3fc2894e83d2517ca18b66741d6c595986d97957dc08ec08bb2125a7ec4555a",
     "references.bib": "528f0f9ddc94bd985c797526390fb0a112edf634fe2895c64417b9e076f28889"
   },
@@ -134,7 +134,7 @@
   "submission_sent": false,
   "remaining_form_fields": "Author profiles/order and author-side sharing/release/license confirmations are not supplied or accepted by this workflow.",
   "build_warning": "Vendored lineno.sty:296 invalid UTF-8 warning only; no PDF text replacement characters detected.",
-  "feedback_revision": "Side-by-side rank and cue success with CEM/GD pairs; full subgroup breakdown retained in appendix; September 5, 2026",
-  "upload_artifact_directory": "artifact://pta_feedback/cue_rank_table/submission",
+  "feedback_revision": "Grouped cue-based and rank-based columns matching the requested Table 2 layout; September 5, 2026",
+  "upload_artifact_directory": "artifact://pta_feedback/grouped_planning_table/submission",
   "prior_font_repairs_apply_to_existing_figures": true
 }

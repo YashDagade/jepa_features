@@ -188,7 +188,7 @@ validation after epoch 10 training and align with those final model weights.
 
 Both follow-ups are complete on main; the anonymous code branch and earlier
 code ZIP remain a separate snapshot. Updated PDF and LaTeX upload files are
-in `runs/pta_feedback/cue_rank_table/submission/`. The main paper remains four pages.
+in `runs/pta_feedback/grouped_planning_table/submission/`. The main paper remains four pages.
 
 A validation-selected two-hidden-layer MLP uses the same frozen checkpoints
 and endpoint targets as the main probes. Across Color/Shape/Palette, current
@@ -226,8 +226,9 @@ remaining alternative explanation; the full controls remain in Appendix I.
 
 ## Planning by required cue and first entrance
 
-Table 2 contrasts overall R1 and R2 success with pooled success for each
-required cue, in one row per variant. Every cell reports CEM/GD. The appendix
+Table 2 uses one row per variant and two grouped headers: cue-based
+performance (two named cue columns) followed by rank-based performance
+(R1 and R2). Every value reports CEM/GD task success. The appendix
 retains the complete cue-by-rank breakdown and case counts. All 300 episode records were joined
 to their exact hashed manifests and checked against the original rank totals.
 Every cue/solver has lower observed success on R2. Pooled cue success spans
