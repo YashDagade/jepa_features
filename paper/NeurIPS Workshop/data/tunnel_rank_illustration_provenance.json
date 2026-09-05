@@ -84,5 +84,10 @@
     499.61724853515625,
     121.62212371826172
   ],
-  "output_pdf_sha256": "d51e65c4dd703cfad9eb04bbbc7681b7ba5fd21791ba8297f88055d8429ce8f5"
+  "output_pdf_sha256": "ecd3e9558a55c7c3008943afdbbc72fe05b80928bf98f5e563ec8dc85781f420",
+  "variant_labels": [
+    "Color",
+    "Shape",
+    "Palette"
+  ]
 }

@@ -18,10 +18,9 @@
 \usepackage{hyperref}
 
 \newcommand{\lewm}{LeWM}
-\newcommand{\trtwo}{TR2}
 \newcommand{\curpred}[2]{#1\,/\,#2}
 
-\title{When LeWM Misses the Color:\\Cue Binding in Tunnel Rooms}
+\title{When LeWM Misses the Color:\\Cue Binding in Tunnel Room}
 \author{Anonymous Authors}
 
 \begin{document}
@@ -32,7 +31,7 @@
 
 \begin{abstract}
 A world model can learn where an object is without learning the detail that
-makes it useful for action. We introduce Tunnel Rooms Color, a navigation
+makes it useful for action. We introduce Tunnel Room Color, a navigation
 benchmark in which matching tunnel colors determine teleportation
 destinations. Reaching an image-specified goal by the direct route requires
 using color to choose the correct tunnel. We find that an adapted
@@ -45,7 +44,7 @@ low cost near both candidate tunnels in an illustrated scene. Planning is
 also difficult: success on the farther correct tunnel is 16--52\% across
 Color, Shape, and a green/blue palette. Controlled cue swaps change the
 representation, yet predicted trajectories understate the separation between
-the resulting destinations. Tunnel Rooms thus tests how visible distinctions
+the resulting destinations. Tunnel Room thus tests how visible distinctions
 become useful for predicting and choosing routes.
 \end{abstract}
 
@@ -61,7 +60,7 @@ supporting planning from learned dynamics
 detail can determine which action reaches a goal. Useful abstraction must
 preserve that distinction.
 
-\emph{Tunnel Rooms Color} isolates this problem. Matching colors determine
+\emph{Tunnel Room Color} isolates this problem. Matching colors determine
 which of two tunnels reaches the goal room, so accurate localization need
 not imply correct route selection. Shape and alternate-palette variants
 test whether the difficulty depends on the cue rendering.
@@ -72,7 +71,7 @@ difficulty recovering cue-dependent destinations. Controlled swaps further
 separate sensitivity to changed cues from prediction of their consequences.
 The cause of this gap remains open.
 
-\section{Tunnel Rooms: the cue determines the destination}
+\section{Tunnel Room: the cue determines the destination}
 
 Two entrances in a central room (hub) connect to separate destination rooms
 (leaves). Matching cues determine the pairings: entering a green tunnel
@@ -241,7 +240,7 @@ Palette & 80\% & 28\% & 84\% & 32\% \\
 \Needspace{10\baselineskip}
 \section{Discussion and conclusion}
 
-Tunnel Rooms separates locating an entrance from knowing where it leads.
+Tunnel Room separates locating an entrance from knowing where it leads.
 LeWM recovers locations more reliably than cues, detects cue swaps but
 underpredicts their consequences, and plans less successfully when the
 correct entrance is farther away.

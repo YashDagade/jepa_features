@@ -475,5 +475,7 @@
       "idm_weight": 3.125,
       "decoded_frame_sha256": "af650ea034cce3f889449a903eafd40105cddeb77996a6feb2805c59e54cfdf6"
     }
-  ]
+  ],
+  "display_name": "Tunnel Room Color",
+  "current_figure_sha256": "9caecfb460db78fea44e68648975b923cb7eae19722c0294209136faebd516c8"
 }

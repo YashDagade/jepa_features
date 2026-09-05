@@ -95,7 +95,7 @@ Files used by the LeWM-focused revision:
 - `short_paper_decoder_sources.csv` maps every source image in the active
   decoder figures to a W&B run, source revision, tracked file, hash, and claim
   boundary.
-- `short_paper_protocol.csv` freezes the active TR2 trajectory-collection,
+- `short_paper_protocol.csv` freezes the active Tunnel Room trajectory-collection,
   temporal-sampling, and rank-planning settings.  In particular, collector
   action repetition is separated from the five distinct primitive actions in
   each model action block.
@@ -136,7 +136,7 @@ Files used by the LeWM-focused revision:
 - `lewm_planning_protocols.csv` records source commits, checkpoint epochs,
   manifest hashes, and the within-pair matching scope. Color uses exact shared
   manifests. Shape uses condition-specific manifests with matched case
-  identifiers and geometry. The TR2 commit comes from archived W&B metadata;
+  identifiers and geometry. The Tunnel Room commit comes from archived W&B metadata;
   its evaluator is identical to the later TR3 revision.
 - `lewm_action_margin_cases.csv` contains the compact, case-level result from
   the frozen correct-versus-wrong portal-route audit. It reports the native
@@ -285,7 +285,7 @@ physics methods also agree by AST.
 ## Historical decoder factorial and timing
 
 `lewm_tr2_idm_readout_decoder_frames.npz` retains one input plus twelve
-reconstructions from the TR2 CLS/spatial × six-IDM-weight sweep. The companion
+reconstructions from the Tunnel Room CLS/spatial × six-IDM-weight sweep. The companion
 provenance JSON records every source video hash, exact frame and crop,
 configuration, run, source revision, and timing limitation. The stored final
 checkpoint hashes identify the same runs, not the weights that produced

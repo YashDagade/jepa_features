@@ -30,7 +30,7 @@ remain archived artifacts and are no longer included by the manuscript.
 ## Retained task and CLS figures
 
 - `tunnel_variants_and_rank` shows real standard Color, Shape, and green/blue
-  TR2 frames plus an oracle-certified TR2 rank-2 scenario.  The numbered
+  Tunnel Room frames plus an oracle-certified Tunnel Room rank-2 scenario.  The numbered
   portal order is computed from the evaluation manifest, not from the model.
   Panel (d) uses filled 18-pixel markers from case `tr2-seed-852040`, with
   R1/R2 labels, approach arrows and a star at the sampled goal. The example
@@ -90,7 +90,7 @@ main argument. Active appendix landscapes are described separately below.
 
 ## Active appendix figure
 
-- `tr2_color_mae_scale` places per-coordinate MAE on an actual 224x224 TR2
+- `tr2_color_mae_scale` places per-coordinate MAE on an actual 224x224 Tunnel Room
   Color frame. It visualizes exact L1 contours at 4, 15, 27, and 30 pixels. The
   caption and paper use task-specific null MAE and R2 rather than defining a
   universal pixel cutoff.
@@ -207,9 +207,9 @@ provenance. The builder is ignored
 `runs/pta_revision_audit/plot_geodesic_comparison.py`. This is a navigation
 reference; latent energies need not equal path length.
 
-## Historical TR2 readout and IDM sweep
+## Historical Tunnel Room readout and IDM sweep
 
-`lewm_tr2_idm_readout_decoders.pdf/png` presents six selected TR2 conditions
+`lewm_tr2_idm_readout_decoders.pdf/png` presents six selected Tunnel Room conditions
 from the archived factorial: IDM weights 0, .125, and 3.125, with CLS and
 spatial rows and a shared input. All panels use frame 0 of the first montage clip. Four 30×30 cue
 crops use coordinates derived only from that input. The underlying videos

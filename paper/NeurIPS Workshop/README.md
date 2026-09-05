@@ -1,6 +1,6 @@
 # PTA short paper
 
-The anonymous manuscript is **When LeWM Misses the Color: Cue Binding in Tunnel Rooms**. It introduces the controlled routing dataset and documents
+The anonymous manuscript is **When LeWM Misses the Color: Cue Binding in Tunnel Room**. It introduces the controlled routing dataset and documents
 a localization–cue-binding gap through affine probes (MAE and R²), detached
 pixel decoders, static goal-distance maps, and rank-based planning. R² belongs
 to coordinate probes, not pixel reconstructions.
@@ -170,7 +170,7 @@ contains superseded drafts; neither defines the short paper's current scope.
 
 ## Readout and IDM decoder sweep
 
-The appendix displays six TR2 conditions from the historical factorial:
+The appendix displays six Tunnel Room conditions from the historical factorial:
 CLS/spatial 8×8 crossed with IDM weights 0, .125, and 3.125. One identical
 input is used throughout, with unchanged cue crops. The full twelve-condition
 source arrays and provenance remain available.
@@ -188,7 +188,7 @@ validation after epoch 10 training and align with those final model weights.
 
 Both follow-ups are complete on main; the anonymous code branch and earlier
 code ZIP remain a separate snapshot. Updated PDF and LaTeX upload files are
-in `runs/pta_feedback/rank_panel/submission/`. The main paper remains four pages.
+in `runs/pta_feedback/naming/submission/`. The main paper remains four pages.
 
 A validation-selected two-hidden-layer MLP uses the same frozen checkpoints
 and endpoint targets as the main probes. Across Color/Shape/Palette, current
