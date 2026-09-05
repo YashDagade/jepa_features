@@ -20,7 +20,6 @@ datasets/*
 !datasets/manifests/
 !datasets/manifests/*.json
 runs/*
-!runs/README.md
 outputs/
 checkpoints/
 wandb/
@@ -49,5 +48,10 @@ paper/**/*.out
 paper/**/*.pdf
 !paper/**/figures/*.pdf
 
-# Local migration bookkeeping
-.migration_backup_path
+
+# Local release and packaging outputs
+*.zip
+*.tar.gz
+*.egg-info/
+dist/
+build/

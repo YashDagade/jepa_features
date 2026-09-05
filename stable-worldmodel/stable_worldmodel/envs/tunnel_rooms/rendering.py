@@ -166,6 +166,7 @@ def endpoint_colors(
     num_leaves: int,
     pairing: int,
     cue_assignment: Sequence[int] | None = None,
+    semantic_colors: Sequence[Sequence[int]] | None = None,
 ) -> tuple[np.ndarray, ...]:
     """Return default endpoint colors using environment pairing semantics."""
     if condition == 'hidden':
@@ -176,6 +177,17 @@ def endpoint_colors(
         raise ValueError(
             f'Unsupported leaf count for semantic colors: {num_leaves}'
         )
+    palette = SEMANTIC_COLORS
+    if semantic_colors is not None:
+        palette = np.asarray(semantic_colors)
+        if (
+            palette.shape != (num_leaves, 3)
+            or not np.issubdtype(palette.dtype, np.integer)
+            or np.any((palette < 0) | (palette > 255))
+        ):
+            raise ValueError(
+                'Semantic colors must be one RGB integer triple per leaf.'
+            )
     permutation = _pairing_permutation(num_leaves, pairing)
     cues = tuple(
         range(num_leaves) if cue_assignment is None else cue_assignment
@@ -186,7 +198,7 @@ def endpoint_colors(
         *range(num_leaves),
         *(permutation.index(leaf) for leaf in range(num_leaves)),
     )
-    return tuple(SEMANTIC_COLORS[cues[pair]] for pair in pair_identities)
+    return tuple(palette[cues[pair]] for pair in pair_identities)
 
 
 def shape_identity_indices(num_leaves: int, pairing: int) -> tuple[int, ...]:
@@ -276,6 +288,7 @@ def render_markers(
                 num_leaves,
                 int(scenario['pairing']),
                 scenario.get('cue_assignment'),
+                semantic_colors=scenario.get('tunnel_colors'),
             )
         )
         if len(endpoint_rgb) != len(endpoints):

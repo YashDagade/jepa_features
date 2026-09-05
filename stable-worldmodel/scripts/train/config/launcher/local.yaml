@@ -10,8 +10,8 @@ cache_dir: null # Use stable-worldmodel default cache
 wandb:
   enabled: false
   config:
-    entity: stable-wm
-    project: stable-wm
+    entity: null
+    project: pta-submission
     group: null
     name: ${output_model_name}
     id: ${subdir}

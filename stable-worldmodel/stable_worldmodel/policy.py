@@ -22,7 +22,7 @@ class PlanConfig:
         horizon: Planning horizon in number of steps.
         receding_horizon: Number of steps to execute before re-planning.
         history_len: Number of past observations to consider.
-        action_block: Number of times each action is repeated (frameskip).
+        action_block: Number of primitive actions predicted per latent step.
         warm_start: Whether to use the previous plan to initialize the next one.
     """
 
@@ -225,8 +225,7 @@ class ExpertPolicy(BasePolicy):
         Returns:
             The expert action, or None if not available.
         """
-        # Implement expert policy logic here
-        pass
+        raise NotImplementedError
 
 
 class FeedForwardPolicy(BasePolicy):

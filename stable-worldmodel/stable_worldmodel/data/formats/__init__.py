@@ -1,8 +1,8 @@
 """Built-in dataset formats. Importing this package registers each format
 whose optional dependencies are available; the rest are silently skipped.
 
-Lance and folder ship with the core install. HDF5, video, and lerobot
-need their backing libraries (h5py, decord/imageio, lerobot); install
+Lance and folder ship with the core install. HDF5 and video
+need their backing libraries (h5py, decord/imageio); install
 them together with the umbrella extra ``[format]``.
 """
 
@@ -12,7 +12,6 @@ import logging as _logging
 
 from . import lance  # noqa: F401
 from . import folder  # noqa: F401
-from . import lerobot  # noqa: F401
 
 
 def _try_import(modname: str) -> None:

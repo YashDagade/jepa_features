@@ -1,3 +1,5 @@
+"""Portable model checkpoint loading and module-state preservation."""
+
 import json
 import urllib.request
 from contextlib import contextmanager
@@ -22,13 +24,13 @@ def _module_device(module: torch.nn.Module) -> torch.device | None:
 @contextmanager
 def preserve_module_modes(*modules: torch.nn.Module, device=None):
     """Temporarily evaluate co-located modules, then restore their state."""
-    # 1. Snapshot every nested training flag and each root module's device.
+    # Snapshot every nested training flag and each root module's device.
     states = {
         child: child.training for root in modules for child in root.modules()
     }
     devices = {module: _module_device(module) for module in modules}
 
-    # 2. Co-locate modules in evaluation mode for the detached operation.
+    # Co-locate modules in evaluation mode for the detached operation.
     try:
         for module in modules:
             if device is not None:
@@ -36,7 +38,7 @@ def preserve_module_modes(*modules: torch.nn.Module, device=None):
             module.eval()
         yield
     finally:
-        # 3. Restore devices first, then every exact nested training flag.
+        # Restore devices first, then every exact nested training flag.
         for module, original_device in devices.items():
             if original_device is not None:
                 module.to(original_device)

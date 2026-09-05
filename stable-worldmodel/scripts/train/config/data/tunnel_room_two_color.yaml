@@ -1,6 +1,6 @@
 dataset:
-  # Override JEPA_FEATURES_TR2_DATASET to use another immutable corpus.
-  name: ${oc.env:JEPA_FEATURES_TR2_DATASET,/scratch/yd3062/memory-for-jepa/datasets/tunnel_room_color_noise_filled18x18.h5}
+  # Override TUNNEL_ROOMS_COLOR_DATASET to use another immutable corpus.
+  name: ${oc.env:TUNNEL_ROOMS_COLOR_DATASET,tunnel_room_color_filled18x18.h5}
   num_steps: ${eval:'${wm.num_preds} + ${wm.history_size}'}
   frameskip: 5
   keys_to_load:

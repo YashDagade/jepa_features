@@ -729,49 +729,55 @@ def test_paired_sidecars_share_exact_samples_splits_rows_and_targets(tmp_path):
         )
 
 
-def test_config_has_exact_four_output_names_and_deterministic_roots():
+def test_config_has_canonical_two_leaf_output_and_deterministic_root():
     config_path = (
         Path(__file__).parents[2]
         / 'scripts/data/config/tunnel_rooms_filled18x18.yaml'
     )
     cfg = OmegaConf.load(config_path)
-    names = [
-        dataset.output_name
-        for group in cfg.leaf_groups.values()
-        for dataset in group.datasets.values()
-    ]
-    assert names == [
-        'tunnel_room_noise_filled18x18.h5',
-        'tunnel_room_color_noise_filled18x18.h5',
-        'tunnel_room_three_noise_filled18x18.h5',
-        'tunnel_room_color_three_noise_filled18x18.h5',
-    ]
-    assert cfg.profile == FILLED_PROFILE
-    assert cfg.groups == ['two_leaf', 'three_leaf']
-    assert cfg.conditions == ['hidden', 'paired_color']
-    assert cfg.agent_render_radius == 9
     datasets = [
         dataset
         for group in cfg.leaf_groups.values()
         for dataset in group.datasets.values()
     ]
+    assert [dataset.output_name for dataset in datasets] == [
+        'tunnel_room_color_filled18x18.h5'
+    ]
+    assert cfg.profile == FILLED_PROFILE
+    assert cfg.groups == ['two_leaf']
+    assert cfg.conditions == ['paired_color']
+    assert cfg.agent_render_radius == 9
     assert [dataset.include_positional_targets for dataset in datasets] == [
-        False,
-        True,
-        False,
-        True,
+        True
     ]
-    assert [
-        dataset.destination_sidecar_name
-        for dataset in datasets
-        if dataset.include_positional_targets
-    ] == [
-        'tunnel_room_color_noise_filled18x18_location_probe_cue_and_position.h5',
-        'tunnel_room_color_three_noise_filled18x18_location_probe_cue_and_position.h5',
+    assert [dataset.destination_sidecar_name for dataset in datasets] == [
+        'location_probe.h5'
     ]
 
 
-def test_run_writes_no_clobber_aggregate_provenance(tmp_path):
+def test_palette_render_respects_pairing_and_preserves_input():
+    scenario = _scenarios(2)[1]
+    palette = [[40, 153, 78], [83, 98, 216]]
+    scenario['tunnel_colors'] = palette
+    source = np.full((1, 56, 56, 3), 240, dtype=np.uint8)
+    original = source.copy()
+    rendered = render_filled_markers(
+        source, scenario, 'paired_color', np.array([[26.0, 26.0]])
+    )
+    for endpoint, color in zip(
+        scenario['endpoint_positions'],
+        [palette[0], palette[1], palette[1], palette[0]],
+        strict=True,
+    ):
+        x, y = np.floor(np.array(endpoint) + 0.5).astype(int)
+        np.testing.assert_array_equal(rendered[0, y, x], color)
+    np.testing.assert_array_equal(source, original)
+
+
+@pytest.mark.parametrize('palette_override', [False, True])
+def test_run_writes_no_clobber_aggregate_provenance(
+    tmp_path, palette_override
+):
     scenarios = _scenarios(5)
     datasets = tmp_path / 'datasets'
     datasets.mkdir()
@@ -815,11 +821,21 @@ def test_run_writes_no_clobber_aggregate_provenance(tmp_path):
         }
     )
 
+    if palette_override:
+        cfg.palette = {
+            'colors': [[40, 153, 78], [83, 98, 216]],
+            'names': ['green', 'blue'],
+        }
+    runtime_name = (
+        'tunnel_rooms_palette'
+        if palette_override
+        else 'tunnel_rooms_filled18x18'
+    )
     result = run_from_config(cfg)
 
     condition_manifest = (
         tmp_path
-        / 'runs/tunnel_rooms_filled18x18/two_leaf/paired_color/provenance_manifest.json'
+        / f'runs/{runtime_name}/two_leaf/paired_color/provenance_manifest.json'
     )
     assert condition_manifest.is_file()
     aggregate_path = finalize_provenance(cfg)
@@ -839,6 +855,28 @@ def test_run_writes_no_clobber_aggregate_provenance(tmp_path):
         assert sidecar.attrs['schema_version'] == 2
         assert 'tunnel_green_hub_x' in target_names
         assert 'tunnel_top_hub_x' in target_names
+        if palette_override:
+            assert 'tunnel_blue_leaf_x' in target_names
+            assert 'tunnel_orange_leaf_x' not in target_names
+    if palette_override:
+        assert aggregate['renderer']['palette']['colors'] == cfg.palette.colors
+        with (
+            h5py.File(source, 'r') as old,
+            h5py.File(tmp_path / 'datasets/filled.h5', 'r') as new,
+        ):
+            np.testing.assert_array_equal(old['action'][:], new['action'][:])
+        manifest = json.loads(
+            (
+                tmp_path
+                / 'runs'
+                / runtime_name
+                / 'two_leaf/scenario_manifest.json'
+            ).read_text()
+        )
+        assert manifest['scenarios'][0]['tunnel_color_names'] == [
+            'green',
+            'blue',
+        ]
 
     condition_bytes = condition_manifest.read_bytes()
     aggregate_bytes = aggregate_path.read_bytes()

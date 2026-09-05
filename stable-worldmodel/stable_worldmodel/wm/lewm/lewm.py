@@ -1,3 +1,5 @@
+"""Action-conditioned LeWM dynamics and latent planning costs."""
+
 import torch
 import torch.nn.functional as F
 from einops import rearrange
@@ -63,10 +65,6 @@ class LeWM(nn.Module):
         preds = self.pred_proj(rearrange(preds, 'b t d -> (b t) d'))
         preds = rearrange(preds, '(b t) d -> b t d', b=emb.size(0))
         return preds
-
-    ####################
-    ## Inference only ##
-    ####################
 
     def rollout(self, info, action_sequence, history_size: int = 3):
         """Rollout the model given an initial info dict and action sequence.

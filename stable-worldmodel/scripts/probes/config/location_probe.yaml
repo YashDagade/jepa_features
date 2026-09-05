@@ -34,7 +34,7 @@ output:
 wandb:
   enabled: false
   config:
-    entity: yash21-dagade-duke-university
+    entity: null
     project: rank_eval
     name: linear-location-probe
     group: location-probe

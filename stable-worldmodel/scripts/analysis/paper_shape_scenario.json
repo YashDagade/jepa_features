@@ -1,0 +1,111 @@
+{
+  "agent_position": [
+    29.701961517333984,
+    191.35165405273438
+  ],
+  "agent_render_radius": 9,
+  "endpoint_positions": [
+    [
+      58.82470703125,
+      42.790794372558594
+    ],
+    [
+      86.00526428222656,
+      180.92935180664062
+    ],
+    [
+      153.3388671875,
+      47.52519989013672
+    ],
+    [
+      155.823974609375,
+      144.53587341308594
+    ]
+  ],
+  "episode": 1893,
+  "identity_mode": "paired_shape",
+  "landing_offset": 14.0,
+  "layout": "hub_left_two_leaves_right",
+  "marker_height": 20,
+  "marker_style": "shape_cues",
+  "marker_width": 20,
+  "min_hub_separation": 42.0,
+  "num_leaves": 2,
+  "pairing": 0,
+  "rearm_distance": 28.0,
+  "scenario_seed": 42961,
+  "shape_raster": {
+    "marker_rgb": [
+      62,
+      94,
+      112
+    ],
+    "placement": "clamp_complete_mask_to_visible_room_floor",
+    "shape_mask_sha256": {
+      "diamond": "64c86e66b7b7cd468c68bba39420a5ab983bd3a4b6c46c7e8c24b6668f2b2b67",
+      "star": "dbf840cbe6cc4a0cc8642ecf5b7e54e0464a2456a872998655fe899edf2085dc",
+      "triangle": "4323790070e65716ab3122c6c494a3cbefdc3c0c42cc867a4a13e32e38498c5e"
+    },
+    "shape_order": [
+      "triangle",
+      "diamond",
+      "star"
+    ],
+    "shape_raster_spec": {
+      "diamond": {
+        "center": [
+          9.5,
+          9.5
+        ],
+        "manhattan_radius": 9.5
+      },
+      "star": {
+        "center": [
+          9.5,
+          9.5
+        ],
+        "inner_radius": 5.5,
+        "num_points": 5,
+        "outer_radius": 9.8,
+        "start_angle_radians": -1.5707963267948966
+      },
+      "triangle": {
+        "vertices": [
+          [
+            8.5,
+            0.0
+          ],
+          [
+            0.0,
+            17.0
+          ],
+          [
+            17.0,
+            17.0
+          ]
+        ]
+      }
+    },
+    "shape_sizes": {
+      "diamond": [
+        20,
+        20
+      ],
+      "star": [
+        20,
+        20
+      ],
+      "triangle": [
+        18,
+        18
+      ]
+    }
+  },
+  "speed": 5.0,
+  "target_leaf": 1,
+  "target_position": [
+    189.04031372070312,
+    176.97586059570312
+  ],
+  "trigger_radius": 10.0
+}

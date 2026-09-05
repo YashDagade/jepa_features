@@ -1,10 +1,12 @@
-"""Shared native-CLS training lifecycle for the four JEPA baselines."""
+"""LeWM training with optional IDM, frozen probes, and local reconstructions."""
 
+import json
 import os
 from pathlib import Path
 
 import hydra
 import lightning as pl
+import numpy as np
 import stable_pretraining as spt
 import torch
 import wandb
@@ -12,6 +14,7 @@ from einops import rearrange
 from lightning.pytorch.callbacks import Callback
 from lightning.pytorch.loggers import WandbLogger
 from omegaconf import OmegaConf, open_dict
+from PIL import Image
 from stable_pretraining import data as dt
 
 import stable_worldmodel as swm
@@ -19,7 +22,10 @@ from stable_worldmodel.data import column_normalizer as get_column_normalizer
 from stable_worldmodel.wm.decoder import GlobalDecoder
 from stable_worldmodel.wm.utils import save_pretrained
 
-from _epoch_probes import EpochProbeCallback
+if __package__:
+    from ._epoch_probes import EpochProbeCallback
+else:
+    from _epoch_probes import EpochProbeCallback
 
 
 def get_img_preprocessor(source: str, target: str, img_size: int = 224):
@@ -56,24 +62,65 @@ class SaveCkptCallback(Callback):
 
 
 class EpochDecoderMediaCallback(Callback):
-    """Upload one deterministic validation reconstruction every epoch."""
+    """Save the last validation batch locally and optionally upload to W&B."""
 
-    def __init__(self, *, commit: bool = True) -> None:
+    def __init__(self, output_dir: Path, *, commit: bool = True) -> None:
         super().__init__()
+        self.output_dir = Path(output_dir)
         self.commit = bool(commit)
 
     def on_validation_epoch_end(self, trainer, pl_module):
         if (
             not trainer.is_global_zero
             or trainer.sanity_checking
-            or not wandb.run
             or not hasattr(pl_module, '_epoch_decoder_media')
         ):
             return
         original, decoded = pl_module._epoch_decoder_media
+        epoch = trainer.current_epoch + 1
+        directory = self.output_dir / f'epoch_{epoch:03d}'
+        directory.mkdir(parents=True, exist_ok=True)
+        clips, frames, channels, height, width = original.shape
+        if decoded.shape != original.shape or channels != 3:
+            raise ValueError(
+                'Decoder media must have matching N,T,3,H,W shapes.'
+            )
+        columns = min(3, clips)
+        rows = (clips + columns - 1) // columns
+        for name, video in (('original', original), ('decoded', decoded)):
+            for frame in range(frames):
+                canvas = np.zeros(
+                    (rows * height, columns * width, 3), dtype=np.uint8
+                )
+                for clip in range(clips):
+                    row, column = divmod(clip, columns)
+                    canvas[
+                        row * height : (row + 1) * height,
+                        column * width : (column + 1) * width,
+                    ] = video[clip, frame].transpose(1, 2, 0)
+                Image.fromarray(canvas).save(
+                    directory / f'{name}_frame_{frame:02d}.png'
+                )
+        metadata = {
+            'epoch': epoch,
+            'global_step': int(trainer.global_step),
+            'source': 'last validation batch after epoch training updates',
+            'num_clips': clips,
+            'num_frames': frames,
+            'frame_indexing': 'zero-based',
+            'montage_columns': columns,
+            'montage_order': 'row-major batch order',
+            'tile_height': height,
+            'tile_width': width,
+        }
+        (directory / 'metadata.json').write_text(
+            json.dumps(metadata, indent=2) + '\n'
+        )
+        if not wandb.run:
+            return
         wandb.log(
             {
-                'validate/epoch': trainer.current_epoch + 1,
+                'validate/epoch': epoch,
                 'validate/epoch_original_clip': wandb.Video(original),
                 'validate/epoch_decoded_clip': wandb.Video(decoded),
             },
@@ -83,8 +130,8 @@ class EpochDecoderMediaCallback(Callback):
 
 
 def _decoder_videos(pixels, decoded, num_clips):
-    """Convert normalized model tensors into W&B-ready uint8 clips."""
-    # 1. Restore batch/time axes and select the same clips from both tensors.
+    """Convert normalized model tensors to uint8 clips without new inference."""
+    # Restore batch/time axes and select the same clips from both tensors.
     decoded = rearrange(
         decoded,
         '(b t) c h w -> b t c h w',
@@ -93,14 +140,14 @@ def _decoder_videos(pixels, decoded, num_clips):
     original = pixels[:num_clips].detach().cpu()
     decoded = decoded[:num_clips].detach().cpu()
 
-    # 2. Undo the ImageNet normalization used by every native model.
+    # Undo the ImageNet normalization used by every native model.
     mean, std = dt.dataset_stats.ImageNet.values()
     mean = torch.tensor(mean).view(1, 1, 3, 1, 1)
     std = torch.tensor(std).view(1, 1, 3, 1, 1)
     original = (original * std + mean).clamp(0, 1)
     decoded = (decoded * std + mean).clamp(0, 1)
 
-    # 3. W&B Video accepts a batch of time-major channel-first clips.
+    # W&B Video accepts a batch of time-major channel-first clips.
     return (original * 255).byte().numpy(), (decoded * 255).byte().numpy()
 
 
@@ -109,21 +156,21 @@ def add_decoder_diagnostic(self, output, batch, stage, cfg):
     if not cfg.decoder.enabled:
         return
 
-    # 1. Decode the exact projected CLS representation used by the predictor.
+    # Decode the projected representation used by the predictor.
     pixels = batch['pixels']
     flat_emb = rearrange(output['emb'], 'b t d -> (b t) d')
     decoder_input = flat_emb.detach() if cfg.decoder.detach else flat_emb
     decoded = self.decoder(decoder_input)
     target = rearrange(pixels, 'b t c h w -> (b t) c h w')
 
-    # 2. A separate optimizer trains the diagnostic head. Detaching above means
+    # A separate optimizer trains the diagnostic head. Detaching above means
     # this loss cannot change any encoder, projector, or predictor parameter.
     output['decoder_loss'] = torch.nn.functional.mse_loss(decoded, target)
     output['loss'] = output['loss'] + (
         cfg.decoder.loss_weight * output['decoder_loss']
     )
 
-    # 3. Retain the last deterministic validation batch for one reconstruction
+    # Retain the last deterministic validation batch for one reconstruction
     # per epoch, and preserve periodic training clips for continuity.
     is_validation_batch = stage == 'validate' and self.trainer.is_last_batch
     should_log = (
@@ -157,7 +204,7 @@ def log_losses(self, output, stage):
 
 
 def train_global_jepa(cfg, *, forward, objective_factory):
-    """Run one native global-CLS model with shared data and diagnostics."""
+    """Train LeWM with the configured objective and projected readout."""
     # Stable Pretraining treats a CWD sidecar as resumable provenance. Never
     # let an unrelated run silently override the explicitly configured W&B ID.
     cwd_resume = Path('wandb_resume.json')
@@ -172,7 +219,7 @@ def train_global_jepa(cfg, *, forward, objective_factory):
     seed = int(cfg.seed)
     pl.seed_everything(seed, workers=True)
 
-    # 1. Load the resolved offline corpus and reproduce the baseline transforms.
+    # Load the resolved offline corpus and reproduce the baseline transforms.
     dataset_cfg = OmegaConf.to_container(cfg.data.dataset, resolve=True)
     dataset_name = dataset_cfg.pop('name')
     cache_dir = os.environ.get('LOCAL_DATASET_DIR')
@@ -185,6 +232,9 @@ def train_global_jepa(cfg, *, forward, objective_factory):
     transforms = [get_img_preprocessor('pixels', 'pixels', cfg.img_size)]
 
     with open_dict(cfg):
+        if cfg.epoch_probe.enabled:
+            # Sidecars must refer to the actual corpus resolved by the loader.
+            cfg.epoch_probe.dataset = str(Path(dataset.h5_path).resolve())
         if cfg.feature_mode.aggregation != 'cls':
             cfg.feature_mode.input_dim = cfg.embed_dim
             cfg.feature_mode.output_dim = cfg.embed_dim
@@ -204,8 +254,7 @@ def train_global_jepa(cfg, *, forward, objective_factory):
             cfg.idm.output_dim = action_dim
     dataset.transform = spt.data.transforms.Compose(*transforms)
 
-    # 2. Use one seeded, episode-agnostic split and ordinary shuffled clips for
-    # every family so model objective is the only baseline difference.
+    # Training splits clips; frozen probes use separate episode splits.
     generator = torch.Generator().manual_seed(seed)
     train_set, val_set = spt.data.random_split(
         dataset,
@@ -220,7 +269,7 @@ def train_global_jepa(cfg, *, forward, objective_factory):
     val_options = {**cfg.loader, 'shuffle': False, 'drop_last': False}
     val = torch.utils.data.DataLoader(val_set, **val_options)
 
-    # 3. Instantiate the native model/objective modules and one detached global
+    # Instantiate the native model/objective modules and one detached global
     # decoder. Only modules with trainable parameters receive optimizers.
     modules = {'model': hydra.utils.instantiate(cfg.model)}
     modules.update(objective_factory(cfg))
@@ -256,11 +305,11 @@ def train_global_jepa(cfg, *, forward, objective_factory):
         optim=optimizers,
     )
 
-    # 4. Record the exact resolved config, then train with portable checkpoints
+    # Record the exact resolved config, then train with portable checkpoints
     # and a final decoder-media callback.
     run_dir = Path(
         swm.data.utils.get_cache_dir(sub_folder='checkpoints'),
-        cfg.get('subdir') or '',
+        cfg.get('subdir') or cfg.output_model_name,
     )
     run_dir.mkdir(parents=True, exist_ok=True)
     OmegaConf.save(cfg, run_dir / 'config.yaml')
@@ -271,11 +320,13 @@ def train_global_jepa(cfg, *, forward, objective_factory):
         logger.log_hyperparams(OmegaConf.to_container(cfg, resolve=True))
     callbacks = [
         SaveCkptCallback(
-            cfg.output_model_name,
+            cfg.get('subdir') or cfg.output_model_name,
             cfg,
             epoch_interval=cfg.checkpoint_every,
         ),
-        EpochDecoderMediaCallback(commit=not cfg.epoch_probe.enabled),
+        EpochDecoderMediaCallback(
+            run_dir / 'decoder', commit=not cfg.epoch_probe.enabled
+        ),
     ]
     if cfg.epoch_probe.enabled:
         callbacks.append(EpochProbeCallback(cfg, run_dir))

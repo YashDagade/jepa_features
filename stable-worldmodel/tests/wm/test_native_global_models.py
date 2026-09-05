@@ -1,9 +1,8 @@
-"""Native global-CLS architecture and objective regression tests."""
+"""Native LeWM architecture and objective regression tests."""
 
+import json
 import hashlib
-import os
 import random
-import subprocess
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -14,35 +13,17 @@ import torch
 from hydra import compose, initialize_config_dir
 from omegaconf import OmegaConf
 from torch import nn
+from PIL import Image
 
 from stable_worldmodel.wm.lewm import LeWM
-from stable_worldmodel.wm.lewm.module import Predictor as LeWMPredictor
 from stable_worldmodel.wm.decoder import GlobalDecoder
 from stable_worldmodel.wm.feature_modes import FeatureMode
-from stable_worldmodel.wm.lpwm import LpWM
-from stable_worldmodel.wm.pldm import PLDM
-from stable_worldmodel.wm.pldm.module import Predictor as PLDMPredictor
-from stable_worldmodel.wm.smwm import InverseModel, SMWM
 
 
 TRAIN_DIR = Path(__file__).resolve().parents[2] / 'scripts' / 'train'
 CONFIG_DIR = TRAIN_DIR / 'config'
-BASELINE_LAUNCHER = (
-    Path(__file__).resolve().parents[3]
-    / 'sbatch_scripts'
-    / 'train'
-    / 'baseline_matrix.sh'
-)
-COLOR_ONSET_LAUNCHER = (
-    Path(__file__).resolve().parents[3]
-    / 'sbatch_scripts'
-    / 'train'
-    / 'color_onset_matrix.sh'
-)
 sys.path.insert(0, str(TRAIN_DIR))
 
-from pldm import pldm_forward  # noqa: E402
-from smwm import sensorimotor_forward  # noqa: E402
 import _global_jepa as global_jepa  # noqa: E402
 from _global_jepa import add_decoder_diagnostic, train_global_jepa  # noqa: E402
 
@@ -69,10 +50,9 @@ class _ActionEncoder(nn.Module):
         return action
 
 
-@pytest.mark.parametrize('model_class', [LeWM, PLDM, LpWM, SMWM])
-def test_every_native_model_selects_actual_cls_token(model_class):
-    # 1. The CLS token is intentionally unlike every patch and their mean.
-    model = model_class(
+def test_lewm_selects_actual_cls_token():
+    # The CLS token is intentionally unlike every patch and their mean.
+    model = LeWM(
         encoder=_TokenEncoder(),
         predictor=nn.Identity(),
         action_encoder=_ActionEncoder(),
@@ -82,21 +62,20 @@ def test_every_native_model_selects_actual_cls_token(model_class):
         'action': torch.zeros(2, 3, 1),
     }
 
-    # 2. Native encoding must return token zero exactly, without aggregation.
+    # Native encoding must return token zero exactly, without aggregation.
     encoded = model.encode(batch)['emb']
     expected = torch.tensor([7.0, 11.0]).expand(2, 3, -1)
     torch.testing.assert_close(encoded, expected)
 
 
-@pytest.mark.parametrize('model_class', [LeWM, PLDM, LpWM, SMWM])
-def test_every_native_model_uses_explicit_feature_readout(model_class):
+def test_lewm_uses_explicit_feature_readout():
     feature_mode = FeatureMode(
         mode='global',
         aggregation='mean',
         input_dim=2,
         output_dim=2,
     )
-    model = model_class(
+    model = LeWM(
         encoder=_TokenEncoder(),
         predictor=nn.Identity(),
         action_encoder=_ActionEncoder(),
@@ -124,42 +103,31 @@ def test_spatial_8x8_readout_preserves_shape_and_rejects_non_square_grid():
         mode(torch.randn(4, 1 + 255, 3))
 
 
-def test_pldm_reuses_the_identical_lewm_predictor_implementation():
-    assert PLDMPredictor is LeWMPredictor
-
-
 def test_native_configs_share_one_cls_and_decoder_contract():
     with initialize_config_dir(version_base=None, config_dir=str(CONFIG_DIR)):
         configs = {
-            name: compose(config_name=name)
-            for name in ('lewm', 'pldm', 'lpwm', 'smwm')
+            name: compose(config_name=name) for name in ('lewm', 'lewm_idm')
         }
-
-    # 1. Every model instantiates a ViT encoder and the detached global decoder.
     for cfg in configs.values():
         assert cfg.model.encoder._target_.endswith('vit_hf')
         assert cfg.feature_mode.aggregation == 'cls'
         assert cfg.decoder.enabled and cfg.decoder.detach
-        assert 'group' in cfg.wandb.config
-        assert cfg.wandb.config.resume == 'allow'
-
-    # 2. LeWM/LpWM/PLDM have no IDM module or objective. SMWM retains the
-    # paper-defining inverse-dynamics loss at its published weight.
-    for name in ('lewm', 'pldm', 'lpwm'):
-        assert 'idm' not in configs[name]
-    assert configs['smwm'].loss.idm.enabled
-    assert configs['smwm'].loss.idm.weight == pytest.approx(0.1)
+        assert not cfg.wandb.enabled
+        assert cfg.subdir == cfg.output_model_name
+    assert 'idm' not in configs['lewm']
+    assert configs['lewm_idm'].loss.idm.weight == pytest.approx(3.125)
 
 
-@pytest.mark.parametrize('model_name', ['lewm', 'pldm', 'lpwm', 'smwm'])
+@pytest.mark.parametrize('model_name', ['lewm', 'lewm_idm'])
 @pytest.mark.parametrize(
     ('data_name', 'filename'),
     [
         (
             'tunnel_room_two_color',
-            'tunnel_room_color_noise_filled18x18.h5',
+            'tunnel_room_color_filled18x18.h5',
         ),
-        ('chaser_two_color', 'chaser_cue_two_color.h5'),
+        ('tunnel_room_two_shape', 'tunnel_room_shape.h5'),
+        ('tunnel_room_two_green_blue', 'tunnel_room_palette.h5'),
     ],
 )
 def test_baseline_configs_compose_with_pixels_and_actions_only(
@@ -171,62 +139,6 @@ def test_baseline_configs_compose_with_pixels_and_actions_only(
     assert cfg.data.dataset.name.endswith(filename)
     assert list(cfg.data.dataset.keys_to_load) == ['pixels', 'action']
     assert cfg.trainer.max_epochs == 10
-
-
-def test_baseline_launcher_keeps_trainer_cache_on_scratch(tmp_path):
-    # 1. Generate every job without submitting so the test exercises the same
-    # shell templates used on the cluster.
-    run_root = tmp_path / 'runs'
-    subprocess.run(
-        ['bash', str(BASELINE_LAUNCHER), '--dry-run'],
-        check=True,
-        env={
-            **os.environ,
-            'RUN_ROOT': str(run_root),
-            'RUN_REVISION': '2',
-        },
-        capture_output=True,
-        text=True,
-    )
-
-    # 2. Every trainer registry and checkpoint cache must live beside its run
-    # outputs on scratch, never under the quota-limited home directory.
-    inner_scripts = sorted(run_root.glob('*/train_inner.sh'))
-    assert len(inner_scripts) == 8
-    for script in inner_scripts:
-        assert script.parent.name.endswith('-v2')
-        contents = script.read_text()
-        expected = f'export SPT_CACHE_DIR={script.parent}/spt_cache'
-        assert expected in contents
-        assert '/home/' not in contents
-
-
-def test_color_onset_launcher_generates_prespecified_matrix(tmp_path):
-    run_root = tmp_path / 'onset'
-    subprocess.run(
-        ['bash', str(COLOR_ONSET_LAUNCHER), '--dry-run'],
-        check=True,
-        env={**os.environ, 'RUN_ROOT': str(run_root)},
-        capture_output=True,
-        text=True,
-    )
-
-    scripts = sorted(run_root.glob('*/train_inner.sh'))
-    assert len(scripts) == 16
-    contents = [script.read_text() for script in scripts]
-    assert sum('trainer.max_epochs=10' in text for text in contents) == 4
-    assert sum('trainer.max_epochs=50' in text for text in contents) == 12
-    assert (
-        sum('feature_mode=global_spatial_8x8' in text for text in contents)
-        == 8
-    )
-    assert sum('epoch_probe=chaser' in text for text in contents) == 4
-    assert sum('epoch_probe=tunnel_color' in text for text in contents) == 12
-    assert all(
-        f'cd {script.parent}' in text
-        for script, text in zip(scripts, contents, strict=True)
-    )
-    assert all('test ! -e wandb_resume.json' in text for text in contents)
 
 
 def test_training_rejects_unscoped_wandb_resume_sidecar(tmp_path, monkeypatch):
@@ -406,21 +318,8 @@ def test_global_training_seeds_before_construction_and_seeds_manager(
     assert type(result['manager_seed']) is int
 
 
-def test_smwm_inverse_head_matches_official_two_layer_relu_mlp():
-    inverse = InverseModel(input_dim=12, hidden_dim=256, output_dim=3)
-
-    assert [type(layer) for layer in inverse.net] == [
-        nn.Linear,
-        nn.ReLU,
-        nn.Linear,
-        nn.ReLU,
-        nn.Linear,
-    ]
-    assert inverse(torch.randn(2, 4, 12)).shape == (2, 4, 3)
-
-
 def test_detached_global_decoder_cannot_change_model_features():
-    # 1. Build a tiny decoder and a projected CLS trajectory with gradients.
+    # Build a tiny decoder and a projected CLS trajectory with gradients.
     emb = torch.randn(2, 3, 4, requires_grad=True)
     module = SimpleNamespace(
         decoder=GlobalDecoder(
@@ -451,7 +350,7 @@ def test_detached_global_decoder_cannot_change_model_features():
         }
     )
 
-    # 2. Decoder parameters learn, while detached latent gradients remain zero.
+    # Decoder parameters learn, while detached latent gradients remain zero.
     add_decoder_diagnostic(module, output, batch, 'fit', cfg)
     output['loss'].backward()
 
@@ -461,81 +360,66 @@ def test_detached_global_decoder_cannot_change_model_features():
     )
 
 
-class _ForwardModel:
-    def encode(self, batch):
-        batch['emb'] = batch['projected']
-        batch['act_emb'] = batch['action']
-        return batch
-
-    def predict(self, context, _actions):
-        return context
-
-
-class _LoggerModule:
-    def __init__(self):
-        self.model = _ForwardModel()
-        self.logged = None
-
-    def log_dict(self, values, **_kwargs):
-        self.logged = values
-
-
-def _forward_cfg(loss):
-    return OmegaConf.create(
-        {
-            'wm': {'history_size': 2, 'num_preds': 1},
-            'decoder': {'enabled': False},
-            'loss': loss,
-        }
+def test_epoch_decoder_media_is_lossless_and_local_without_wandb(
+    tmp_path, monkeypatch
+):
+    original = np.arange(6 * 4 * 3 * 8 * 8, dtype=np.uint8).reshape(
+        6, 4, 3, 8, 8
     )
-
-
-def test_smwm_forward_is_fdm_plus_weighted_native_idm():
-    module = _LoggerModule()
-    module.idm = InverseModel(input_dim=4, hidden_dim=8, output_dim=1)
-    cfg = _forward_cfg({'idm': {'enabled': True, 'weight': 0.1}})
-    batch = {
-        'projected': torch.tensor([[[1.0, 0.0], [2.0, 0.0], [4.0, 0.0]]]),
-        'action': torch.zeros(1, 3, 1),
-    }
-
-    output = sensorimotor_forward(module, batch, 'fit', cfg)
-
-    assert set(name for name in output if name.endswith('loss')) == {
-        'fdm_loss',
-        'idm_loss',
-        'loss',
-    }
-    torch.testing.assert_close(
-        output['loss'],
-        output['fdm_loss'] + 0.1 * output['idm_loss'],
+    decoded = np.full_like(original, 127)
+    module = SimpleNamespace(_epoch_decoder_media=(original, decoded))
+    trainer = SimpleNamespace(
+        is_global_zero=True,
+        sanity_checking=False,
+        current_epoch=9,
+        global_step=123,
     )
+    monkeypatch.setattr(global_jepa.wandb, 'run', None)
+
+    def unexpected_log(*args, **kwargs):
+        raise AssertionError('Local decoder output must not require W&B.')
+
+    monkeypatch.setattr(global_jepa.wandb, 'log', unexpected_log)
+    rng = torch.get_rng_state().clone()
+    callback = global_jepa.EpochDecoderMediaCallback(tmp_path)
+    callback.on_validation_epoch_end(trainer, module)
+    torch.testing.assert_close(torch.get_rng_state(), rng)
+    folder = tmp_path / 'epoch_010'
+    assert len(list(folder.glob('*.png'))) == 8
+    for name, video in [('original', original), ('decoded', decoded)]:
+        for frame in range(4):
+            image = np.asarray(
+                Image.open(folder / f'{name}_frame_{frame:02d}.png')
+            )
+            assert image.shape == (16, 24, 3)
+            for clip in range(6):
+                row, column = divmod(clip, 3)
+                np.testing.assert_array_equal(
+                    image[
+                        row * 8 : (row + 1) * 8, column * 8 : (column + 1) * 8
+                    ],
+                    video[clip, frame].transpose(1, 2, 0),
+                )
+    metadata = json.loads((folder / 'metadata.json').read_text())
+    assert metadata['epoch'] == 10 and metadata['global_step'] == 123
+    assert metadata['frame_indexing'] == 'zero-based'
 
 
-def test_pldm_forward_has_no_zero_weight_idm_path():
-    module = _LoggerModule()
-    module.pldm = lambda _emb: {
-        'std_loss': torch.tensor(1.0),
-        'std_t_loss': torch.tensor(2.0),
-        'cov_loss': torch.tensor(3.0),
-        'cov_t_loss': torch.tensor(4.0),
-        'temp_align_loss': torch.tensor(5.0),
-    }
-    cfg = _forward_cfg(
-        {
-            'std': {'enabled': True, 'weight': 18.0},
-            'std_t': {'enabled': True, 'weight': 0.7},
-            'cov': {'enabled': True, 'weight': 12.0},
-            'cov_t': {'enabled': True, 'weight': 0.0},
-            'temp_align': {'enabled': True, 'weight': 0.2},
-        }
+def test_checkpoint_callback_uses_the_configured_run_directory(monkeypatch):
+    saved = []
+    monkeypatch.setattr(
+        global_jepa,
+        'save_pretrained',
+        lambda *args, **kwargs: saved.append(kwargs),
     )
-    batch = {
-        'projected': torch.randn(2, 3, 4),
-        'action': torch.zeros(2, 3, 1),
-    }
-
-    output = pldm_forward(module, batch, 'fit', cfg)
-
-    assert 'idm_loss' not in output
-    assert not hasattr(module, 'idm')
+    callback = global_jepa.SaveCkptCallback(
+        'color-spatial-seed3072', {}, epoch_interval=5
+    )
+    trainer = SimpleNamespace(
+        current_epoch=9, max_epochs=10, is_global_zero=True
+    )
+    callback.on_train_epoch_end(
+        trainer, SimpleNamespace(model=nn.Linear(2, 2))
+    )
+    assert saved[0]['run_name'] == 'color-spatial-seed3072'
+    assert saved[0]['filename'] == 'weights_epoch_10.pt'

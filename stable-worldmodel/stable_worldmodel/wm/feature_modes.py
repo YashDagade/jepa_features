@@ -1,4 +1,4 @@
-"""Canonical global feature policy for the native JEPA baselines."""
+"""Configurable CLS and spatial readouts for LeWM."""
 
 from __future__ import annotations
 
@@ -30,7 +30,7 @@ class FeatureMode(nn.Module):
         self.aggregation = str(aggregation)
         if self.mode != 'global':
             raise ValueError(
-                'Native JEPA baselines require one global feature per frame; '
+                'LeWM requires one global feature per frame; '
                 f'got mode={self.mode!r}.'
             )
         if self.aggregation not in self.GLOBAL_AGGREGATIONS:

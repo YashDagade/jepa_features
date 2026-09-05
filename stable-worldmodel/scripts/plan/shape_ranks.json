@@ -1,0 +1,3521 @@
+{
+  "environment": "swm/TunnelRooms-v1",
+  "episodes": [
+    {
+      "agent_position": [
+        39.05833435058594,
+        160.33241271972656
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852033",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          54.400657653808594,
+          98.8897705078125
+        ],
+        [
+          77.36688232421875,
+          134.6302947998047
+        ],
+        [
+          154.07765197753906,
+          24.086103439331055
+        ],
+        [
+          127.41671752929688,
+          156.88491821289062
+        ]
+      ],
+      "episode": 2,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 80.00001287460327,
+          "steps": 16
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 80.00001287460327,
+          "steps": 16
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "9dcde881a6c5d403bfa7951fc244e9c455a9fa50e1b355aefe2bd90e6505e6e9",
+      "scenario_seed": 852033,
+      "search_order": [
+        1,
+        0
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        194.4254608154297,
+        140.04498291015625
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        37.048954010009766,
+        141.98414611816406
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852036",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          63.836490631103516,
+          99.30827331542969
+        ],
+        [
+          79.90026092529297,
+          151.75946044921875
+        ],
+        [
+          168.11061096191406,
+          76.31658172607422
+        ],
+        [
+          132.0957794189453,
+          184.98333740234375
+        ]
+      ],
+      "episode": 5,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 59.99998664855957,
+          "steps": 12
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 59.99998664855957,
+          "steps": 12
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "d62d1309e83cb5621e279ee67f08ce882dd0cd2a515c41596c887ae5a0f74970",
+      "scenario_seed": 852036,
+      "search_order": [
+        1,
+        0
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        180.96295166015625,
+        200.87881469726562
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        72.24267578125,
+        103.87026977539062
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852037",
+      "correct_hub_endpoint": 0,
+      "endpoint_positions": [
+        [
+          97.04898834228516,
+          153.9378662109375
+        ],
+        [
+          53.3934211730957,
+          187.00216674804688
+        ],
+        [
+          140.26409912109375,
+          23.744688034057617
+        ],
+        [
+          137.99818420410156,
+          193.10037231445312
+        ]
+      ],
+      "episode": 6,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 85.00000238418579,
+          "steps": 17
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 85.00000238418579,
+          "steps": 17
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "f7e31685d95638dd3d3da87771d48c5fb6a73fff3c04e2ad649dca2e069940e4",
+      "scenario_seed": 852037,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        147.47103881835938,
+        71.67182159423828
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        43.63773727416992,
+        164.99212646484375
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852038",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          68.84422302246094,
+          96.23507690429688
+        ],
+        [
+          70.79574584960938,
+          200.6698455810547
+        ],
+        [
+          146.64285278320312,
+          48.68159484863281
+        ],
+        [
+          132.1302032470703,
+          197.79727172851562
+        ]
+      ],
+      "episode": 7,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 69.99998664855957,
+          "steps": 14
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 69.99998664855957,
+          "steps": 14
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "126ea96554c2a251698c17c352bf3ac543dfa4a59a86c50d0454a4c68ed8b0f5",
+      "scenario_seed": 852038,
+      "search_order": [
+        1,
+        0
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        183.4435272216797,
+        164.02996826171875
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        23.8957576751709,
+        65.9045639038086
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852041",
+      "correct_hub_endpoint": 0,
+      "endpoint_positions": [
+        [
+          93.68844604492188,
+          42.041072845458984
+        ],
+        [
+          58.50729751586914,
+          160.0266571044922
+        ],
+        [
+          152.436279296875,
+          82.96895599365234
+        ],
+        [
+          149.20217895507812,
+          176.8669891357422
+        ]
+      ],
+      "episode": 10,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": 2,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 79.99998331069946,
+          "steps": 16
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 79.99998331069946,
+          "steps": 16
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "df2ca48e321fdc98ae034d3abab5b7ae52b8897f3636d86e962f034efc05b741",
+      "scenario_seed": 852041,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        181.9840087890625,
+        197.5215301513672
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        27.315587997436523,
+        80.29667663574219
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852042",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          90.50434875488281,
+          156.7518768310547
+        ],
+        [
+          62.00197219848633,
+          47.7595100402832
+        ],
+        [
+          158.67201232910156,
+          70.21641540527344
+        ],
+        [
+          126.67010498046875,
+          149.7661895751953
+        ]
+      ],
+      "episode": 11,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 79.9999885559082,
+          "steps": 16
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 79.9999885559082,
+          "steps": 16
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "6946de53f1fb8a212b7024bb60228d022cb2f2ca2492678a77f2a2d1e9fefd56",
+      "scenario_seed": 852042,
+      "search_order": [
+        1,
+        0
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        173.82298278808594,
+        192.68621826171875
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        56.27763748168945,
+        70.07740020751953
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852045",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          92.55326080322266,
+          35.50676345825195
+        ],
+        [
+          91.70782470703125,
+          97.3952865600586
+        ],
+        [
+          153.2310791015625,
+          52.83243942260742
+        ],
+        [
+          148.704833984375,
+          134.30567932128906
+        ]
+      ],
+      "episode": 14,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 75.00003433227539,
+          "steps": 15
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 75.00003433227539,
+          "steps": 15
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "573a03bac2868ba012199dd877d7483ca164db9cbaea0f9887b409dfd4a3df1c",
+      "scenario_seed": 852045,
+      "search_order": [
+        1,
+        0
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        128.0129852294922,
+        173.28199768066406
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        61.4380989074707,
+        72.28067779541016
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852050",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          66.42269897460938,
+          157.67665100097656
+        ],
+        [
+          84.56023406982422,
+          47.02397537231445
+        ],
+        [
+          143.4939727783203,
+          97.78231811523438
+        ],
+        [
+          136.37921142578125,
+          146.6030731201172
+        ]
+      ],
+      "episode": 19,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 59.99999952316284,
+          "steps": 12
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 59.99999952316284,
+          "steps": 12
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "df3c4d22772be8956ed95da2f0643e8f18e165462479a6cb9c379625914b6be8",
+      "scenario_seed": 852050,
+      "search_order": [
+        1,
+        0
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        171.07449340820312,
+        53.228355407714844
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        70.03340148925781,
+        48.78690719604492
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852051",
+      "correct_hub_endpoint": 0,
+      "endpoint_positions": [
+        [
+          90.44266510009766,
+          78.00209045410156
+        ],
+        [
+          63.58493423461914,
+          135.4653778076172
+        ],
+        [
+          162.78939819335938,
+          65.31245422363281
+        ],
+        [
+          170.28697204589844,
+          155.38702392578125
+        ]
+      ],
+      "episode": 20,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": 1,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 60.00004529953003,
+          "steps": 12
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 60.00004529953003,
+          "steps": 12
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "6895531317d1c08f5dd970d7f696796813cdba396e999beee781faec99a3d59e",
+      "scenario_seed": 852051,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        143.59617614746094,
+        168.72103881835938
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        63.75969314575195,
+        55.58638000488281
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852054",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          87.19432067871094,
+          33.522953033447266
+        ],
+        [
+          73.40784454345703,
+          85.51827239990234
+        ],
+        [
+          168.2085723876953,
+          34.81761932373047
+        ],
+        [
+          152.6862335205078,
+          130.94937133789062
+        ]
+      ],
+      "episode": 23,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 44.99999189376831,
+          "steps": 9
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 44.99999189376831,
+          "steps": 9
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "ba2c8d386ceb819e00699e5786e1f042ade3eaf8d05dbc134e4daf075cf4d1de",
+      "scenario_seed": 852054,
+      "search_order": [
+        1,
+        0
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        145.26583862304688,
+        156.48117065429688
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        49.41581726074219,
+        106.7564926147461
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852055",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          69.4861831665039,
+          191.1946258544922
+        ],
+        [
+          82.8221664428711,
+          70.02984619140625
+        ],
+        [
+          128.02243041992188,
+          37.250099182128906
+        ],
+        [
+          161.43734741210938,
+          181.83895874023438
+        ]
+      ],
+      "episode": 24,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 75.00003337860107,
+          "steps": 15
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 75.00003337860107,
+          "steps": 15
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "f4f1e73babd9f8bbaddddc0da66d1b07991593a6ba515ee164509c238615fe07",
+      "scenario_seed": 852055,
+      "search_order": [
+        1,
+        0
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        197.68655395507812,
+        141.44735717773438
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        62.88853454589844,
+        67.17118072509766
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852056",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          95.89875793457031,
+          192.62554931640625
+        ],
+        [
+          52.926876068115234,
+          118.47981262207031
+        ],
+        [
+          135.18128967285156,
+          68.14119720458984
+        ],
+        [
+          148.1739501953125,
+          174.1428985595703
+        ]
+      ],
+      "episode": 25,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 55.000022888183594,
+          "steps": 11
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 55.000022888183594,
+          "steps": 11
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "fd67d9f1e0dc04bb983c063fd7924ea97fbc479a22e8aea2e35707f4f6e0d752",
+      "scenario_seed": 852056,
+      "search_order": [
+        1,
+        0
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        154.03451538085938,
+        45.472442626953125
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        71.35285949707031,
+        95.33622741699219
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852057",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          87.8724594116211,
+          186.9589080810547
+        ],
+        [
+          82.54305267333984,
+          38.93024444580078
+        ],
+        [
+          171.4371337890625,
+          40.05846405029297
+        ],
+        [
+          145.92236328125,
+          128.28970336914062
+        ]
+      ],
+      "episode": 26,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": 0,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 54.99999809265137,
+          "steps": 11
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 54.99999809265137,
+          "steps": 11
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "2656bb06ee3d0512e642d2dc595676a1753a951d68e6a39c5a7d0c595753e1c4",
+      "scenario_seed": 852057,
+      "search_order": [
+        1,
+        0
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        196.5326690673828,
+        24.781383514404297
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        87.94044494628906,
+        51.34147644042969
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852058",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          90.9609603881836,
+          192.79098510742188
+        ],
+        [
+          68.43134307861328,
+          98.38006591796875
+        ],
+        [
+          127.56969451904297,
+          52.37590026855469
+        ],
+        [
+          132.60855102539062,
+          145.3436279296875
+        ]
+      ],
+      "episode": 27,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 80.00000047683716,
+          "steps": 16
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 80.00000047683716,
+          "steps": 16
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "0175172e3af9d5f6a9d13aa427aab865c757e6d8178d909e8f4d2371fb7ad980",
+      "scenario_seed": 852058,
+      "search_order": [
+        1,
+        0
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        138.11415100097656,
+        192.03431701660156
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        40.177001953125,
+        58.019859313964844
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852059",
+      "correct_hub_endpoint": 0,
+      "endpoint_positions": [
+        [
+          83.35345458984375,
+          43.682579040527344
+        ],
+        [
+          69.82426452636719,
+          131.0080108642578
+        ],
+        [
+          142.00950622558594,
+          30.264793395996094
+        ],
+        [
+          170.60174560546875,
+          162.00672912597656
+        ]
+      ],
+      "episode": 28,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 60.000022888183594,
+          "steps": 12
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 60.000022888183594,
+          "steps": 12
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "e4df5887e3acd24950e25de3657fa0930ebfb5ccff30bbef60a7e9003f273a4c",
+      "scenario_seed": 852059,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        136.3207244873047,
+        57.36894989013672
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        88.54671478271484,
+        129.82781982421875
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852060",
+      "correct_hub_endpoint": 0,
+      "endpoint_positions": [
+        [
+          67.85651397705078,
+          88.21684265136719
+        ],
+        [
+          67.0846939086914,
+          196.34341430664062
+        ],
+        [
+          130.45773315429688,
+          67.19215393066406
+        ],
+        [
+          126.83203125,
+          171.5290069580078
+        ]
+      ],
+      "episode": 29,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 45.000020027160645,
+          "steps": 9
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 45.000020027160645,
+          "steps": 9
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "8011b08a9080a44b70783d5b36da45919796de70b79caa0479ca707fdd179a09",
+      "scenario_seed": 852060,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        147.0661163330078,
+        154.08761596679688
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        44.777408599853516,
+        26.975099563598633
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852062",
+      "correct_hub_endpoint": 0,
+      "endpoint_positions": [
+        [
+          84.05879211425781,
+          129.50381469726562
+        ],
+        [
+          64.6227035522461,
+          172.2399444580078
+        ],
+        [
+          145.29769897460938,
+          60.34001159667969
+        ],
+        [
+          139.10260009765625,
+          154.96807861328125
+        ]
+      ],
+      "episode": 31,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 119.99994230270386,
+          "steps": 24
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 119.99994230270386,
+          "steps": 24
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "cc6078645b95a48ea17032827fc4640ee515ad5278b362899c0588feb086fc96",
+      "scenario_seed": 852062,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        135.89515686035156,
+        185.38616943359375
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        77.98442840576172,
+        141.80523681640625
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852064",
+      "correct_hub_endpoint": 0,
+      "endpoint_positions": [
+        [
+          61.927982330322266,
+          179.1785888671875
+        ],
+        [
+          84.53266143798828,
+          40.25020217895508
+        ],
+        [
+          137.94540405273438,
+          59.10379409790039
+        ],
+        [
+          143.02264404296875,
+          145.7998809814453
+        ]
+      ],
+      "episode": 33,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 50.00004291534424,
+          "steps": 10
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 50.00004291534424,
+          "steps": 10
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "eded5f84c8c556a795393a83de060d2bcef1125b206b826a84640dedeeceb56e",
+      "scenario_seed": 852064,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        175.34481811523438,
+        78.37359619140625
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        48.459537506103516,
+        107.05635833740234
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852065",
+      "correct_hub_endpoint": 0,
+      "endpoint_positions": [
+        [
+          91.45874786376953,
+          96.34040832519531
+        ],
+        [
+          79.74396514892578,
+          170.38417053222656
+        ],
+        [
+          146.4810028076172,
+          96.38590240478516
+        ],
+        [
+          138.177001953125,
+          155.36782836914062
+        ]
+      ],
+      "episode": 34,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 84.99998998641968,
+          "steps": 17
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 84.99998998641968,
+          "steps": 17
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "2e000168ce43ad96dbd80604df9d3cbe8ecd6821d69dde77084cdbc43f1b21ea",
+      "scenario_seed": 852065,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        158.08319091796875,
+        31.62393569946289
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        88.97462463378906,
+        161.67892456054688
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852066",
+      "correct_hub_endpoint": 0,
+      "endpoint_positions": [
+        [
+          65.55049133300781,
+          125.4969482421875
+        ],
+        [
+          86.10370635986328,
+          71.59180450439453
+        ],
+        [
+          146.65512084960938,
+          49.772918701171875
+        ],
+        [
+          143.6387481689453,
+          159.3035430908203
+        ]
+      ],
+      "episode": 35,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 70.00000286102295,
+          "steps": 14
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 70.00000286102295,
+          "steps": 14
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "7c5251ce09eceeaed02d5899f58e0d8e32b1f8bd9476227f77853a8bc9d679dd",
+      "scenario_seed": 852066,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        193.56927490234375,
+        127.87340545654297
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        55.12860107421875,
+        81.96979522705078
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852068",
+      "correct_hub_endpoint": 0,
+      "endpoint_positions": [
+        [
+          55.7022590637207,
+          39.563053131103516
+        ],
+        [
+          73.2130355834961,
+          150.4740447998047
+        ],
+        [
+          154.2614288330078,
+          28.10323715209961
+        ],
+        [
+          146.19461059570312,
+          175.84622192382812
+        ]
+      ],
+      "episode": 37,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 50.000009536743164,
+          "steps": 10
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 50.000009536743164,
+          "steps": 10
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "aa8af210457e737d1bf4b75abef2c9311ef609c3f5e7396c3454d8891eeaf435",
+      "scenario_seed": 852068,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        159.4660186767578,
+        149.2943115234375
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        61.43385696411133,
+        94.84354400634766
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852069",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          56.30557632446289,
+          186.7769012451172
+        ],
+        [
+          96.2292709350586,
+          88.42693328857422
+        ],
+        [
+          162.28125,
+          95.90290832519531
+        ],
+        [
+          141.95541381835938,
+          199.3079833984375
+        ]
+      ],
+      "episode": 38,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 59.99999666213989,
+          "steps": 12
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 59.99999666213989,
+          "steps": 12
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "c4b49e7b42703f26b6a4a029230b56cc41130633a3539292e6ee43ae343c247e",
+      "scenario_seed": 852069,
+      "search_order": [
+        1,
+        0
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        159.93128967285156,
+        56.44948959350586
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        30.775850296020508,
+        87.07422637939453
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852070",
+      "correct_hub_endpoint": 0,
+      "endpoint_positions": [
+        [
+          68.98210906982422,
+          106.82782745361328
+        ],
+        [
+          87.30493927001953,
+          163.7493896484375
+        ],
+        [
+          167.56202697753906,
+          83.3315658569336
+        ],
+        [
+          141.12303161621094,
+          145.08555603027344
+        ]
+      ],
+      "episode": 39,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 69.99996137619019,
+          "steps": 14
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 69.99996137619019,
+          "steps": 14
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "ed34d6c2b045e17ac6bc1da80407262ef778b3e9e5a0a024d7bfb6f1c09bfe3c",
+      "scenario_seed": 852070,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        200.22879028320312,
+        129.4900360107422
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        49.73820495605469,
+        122.87891387939453
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852071",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          86.21405792236328,
+          156.076171875
+        ],
+        [
+          79.08509063720703,
+          98.93197631835938
+        ],
+        [
+          151.27630615234375,
+          62.54355239868164
+        ],
+        [
+          141.0778045654297,
+          136.85040283203125
+        ]
+      ],
+      "episode": 40,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 50.0,
+          "steps": 10
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 50.0,
+          "steps": 10
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "492abadad6bb134555e755586648d4bea12d17f9657655a3efaad6448fae8ec3",
+      "scenario_seed": 852071,
+      "search_order": [
+        1,
+        0
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        199.29946899414062,
+        63.089744567871094
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        62.536922454833984,
+        82.40249633789062
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852072",
+      "correct_hub_endpoint": 0,
+      "endpoint_positions": [
+        [
+          80.50990295410156,
+          46.840518951416016
+        ],
+        [
+          91.81033325195312,
+          166.13772583007812
+        ],
+        [
+          130.89743041992188,
+          81.01121520996094
+        ],
+        [
+          165.3183135986328,
+          198.83920288085938
+        ]
+      ],
+      "episode": 41,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 49.999966621398926,
+          "steps": 10
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 49.999966621398926,
+          "steps": 10
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "2058afb04c195ee418121921211fd712918267b2ad6e5fc8081c2b8a0ed6cc64",
+      "scenario_seed": 852072,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        182.0576629638672,
+        164.81089782714844
+      ],
+      "target_rank": 1,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        64.7312240600586,
+        152.03257751464844
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852031",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          84.52842712402344,
+          174.9235076904297
+        ],
+        [
+          70.58805084228516,
+          120.7618637084961
+        ],
+        [
+          137.04476928710938,
+          83.23902130126953
+        ],
+        [
+          171.01646423339844,
+          146.0523223876953
+        ]
+      ],
+      "episode": 0,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 125.00002193450928,
+          "steps": 25
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 45.000022411346436,
+          "steps": 9
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "1cec19c0416c198c60f3f85162054f00b1e15933cada6cc493922f12953aa031",
+      "scenario_seed": 852031,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        176.9864044189453,
+        61.773990631103516
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        86.93622589111328,
+        146.1626434326172
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852032",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          56.5467643737793,
+          147.328369140625
+        ],
+        [
+          72.94194793701172,
+          96.57980346679688
+        ],
+        [
+          149.3002166748047,
+          83.32097625732422
+        ],
+        [
+          164.13609313964844,
+          133.84059143066406
+        ]
+      ],
+      "episode": 1,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 119.99998235702515,
+          "steps": 24
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 55.00001287460327,
+          "steps": 11
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "db6592af6f65298985876754c23b70c4da5be378f4ad451a32d0eb1075e6aec7",
+      "scenario_seed": 852032,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        197.4452362060547,
+        142.7969970703125
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        31.271738052368164,
+        87.73593139648438
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852034",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          88.84274291992188,
+          28.10795021057129
+        ],
+        [
+          82.71639251708984,
+          156.9754638671875
+        ],
+        [
+          170.83372497558594,
+          23.40633201599121
+        ],
+        [
+          145.1866912841797,
+          163.90078735351562
+        ]
+      ],
+      "episode": 3,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 239.99995851516724,
+          "steps": 48
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 89.99999332427979,
+          "steps": 18
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "53d7da2c65d7a3c6504a30a2d85f535a597dc5ea36ae779015bf6c092e2a52a1",
+      "scenario_seed": 852034,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        180.6707305908203,
+        178.47462463378906
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        91.61102294921875,
+        139.2742156982422
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852035",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          57.038455963134766,
+          123.61463165283203
+        ],
+        [
+          77.714111328125,
+          50.88618469238281
+        ],
+        [
+          140.57217407226562,
+          50.623390197753906
+        ],
+        [
+          135.83663940429688,
+          160.68800354003906
+        ]
+      ],
+      "episode": 4,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 175.00010871887207,
+          "steps": 35
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 115.00005626678467,
+          "steps": 23
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "547ff43b586f6bfda26f71dc68f87dda458b0a0b022d98a49260f132e24a3734",
+      "scenario_seed": 852035,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        196.15284729003906,
+        181.9038848876953
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        43.5704345703125,
+        165.60073852539062
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852039",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          55.24825668334961,
+          135.29238891601562
+        ],
+        [
+          94.45014953613281,
+          167.77023315429688
+        ],
+        [
+          159.97926330566406,
+          54.91000747680664
+        ],
+        [
+          156.8704833984375,
+          187.3309783935547
+        ]
+      ],
+      "episode": 8,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 164.9999885559082,
+          "steps": 33
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 85.00000333786011,
+          "steps": 17
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "d660870101866d800faa1f4ad664c4844ae2fe49c41f212b1e581ad8313ecf86",
+      "scenario_seed": 852039,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        193.34164428710938,
+        137.7554473876953
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        44.94900131225586,
+        125.6070556640625
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852040",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          71.6976318359375,
+          187.46971130371094
+        ],
+        [
+          52.263824462890625,
+          43.183067321777344
+        ],
+        [
+          149.92300415039062,
+          78.90178680419922
+        ],
+        [
+          146.6495819091797,
+          143.36871337890625
+        ]
+      ],
+      "episode": 9,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 245.0,
+          "steps": 49
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 89.99998188018799,
+          "steps": 18
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "3fe86ba5f5ca2f094b3605a6432cec43a476982b66821f157832b71038e3ea13",
+      "scenario_seed": 852040,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        176.20098876953125,
+        54.66931915283203
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        25.26498794555664,
+        24.700288772583008
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852043",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          72.11456298828125,
+          93.09546661376953
+        ],
+        [
+          95.71785736083984,
+          195.12550354003906
+        ],
+        [
+          152.7618408203125,
+          40.38222122192383
+        ],
+        [
+          165.79408264160156,
+          136.15774536132812
+        ]
+      ],
+      "episode": 12,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 234.99997806549072,
+          "steps": 47
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 199.9999918937683,
+          "steps": 40
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "fb754a0932111ffe62025093c043679c3b49b18fe649f0d769d0503ed0782b16",
+      "scenario_seed": 852043,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        168.93768310546875,
+        79.846923828125
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        32.162994384765625,
+        141.07884216308594
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852044",
+      "correct_hub_endpoint": 0,
+      "endpoint_positions": [
+        [
+          72.05303955078125,
+          57.757022857666016
+        ],
+        [
+          90.3275375366211,
+          135.3954315185547
+        ],
+        [
+          130.64956665039062,
+          44.303314208984375
+        ],
+        [
+          156.98165893554688,
+          136.16253662109375
+        ]
+      ],
+      "episode": 13,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            1,
+            0
+          ],
+          "route_length": 174.99997520446777,
+          "steps": 35
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 104.99997806549072,
+          "steps": 21
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "0de90f542439ca07c16b5ce00f7c5e0bf646c21a40febbb52c85a03a6818aa15",
+      "scenario_seed": 852044,
+      "search_order": [
+        1,
+        0
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        176.50086975097656,
+        42.74077224731445
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        75.17381286621094,
+        128.5724334716797
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852046",
+      "correct_hub_endpoint": 0,
+      "endpoint_positions": [
+        [
+          64.93182373046875,
+          188.0001220703125
+        ],
+        [
+          88.0278091430664,
+          82.69515991210938
+        ],
+        [
+          143.04214477539062,
+          69.9615249633789
+        ],
+        [
+          167.9801025390625,
+          127.39573669433594
+        ]
+      ],
+      "episode": 15,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": 2,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            1,
+            0
+          ],
+          "route_length": 214.99991703033447,
+          "steps": 43
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 94.99991178512573,
+          "steps": 19
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "3956749239fa6ee24bc836d26468b63a5a4b880651f231aa14a9495883f135bb",
+      "scenario_seed": 852046,
+      "search_order": [
+        1,
+        0
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        184.39279174804688,
+        181.96762084960938
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        62.92973327636719,
+        194.63931274414062
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852047",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          51.62822341918945,
+          166.75955200195312
+        ],
+        [
+          79.1236572265625,
+          74.09375
+        ],
+        [
+          164.11671447753906,
+          90.42572784423828
+        ],
+        [
+          154.8804168701172,
+          134.87332153320312
+        ]
+      ],
+      "episode": 16,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 160.0000238418579,
+          "steps": 32
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 120.00006055831909,
+          "steps": 24
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "872435db537968ad70997ead7851d45e6cb21b08daf38e49b7e73471aafc9842",
+      "scenario_seed": 852047,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        185.15301513671875,
+        130.25425720214844
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        80.97447204589844,
+        76.41984558105469
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852048",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          86.75497436523438,
+          30.440460205078125
+        ],
+        [
+          65.7164306640625,
+          149.61643981933594
+        ],
+        [
+          127.72053527832031,
+          27.490068435668945
+        ],
+        [
+          127.45063781738281,
+          153.13201904296875
+        ]
+      ],
+      "episode": 17,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 200.00000047683716,
+          "steps": 40
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 79.9999942779541,
+          "steps": 16
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "3e479c736e23f22597b0a0df11e68f79555e6484e793b9c5d910beb428c9d5fc",
+      "scenario_seed": 852048,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        149.01409912109375,
+        56.52338409423828
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        40.51191711425781,
+        54.014095306396484
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852049",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          84.74858856201172,
+          31.969219207763672
+        ],
+        [
+          79.91187286376953,
+          166.95999145507812
+        ],
+        [
+          158.54391479492188,
+          60.011756896972656
+        ],
+        [
+          140.5048370361328,
+          157.76119995117188
+        ]
+      ],
+      "episode": 18,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 240.00000619888306,
+          "steps": 48
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 144.99999713897705,
+          "steps": 29
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "6ef3554bebcf8a46a88542225b778a0cf811b55c6fcb807df30005e467fd6b0c",
+      "scenario_seed": 852049,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        131.2804718017578,
+        82.33963012695312
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        83.80580139160156,
+        161.13633728027344
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852052",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          96.47876739501953,
+          133.23745727539062
+        ],
+        [
+          90.16742706298828,
+          51.67856216430664
+        ],
+        [
+          156.81356811523438,
+          53.951873779296875
+        ],
+        [
+          158.9199981689453,
+          140.1753387451172
+        ]
+      ],
+      "episode": 21,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 174.9999542236328,
+          "steps": 35
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 139.9999771118164,
+          "steps": 28
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "884bcb8aebdaf5a0f0b1429d5d1b703f9666af7986cde9e40a29019e15ab9dfa",
+      "scenario_seed": 852052,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        155.0035400390625,
+        192.9279022216797
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        66.85968017578125,
+        147.5485076904297
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852053",
+      "correct_hub_endpoint": 0,
+      "endpoint_positions": [
+        [
+          87.34459686279297,
+          103.70494842529297
+        ],
+        [
+          77.35310363769531,
+          187.8953094482422
+        ],
+        [
+          129.63487243652344,
+          89.59420013427734
+        ],
+        [
+          145.92906188964844,
+          178.4138641357422
+        ]
+      ],
+      "episode": 22,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            1,
+            0
+          ],
+          "route_length": 159.99997901916504,
+          "steps": 32
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 49.99999761581421,
+          "steps": 10
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "eea796800f478a0d0780d4767353d38ddd0da252468450684b896fd72720fdd3",
+      "scenario_seed": 852053,
+      "search_order": [
+        1,
+        0
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        171.3616485595703,
+        198.24050903320312
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        32.97797775268555,
+        151.31028747558594
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852061",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          61.261512756347656,
+          101.67601013183594
+        ],
+        [
+          61.89014434814453,
+          54.396114349365234
+        ],
+        [
+          134.66004943847656,
+          60.091041564941406
+        ],
+        [
+          142.2251434326172,
+          150.50001525878906
+        ]
+      ],
+      "episode": 30,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 159.99996709823608,
+          "steps": 32
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 129.99994707107544,
+          "steps": 26
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "7db739cecfc7e148d7fca0fdf09dd7676781c1bac3d8d24cbe47585e53741ad1",
+      "scenario_seed": 852061,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        197.0680694580078,
+        64.9520492553711
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        81.64290618896484,
+        130.51177978515625
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852063",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          83.56732940673828,
+          83.84213256835938
+        ],
+        [
+          80.68347930908203,
+          191.88912963867188
+        ],
+        [
+          145.28602600097656,
+          68.0064468383789
+        ],
+        [
+          148.7363739013672,
+          164.26516723632812
+        ]
+      ],
+      "episode": 32,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 189.99994087219238,
+          "steps": 38
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 69.99999237060547,
+          "steps": 14
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "01e6fba70e7402e4116e4df072b444ebdcf61ab29db4707eafaf5a892e884519",
+      "scenario_seed": 852063,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        162.8983154296875,
+        194.4575958251953
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        28.195810317993164,
+        153.00424194335938
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852067",
+      "correct_hub_endpoint": 0,
+      "endpoint_positions": [
+        [
+          70.5859146118164,
+          197.5968017578125
+        ],
+        [
+          60.33039093017578,
+          122.21178436279297
+        ],
+        [
+          158.1702880859375,
+          89.54298400878906
+        ],
+        [
+          151.0137939453125,
+          194.89598083496094
+        ]
+      ],
+      "episode": 36,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": 1,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            1,
+            0
+          ],
+          "route_length": 184.99998569488525,
+          "steps": 37
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            0
+          ],
+          "route_length": 100.00000238418579,
+          "steps": 20
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "041411e42c68a3e009259a768acd506bc2f57d32fb36ba622a3cc26892c9ec3b",
+      "scenario_seed": 852067,
+      "search_order": [
+        1,
+        0
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        170.7075653076172,
+        30.651884078979492
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        65.65410614013672,
+        85.78462982177734
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852073",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          90.70623779296875,
+          123.50224304199219
+        ],
+        [
+          70.03172302246094,
+          24.001388549804688
+        ],
+        [
+          169.77685546875,
+          34.27254104614258
+        ],
+        [
+          157.9076385498047,
+          126.34850311279297
+        ]
+      ],
+      "episode": 42,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": 0,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 164.99997234344482,
+          "steps": 33
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 54.99998950958252,
+          "steps": 11
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "05b5ae0cbe6a7cb609419063cf9469068a1fa9171695988c4e0a63907aaa8cb7",
+      "scenario_seed": 852073,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        197.6997528076172,
+        36.95920181274414
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        74.63896942138672,
+        72.62554168701172
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852074",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          56.558109283447266,
+          47.73206329345703
+        ],
+        [
+          61.49775314331055,
+          150.64398193359375
+        ],
+        [
+          159.6196746826172,
+          28.741561889648438
+        ],
+        [
+          159.89825439453125,
+          138.9368896484375
+        ]
+      ],
+      "episode": 43,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 175.00003004074097,
+          "steps": 35
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 90.00002384185791,
+          "steps": 18
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "d363627c078c6d78195d182dce9741cdbbc6df6180d912374a1583ec0a526b21",
+      "scenario_seed": 852074,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        160.4671630859375,
+        57.11225509643555
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        42.373748779296875,
+        150.97097778320312
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852076",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          97.15911102294922,
+          115.66159057617188
+        ],
+        [
+          58.01401138305664,
+          45.61591339111328
+        ],
+        [
+          163.799072265625,
+          24.750778198242188
+        ],
+        [
+          131.95455932617188,
+          196.16847229003906
+        ]
+      ],
+      "episode": 45,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 204.99996376037598,
+          "steps": 41
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 145.00004720687866,
+          "steps": 29
+        }
+      },
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "84309d0ccca7fe286389b79dc1277937f8db1295cb86605d9564037b29b1c26a",
+      "scenario_seed": 852076,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        155.84617614746094,
+        139.64947509765625
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        36.98294448852539,
+        119.17141723632812
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852082",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          95.1067886352539,
+          155.0574188232422
+        ],
+        [
+          80.87145233154297,
+          30.599863052368164
+        ],
+        [
+          141.03517150878906,
+          69.4737319946289
+        ],
+        [
+          139.32699584960938,
+          142.13787841796875
+        ]
+      ],
+      "episode": 51,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 224.99999856948853,
+          "steps": 45
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 105.00003290176392,
+          "steps": 21
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "542aae97d6ed0a7d73f7e71b4e923cacc5dcd74d7280705bb9521e0b57beae99",
+      "scenario_seed": 852082,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        155.27728271484375,
+        95.83570098876953
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        95.72886657714844,
+        135.29815673828125
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852083",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          63.35457229614258,
+          95.87440490722656
+        ],
+        [
+          51.84619903564453,
+          198.40187072753906
+        ],
+        [
+          163.71566772460938,
+          71.41167449951172
+        ],
+        [
+          153.50802612304688,
+          198.20553588867188
+        ]
+      ],
+      "episode": 52,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 204.99999284744263,
+          "steps": 41
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 99.99993133544922,
+          "steps": 20
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "66e0b717b99eaae991aeeb843578d9c5785f1d8c7464033eb4ae75eacc330925",
+      "scenario_seed": 852083,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        138.66525268554688,
+        89.44950866699219
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        90.26715087890625,
+        100.74180603027344
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852085",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          97.18965911865234,
+          60.038021087646484
+        ],
+        [
+          88.65961456298828,
+          177.9317626953125
+        ],
+        [
+          140.42657470703125,
+          39.47549057006836
+        ],
+        [
+          129.6596221923828,
+          167.31439208984375
+        ]
+      ],
+      "episode": 54,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 215.00001573562622,
+          "steps": 43
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 104.999990940094,
+          "steps": 21
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "579980710c55cd777f336090405c30ad999cc2167be7c0e16ee2e34aec5df5e3",
+      "scenario_seed": 852085,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        197.8941192626953,
+        58.400665283203125
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        40.41279983520508,
+        130.29444885253906
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852088",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          86.2305908203125,
+          144.5524444580078
+        ],
+        [
+          51.66594314575195,
+          188.34486389160156
+        ],
+        [
+          156.20101928710938,
+          41.15766906738281
+        ],
+        [
+          143.44667053222656,
+          143.95367431640625
+        ]
+      ],
+      "episode": 57,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 140.00000143051147,
+          "steps": 28
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 74.9999418258667,
+          "steps": 15
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "9932601308a93d105da05b268c1fd355c6b0a55104eec821bd3328a1cb067623",
+      "scenario_seed": 852088,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        176.25498962402344,
+        79.55181121826172
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    },
+    {
+      "agent_position": [
+        42.84418869018555,
+        114.05936431884766
+      ],
+      "agent_render_radius": 9.0,
+      "case_id": "tr2-seed-852095",
+      "correct_hub_endpoint": 1,
+      "endpoint_positions": [
+        [
+          58.78837203979492,
+          71.75726318359375
+        ],
+        [
+          87.00390625,
+          161.3218536376953
+        ],
+        [
+          138.50001525878906,
+          63.18463897705078
+        ],
+        [
+          136.22450256347656,
+          200.33197021484375
+        ]
+      ],
+      "episode": 64,
+      "landing_offset": 14.0,
+      "layout": "hub_left_2_leaves_right",
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20,
+      "media_slot": null,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "oracle": {
+        "hidden": {
+          "hub_entry_trace": [
+            0,
+            1
+          ],
+          "route_length": 190.0000262260437,
+          "steps": 38
+        },
+        "paired_color": {
+          "hub_entry_trace": [
+            1
+          ],
+          "route_length": 80.00004243850708,
+          "steps": 16
+        }
+      },
+      "pairing": 1,
+      "rearm_distance": 28.0,
+      "scenario_hash": "4983b97a40608366587d177533c69d72ac20485a0077c62ecb1ab89ca7c897d9",
+      "scenario_seed": 852095,
+      "search_order": [
+        0,
+        1
+      ],
+      "speed": 5.0,
+      "target_leaf": 0,
+      "target_position": [
+        176.23526000976562,
+        91.37886047363281
+      ],
+      "target_rank": 2,
+      "trigger_radius": 10.0
+    }
+  ],
+  "episodes_per_rank": 25,
+  "eval_hash": "2047ad9dda3b45875eeb02315d69992da401a08e8ec8930da176208a4576a390",
+  "generation": {
+    "agent_render_radius": 9.0,
+    "agent_speed": 5.0,
+    "environment": "swm/TunnelRooms-v1",
+    "episodes_per_rank": 25,
+    "eval_budget": 400,
+    "marker_appearance": {
+      "marker_height": 20,
+      "marker_style": "shape_cues",
+      "marker_width": 20
+    },
+    "num_leaves": 2,
+    "sampling": "natural_then_stratified_by_target_rank",
+    "scenario_constraints": {},
+    "scenario_seed": 852031,
+    "schema_version": 2,
+    "shape_raster": {
+      "marker_rgb": [
+        62,
+        94,
+        112
+      ],
+      "placement": "clamp_complete_mask_to_visible_room_floor",
+      "shape_mask_sha256": {
+        "diamond": "64c86e66b7b7cd468c68bba39420a5ab983bd3a4b6c46c7e8c24b6668f2b2b67",
+        "star": "dbf840cbe6cc4a0cc8642ecf5b7e54e0464a2456a872998655fe899edf2085dc",
+        "triangle": "4323790070e65716ab3122c6c494a3cbefdc3c0c42cc867a4a13e32e38498c5e"
+      },
+      "shape_order": [
+        "triangle",
+        "diamond",
+        "star"
+      ],
+      "shape_raster_spec": {
+        "diamond": {
+          "center": [
+            9.5,
+            9.5
+          ],
+          "manhattan_radius": 9.5
+        },
+        "star": {
+          "center": [
+            9.5,
+            9.5
+          ],
+          "inner_radius": 5.5,
+          "num_points": 5,
+          "outer_radius": 9.8,
+          "start_angle_radians": -1.5707963267948966
+        },
+        "triangle": {
+          "vertices": [
+            [
+              8.5,
+              0.0
+            ],
+            [
+              0.0,
+              17.0
+            ],
+            [
+              17.0,
+              17.0
+            ]
+          ]
+        }
+      },
+      "shape_sizes": {
+        "diamond": [
+          20,
+          20
+        ],
+        "star": [
+          20,
+          20
+        ],
+        "triangle": [
+          18,
+          18
+        ]
+      }
+    },
+    "wandb_videos_per_rank": 3
+  },
+  "num_leaves": 2,
+  "num_scenarios": 50,
+  "schema_version": 2,
+  "wandb_videos_per_rank": 3
+}

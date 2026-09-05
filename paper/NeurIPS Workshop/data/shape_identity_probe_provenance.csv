@@ -1,7 +1,0 @@
-experiment_id,dataset,dataset_sha256,model_recipe,training_seed,epochs,context_frames,prediction_frames,frameskip,probe_fit_episodes,probe_validation_episodes,probe_test_episodes,ridge_alpha,source_commit,status
-S001,TR2 Shape,7bea16d913f8f8fd8ea47d13277b8d07f71bb6efe4f307efdc57403b405efb94,"DINO-WM, learned MLP token",3072,10,3,1,5,512,128,256,10,8353c2b8835da17af3335aff07cf2dcc29394378,complete
-S002,TR2 Shape,7bea16d913f8f8fd8ea47d13277b8d07f71bb6efe4f307efdc57403b405efb94,"PLDM, spatial 8x8",3072,10,3,1,5,512,128,256,10,8353c2b8835da17af3335aff07cf2dcc29394378,complete
-S003,TR2 Shape,7bea16d913f8f8fd8ea47d13277b8d07f71bb6efe4f307efdc57403b405efb94,"LeWM, spatial 8x8 + IDM 3.125",3072,10,3,1,5,512,128,256,10,8353c2b8835da17af3335aff07cf2dcc29394378,complete
-S004,TR3 Shape,1b73c2c5d53ed75a2686ca23c89a9877bdb361a4aa27d68a6e616056ddef315a,"DINO-WM, learned MLP token",3072,10,3,1,5,512,128,256,10,8353c2b8835da17af3335aff07cf2dcc29394378,complete
-S005,TR3 Shape,1b73c2c5d53ed75a2686ca23c89a9877bdb361a4aa27d68a6e616056ddef315a,"PLDM, spatial 8x8",3072,10,3,1,5,512,128,256,10,8353c2b8835da17af3335aff07cf2dcc29394378,complete
-S006,TR3 Shape,1b73c2c5d53ed75a2686ca23c89a9877bdb361a4aa27d68a6e616056ddef315a,"LeWM, spatial 8x8 + IDM 3.125",3072,10,3,1,5,512,128,256,10,8353c2b8835da17af3335aff07cf2dcc29394378,complete

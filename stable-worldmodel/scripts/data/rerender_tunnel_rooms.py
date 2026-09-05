@@ -122,7 +122,12 @@ def run_from_config(cfg: DictConfig) -> dict[str, Any]:
     sidecar_settings = SidecarSettings(**settings)
     output_root = Path(cfg.output_root).resolve()
     dataset_root = output_root / 'datasets'
-    runtime_root = output_root / 'runs' / PROFILE_RUNTIME_ROOT[profile]
+    runtime_name = (
+        'tunnel_rooms_palette'
+        if 'palette' in cfg
+        else PROFILE_RUNTIME_ROOT[profile]
+    )
+    runtime_root = output_root / 'runs' / runtime_name
     conditions = [str(value) for value in cfg.conditions]
     results: dict[str, Any] = {}
 
@@ -134,7 +139,7 @@ def run_from_config(cfg: DictConfig) -> dict[str, Any]:
         with h5py.File(first_source, 'r', swmr=True) as source_file:
             lengths, _offsets = validate_episode_structure(source_file)
         scenarios, source_manifest_hash = _upgrade_scenarios(
-            profile, group, scenario_manifest, len(lengths)
+            profile, group, scenario_manifest, len(lengths), cfg.get('palette')
         )
         render_manifest_hash = sha256_file(scenario_manifest)
         records: dict[str, dict[str, Any]] = {}
@@ -209,7 +214,12 @@ def finalize_provenance(cfg: DictConfig) -> Path:
     """Verify every configured artifact before publishing a root manifest."""
     profile = _validate_config(cfg)
     output_root = Path(cfg.output_root).resolve()
-    runtime_root = output_root / 'runs' / PROFILE_RUNTIME_ROOT[profile]
+    runtime_name = (
+        'tunnel_rooms_palette'
+        if 'palette' in cfg
+        else PROFILE_RUNTIME_ROOT[profile]
+    )
+    runtime_root = output_root / 'runs' / runtime_name
     groups: dict[str, Any] = {}
 
     for group_name, group in cfg.leaf_groups.items():
@@ -299,6 +309,34 @@ def _validate_config(cfg: DictConfig) -> str:
     root_keys = COMMON_ROOT_KEYS
     if profile == SHAPE_PROFILE:
         root_keys = root_keys | {'shape_order', 'renderer_source_revision'}
+    if 'palette' in cfg:
+        if profile != FILLED_PROFILE or list(cfg.conditions) != [
+            'paired_color'
+        ]:
+            raise ValueError(
+                'Palette overrides require filled paired_color rendering.'
+            )
+        root_keys = root_keys | {'palette'}
+        _require_exact_keys(cfg.palette, {'colors', 'names'}, 'palette')
+        for group in cfg.leaf_groups.values():
+            count = int(group.num_leaves)
+            colors, names = cfg.palette.colors, cfg.palette.names
+            if len(colors) != count or len(names) != count:
+                raise ValueError(
+                    'Palette must contain one color and name per leaf.'
+                )
+            if len(set(names)) != count or any(
+                not str(name) for name in names
+            ):
+                raise ValueError('Palette names must be nonempty and unique.')
+            if any(
+                len(rgb) != 3
+                or any(type(v) is not int or not 0 <= v <= 255 for v in rgb)
+                for rgb in colors
+            ):
+                raise ValueError(
+                    'Palette colors must be RGB integer triples in [0, 255].'
+                )
     _require_exact_keys(cfg, root_keys, f'{profile} root')
     _require_exact_keys(
         cfg.location_probe, LOCATION_PROBE_KEYS, 'location_probe'
@@ -349,7 +387,12 @@ def _require_exact_keys(
 
 def _profile_appearance(profile: str, cfg: DictConfig) -> dict[str, object]:
     if profile == FILLED_PROFILE:
-        return filled_appearance()
+        appearance = filled_appearance()
+        if 'palette' in cfg:
+            appearance['palette'] = OmegaConf.to_container(
+                cfg.palette, resolve=True
+            )
+        return appearance
     return shape_appearance(str(cfg.renderer_source_revision))
 
 
@@ -358,6 +401,7 @@ def _upgrade_scenarios(
     group: DictConfig,
     destination: Path,
     episode_count: int,
+    palette: DictConfig | None = None,
 ) -> tuple[list[dict[str, Any]], str]:
     options: dict[str, Any] = {}
     if profile == SHAPE_PROFILE:
@@ -371,6 +415,12 @@ def _upgrade_scenarios(
             },
             'retain_legacy_marker_fields': False,
         }
+    if palette is not None:
+        options['scenario_updates'] = {
+            'tunnel_colors': OmegaConf.to_container(palette.colors),
+            'tunnel_color_names': OmegaConf.to_container(palette.names),
+        }
+        options['sampling'] = 'exact_scenario_replay_with_palette_override'
     return upgrade_scenario_manifest(
         Path(group.source_manifest),
         destination,

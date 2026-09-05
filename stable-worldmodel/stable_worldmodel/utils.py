@@ -13,10 +13,6 @@ from typing import Any
 import numpy as np
 from loguru import logger as logging
 
-DEFAULT_CACHE_DIR = os.path.expanduser('~/.stable_worldmodel')
-HF_BASE_URL = 'https://huggingface.co'
-
-
 def exists(val: Any) -> bool:
     """Check if a value is not None."""
     return val is not None
@@ -55,7 +51,7 @@ def pretraining(
         raise ValueError(f'Script {script_path} does not exist.')
 
     logging.info(
-        f'🏃🏃🏃 Running pretraining script: {script_path} with args: {args} 🏃🏃🏃'
+        f'Running pretraining script: {script_path} with args: {args}'
     )
     env = os.environ.copy()
     env.setdefault('PYTHONUNBUFFERED', '1')
@@ -67,7 +63,7 @@ def pretraining(
     except subprocess.CalledProcessError as e:
         sys.exit(e.returncode)
 
-    logging.info('🏁🏁🏁 Pretraining script finished 🏁🏁🏁')
+    logging.info('Pretraining script finished')
 
 
 def flatten_dict(d: dict, parent_key: str = '', sep: str = '.') -> dict:

@@ -1,3 +1,0 @@
-numerical_regime,num_pairs,mean_replayed_minus_predicted_interaction,median_replayed_minus_predicted_interaction,paired_bootstrap95_low,paired_bootstrap95_high,bootstrap_seed,bootstrap_resamples,interpretation_scope
-CUDA BF16 autocast,60,0.6664187610149384,0.4288939833641052,0.28229270429660874,1.0548905066028225,20260903,20000,within-case difference between replayed-outcome and predicted-rollout semantic interactions
-CUDA FP32,60,0.6156374583641688,0.34229040145874023,0.21148174799978733,1.0241462219879023,20260903,20000,within-case difference between replayed-outcome and predicted-rollout semantic interactions

@@ -59,7 +59,7 @@ def test_detached_decoder_diagnostic_trains_only_the_head():
     output = {'emb': embedding, 'loss': embedding.new_zeros(())}
     batch = {'pixels': torch.randn(2, 3, 3, 28, 28)}
 
-    # 1. Decode the projected CLS history through the exact training helper.
+    # Decode the projected history through the training helper.
     add_decoder_diagnostic(
         module,
         output,
@@ -68,11 +68,11 @@ def test_detached_decoder_diagnostic_trains_only_the_head():
         cfg=_diagnostic_cfg(detach=True),
     )
 
-    # 2. The scalar diagnostic contributes at its configured weight.
+    # The diagnostic contributes at its configured weight.
     torch.testing.assert_close(output['loss'], 0.25 * output['decoder_loss'])
     output['loss'].backward()
 
-    # 3. Detachment protects the representation while training the decoder.
+    # Detachment protects the representation while training the decoder.
     assert embedding.grad is None
     assert any(
         parameter.grad is not None for parameter in module.decoder.parameters()
@@ -87,7 +87,7 @@ def test_decoder_diagnostic_rejects_a_token_axis():
     }
     batch = {'pixels': torch.randn(2, 3, 3, 28, 28)}
 
-    # Native baselines expose one real CLS vector per frame, never patch tokens.
+    # The decoder consumes one projected vector per frame.
     with pytest.raises(EinopsError):
         add_decoder_diagnostic(
             module,

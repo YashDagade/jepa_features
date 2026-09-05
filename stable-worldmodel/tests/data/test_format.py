@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import importlib
-from pathlib import Path
 
 import h5py
 import numpy as np
@@ -24,7 +23,6 @@ from stable_worldmodel.data import (
 )
 from stable_worldmodel.data.formats.folder import Folder, FolderWriter
 from stable_worldmodel.data.formats.hdf5 import HDF5, HDF5Writer
-from stable_worldmodel.data.formats.lerobot import LeRobot
 from stable_worldmodel.data.formats.video import Video, VideoWriter
 
 
@@ -60,7 +58,7 @@ def two_episodes():
 
 class TestRegistry:
     def test_builtins_registered(self):
-        assert {'hdf5', 'folder', 'video', 'lerobot'}.issubset(
+        assert {'hdf5', 'folder', 'video'}.issubset(
             set(list_formats())
         )
 
@@ -68,7 +66,6 @@ class TestRegistry:
         assert get_format('hdf5') is HDF5
         assert get_format('folder') is Folder
         assert get_format('video') is Video
-        assert get_format('lerobot') is LeRobot
 
     def test_get_format_unknown_raises(self):
         with pytest.raises(ValueError, match='unknown format'):
@@ -171,12 +168,6 @@ class TestDetect:
     def test_video_rejects_dir_without_mp4(self, tmp_path):
         (tmp_path / 'ep_len.npz').touch()
         assert Video.detect(tmp_path) is False
-
-    def test_lerobot_matches_scheme(self):
-        assert LeRobot.detect('lerobot://lerobot/pusht') is True
-        assert LeRobot.detect('lerobot/pusht') is False
-        assert LeRobot.detect('/some/path') is False
-        assert LeRobot.detect(Path('/some/path')) is False
 
     def test_detect_format_dispatches(self, tmp_path):
         h5 = tmp_path / 'a.h5'

@@ -1,0 +1,1 @@
+Anonymous PTA short submission. Run `make build` with Tectonic installed. main.pdf contains the main paper, references, and technical appendices. All required figure PDFs are included. No datasets or model checkpoints are needed to compile.

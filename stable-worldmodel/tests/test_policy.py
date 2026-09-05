@@ -141,10 +141,10 @@ def test_expert_policy_init():
 
 
 def test_expert_policy_get_action():
-    """Test ExpertPolicy.get_action method returns None (placeholder)."""
+    """An unspecified expert fails rather than returning an invalid action."""
     policy = ExpertPolicy()
-    result = policy.get_action({}, goal_obs={})
-    assert result is None
+    with pytest.raises(NotImplementedError):
+        policy.get_action({}, goal_obs={})
 
 
 ###########################

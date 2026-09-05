@@ -1,4 +1,4 @@
-"""Train the native global-CLS LeWM objective."""
+"""Train LeWM with Gaussian regularization and a configurable readout."""
 
 from functools import partial
 
@@ -15,8 +15,8 @@ from _global_jepa import (
 
 
 def lejepa_forward(self, batch, stage, cfg):
-    """Predict future CLS states and apply LeWM's SIGReg objective."""
-    # 1. Encode the clip and align each prediction with the next CLS state.
+    """Predict future projected states and apply LeWM's SIGReg objective."""
+    # Encode the clip and align each prediction with the next projected state.
     batch['action'] = torch.nan_to_num(batch['action'], 0.0)
     output = self.model.encode(batch)
     emb = output['emb']
@@ -26,7 +26,7 @@ def lejepa_forward(self, batch, stage, cfg):
     )
     target = emb[:, cfg.wm.num_preds :]
 
-    # 2. Preserve the published LeWM objective exactly: latent prediction plus
+    # Preserve the published LeWM objective exactly: latent prediction plus
     # SIGReg over the batch cloud independently at each timestep.
     output['pred_loss'] = (predicted - target).square().mean()
     output['sigreg_loss'] = self.sigreg(emb.transpose(0, 1))
@@ -34,7 +34,7 @@ def lejepa_forward(self, batch, stage, cfg):
         output['pred_loss'] + cfg.loss.sigreg.weight * output['sigreg_loss']
     )
 
-    # 3. Train the detached diagnostic decoder without changing model features.
+    # Train the detached diagnostic decoder without changing model features.
     add_decoder_diagnostic(self, output, batch, stage, cfg)
     log_losses(self, output, stage)
     return output

@@ -1,0 +1,45 @@
+defaults:
+- _self_
+hydra:
+  output_subdir: null
+  run:
+    dir: .
+output_root: ${oc.env:STABLEWM_HOME}
+profile: filled18x18
+groups:
+- two_leaf
+conditions:
+- paired_color
+chunk_rows: 32
+finalize_only: false
+agent_render_radius: 9
+location_probe:
+  fit_episodes: 512
+  validation_episodes: 128
+  test_episodes: 256
+  history_size: 3
+  frameskip: 5
+  num_preds: 1
+  seed: 180018
+leaf_groups:
+  two_leaf:
+    num_leaves: 2
+    source_manifest: ${output_root}/runs/tunnel_rooms_filled18x18/two_leaf/scenario_manifest.json
+    datasets:
+      paired_color:
+        source: ${output_root}/datasets/tunnel_room_color_filled18x18.h5
+        output_name: tunnel_room_palette.h5
+        source_sidecar_name: source_location_probe.h5
+        destination_sidecar_name: location_probe.h5
+        include_positional_targets: true
+palette:
+  colors:
+  - - 40
+    - 153
+    - 78
+  - - 83
+    - 98
+    - 216
+  names:
+  - green
+  - blue

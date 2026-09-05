@@ -1,5 +1,0 @@
-experiment_id,model,prediction_loss,representation_regularizer,regularizer_weight,regularizer_parameters,idm_weight,encoder_initialization,encoder_trainable,feature_output,config_sha256
-E024,LeWM,MSE,SIGReg,0.09,,3.125,random,True,spatial_8x8_global,e2f86ebfbf91de7008aeb6067dd159a31b6f5814510c759b66b29c3187daeea2
-E040,PLDM,MSE,VCReg,,variance=18;covariance=12;temporal_variance=0.7;alignment=0.2,0,random,True,spatial_8x8_global,e356a04a4d64b39f65351d69bafd7fd7e086b16d7731812d4ef83aef80071469
-E038,LpWM,MSE,Product-Laplace_InfoReg,10,mu=-1;p=1,3.125,random,True,spatial_8x8_global,c2062a5f8dc97522369c59d11ebd5274d0557a814e9563262c70e0848f1671ec
-E010,DINO-WM,MSE,,,,,DINOv2-pretrained,False,native_all_patch,f5d1ec0880ac5a317d6ca4b704b44dfe96c84af5f24c364e9da1095a764a31c5

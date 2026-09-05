@@ -46,7 +46,7 @@ def load_dataset(
     1. **Local path** — file or directory.
     2. **HuggingFace repo** (``<user>/<repo>``) — downloaded and cached under
        ``<cache_dir>/datasets/<user>--<repo>/``.
-    3. **Format scheme** (e.g. ``lerobot://lerobot/pusht``) — passed through
+    3. **Format scheme** (e.g. ``s3://bucket/dataset``) — passed through
        to the matching format unchanged.
 
     The format is auto-detected via :func:`detect_format` unless ``format`` is
@@ -73,7 +73,7 @@ def load_dataset(
 
     name = str(name)
 
-    # Scheme-prefixed identifiers (e.g. lerobot://...) bypass path resolution.
+    # Scheme-prefixed identifiers (e.g. s3://...) bypass path resolution.
     if '://' in name:
         if format is None:
             for fmt in FORMATS.values():

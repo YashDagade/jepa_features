@@ -12,13 +12,8 @@ import wandb
 from lightning.pytorch.callbacks import Callback
 
 from stable_worldmodel.probes import (
-    ChaserProbeDataset,
     FrozenLocationFeatures,
     LocationProbeSidecarDataset,
-    build_chaser_probe_samples,
-    extract_chaser_features,
-    fit_chaser_probes,
-    flatten_chaser_metrics,
 )
 from stable_worldmodel.probes.location import (
     REPRESENTATION_SOURCES,
@@ -49,18 +44,7 @@ class EpochProbeCallback(Callback):
         if self.every_n_epochs <= 0:
             raise ValueError('epoch_probe.every_n_epochs must be positive.')
 
-        if self.kind == 'chaser':
-            samples = build_chaser_probe_samples(
-                cfg.epoch_probe.dataset,
-                seed=int(cfg.epoch_probe.seed),
-                frameskip=int(cfg.data.dataset.frameskip),
-                history_size=int(cfg.wm.history_size),
-                samples_per_split=int(cfg.epoch_probe.samples_per_split),
-            )
-            self.samples = samples
-            self.dataset = ChaserProbeDataset(samples)
-            self.sample_sha256 = samples.sample_sha256
-        elif self.kind == 'tunnel_color':
+        if self.kind == 'tunnel_color':
             dataset = LocationProbeSidecarDataset(
                 cfg.epoch_probe.sidecar,
                 source_hdf5=cfg.epoch_probe.dataset,
@@ -107,58 +91,40 @@ class EpochProbeCallback(Callback):
     def _run(self, trainer, pl_module, *, epoch: int) -> None:
         extractor = self._extractor(pl_module)
         device = pl_module.device
-        if self.kind == 'chaser':
-            features = extract_chaser_features(
+        features, targets, splits, _sample_ids = (
+            extract_location_representation_features(
                 self.dataset,
                 extractor,
                 device=device,
                 batch_size=int(self.cfg.epoch_probe.batch_size),
                 num_workers=int(self.cfg.epoch_probe.num_workers),
-                autocast=bool(self.cfg.epoch_probe.autocast),
+                autocast_dtype=(
+                    torch.bfloat16
+                    if bool(self.cfg.epoch_probe.autocast)
+                    else None
+                ),
             )
-            result = fit_chaser_probes(
-                features,
-                self.samples,
-                ridge_alpha=float(self.cfg.epoch_probe.ridge_alpha),
+        )
+        _, result = fit_location_probe(
+            features,
+            targets,
+            splits,
+            self.dataset.metadata.target_names,
+            float(self.cfg.epoch_probe.ridge_alpha),
+            feature_sources=REPRESENTATION_SOURCES,
+        )
+        metrics = flatten_probe_metrics(result)
+        expected_color_metrics = {
+            f'location_probe_{stage}/test/color_binding/balanced_accuracy'
+            for stage in REPRESENTATION_SOURCES
+        }
+        missing = sorted(expected_color_metrics - set(metrics))
+        if missing:
+            raise ValueError(
+                'Tunnel color epoch probe is missing prespecified color '
+                f'metrics: {missing}.'
             )
-            metrics = flatten_chaser_metrics(result)
-            result_payload: Any = result
-        else:
-            features, targets, splits, _sample_ids = (
-                extract_location_representation_features(
-                    self.dataset,
-                    extractor,
-                    device=device,
-                    batch_size=int(self.cfg.epoch_probe.batch_size),
-                    num_workers=int(self.cfg.epoch_probe.num_workers),
-                    autocast_dtype=(
-                        torch.bfloat16
-                        if bool(self.cfg.epoch_probe.autocast)
-                        else None
-                    ),
-                )
-            )
-            _, result = fit_location_probe(
-                features,
-                targets,
-                splits,
-                self.dataset.metadata.target_names,
-                float(self.cfg.epoch_probe.ridge_alpha),
-                feature_sources=REPRESENTATION_SOURCES,
-            )
-            metrics = flatten_probe_metrics(result)
-            expected_color_metrics = {
-                f'location_probe_{stage}/test/color_binding/'
-                'balanced_accuracy'
-                for stage in REPRESENTATION_SOURCES
-            }
-            missing = sorted(expected_color_metrics - set(metrics))
-            if missing:
-                raise ValueError(
-                    'Tunnel color epoch probe is missing prespecified color '
-                    f'metrics: {missing}.'
-                )
-            result_payload = asdict(result)
+        result_payload = asdict(result)
 
         payload = {
             'schema_version': 1,

@@ -1,7 +1,0 @@
-dataset,model_recipe,current_identity_mae,predictor_identity_mae,current_position_mae,predictor_position_mae,identity_null_mae,training_seed,source_commit
-TR2 Shape,"DINO-WM, learned MLP token",27.02,26.84,7.47,7.36,31.16,3072,8353c2b8835da17af3335aff07cf2dcc29394378
-TR2 Shape,"PLDM, spatial 8x8",29.17,28.37,6.80,6.69,31.16,3072,8353c2b8835da17af3335aff07cf2dcc29394378
-TR2 Shape,"LeWM, spatial 8x8 + IDM 3.125",28.05,28.10,4.57,4.41,31.16,3072,8353c2b8835da17af3335aff07cf2dcc29394378
-TR3 Shape,"DINO-WM, learned MLP token",27.93,27.87,6.94,6.85,30.20,3072,8353c2b8835da17af3335aff07cf2dcc29394378
-TR3 Shape,"PLDM, spatial 8x8",31.18,30.76,3.18,3.20,30.20,3072,8353c2b8835da17af3335aff07cf2dcc29394378
-TR3 Shape,"LeWM, spatial 8x8 + IDM 3.125",29.99,29.80,2.66,2.56,30.20,3072,8353c2b8835da17af3335aff07cf2dcc29394378

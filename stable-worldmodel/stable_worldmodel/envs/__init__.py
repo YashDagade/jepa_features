@@ -1,4 +1,4 @@
-"""Gymnasium registration for the two controlled feature benchmarks."""
+"""Gymnasium registration for the Tunnel Rooms benchmark."""
 
 from gymnasium.envs import registration
 
@@ -16,10 +16,7 @@ register(
     id='swm/TunnelRooms-v1',
     entry_point='stable_worldmodel.envs.tunnel_rooms.env:TunnelRoomsEnv',
 )
-register(
-    id='swm/Chaser-v0',
-    entry_point='stable_worldmodel.envs.chaser.env:ChaserEnv',
-)
+
 
 
 __all__ = ['DISCRETE_WORLDS', 'WORLDS', 'register']

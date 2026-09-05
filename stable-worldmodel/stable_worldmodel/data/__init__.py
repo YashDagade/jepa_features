@@ -30,7 +30,6 @@ from . import formats as _formats  # noqa: F401
 # installed; absent ones are simply not bound at module level.
 from .formats.lance import LanceDataset, LanceWriter
 from .formats.folder import FolderDataset, FolderWriter, ImageDataset
-from .formats.lerobot import LeRobotAdapter
 
 try:
     from .formats.hdf5 import HDF5Dataset, HDF5Writer  # noqa: F401
@@ -52,7 +51,6 @@ __all__ = [
     'ImageDataset',
     'LanceDataset',
     'LanceWriter',
-    'LeRobotAdapter',
     'PercentileScaler',
     'ReplayBuffer',
     'WRITE_MODES',

@@ -119,12 +119,18 @@ class GradientSolver(torch.nn.Module):
                 (n_envs, 0, self.action_dim), dtype=self.dtype
             )
 
-        # fill remaining action
+        actions = actions.to(device=self.device, dtype=self.dtype)
+
+        # Pad an incomplete warm start to the configured horizon.
         remaining = self.horizon - actions.shape[1]
 
         if remaining > 0:
             new_actions = torch.zeros(
-                n_envs, remaining, self.action_dim, dtype=self.dtype
+                n_envs,
+                remaining,
+                self.action_dim,
+                dtype=self.dtype,
+                device=self.device,
             )
             actions = torch.cat([actions, new_actions], dim=1).to(self.device)
 
@@ -260,7 +266,12 @@ class GradientSolver(torch.nn.Module):
                 # Add noise
                 if self.action_noise > 0:
                     batch_init.data += (
-                        torch.randn(batch_init.shape, generator=self.torch_gen)
+                        torch.randn(
+                            batch_init.shape,
+                            generator=self.torch_gen,
+                            device=self.device,
+                            dtype=self.dtype,
+                        )
                         * self.action_noise
                     )
 

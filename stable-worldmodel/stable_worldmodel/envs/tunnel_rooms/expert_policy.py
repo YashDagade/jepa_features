@@ -236,7 +236,7 @@ class VisibleRoutingPolicy(TunnelSearchPolicy):
 
 
 class VonMisesCoveragePolicy(BasePolicy):
-    """PLDM-style correlated random coverage policy for offline data."""
+    """Correlated random coverage policy for offline data."""
 
     def __init__(
         self,

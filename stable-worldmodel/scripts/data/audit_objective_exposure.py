@@ -50,7 +50,7 @@ def classify_transitions(
     environment: str,
     teleport_threshold: float = 30.0,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    """Return approach/chase, teleport, and other masks over destination rows."""
+    """Return approach, teleport, and other masks over destination rows."""
     offsets, lengths = _episode_arrays(source)
     teleport = _teleport_rows(
         source, offsets, lengths, threshold=float(teleport_threshold)
@@ -65,18 +65,8 @@ def classify_transitions(
         episode_positions = positions[offset : offset + length]
         episode_events = np.flatnonzero(teleport[offset : offset + length])
 
-        if environment == 'chaser':
-            runner = source['pos_blue'][offset : offset + length].astype(
-                np.float32
-            )
-            distance = np.linalg.norm(episode_positions - runner, axis=1)
-            decreasing = np.diff(distance) < 0
-            rows = np.arange(offset + 1, offset + length)
-            dominant[rows] = decreasing & ~teleport[rows]
-            continue
-
         if environment != 'tunnel':
-            raise ValueError("environment must be 'tunnel' or 'chaser'.")
+            raise ValueError("environment must be 'tunnel'.")
 
         # 2. For Tunnel Rooms, the next entered portal is the privileged target
         # of each approach segment. Its final pre-teleport position estimates
@@ -170,7 +160,7 @@ def audit_dataset(
             environment=environment,
             teleport_threshold=teleport_threshold,
         )
-        label = 'chase' if environment == 'chaser' else 'approach'
+        label = 'approach'
         masks = {label: dominant, 'teleport': teleport, 'other': other}
         counts = {name: int(mask.sum()) for name, mask in masks.items()}
         transitions = int(sum(counts.values()))
@@ -204,7 +194,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('dataset', type=Path)
     parser.add_argument(
-        '--environment', choices=('tunnel', 'chaser'), required=True
+        '--environment', choices=('tunnel',), required=True
     )
     parser.add_argument('--frameskip', type=int, default=5)
     parser.add_argument('--num-steps', type=int, default=4)

@@ -25,6 +25,7 @@ from scripts.data.tunnel_rooms_paired_scenarios import (
     audit_active_rollout,
     audit_scenario_rollout,
     build_expert_policy,
+    build_stratified_eval_manifest,
 )
 from scripts.data.tunnel_rooms_paired_io import policy_settings
 
@@ -530,6 +531,7 @@ def _validate_audit_rows(
 def run(cfg: DictConfig) -> None:
     """Collect Tunnel Rooms datasets from the selected Hydra configuration."""
     collect_full_datasets(cfg)
+    build_stratified_eval_manifest(cfg, Path(cfg.output_dir))
     logging.success(
         f'Tunnel Rooms datasets written to '
         f'{Path(cfg.dataset_cache_dir) / "datasets"}'

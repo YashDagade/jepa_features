@@ -1,9 +1,0 @@
-metric,numerical_regime,condition,evidence_role,num_cases,num_correct_unique_best,correct_unique_best_rate,correct_rank_1_count,correct_rank_2_count,correct_rank_3_count,mean_margin,median_margin,interpretation_scope
-native_predicted_bf16,CUDA BF16 autocast,factual,prespecified_reproduction_gate,20,4,0.2,4,7,9,-1.7095507621765136,-1.4464614391326904,reproduces the frozen primary action-margin result exactly
-native_predicted_bf16,CUDA BF16 autocast,counterfactual,descriptive_focal_slice,20,6,0.3,6,4,10,-1.7532650351524353,-1.6623001098632812,coupled cue and routing swap on the same twenty base-rank-2 cases
-native_predicted_fp32,CUDA FP32,factual,prespecified_numerical_sensitivity,20,5,0.25,5,6,9,-1.6766598343849182,-1.4129879474639893,precision sensitivity
-native_predicted_fp32,CUDA FP32,counterfactual,descriptive_focal_slice,20,6,0.3,6,4,10,-1.708528959751129,-1.7101962566375732,precision sensitivity
-native_actual_bf16,CUDA BF16 autocast,factual,prespecified_actual_state_diagnostic,20,4,0.2,4,6,10,-1.4027918577194214,-1.1529398262500763,environment-replayed endpoint under native latent cost
-native_actual_bf16,CUDA BF16 autocast,counterfactual,descriptive_focal_slice,20,6,0.3,6,6,8,-0.9544364362955093,-0.9571185111999512,environment-replayed endpoint under coupled cue and routing swap
-native_actual_fp32,CUDA FP32,factual,prespecified_actual_state_diagnostic,20,3,0.15,3,6,11,-1.4631699085235597,-1.1591816544532776,environment-replayed endpoint under native latent cost
-native_actual_fp32,CUDA FP32,counterfactual,descriptive_focal_slice,20,6,0.3,6,6,8,-0.928673081099987,-0.9591880440711975,environment-replayed endpoint under coupled cue and routing swap

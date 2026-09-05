@@ -2,7 +2,7 @@ enabled: true
 kind: tunnel_color
 every_n_epochs: 1
 dataset: ${data.dataset.name}
-sidecar: ${oc.env:JEPA_FEATURES_TR2_SIDECAR,/scratch/yd3062/memory-for-jepa/runs/tunnel_rooms_filled18x18/two_leaf/paired_color/tunnel_room_color_noise_filled18x18_location_probe_cue_and_position.h5}
+sidecar: ${oc.env:TUNNEL_ROOMS_PROBE_SIDECAR}
 expected_split_counts:
   fit: 512
   validation: 128

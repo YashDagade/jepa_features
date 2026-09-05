@@ -1,0 +1,46 @@
+{
+  "agent_position": [
+    29.701961517333984,
+    191.35165405273438
+  ],
+  "agent_render_radius": 9,
+  "endpoint_positions": [
+    [
+      58.82470703125,
+      42.790794372558594
+    ],
+    [
+      86.00526428222656,
+      180.92935180664062
+    ],
+    [
+      153.3388671875,
+      47.52519989013672
+    ],
+    [
+      155.823974609375,
+      144.53587341308594
+    ]
+  ],
+  "episode": 1893,
+  "landing_offset": 14.0,
+  "layout": "hub_left_two_leaves_right",
+  "marker_height": 18,
+  "marker_size": 7.0,
+  "marker_stroke_width": 1.0,
+  "marker_style": "filled18x18",
+  "marker_width": 18,
+  "min_hub_separation": 42.0,
+  "num_leaves": 2,
+  "pairing": 0,
+  "rearm_distance": 28.0,
+  "scenario_seed": 42961,
+  "speed": 5.0,
+  "target_leaf": 1,
+  "target_position": [
+    189.04031372070312,
+    176.97586059570312
+  ],
+  "trigger_radius": 10.0,
+  "identity_mode": "paired_color"
+}

@@ -1,3 +1,5 @@
+"""Transformer, action embedder, and projection heads for LeWM."""
+
 import torch
 import torch.nn.functional as F
 from einops import rearrange

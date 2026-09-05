@@ -6,7 +6,7 @@ defaults:
   - data: tunnel_room_two_color
 
 output_model_name: lewm
-subdir: ${hydra:job.id}
+subdir: ${output_model_name}
 checkpoint_every: 1
 
 num_workers: 6
@@ -18,7 +18,7 @@ encoder_scale: tiny
 embed_dim: 192
 
 # The decoder is diagnostic only: its detached loss trains a separate head and
-# cannot alter the native global-CLS representation.
+# cannot alter the projected representation.
 decoder:
   enabled: true
   detach: true
@@ -32,7 +32,7 @@ decoder:
 
 trainer:
   max_epochs: 10
-  devices: auto
+  devices: 1
   accelerator: gpu
   precision: bf16
   gradient_clip_val: 1.0
@@ -58,8 +58,7 @@ wm:
 
 model:
   _target_: stable_worldmodel.wm.lewm.LeWM
-  # vit_hf exposes both CLS and patch tokens. LeWM.encode selects the actual
-  # trained CLS token at last_hidden_state[:, 0]; no pooling layer is inserted.
+  # The configured readout selects CLS or aggregates the spatial patch grid.
   encoder:
     _target_: stable_pretraining.backbone.utils.vit_hf
     size: ${encoder_scale}
