@@ -5,17 +5,19 @@ Large datasets, checkpoints, decoder videos, and raw W&B exports remain outside
 the paper tree.
 
 
-The current main comparison is spatial 8×8 + IDM 3.125 on Color and Shape.
+The current main comparison is spatial 8×8 + IDM 3.125 on Color, Shape, and Palette.
 `spatial_primary_probes.csv`, `spatial_primary_planning.csv`, and
 `spatial_primary_provenance.csv` align the primary metrics to exact
 checkpoints, with separate file/state hashes. `spatial_primary_decoder_sources.csv`
-identifies the complete six-clip montage.
+identifies the historical Color/Shape six-clip montages;
+`spatial_palette_decoder_sources.json` records final-epoch Palette validation
+media, preserved as the two `palette_*_epoch10_frame2.png` montages.
 `spatial_alternate_palette_support.csv` retains green/blue runs at IDM0/.625;
 these are appendix support, not matched3.125 primary runs.
 
-`spatial_primary_probe_targets.csv` supplies all 32 individual endpoint records
-for the two primary variants and both current/predicted states. Table 1 displays
-the 16 current endpoints as separate central-room and destination-room columns,
+`spatial_primary_probe_targets.csv` supplies all 48 individual endpoint records
+for the three primary variants and both current/predicted states. Table 1 displays
+the 24 current endpoints as separate central-room and destination-room columns,
 with top/bottom and explicit color/shape labels. Location endpoints are ordered
 independently within each room group; same-cue endpoints identify a connected
 pair. Each MAE and R² averages the x/y coordinate metrics.
@@ -295,3 +297,21 @@ step or final-checkpoint identifier. Every input video is byte-identical.
 `final_epoch_*` clips come from the first batch of the final training epoch.
 Their final checkpoint hashes identify run provenance only. This differs
 from the current matched CLS validation GIFs, recorded after final training.
+
+## Completed primary Palette extension
+
+`spatial_palette_provenance.json` records the epoch-10 checkpoint, source,
+configuration, feature-cache and result hashes, and independent probe audit.
+`lewm_spatial_palette_maps.npz` retains all four static references on the same
+210 valid positions as the historical primary maps. Its companion
+`lewm_spatial_palette_static_provenance.json` identifies the strict loader,
+stored-frame rendering check, and checkpoint hash. The main energy figure
+uses destination references 2/3 alongside the unchanged geodesic reference.
+
+`spatial_three_cue_figures_provenance.json` records the new main decoder and
+energy composites. `spatial_three_cue_landscapes_provenance.json` records the
+appendix cosine/distance composite. Historical source arrays remain unchanged.
+Palette's final-epoch validation clips differ from the historical training
+snapshots in timing and population; every recorded clip is retained. Source
+revision also differs across the primary variants, so nominal recipe agreement
+does not establish a fully controlled palette-only comparison.

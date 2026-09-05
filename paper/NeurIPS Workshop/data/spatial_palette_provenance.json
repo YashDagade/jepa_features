@@ -1,0 +1,120 @@
+{
+  "cue_variant": "alternate_green_blue",
+  "display_name": "Palette",
+  "readout": "spatial_8x8",
+  "idm_weight": 3.125,
+  "seed": 3072,
+  "epoch": 10,
+  "source_commit": "c4a2df269e16a905a9d31d189de9b71aa5e784b3",
+  "run_id": "lewm_idm-spatial8x8-green_blue-s3072-c4a2df269e16",
+  "checkpoint_path": "artifact://lewm-spatial-confirmation-v1/lewm_idm-spatial8x8-green_blue-s3072-c4a2df269e16/checkpoints/lewm_idm-spatial8x8-green_blue-s3072-c4a2df269e16/weights_epoch_10.pt",
+  "checkpoint_file_sha256": "959597c50837be014ef45e490e1076b06139db43e3a44cee40943900c350edf9",
+  "canonical_checkpoint_state_sha256": "97ea60b5c9449511fee0f407bbcce7ac8f069da00d89b93de58e5580f5af6e78",
+  "hash_semantics": "Standalone probe metadata uses serialized checkpoint file SHA; canonical tensor-state hash is independently computed here and is not claimed as the probe hash. Historical probe_state_sha256 field left empty for this row.",
+  "result_path": "artifact://lewm-spatial-confirmation-v1/lewm_idm-spatial8x8-green_blue-s3072-c4a2df269e16/probes/location/location_features_v3_fit_end_959597c50837.results.json",
+  "result_sha256": "4cf0b5691f17a1dbba1b3058cf146b92caa3b564671828b289cd470fb69559ac",
+  "feature_path": "artifact://lewm-spatial-confirmation-v1/lewm_idm-spatial8x8-green_blue-s3072-c4a2df269e16/probes/location/location_features_v3_fit_end_959597c50837.h5",
+  "feature_sha256": "63a288f919cd4b822b81e21cc2fe57df4e978931f946f0fbfb31eba5fbca79e8",
+  "sidecar_path": "artifact://Aug04/jepa-color-blue-green-probe/dataset/tunnel_room_color_blue_green_noise_filled18x18_location_probe_cue_and_position.h5",
+  "sidecar_sha256": "fe5567ff64587bf8f73cb6fc3c3d2065dbd8ca68283a07e641157a870c69d1c3",
+  "dataset_path": "artifact://datasets/tunnel_room_color_blue_green_noise_filled18x18.h5",
+  "dataset_sha256": "6e2823ad5301c38dbd97d0506577cddb74c9fb80157f2b3a15395f0c08d4dcd7",
+  "training_config_path": "artifact://lewm-spatial-confirmation-v1/lewm_idm-spatial8x8-green_blue-s3072-c4a2df269e16/checkpoints/lewm_idm-spatial8x8-green_blue-s3072-c4a2df269e16/config.yaml",
+  "training_config_sha256": "e5afb548b84cfce47a1cffeb8c70ab5cde8cd0f18bde2f4766e26b6f9f73d3ed",
+  "fit_examples": 512,
+  "validation_examples": 128,
+  "test_examples": 256,
+  "ridge_alpha": 10,
+  "fit_union_validation": true,
+  "probe_reproduction_max_absolute_error": 1.4210854715202004e-14,
+  "primary_aggregate_metrics": {
+    "current_cue_mae": 26.95703483242587,
+    "current_cue_r2": 0.25827603726706505,
+    "current_position_mae": 3.9294688620630316,
+    "current_position_r2": 0.929938413738328,
+    "predicted_cue_mae": 27.133694671262376,
+    "predicted_cue_r2": 0.26246134476908867,
+    "predicted_position_mae": 3.6861137932149846,
+    "predicted_position_r2": 0.9379130211227575
+  },
+  "claim_scope": "Current-source Palette confirmation supports strong positional accessibility and weaker cue-indexed localization. Historical Color/Shape and Palette share declared readout/objective/budget but originate from different source revisions.",
+  "planning_status": "complete_independently_verified",
+  "planning": {
+    "manifest_path": "artifact://pta_revision_audit/palette_continuity/planning/palette_rank_manifest.json",
+    "manifest_sha256": "46f286bdf73197afb45f6ebdbfb0b88a34d215d2fc0685befed078bfc5c81926",
+    "source_color_manifest_sha256": "58cbd330adcfc75bc7d5938f475c847ebfd9ccb97515504431e7438b4178fc0e",
+    "manifest_comparison": "All50caseIDs,ranks,geometry,pairing,targets and search orders preserved; only tunnel colors/names and scenario/source_scenario hashes differ.",
+    "protocol": {
+      "horizon": 5,
+      "receding_horizon": 5,
+      "action_block": 5,
+      "eval_budget": 400,
+      "episodes_per_rank": 25,
+      "bf16": true,
+      "marker_style": "filled18x18",
+      "seed": 3072
+    },
+    "solvers": [
+      {
+        "solver": "cem",
+        "metrics_path": "artifact://pta_revision_audit/palette_continuity/planning/outputs/cem/metrics.json",
+        "metrics_sha256": "d0dc753a357165c4653396ac118521286c53449bc02c6703195a2dbe43f53ede",
+        "runtime_provenance_path": "artifact://pta_revision_audit/palette_continuity/planning/outputs/cem/provenance.json",
+        "runtime_provenance_sha256": "82ef01c81e5d6ba94e9c212f479f20d61f2a26d9277efaedce939c0a8c3d282d",
+        "normalization_path": "artifact://pta_revision_audit/palette_continuity/planning/outputs/cem/normalization.json",
+        "normalization_sha256": "3002c7183f4efe6010c5bec1e5dd42d44ded01ad66fced6e0f462ee135b1d88b",
+        "runner_sha256": "bb5c00af1004d7da1e62fd2b403e345124b1de69fa264b995f60ed1f1d9a45f5",
+        "checkpoint_file_sha256": "959597c50837be014ef45e490e1076b06139db43e3a44cee40943900c350edf9",
+        "model_source_commit": "c4a2df269e16a905a9d31d189de9b71aa5e784b3",
+        "historical_evaluator_commit": "e74da680a57922ba8824f792d311f91771dd109b",
+        "slurm_job_id": "16985224",
+        "completed_episodes": 50,
+        "evaluation_time_sec": 442.64324951171875,
+        "rank_counts": [
+          {
+            "rank": 1,
+            "successes": 20,
+            "episodes": 25
+          },
+          {
+            "rank": 2,
+            "successes": 7,
+            "episodes": 25
+          }
+        ]
+      },
+      {
+        "solver": "gd",
+        "metrics_path": "artifact://pta_revision_audit/palette_continuity/planning/outputs/gd/metrics.json",
+        "metrics_sha256": "5e589f694024637237666bafb8ad0351e19db9f38d2a43302483d99b9d4fc59c",
+        "runtime_provenance_path": "artifact://pta_revision_audit/palette_continuity/planning/outputs/gd/provenance.json",
+        "runtime_provenance_sha256": "6134e376eb6072672ff8eafd60fdcda87440e234313007e5ab1d7353f8ff27b2",
+        "normalization_path": "artifact://pta_revision_audit/palette_continuity/planning/outputs/gd/normalization.json",
+        "normalization_sha256": "3002c7183f4efe6010c5bec1e5dd42d44ded01ad66fced6e0f462ee135b1d88b",
+        "runner_sha256": "bb5c00af1004d7da1e62fd2b403e345124b1de69fa264b995f60ed1f1d9a45f5",
+        "checkpoint_file_sha256": "959597c50837be014ef45e490e1076b06139db43e3a44cee40943900c350edf9",
+        "model_source_commit": "c4a2df269e16a905a9d31d189de9b71aa5e784b3",
+        "historical_evaluator_commit": "e74da680a57922ba8824f792d311f91771dd109b",
+        "slurm_job_id": "16985224",
+        "completed_episodes": 50,
+        "evaluation_time_sec": 837.0160872936249,
+        "rank_counts": [
+          {
+            "rank": 1,
+            "successes": 21,
+            "episodes": 25
+          },
+          {
+            "rank": 2,
+            "successes": 8,
+            "episodes": 25
+          }
+        ]
+      }
+    ],
+    "rendering_correction": "Preparation and frozen runtime provenance contain a superseded claim that primary Color used outline markers. Direct inspection of all eight Aug02 Color evaluation videos establishes filled18x18 markers, as used for Palette. The outline condition belongs to the separate Jul12 campaign. Original runtime records are retained unchanged.",
+    "comparison_scope": "Same rank-case geometry and planning budget/solver settings; historical Color/Shape and current Palette originate from different source revisions. This is not a source-controlled palette-only intervention.",
+    "job_state": "COMPLETED",
+    "job_exit_code": "0:0"
+  }
+}

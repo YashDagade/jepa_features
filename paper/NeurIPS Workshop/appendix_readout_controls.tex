@@ -3,7 +3,7 @@
 
 We train randomly initialized ViT-tiny world models on 10,000 successful
 trajectories for ten epochs, with batch size 128 and seed 3072. The primary
-Color and Shape models combine a learned spatial readout with an auxiliary
+Color, Shape, and Palette models combine a learned spatial readout with an auxiliary
 inverse-dynamics loss (IDM) of weight 3.125. Both are adaptations of LeWM:
 the native recipe selects the CLS token and uses prediction MSE plus SIGReg,
 without IDM. The following one-seed comparisons examine how these choices
@@ -132,13 +132,18 @@ denotes the native readout.}
 \subsection{Current and predicted spatial-state probes}
 
 The location--cue gap appears in both current projected states and one-step
-predictions (Table~\ref{tab:spatialfull}). The primary Color and Shape models
+predictions (Table~\ref{tab:spatialfull}). The primary Color, Shape, and Palette models
 share the readout, IDM weight, training budget, and probe protocol, although
 their source revisions differ. We obtained Shape's positional scores from
 retained frozen features and aligned sidecar targets using the original ridge
 procedure, which also reproduces its archived cue scores.
 
-Green/blue provides an additional appearance control at IDM weights 0 and
+Palette uses a later source revision with the same nominal training recipe.
+Its final checkpoint yields current location $R^2=.930$ and cue $R^2=.258$;
+one-step predictions retain the gap. The source difference means this is
+not a fully controlled palette-only intervention.
+
+Historical green/blue runs provide additional controls at IDM weights 0 and
 .625. Location remains more accessible than cue identity in both conditions.
 Because their IDM weights differ from those of the primary models, these
 results do not constitute a matched three-cue comparison. All entries use
@@ -149,8 +154,8 @@ seed 3072 and ten training epochs.
 \caption{\textbf{The spatial-state gap persists through one-step prediction.}
 All rows use the spatial $8\!\times\!8$ readout. Cells report current
 projected / one-step predicted state; MAE is in pixels and $R^2$ averages
-coordinate-wise scores over four endpoints. The first two rows are the
-primary conditions; green/blue uses different IDM weights.}
+coordinate-wise scores over four endpoints. The first three rows are the
+primary conditions; the historical green/blue rows use different IDM weights.}
 \label{tab:spatialfull}
 \small
 \renewcommand{\arraystretch}{1.12}
@@ -161,6 +166,7 @@ Cue variant & IDM & Cue MAE & Cue $R^2$ & Location MAE & Location $R^2$ \\
 \midrule
 Color & 3.125 & \curpred{27.40}{27.57} & \curpred{.224}{.226} & \curpred{3.83}{3.66} & \curpred{.934}{.939} \\
 Shape & 3.125 & \curpred{28.05}{28.10} & \curpred{.203}{.214} & \curpred{4.57}{4.41} & \curpred{.907}{.915} \\
+Palette & 3.125 & \curpred{26.96}{27.13} & \curpred{.258}{.262} & \curpred{3.93}{3.69} & \curpred{.930}{.938} \\
 \midrule
 Green/blue & .625 & \curpred{27.66}{27.75} & \curpred{.207}{.208} & \curpred{3.40}{3.35} & \curpred{.945}{.946} \\
 Green/blue & 0 & \curpred{28.50}{28.47} & \curpred{.151}{.156} & \curpred{4.85}{4.89} & \curpred{.894}{.893} \\

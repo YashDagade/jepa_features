@@ -1,0 +1,116 @@
+{
+  "model": "lewm_idm",
+  "cue": "green_blue",
+  "run_id": "lewm_idm-spatial8x8-green_blue-s3072-c4a2df269e16",
+  "epoch": 10,
+  "training_seed": 3072,
+  "source_commit": "c4a2df269e16a905a9d31d189de9b71aa5e784b3",
+  "source_root": "source://c4a2df269e16a905a9d31d189de9b71aa5e784b3",
+  "checkpoint": "artifact://lewm-spatial-confirmation-v1/lewm_idm-spatial8x8-green_blue-s3072-c4a2df269e16/checkpoints/lewm_idm-spatial8x8-green_blue-s3072-c4a2df269e16/weights_epoch_10.pt",
+  "checkpoint_sha256": "959597c50837be014ef45e490e1076b06139db43e3a44cee40943900c350edf9",
+  "config_sha256": "5d76096e48150a484af1f57e94abd901ce2b5d07ce85f9963d8d88bf6d71b344",
+  "train_config_sha256": "e5afb548b84cfce47a1cffeb8c70ab5cde8cd0f18bde2f4766e26b6f9f73d3ed",
+  "manifest": "artifact://Aug04/jepa-color-blue-green-probe/dataset/scenario_manifest.json",
+  "manifest_sha256": "1a789118b802e6b4ed02bfc2f2f0cff35e135d61a1a4fca8eabc36541e88db6a",
+  "scenario": {
+    "agent_position": [
+      29.701961517333984,
+      191.35165405273438
+    ],
+    "agent_render_radius": 9,
+    "endpoint_positions": [
+      [
+        58.82470703125,
+        42.790794372558594
+      ],
+      [
+        86.00526428222656,
+        180.92935180664062
+      ],
+      [
+        153.3388671875,
+        47.52519989013672
+      ],
+      [
+        155.823974609375,
+        144.53587341308594
+      ]
+    ],
+    "episode": 1893,
+    "landing_offset": 14.0,
+    "layout": "hub_left_two_leaves_right",
+    "marker_height": 18,
+    "marker_size": 7.0,
+    "marker_stroke_width": 1.0,
+    "marker_style": "filled18x18",
+    "marker_width": 18,
+    "min_hub_separation": 42.0,
+    "num_leaves": 2,
+    "pairing": 0,
+    "rearm_distance": 28.0,
+    "scenario_hash": "df80e9f3e30ee8a1594522b93c9f6674fd18713c5879ce8594dfc0ffe459d41c",
+    "scenario_seed": 42961,
+    "speed": 5.0,
+    "target_leaf": 1,
+    "target_position": [
+      189.04031372070312,
+      176.97586059570312
+    ],
+    "trigger_radius": 10.0,
+    "tunnel_colors": [
+      [
+        40,
+        153,
+        78
+      ],
+      [
+        83,
+        98,
+        216
+      ]
+    ],
+    "tunnel_color_names": [
+      "green",
+      "blue"
+    ],
+    "identity_mode": "paired_color"
+  },
+  "episode": 1893,
+  "grid_size": 20,
+  "valid_centers": 210,
+  "grid_spacing_pixels": 11.736842105263158,
+  "reference_positions": [
+    [
+      37.82470703125,
+      42.790794372558594
+    ],
+    [
+      65.00526428222656,
+      180.92935180664062
+    ],
+    [
+      174.3388671875,
+      47.52519989013672
+    ],
+    [
+      176.823974609375,
+      144.53587341308594
+    ]
+  ],
+  "raw_arrays": "artifact://pta_revision_audit/palette_continuity/static_results/lewm_idm_green_blue.npz",
+  "raw_arrays_sha256": "e264a78e39d29cdf3217416f9ceb6f6c1d6b51765b2dfb200404fe123f92edfc",
+  "diagnostic_script_sha256": "59f9af9491d74ce2d2666123506c1614339905a3c111fc126fdc43ed2662ad54",
+  "geometry_utility": "source://8353c2b8835da17af3335aff07cf2dcc29394378/stable-worldmodel/stable_worldmodel/visualization/tunnel_room_energy.py",
+  "geometry_utility_sha256": "e05ed028c0a7ecb679ab15b2aa5eb08407aea45d2850cb848a6c62171d17f727",
+  "dtype": "float32 encoder; float64 distance arithmetic; TF32 disabled",
+  "device": "cuda",
+  "method": "Static projected-state comparison; no actions, predictor, planning rollout, or decoder",
+  "cosine_min": 0.6997740291086714,
+  "cosine_max": 0.9879026496903255,
+  "squared_min": 4.3520761841265045,
+  "squared_max": 135.422650195566,
+  "reference_leaf_pair_cosine": 0.9799406320349591,
+  "reference_leaf_pair_squared": 7.13207617036788,
+  "compact_arrays": "data/lewm_spatial_palette_maps.npz",
+  "compact_arrays_sha256": "e264a78e39d29cdf3217416f9ceb6f6c1d6b51765b2dfb200404fe123f92edfc"
+}

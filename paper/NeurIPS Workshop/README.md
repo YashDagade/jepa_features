@@ -6,12 +6,13 @@ pixel decoders, static goal-distance maps, and rank-based planning. R² belongs
 to coordinate probes, not pixel reconstructions.
 
 The primary recipe is **LeWM with spatial 8×8 aggregation and IDM 3.125**.
-Completed Color and Shape checkpoints align across probes, planning, and
-static landscapes. Their decoder figures use the same training runs, but
-show snapshots from the first batch of the final epoch rather than outputs
-of the exported final checkpoint.
-Location R² is .934/.907, versus cue R² .224/.203. Rank-R2 planning success is
-16%/24% for CEM and 52%/40% for GD (Color/Shape). The main study concerns
+Completed Color, Shape, and Palette checkpoints align across probes, planning, and
+static landscapes. Their decoder figures retain all six clips per run. Color/Shape snapshots
+come from the first batch of the final epoch; Palette uses validation after
+the final epoch. The populations and capture times differ.
+Location R² is .934/.907/.930, versus cue R² .224/.203/.258
+(Color/Shape/Palette). Rank-R2 planning success is
+16%/24%/28% for CEM and 52%/40%/32% for GD (Color/Shape/Palette). The main study concerns
 cue binding in this LeWM recipe and its readout and inverse-dynamics
 controls; it does not establish a universal JEPA failure.
 
@@ -41,22 +42,20 @@ are under ignored `runs/lewm-spatial-confirmation-v1/`; no unfinished result
 is included in the manuscript. This is a launch snapshot, not a live status
 ledger. Existing CLS job IDs are 16970286–16970291.
 
-The requested Palette extension is being prepared for both main figures and
-both main tables. Matching-recipe Palette training remains job **16981835**;
-its final probes and decoder media are produced by that run. Final static-map
-job **16985126** and CEM/GD planning job **16985224** depend on its successful
-completion. These are submission records, not live completion claims. The
-planning job also extracts verified final-epoch decoder images. Staging tools
-and compatibility checks are under ignored
-`runs/pta_revision_audit/palette_continuity/`. The PDF retains the completed
-Color/Shape results until Palette's final results are checked and the claims
-are revised accordingly. Palette uses a later source revision. Saved rollout
-videos confirm that the historical Color evaluations use filled markers,
-matching training; the earlier outline-rendering caveat concerned a different
-checkpoint and does not apply to the primary comparison.
+The Palette extension uses the completed epoch-10 checkpoint from training
+job **16981835** and final static-map job **16985126**. The independent probe
+reconstruction matches all endpoint metrics within 1.42e-14. Final CEM/GD
+planning job **16985224** uses the historical solvers and Color case geometry,
+with the green/blue palette. Both solvers completed successfully: CEM R1/R2 is 80%/28%; GD is 84%/32%.
+Final metric hashes and verified outcome counts are in
+`spatial_primary_planning.csv`. Palette uses source `c4a2df2`,
+so the three primary variants share the nominal recipe but are not a fully
+controlled palette-only intervention. Saved rollout videos confirm that
+historical Color evaluation uses filled markers matching training; the old
+outline caveat belonged to a different checkpoint.
 
 The main energy figure changes the goal between both destination rooms for
-the exact primary Color and Shape checkpoints. A third column shows a
+the exact primary Color, Shape, and Palette checkpoints. A fourth column shows a
 geodesic navigation reference through the true portal pairings, including
 triggering, landing offsets, and rearm state. It uses a one-pixel finite
 movement graph and the same 210 plotted positions; half-pixel refinement
@@ -99,7 +98,7 @@ the appendices; the main text identifies the LeWM adaptations in plain language.
 protocols and interpretation, and literature discussion respectively.
 The main text ends on page four;
 references follow the conclusion and span pages five through six, with the
-appendix continuing below them. The complete PDF is 16 pages.
+appendix continuing below them. The complete PDF is 17 pages.
 
 Layout uses natural vertical spacing, keeps the planning paragraph together,
 and places tables near their discussion. Landscape figures are interleaved
@@ -127,12 +126,15 @@ bytes. The current PDF is `main.pdf` (generated and ignored by Git).
 - `data/spatial_primary_probes.csv`, `spatial_primary_planning.csv`, and
   `spatial_primary_provenance.csv` freeze the aligned main results and
   distinguish serialized checkpoint-file hashes from canonical state hashes.
-- `spatial_primary_decoder_sources.csv` records all six final-epoch clips at
-  frame 2; `figures/lewm_spatial_primary_decoders.pdf` displays every clip.
+- `spatial_primary_decoder_sources.csv` and `spatial_palette_decoder_sources.json`
+  record all six clips per variant at frame 2;
+  `figures/lewm_spatial_three_cue_decoders.pdf` displays every clip.
 - `lewm_spatial_similarity_maps.npz`, companion provenance and summary record
   newly evaluated static maps, using strictly loaded historical checkpoints
   and a dataset-verified renderer. The grid and reference images align with
-  the separate CLS diagnostic protocol.
+  the separate CLS diagnostic protocol. `lewm_spatial_palette_maps.npz` adds
+  the verified Palette maps on the identical grid and reference positions;
+  its dedicated static provenance records the later source revision.
 - `short_paper_matched_probe_results.csv` and companion provenance retain the
   six completed CLS conditions. Every affine score reproduces exactly from
   retained frozen features. The three-cue CLS decoder figure remains in the

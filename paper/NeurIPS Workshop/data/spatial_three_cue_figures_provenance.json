@@ -1,0 +1,293 @@
+{
+  "source_files": {
+    "historical_decoder_sources": {
+      "path": "data/spatial_primary_decoder_sources.csv",
+      "sha256": "5bca6265cbed14aacc32c86d86d04c29eba545e04b395d6031d4cabea2db4265"
+    },
+    "historical_maps": {
+      "path": "data/lewm_spatial_similarity_maps.npz",
+      "sha256": "dc6c3ca657cb2f25485b1c481ff9f5447f945959d83d748f4a7a2c102d523506"
+    },
+    "historical_map_provenance": {
+      "path": "data/lewm_spatial_similarity_provenance.json",
+      "sha256": "4da9f0ea7c1a42cec400025bc3ba43be12cbce80d03338cadeeba05294c96b75"
+    },
+    "geodesic": {
+      "path": "data/tunnel_geodesic_reference.npz",
+      "sha256": "5fc9ebe2abf9df0b15289cfee24c79eff8953c8873bd02952ef8aada833b7224"
+    },
+    "geodesic_provenance": {
+      "path": "data/tunnel_geodesic_reference_provenance.json",
+      "sha256": "8253ef7cc36baa94a6da368f561254d27c3097b852248a9d33e246992cbebe3b"
+    },
+    "palette_decoder_provenance": {
+      "path": "artifact://pta_revision_audit/palette_continuity/decoder_sources/epoch_10/provenance.json",
+      "sha256": "7eff0a618f432f3738db598b16a4e257d1728dfc3bee5053988a66aa0c19bcf7"
+    },
+    "palette_maps": {
+      "path": "artifact://pta_revision_audit/palette_continuity/static_results/lewm_idm_green_blue.npz",
+      "sha256": "e264a78e39d29cdf3217416f9ceb6f6c1d6b51765b2dfb200404fe123f92edfc"
+    },
+    "palette_map_provenance": {
+      "path": "artifact://pta_revision_audit/palette_continuity/static_results/provenance.json",
+      "sha256": "8e4233b7cb6b5bf47af74f4c5a9381a3297763cec668d36a19d0dbabd749adb2"
+    },
+    "reference_builder": {
+      "path": "artifact://pta_revision_audit/plot_geodesic_narrative.py",
+      "sha256": "aea11fe9aa811441509165dead2a5f5ec5a18082f421d12ac9d077dfd4a35da0"
+    },
+    "color_original": {
+      "path": "figures/source/spatial_primary_standard_green_orange_original_frame2.png",
+      "sha256": "51587af9cfad700687e9be93b1005224058662eaff08a24ac4ddcc47fb0da431"
+    },
+    "color_decoded": {
+      "path": "figures/source/spatial_primary_standard_green_orange_decoded_frame2.png",
+      "sha256": "8a2d77c4745eb833241fbc589651673748907d774bcb56f807807c4dcb34d45d"
+    },
+    "shape_original": {
+      "path": "figures/source/spatial_primary_triangle_diamond_original_frame2.png",
+      "sha256": "567ca6b40091a9d117a6854394a557ab26816853b0e40097c451c9d9a3f08532"
+    },
+    "shape_decoded": {
+      "path": "figures/source/spatial_primary_triangle_diamond_decoded_frame2.png",
+      "sha256": "a2e6eedbbfae67030e00bf0380612e84dcf695cd7e671594ef2156b19f6074d7"
+    },
+    "palette_original": {
+      "path": "artifact://pta_revision_audit/palette_continuity/decoder_sources/epoch_10/palette_original_epoch10_frame2.png",
+      "sha256": "e7748e013b77a7604fd502913ebe067d051a07d1366489b6e999ad380618e5fd"
+    },
+    "palette_decoded": {
+      "path": "artifact://pta_revision_audit/palette_continuity/decoder_sources/epoch_10/palette_decoded_epoch10_frame2.png",
+      "sha256": "e547c599a41e46b1ae93a4cc1eb5235d2916ec8091bf50261fb1efed4ffaaadb"
+    }
+  },
+  "builder_sha256": "eb2f96b599c8782b344b2aa6bfc02b9ca5ba7c6eb324de24b60e21d2144ac211",
+  "products": {
+    "lewm_spatial_three_cue_decoders.pdf": "603586784525a2addddde76cbc239614bb6ca8475bd26240bd3a975ab63a1942",
+    "lewm_spatial_three_cue_decoders.png": "76df1076022a600abdb5142b0d0ce505a704ea3016035c76ded407af1684e9e0",
+    "lewm_spatial_three_cue_goal_distance.pdf": "fcd160b827c99225fc8bcd63407c7694479827252bf70e5f3c434851f6a55e77",
+    "lewm_spatial_three_cue_goal_distance.png": "9830f28bc97eda9754eb677bafdb1ec053dccde831b4dbe818a1c2f238d84964"
+  },
+  "palette_checkpoint_sha256": "959597c50837be014ef45e490e1076b06139db43e3a44cee40943900c350edf9",
+  "palette_static_provenance": {
+    "model": "lewm_idm",
+    "cue": "green_blue",
+    "run_id": "lewm_idm-spatial8x8-green_blue-s3072-c4a2df269e16",
+    "epoch": 10,
+    "training_seed": 3072,
+    "source_commit": "c4a2df269e16a905a9d31d189de9b71aa5e784b3",
+    "source_root": "source://c4a2df269e16a905a9d31d189de9b71aa5e784b3",
+    "checkpoint": "artifact://lewm-spatial-confirmation-v1/lewm_idm-spatial8x8-green_blue-s3072-c4a2df269e16/checkpoints/lewm_idm-spatial8x8-green_blue-s3072-c4a2df269e16/weights_epoch_10.pt",
+    "checkpoint_sha256": "959597c50837be014ef45e490e1076b06139db43e3a44cee40943900c350edf9",
+    "config_sha256": "5d76096e48150a484af1f57e94abd901ce2b5d07ce85f9963d8d88bf6d71b344",
+    "train_config_sha256": "e5afb548b84cfce47a1cffeb8c70ab5cde8cd0f18bde2f4766e26b6f9f73d3ed",
+    "manifest": "artifact://Aug04/jepa-color-blue-green-probe/dataset/scenario_manifest.json",
+    "manifest_sha256": "1a789118b802e6b4ed02bfc2f2f0cff35e135d61a1a4fca8eabc36541e88db6a",
+    "scenario": {
+      "agent_position": [
+        29.701961517333984,
+        191.35165405273438
+      ],
+      "agent_render_radius": 9,
+      "endpoint_positions": [
+        [
+          58.82470703125,
+          42.790794372558594
+        ],
+        [
+          86.00526428222656,
+          180.92935180664062
+        ],
+        [
+          153.3388671875,
+          47.52519989013672
+        ],
+        [
+          155.823974609375,
+          144.53587341308594
+        ]
+      ],
+      "episode": 1893,
+      "landing_offset": 14.0,
+      "layout": "hub_left_two_leaves_right",
+      "marker_height": 18,
+      "marker_size": 7.0,
+      "marker_stroke_width": 1.0,
+      "marker_style": "filled18x18",
+      "marker_width": 18,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_hash": "df80e9f3e30ee8a1594522b93c9f6674fd18713c5879ce8594dfc0ffe459d41c",
+      "scenario_seed": 42961,
+      "speed": 5.0,
+      "target_leaf": 1,
+      "target_position": [
+        189.04031372070312,
+        176.97586059570312
+      ],
+      "trigger_radius": 10.0,
+      "tunnel_colors": [
+        [
+          40,
+          153,
+          78
+        ],
+        [
+          83,
+          98,
+          216
+        ]
+      ],
+      "tunnel_color_names": [
+        "green",
+        "blue"
+      ],
+      "identity_mode": "paired_color"
+    },
+    "episode": 1893,
+    "grid_size": 20,
+    "valid_centers": 210,
+    "grid_spacing_pixels": 11.736842105263158,
+    "reference_positions": [
+      [
+        37.82470703125,
+        42.790794372558594
+      ],
+      [
+        65.00526428222656,
+        180.92935180664062
+      ],
+      [
+        174.3388671875,
+        47.52519989013672
+      ],
+      [
+        176.823974609375,
+        144.53587341308594
+      ]
+    ],
+    "raw_arrays": "artifact://pta_revision_audit/palette_continuity/static_results/lewm_idm_green_blue.npz",
+    "raw_arrays_sha256": "e264a78e39d29cdf3217416f9ceb6f6c1d6b51765b2dfb200404fe123f92edfc",
+    "diagnostic_script_sha256": "59f9af9491d74ce2d2666123506c1614339905a3c111fc126fdc43ed2662ad54",
+    "geometry_utility": "source://8353c2b8835da17af3335aff07cf2dcc29394378/stable-worldmodel/stable_worldmodel/visualization/tunnel_room_energy.py",
+    "geometry_utility_sha256": "e05ed028c0a7ecb679ab15b2aa5eb08407aea45d2850cb848a6c62171d17f727",
+    "dtype": "float32 encoder; float64 distance arithmetic; TF32 disabled",
+    "device": "cuda",
+    "method": "Static projected-state comparison; no actions, predictor, planning rollout, or decoder",
+    "cosine_min": 0.6997740291086714,
+    "cosine_max": 0.9879026496903255,
+    "squared_min": 4.3520761841265045,
+    "squared_max": 135.422650195566,
+    "reference_leaf_pair_cosine": 0.9799406320349591,
+    "reference_leaf_pair_squared": 7.13207617036788
+  },
+  "historical_decoder_provenance": [
+    {
+      "cue_variant": "standard_green_orange",
+      "readout": "spatial_8x8",
+      "idm_weight": "3.125",
+      "seed": "3072",
+      "epoch": "10",
+      "frame_index": "2",
+      "clips_in_montage": "6",
+      "role": "original",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "wandb_run_id": "jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1",
+      "checkpoint_file_sha256": "9991c7f227cd20f40ac853bb7e690498bbaf5e3fdc4c8d21b953b01774cc4667",
+      "media_path": "artifact://Aug02/jepa-color/jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1/wandb/run-20260802_070204-jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1/files/media/videos/fit/final_epoch_original_clip_87885_f2eeadf0a4e1ee8c22d6.mp4",
+      "media_sha256": "f2eeadf0a4e1ee8c22d6dff87fa63d5bbd866b58680adb86eaba100928305d31",
+      "tracked_source": "figures/source/spatial_primary_standard_green_orange_original_frame2.png",
+      "tracked_source_sha256": "51587af9cfad700687e9be93b1005224058662eaff08a24ac4ddcc47fb0da431",
+      "source_key": "fit/final_epoch_original_clip",
+      "claim_boundary": "all_six_clips_frame2_training_snapshot_not_final_checkpoint_no_identity_metric",
+      "capture_timing": "first_logged_batch_of_final_training_epoch",
+      "checkpoint_role": "same_run_exported_final_checkpoint_not_snapshot_source_weights"
+    },
+    {
+      "cue_variant": "standard_green_orange",
+      "readout": "spatial_8x8",
+      "idm_weight": "3.125",
+      "seed": "3072",
+      "epoch": "10",
+      "frame_index": "2",
+      "clips_in_montage": "6",
+      "role": "decoded",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "wandb_run_id": "jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1",
+      "checkpoint_file_sha256": "9991c7f227cd20f40ac853bb7e690498bbaf5e3fdc4c8d21b953b01774cc4667",
+      "media_path": "artifact://Aug02/jepa-color/jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1/wandb/run-20260802_070204-jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1/files/media/videos/fit/final_epoch_decoded_clip_87885_b941ad1b47d26ac88203.mp4",
+      "media_sha256": "b941ad1b47d26ac88203436c0549400b640a09afc113b32276ed32633fc55484",
+      "tracked_source": "figures/source/spatial_primary_standard_green_orange_decoded_frame2.png",
+      "tracked_source_sha256": "8a2d77c4745eb833241fbc589651673748907d774bcb56f807807c4dcb34d45d",
+      "source_key": "fit/final_epoch_decoded_clip",
+      "claim_boundary": "all_six_clips_frame2_training_snapshot_not_final_checkpoint_no_identity_metric",
+      "capture_timing": "first_logged_batch_of_final_training_epoch",
+      "checkpoint_role": "same_run_exported_final_checkpoint_not_snapshot_source_weights"
+    },
+    {
+      "cue_variant": "triangle_diamond",
+      "readout": "spatial_8x8",
+      "idm_weight": "3.125",
+      "seed": "3072",
+      "epoch": "10",
+      "frame_index": "2",
+      "clips_in_montage": "6",
+      "role": "original",
+      "source_commit": "8353c2b8835da17af3335aff07cf2dcc29394378",
+      "wandb_run_id": "tunnel-room-shape-lewm-tr2-shape-s3072-r1",
+      "checkpoint_file_sha256": "6c58e2a7a7b4bef07e77f09b9cb201f4963f08a5febb310d0a53f0e31d007d5c",
+      "media_path": "artifact://Jul19/tunnel-room-shape/tunnel-room-shape-lewm-tr2-shape-s3072-r1/wandb/run-20260719_032016-tunnel-room-shape-lewm-tr2-shape-s3072-r1/files/media/videos/fit/final_epoch_original_clip_87885_3cffb50eae529c3800be.mp4",
+      "media_sha256": "3cffb50eae529c3800be57bdf7e4f1c618779e852f00e945a138ff064c5093d7",
+      "tracked_source": "figures/source/spatial_primary_triangle_diamond_original_frame2.png",
+      "tracked_source_sha256": "567ca6b40091a9d117a6854394a557ab26816853b0e40097c451c9d9a3f08532",
+      "source_key": "fit/final_epoch_original_clip",
+      "claim_boundary": "all_six_clips_frame2_training_snapshot_not_final_checkpoint_no_identity_metric",
+      "capture_timing": "first_logged_batch_of_final_training_epoch",
+      "checkpoint_role": "same_run_exported_final_checkpoint_not_snapshot_source_weights"
+    },
+    {
+      "cue_variant": "triangle_diamond",
+      "readout": "spatial_8x8",
+      "idm_weight": "3.125",
+      "seed": "3072",
+      "epoch": "10",
+      "frame_index": "2",
+      "clips_in_montage": "6",
+      "role": "decoded",
+      "source_commit": "8353c2b8835da17af3335aff07cf2dcc29394378",
+      "wandb_run_id": "tunnel-room-shape-lewm-tr2-shape-s3072-r1",
+      "checkpoint_file_sha256": "6c58e2a7a7b4bef07e77f09b9cb201f4963f08a5febb310d0a53f0e31d007d5c",
+      "media_path": "artifact://Jul19/tunnel-room-shape/tunnel-room-shape-lewm-tr2-shape-s3072-r1/wandb/run-20260719_032016-tunnel-room-shape-lewm-tr2-shape-s3072-r1/files/media/videos/fit/final_epoch_decoded_clip_87885_f71597c181db478111ad.mp4",
+      "media_sha256": "f71597c181db478111ad259cb68a08f2b38a3c46edd1f611e36e6faedbc08998",
+      "tracked_source": "figures/source/spatial_primary_triangle_diamond_decoded_frame2.png",
+      "tracked_source_sha256": "a2e6eedbbfae67030e00bf0380612e84dcf695cd7e671594ef2156b19f6074d7",
+      "source_key": "fit/final_epoch_decoded_clip",
+      "claim_boundary": "all_six_clips_frame2_training_snapshot_not_final_checkpoint_no_identity_metric",
+      "capture_timing": "first_logged_batch_of_final_training_epoch",
+      "checkpoint_role": "same_run_exported_final_checkpoint_not_snapshot_source_weights"
+    }
+  ],
+  "decoder_scope": "All six recorded clips per cue, frame 2. Historical Color/Shape snapshots are from the first batch of the final training epoch; Palette is final-epoch validation. Clip populations and capture times differ across historical and current runs.",
+  "energy_scope": "Same 210 grid centers, four reference positions, scenario geometry and true portal pairings. Destination refs 2/3; separate units for learned squared distance and geodesic pixels. Historical Color/Shape and current-source Palette are not one source-controlled campaign.",
+  "interpolation": "Existing plot_geodesic_narrative.py overlay: eight nearest valid centers within room, weights1/(d^2+.001),85percentopacity,preserve nonfloor pixels,viridis_r",
+  "color_scales": {
+    "color": [
+      0.0,
+      94.76509240875613
+    ],
+    "shape": [
+      0.0,
+      93.49589576582585
+    ],
+    "palette": [
+      0.0,
+      135.422650195566
+    ],
+    "geodesic": [
+      0.0,
+      200.73552991843513
+    ]
+  }
+}

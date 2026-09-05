@@ -37,13 +37,13 @@ benchmark in which matching tunnel colors determine teleportation
 destinations. Reaching an image-specified goal by the direct route requires
 using color to choose the correct tunnel. We find that an adapted
 LeWorldModel (LeWM) learns tunnel locations accurately but represents their
-cue-dependent destinations much less reliably. Linear coordinate probes
-achieve location $R^2$ above .90 while cue-indexed $R^2$ stays near .20;
+cue-dependent destinations much less reliably. Across variants, linear probes achieve
+mean $R^2$ above .90 for locations but only .20--.26 for cue-indexed
+coordinates;
 image reconstructions blur cue distinctions; and goal-energy maps assign
 low cost near both candidate tunnels in an illustrated scene. Planning is
-also difficult: success falls to 16--52\% on Color when the correct tunnel
-is farther away. Shape and alternate-palette controls reveal related cue
-readout difficulties. Together, these observations make Tunnel Rooms a
+also difficult: success on the farther correct tunnel is 16--52\% across
+Color, Shape, and a green/blue palette. Together, these observations make Tunnel Rooms a
 controlled case study of the gap between learning visual geometry and
 preserving the distinctions needed to act.
 \end{abstract}
@@ -126,12 +126,12 @@ coordinate error in pixels, and $R^2$ measures explained variance.
 The contrast is substantial (Table~\ref{tab:probes}). Averaging the four endpoints on
 Color gives location MAE of 3.83 pixels and $R^2=.934$, versus cue MAE of
 27.40 pixels and $R^2=.224$. The cue error is only modestly below
-the constant cue predictor's 31.19 pixels. Shape shows the same ordering.
+the constant cue predictor's 31.19 pixels. Shape and Palette show the same ordering.
 The representation thus supports accurate localization much more readily
 than cue-conditioned localization. The probes test accessibility to a
 linear readout, not the complete absence of cue information.
-Alternate-palette and model controls in Appendix~\ref{app:ablations}
-also show weak cue readouts, although their training settings differ.
+Appendix~\ref{app:ablations} reports controls for the model adaptations
+and additional palette conditions.
 
 \begin{table}[!htbp]
 \centering
@@ -158,6 +158,11 @@ Shape & Top & 5.88 & .868 & 3.19 & .941 \\
  & Bottom & 6.06 & .872 & 3.14 & .948 \\
  & Triangle & 25.18 & .229 & 30.75 & .144 \\
  & Diamond & 25.80 & .253 & 30.47 & .184 \\
+\midrule
+Palette & Top & 4.79 & .913 & 2.63 & .962 \\
+ & Bottom & 5.34 & .893 & 2.96 & .952 \\
+ & Green & 24.93 & .262 & 29.06 & .217 \\
+ & Blue & 24.95 & .315 & 28.88 & .239 \\
 \bottomrule
 \end{tabular*}
 \end{table}
@@ -174,11 +179,11 @@ the cues that distinguish routes.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=.95\linewidth]{figures/lewm_spatial_primary_decoders.pdf}
+  \includegraphics[width=\linewidth]{figures/lewm_spatial_three_cue_decoders.pdf}
   \caption{\textbf{Reconstructions preserve the rooms but weaken their cues.}
-  Original observations (top) and decoded images (bottom) for Color and
-  Shape. All six recorded clips per variant are shown. These are training
-  snapshots; the decoder protocol and timing are given in
+  Original observations (top) and decoded images (bottom) for Color, Shape,
+  and Palette. All six recorded clips per variant are shown. Snapshot
+  timing and the decoder protocol are given in
   Appendix~\ref{app:planning}.}
   \label{fig:decoders}
 \end{figure}
@@ -204,9 +209,9 @@ additional landscapes.
 
 \begin{figure}[!t]
   \centering
-  \includegraphics[width=\linewidth]{figures/lewm_spatial_goal_distance_main.pdf}
+  \includegraphics[width=\linewidth]{figures/lewm_spatial_three_cue_goal_distance.pdf}
   \caption{\textbf{The correct route changes with the goal; LeWM's low-energy regions remain broad.}
-  Left: LeWM goal energies for Color and Shape. Right: geodesic travel
+  Left: LeWM goal energies for Color, Shape, and Palette. Right: geodesic travel
   distance through the true paired tunnels. Rows change the goal (red disk);
   yellow denotes low cost. Each column shares a scale across goals.
   Latent energy and travel distance have different units.}
@@ -218,7 +223,7 @@ Do these representation-level difficulties accompany poor planning?
 We group tasks by the correct entrance's distance rank: R1 means it is
 nearer, and R2 means it is farther away. We evaluate two planners,
 cross-entropy method (CEM) and gradient descent (GD). Both have lower
-success on R2, for both Color and Shape (Table~\ref{tab:rankplanning}).
+success on R2 across all three variants (Table~\ref{tab:rankplanning}).
 On Color, CEM falls from 80\% to 16\%, and GD from 64\% to 52\%.
 These results show that the benchmark challenges LeWM beyond simply
 approaching a nearby tunnel. Longer routes can also be harder to plan,
@@ -240,6 +245,7 @@ Variant & CEM R1 & CEM R2 & GD R1 & GD R2 \\
 \midrule
 Color & 80\% & 16\% & 64\% & 52\% \\
 Shape & 88\% & 24\% & 76\% & 40\% \\
+Palette & 80\% & 28\% & 84\% & 32\% \\
 \bottomrule
 \end{tabular*}
 \end{table}
@@ -266,7 +272,7 @@ changes at fixed training effort would help distinguish failures to
 represent cues from failures to use them. Replication across runs and
 environments will establish how broadly this difficulty holds.
 
-\FloatBarrier
+\clearpage
 
 % Compact reference entries without changing the body font or page geometry.
 \setlength{\bibsep}{2pt}

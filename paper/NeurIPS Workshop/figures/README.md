@@ -7,13 +7,25 @@ visual inspection. Temporary builders remain under ignored `runs/` paths.
 ## Active main figures
 
 The active manuscript uses `tunnel_variants_and_rank.pdf`,
-`lewm_spatial_primary_decoders.pdf`, and `lewm_spatial_goal_distance_main.pdf`.
-The decoder figure includes all six final-epoch clips at frame2 for Color and
-Shape, spatial 8×8 + IDM 3.125, from the same runs as the primary probes and
-planning. These clips are captured at the first batch of the final epoch,
-not from the exported final checkpoint.
-`../data/spatial_primary_decoder_sources.csv` records the source files and
-hashes. The paired-goal landscape is documented at the end of this file.
+`lewm_spatial_three_cue_decoders.pdf`, and
+`lewm_spatial_three_cue_goal_distance.pdf`. Color, Shape, and Palette all use
+spatial 8×8 + IDM 3.125. The decoder composite retains all six clips per
+variant at frame 2. Color/Shape are first-batch final-epoch training snapshots;
+Palette is validation after the final epoch. Timing/populations differ.
+
+The energy composite has four columns: three learned maps and one unchanged
+geodesic reference. All use the same 210 valid centers, reference positions,
+portal geometry, and pairings. Learned energy shares a scale across goals
+within each checkpoint; geodesic distance has separate pixel units. The
+appendix `lewm_spatial_three_cue_landscapes.pdf` includes cosine similarity
+and squared distance for both destination goals of all three checkpoints.
+
+Compact source images, arrays, hashes, and timing are documented in
+`../data/spatial_three_cue_figures_provenance.json`,
+`../data/spatial_three_cue_landscapes_provenance.json`, and the dedicated
+Palette static/decoder manifests. Ignored builders are under
+`runs/pta_revision_audit/palette_continuity/`. Older two-cue figures below
+remain archived artifacts and are no longer included by the manuscript.
 
 ## Retained task and CLS figures
 

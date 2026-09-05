@@ -3,7 +3,7 @@
 \subsection{Trajectory collection and temporal interface}
 \label{app:collection}
 
-Each two-room scenario randomizes portal geometry, color--position pairing,
+Each two-tunnel scenario randomizes portal geometry, color--position pairing,
 agent start, target leaf, and target position.  Collection generated 55,000
 paired hidden/visible scenarios with a 500-step cap and retained the first
 50,000 for which both scripted routes succeeded; the active corpus is the
@@ -80,21 +80,26 @@ cases. The scripted
 oracle verifies each case in both hidden-search and visible-direct modes
 against its expected portal-entry trace.
 
-The primary Color and Shape planning evaluations, coordinate probes, and
+The primary Color, Shape, and Palette planning evaluations, coordinate probes, and
 static landscapes use the same exported epoch-10 spatial $8\times8$ + IDM
-3.125 checkpoints. Figure~\ref{fig:decoders} instead shows snapshots from
-the first batch of the final training epoch: frame index 2 is retained for
-all six recorded clips in each run. These reconstructions precede the
-exported checkpoints. Color uses BF16 evaluation and filled 18-pixel
+3.125 checkpoints. In Figure~\ref{fig:decoders}, Color and Shape snapshots come from
+the first batch of the final training epoch, preceding the exported
+checkpoint. Palette snapshots come from validation after the final epoch.
+We retain frame index 2 of all six clips per run; clip populations and
+capture times differ, so this is a qualitative comparison. Color uses BF16 evaluation and filled 18-pixel
 markers, matching its training/probe rendering. Shape uses a separate
 rank manifest with 20-pixel shape markers. Color and Shape originate from
-different source revisions, with the same specified training and solver
-settings. Archived configurations
+different source revisions. Palette uses a later implementation with the
+same nominal training recipe and filled 18-pixel green/blue markers. Its
+evaluation retains the historical CEM/GD solvers and Color case geometry,
+changing the cue palette. This aligns solver settings and cases while
+leaving source revision as a comparison limitation. Archived configurations
 and checkpoint hashes identify the conditions.
 
 For R1 and R2 respectively, Color succeeds on 20/25 and 4/25 cases with
 CEM, and 16/25 and 13/25 with GD. Shape succeeds on 22/25 and 6/25 cases
-with CEM, and 19/25 and 10/25 with GD. The six matched CLS checkpoints in
+with CEM, and 19/25 and 10/25 with GD. Palette succeeds on 20/25 and
+7/25 cases with CEM, and 21/25 and 8/25 with GD. The six matched CLS checkpoints in
 Table~\ref{tab:matchedidm} have no corresponding planning evaluation.
 
 \section{Representation landscapes and their relation to planning}
@@ -118,9 +123,9 @@ planning-cost peak, and these static maps are not action-value functions.
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=\linewidth,height=.72\textheight,keepaspectratio]{figures/lewm_spatial_similarity_appendix.pdf}
+\includegraphics[width=\linewidth,height=.72\textheight,keepaspectratio]{figures/lewm_spatial_three_cue_landscapes.pdf}
 \caption{\textbf{Primary spatial $8\times8$ + IDM 3.125 landscapes.}
-The Color and Shape checkpoints are those used for the primary coordinate
+The Color, Shape, and Palette checkpoints are those used for the primary coordinate
 probes and planning evaluations. Columns compare cosine similarity $S$ and
 squared distance $E$ for both destination goals. Yellow denotes high
 similarity or low cost. Cosine maps share [.6,1]; each squared-distance pair
@@ -136,15 +141,16 @@ outputs. Its geometry is shared across Color, Shape, and green/blue.
 For the matched CLS controls, the renderer reproduces a stored observation
 byte for byte in each of the three datasets. The primary spatial
 Color and Shape models load with their original historical implementation
-and configurations; no checkpoint conversion is applied, and the renderer
-also reproduces the stored dataset observation exactly. A regular $20\times20$ lattice
+and configurations; Palette uses its own source revision and strict loader.
+No checkpoint conversion is applied, and each renderer reproduces a stored
+dataset observation exactly. A regular $20\times20$ lattice
 spans the $224\times224$ image, with spacing $223/19\simeq11.74$ pixels;
 210 grid points are valid agent centers. We evaluate the model only at those
 centers, holding portal identity, geometry, and appearance fixed.
 Four unoccluded reference positions are shared across all variants: two in
 the hub near different portals and one in each destination room. Reference
 positions themselves are encoded exactly, even when off the lattice.
-The two primary spatial and six matched CLS epoch-10 checkpoints are frozen;
+The three primary spatial and six matched CLS epoch-10 checkpoints are frozen;
 encoder inference uses float32 and
 distance arithmetic float64. No decoder, action sequence, or simulator rollout
 is involved. The accompanying data include raw maps and hashes of the checkpoints and
@@ -219,7 +225,8 @@ navigation reference, not a calibrated target for latent squared distance.
 
 \paragraph{Interpretation and limits.}
 The primary spatial models produce destination-reference cosine similarities
-.98820 (Color) and .97590 (Shape), with squared distances 5.075 and 8.113.
+.98820 (Color), .97590 (Shape), and .97994 (Palette), with squared
+distances 5.075, 8.113, and 7.132, respectively.
 Their goal-energy maps retain low-cost regions near both candidate hub
 portals and both leaf portals, although changing the reference does alter
 the costs. The separate matched CLS+IDM controls give cosine similarities
@@ -304,25 +311,21 @@ scores are .226, .244, .213, and .231. Four-endpoint cue MAE remains in the
 approximately $1.1\times$, $1.5\times$, and $2\times$.
 
 \paragraph{Interpretation and follow-up.}
-More saturated reconstructions suggest transition-focused sampling as a
-candidate intervention, but improved appearance need not mean improved cue
-binding. A decoder can produce distinct colors without assigning the correct
-identity to each portal; coordinate probes ask whether that identity selects
-the correct endpoint. The visual examples also differ across runs, and
-additional optimization could contribute to their appearance. A controlled
-follow-up should match training updates and evaluate the same held-out
-examples for saturation, cue identity, cue-conditioned localization, and
-planning. Cue swaps and portal-crossing rollouts would then test whether
-visual recovery changes predicted destinations and action selection.
+More saturated reconstructions do not establish cue binding: distinct colors
+can still be assigned to the wrong endpoints. Frames differ across conditions,
+and increased optimization may contribute to their appearance. A controlled
+follow-up should fix the training budget and evaluate identical held-out
+examples for saturation, identity, cue-conditioned localization, and planning.
+Cue swaps and portal-crossing rollouts can then test whether visual recovery
+changes predicted destinations or actions.
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\linewidth]{figures/lewm_transition_diversity_decoder.pdf}
   \caption{\textbf{Transition-focused sampling changes decoder appearance.}
-  Selected spatial $8\times8$ + IDM 3.125 decoder outputs appear more saturated.
-  Frames differ across conditions; correct identity recovery is not measured
-  by this visual comparison. Coordinate $R^2$ does not improve consistently,
-  and added windows increase compute.}
+  Selected reconstructions appear more saturated, but frames differ across
+  conditions and cue identity is not measured. Coordinate $R^2$ does not
+  improve consistently; added windows increase compute.}
   \label{fig:diversity}
 \end{figure}
 
