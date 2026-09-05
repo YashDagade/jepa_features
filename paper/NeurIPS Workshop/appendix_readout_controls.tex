@@ -7,7 +7,7 @@ Color and Shape models combine a learned spatial readout with an auxiliary
 inverse-dynamics loss (IDM) of weight 3.125. Both are adaptations of LeWM:
 the native recipe selects the CLS token and uses prediction MSE plus SIGReg,
 without IDM. The following one-seed comparisons examine how these choices
-affect location and cue accessibility.
+affect planning, tunnel localization, and cue accessibility.
 
 IDM predicts the actions connecting consecutive states, encouraging features
 that distinguish their effects. Related uses of inverse dynamics emphasize
@@ -33,16 +33,57 @@ through both states; the action target is detached. This head is used only
 during training and differs from the inverse model in Sensorimotor World
 Models \citep{ivashkov2026sensorimotor}.
 
-\subsection{Effects of readout and inverse dynamics}
+\subsection{Why include inverse dynamics and a spatial readout?}
 
-The four standard-Color conditions in Table~\ref{tab:historicalreadout} vary
-readout and IDM within the same historical campaign. Without IDM, the spatial
-state still supports location $R^2=.898$ but cue $R^2=.162$: the selective gap
-therefore does not require inverse-dynamics supervision. Adding IDM improves
-both readouts, however, so it can still influence the primary representations.
-The native CLS model without IDM performs poorly on both factors. The
-location--cue dissociation thus recurs under several configurations without
-being a universal property of the native objective.
+IDM provides a substantial planning benefit in the historical Color
+comparison (Table~\ref{tab:idmplanning}). With the spatial readout, success
+across the 50 cases rises from 8\% without IDM to 48\% with IDM for CEM,
+and from 8\% to 58\% for GD. Both ranks improve, and CLS shows the same
+direction of change. Each IDM pair shares its initial model parameters,
+training budget, and evaluation protocol. These gains motivate including
+IDM in the primary configuration, while its remaining failures on the
+farther correct tunnel preserve the cue-binding challenge.
+
+\begin{table}[!htbp]
+\centering
+\caption{\textbf{Removing IDM sharply reduces planning success.}
+Success percentages on the same 25 Color episodes per rank, at epoch 10
+with seed 3072. Each readout's IDM pair shares initialization and differs
+only in loss weight; solver settings and evaluation cases are fixed.
+R1/R2 denote nearer/farther correct tunnels. The full protocol is in
+Appendix~\ref{app:planning}.}
+\label{tab:idmplanning}
+\small
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}llrrrr@{}}
+\toprule
+Readout & IDM weight & CEM R1 & CEM R2 & GD R1 & GD R2 \\
+\midrule
+CLS & 0 & 8\% & 0\% & 12\% & 4\% \\
+CLS & 3.125 & 68\% & 8\% & 52\% & 28\% \\
+Spatial $8\!\times\!8$ & 0 & 12\% & 4\% & 12\% & 4\% \\
+Spatial $8\!\times\!8$ & 3.125 & 80\% & 16\% & 64\% & 52\% \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+Spatial aggregation serves a complementary purpose: making tunnel positions
+more accessible (Table~\ref{tab:historicalreadout}). At IDM weight 3.125,
+location MAE is 3.83 pixels with the spatial readout versus 7.42 with CLS,
+and location $R^2$ is .934 versus .684. The spatial model also localizes
+well without IDM ($R^2=.898$), despite its poor planning performance.
+Accurate localization alone is therefore insufficient for reliable planning
+in these runs. This motivates the combination used in the main study.
+The readout comparison uses the same seed but does not share encoder
+initialization, so it is less tightly controlled than each IDM pair.
+
+Neither addition resolves cue binding. With IDM, both readouts have cue
+MAE near 27 pixels; the spatial state's cue $R^2$ is .224, versus .307
+for CLS. Without IDM, the spatial state's cue $R^2$ is only .162 despite
+its strong localization. Thus IDM is not required for the selective
+location--cue gap to appear, and spatial aggregation does not by itself
+restore cue identity. These one-seed results support our configuration
+choices without establishing that either adaptation is universally necessary.
 
 \begin{table}[ht]
 \centering

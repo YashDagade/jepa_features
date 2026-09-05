@@ -27,6 +27,18 @@ are means of the SHA-verified final endpoint metrics, which exactly match the
 retained W&B summary. All printed two-decimal MAE and three-decimal R² values
 are unchanged; checkpoint and feature hashes also remain unchanged.
 
+`lewm_idm_readout_planning.csv` consolidates the historical Color 2×2
+readout/IDM planning ablation: four conditions, two solvers, and two ranks
+(16 rows). Counts are verified against SHA-checked original metrics JSONs.
+All evaluations use the same ordered 50 cases and manifest, with 25 per rank;
+source revision, run ID, metric path/hash, and source table are retained.
+Within each readout, IDM 0 and 3.125 instantiate the same head and share
+initialization. Across readouts, aggregator construction changes the RNG
+sequence before encoder initialization, so this is a same-seed comparison
+rather than an identical-initialization readout control. Saved videos from
+all eight evaluations confirm filled markers; the outline rendering from
+an earlier Jul12 run does not apply here.
+
 The following CLS and legacy files remain supporting evidence. `short_paper_noidm_color_*`
 records independently reproduced, same-campaign no-IDM Color probes, planning,
 and provenance. `short_paper_idm_color_cls_planning.csv` holds the actual

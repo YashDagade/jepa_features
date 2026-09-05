@@ -21,6 +21,16 @@ immutable source `c4a2df2`; they are separate from the historical primary
 spatial checkpoints. Native CLS without IDM fails both location and cue
 readouts. Spatial Color without IDM retains a selective gap, so IDM is not
 necessary for that observation, but its causal influence is not ruled out.
+The appendix now includes the historical Color 2×2 planning ablation, with
+all 16 rank/solver results in `data/lewm_idm_readout_planning.csv`. For the
+spatial readout, IDM raises success over 50 cases from 8% to 48% (CEM) and
+8% to 58% (GD). Within each readout, the IDM pair shares initialization,
+training budget, and evaluation cases/settings. Across readouts, the same
+seed does not preserve encoder initialization because aggregator construction
+consumes RNG first. Spatial aggregation improves location MAE from 7.42 to
+3.83 pixels with IDM fixed; it does not restore cue binding. These one-seed
+results motivate the configuration without claiming universal necessity.
+
 The existing green/blue spatial runs use IDM weights 0/.625; they are not
 presented as a matched 3.125 replication.
 
@@ -40,8 +50,10 @@ planning job also extracts verified final-epoch decoder images. Staging tools
 and compatibility checks are under ignored
 `runs/pta_revision_audit/palette_continuity/`. The PDF retains the completed
 Color/Shape results until Palette's final results are checked and the claims
-are revised accordingly. Palette uses a later source revision; the historical
-Color outline-rendering difference also remains a comparison limitation.
+are revised accordingly. Palette uses a later source revision. Saved rollout
+videos confirm that the historical Color evaluations use filled markers,
+matching training; the earlier outline-rendering caveat concerned a different
+checkpoint and does not apply to the primary comparison.
 
 The main energy figure changes the goal between both destination rooms for
 the exact primary Color and Shape checkpoints. A third column shows a
