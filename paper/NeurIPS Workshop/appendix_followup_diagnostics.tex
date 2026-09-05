@@ -62,19 +62,38 @@ tests do not establish information loss.
 \section{Controlled portal swaps and predicted crossings}
 \label{app:portal-swap}
 
-We exchange the two central-room portal endpoints to separate encoder
-sensitivity from prediction of their consequences. Unordered locations stay
-fixed, while visible identities and the destination reached from each entrance
-switch together. Destination-room endpoints remain unchanged. Both worlds
-are physically coherent: the intervention changes visible cues along with routing.
+We construct two worlds to test whether LeWM predicts the consequences of
+a cue change. In the second world, we swap the two hub cues. Their occupied
+locations and all leaf cues stay fixed. Each entrance now leads to the
+other destination room. The routing changes with the visible cue, so both
+worlds obey the same rule: matching cues connect paired tunnels.
 
-We use 16 planning geometries, eight per rank, with identical geometry and
-actions across renderings. Figure~\ref{fig:swap-states} illustrates a separate
-training geometry, excluded from all aggregates. Controls translate either
-the agent or both central-room endpoints by eight pixels; the latter changes
-occupied geometry while preserving identities. We measure squared projected-state
-distance from the original observation, with same-state distance as a zero
-reference.
+Both agents receive the same 80 primitive actions. They wait for ten steps,
+approach the nearer entrance, and then receive zero actions. Their paths
+coincide until they enter that entrance at the same step. Teleportation then
+sends them to different rooms. Figure~\ref{fig:swap-trajectories} shows the
+recorded paths for a separate training geometry. This illustration is
+excluded from all reported statistics.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/lewm_portal_swap_trajectories.pdf}
+\caption{\textbf{The same approach reaches different rooms after a cue swap.}
+Two Color worlds receive identical actions. Solid lines show recorded
+motion; dashed lines show the teleport at step 20. Destination markers
+indicate final agent positions, not planning targets. This illustration
+is excluded from the 16 evaluation geometries.}
+\label{fig:swap-trajectories}
+\end{figure}
+
+The quantitative experiment uses 16 planning geometries, eight per rank.
+Geometry and actions are shared across renderings. The first crossing
+occurs between steps 15 and 25 in these cases. We also apply two static
+controls: translating the agent by eight pixels, or translating both hub
+portals by eight pixels while preserving their identities
+(Figure~\ref{fig:swap-states}). For each change, we measure squared distance
+from the original projected state. Comparing a state with itself gives the
+zero reference.
 
 \begin{figure}[!htbp]
 \centering
@@ -85,31 +104,35 @@ central-room portals, for all three renderings of one illustration geometry.
 The swap preserves occupied portal locations and destination-room cues.}
 \label{fig:swap-states}
 \end{figure}
+Model rollouts start from the observed states at steps 0, 5, and 10, all
+before the crossing. Each later state is predicted from the rollout history
+and the next normalized five-action block. No later observations are fed
+back into the model. We separately encode the actual trajectories to
+measure how much the two observed worlds diverge.
 
-For the dynamic comparison, each pair receives the same 80 primitive
-actions: ten stationary steps, a straight approach to the nearer entrance,
-and then zero actions. Both agents remain at identical positions until they
-enter that physical portal, at the same step between 15 and 25, then arrive
-in different destination rooms. Model forecasts start from observations at
-steps 0, 5, and 10, all before the crossing. Subsequent states are predicted
-autoregressively using the same normalized five-action blocks in both worlds;
-observed post-crossing states are never fed back. We separately encode the
-actual trajectories for comparison.
+The curves compare squared distance between the two observed-state
+sequences with distance between their two model rollouts. Time zero marks
+the first sampled frame at or after crossing. The crossing therefore lies
+within the preceding five-step interval. Figure~\ref{fig:swap-curves} also
+shows the physical distance between the agents.
 
-We plot squared distance between the two worlds' projected states and
-between their two predicted states. Time zero is the first sampled frame at
-or after the true crossing, so the event lies within the preceding five-step
-interval. Figure~\ref{fig:swap-curves} shows raw within-model distances and
-actual position separation; curves are medians with interquartile bands over
-the 16 evaluation geometries.
+We display samples from $-15$ to $50$ steps, using the same 16 geometries
+at every point. The three pre-transition samples are recorded observations,
+not extrapolated data. Early model-rollout values include the observed
+states used for initialization. At $-15$, $-10$, and $-5$ steps, respectively
+0, 4, and 12 of the 16 rollout values are forecasts; the others are
+conditioning states. From time zero onward, all 16 values are forecasts.
+Earlier samples at $-20$ and $-25$ have only 12 and four cases, so we omit
+them to keep the population constant.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/lewm_portal_swap_raw_event_curves.pdf}
 \caption{\textbf{Observed trajectories diverge at the portal; predictions understate the change.}
 Top: paired squared latent distances for actual observations (blue) and
-open-loop predictions (orange). Bottom: actual position separation, shared
-across renderings. Medians and interquartile bands summarize 16 geometries.
+model rollouts (orange). Early rollout values include conditioning
+observations. Bottom: actual position separation, shared across renderings.
+Every sample summarizes the same 16 geometries with medians and interquartile bands.
 The gray interval contains the first portal transition. Latent scales are
 interpreted within each model, not across columns.}
 \label{fig:swap-curves}
@@ -135,12 +158,12 @@ Palette & 0.58 [0.39, 0.67] & 3.79 [3.27, 5.69] & 0.18 [0.15, 0.26] \\
 \bottomrule
 \end{tabular*}
 \end{table}
-
-Swaps elicit nonzero responses comparable to an eight-pixel agent shift
-(Table~\ref{tab:swap}); the encoder is not cue invariant. Portal translation
-produces larger median responses. After crossing, median forecast/observed
-separation ratios are .25, .42, and .18 for Color, Shape, and Palette, with
-attenuation in every evaluated pair. These rollouts understate the routing
-change's consequences, but general prediction error or open-loop contraction
-may contribute. A dynamic translation control would help distinguish these
-explanations.
+Swapping cues changes the representation by an amount comparable to an
+eight-pixel agent shift (Table~\ref{tab:swap}). The encoder therefore detects
+the swap. Moving the portals produces a larger median response.
+After crossing, however, the predicted states separate much less than the
+observed states in every evaluated pair. The median predicted-to-observed
+separation ratios are .25, .42, and .18 for Color, Shape, and Palette.
+General prediction error or shrinking distances during long rollouts could
+also cause this effect. A control that predicts the consequences of
+translating the agent or portals would help distinguish these explanations.

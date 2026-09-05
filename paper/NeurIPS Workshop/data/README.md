@@ -408,3 +408,19 @@ digests, feature/target alignment, source coordinates, fit/test partitions,
 and planning hashes. Replaying all eight ridge probes from retained features
 reproduces the archived metrics to numerical precision. The fit uses 640
 episodes (512 fit plus 128 validation) and the test uses 256 disjoint episodes.
+
+### Longer pre-transition view and paired trajectory illustration
+
+`lewm_main_swap_figure_provenance.json` and
+`lewm_portal_swap_raw_event_figure_provenance.json` document the common
+−15-to-50-step display window with all 16 cases. The saved model sequence
+includes the observed conditioning states: at −15/−10/−5, respectively
+0/4/12 values are forecasts; all 16 values from time zero onward are
+forecasts. Plot extension does not alter source arrays or summary statistics.
+
+`lewm_portal_swap_illustration_arrays.npz` contains the saved images, actual
+positions, and actions for the separate Color illustration. Its provenance
+records source hashes, both scenarios, the step-20 teleport, and exclusion
+from evaluation aggregates. The corresponding two-panel figure draws real
+motion as solid lines and the teleport jump as a dashed line. Destination
+markers indicate the final agent position, not a planning goal.

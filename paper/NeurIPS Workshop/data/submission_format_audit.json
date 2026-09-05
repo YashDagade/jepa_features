@@ -8,7 +8,7 @@
   "official_style_byte_identical": true,
   "review_mode": "dblblindworkshop",
   "main_pages": 4,
-  "total_pages": 21,
+  "total_pages": 22,
   "references_start_page": 5,
   "cited_references": 22,
   "paper_size_points": [
@@ -17,27 +17,28 @@
   ],
   "font_types": {
     "Type1": 12,
-    "Type0": 21
+    "Type0": 23
   },
   "all_fonts_embedded": true,
   "type3_fonts": 0,
   "body_and_table_font": "official normal 10 TeX points",
   "no_overfull_or_undefined_references": true,
   "author_metadata_empty": true,
-  "pdf_bytes": 2660475,
-  "pdf_sha256": "dc4411b56a44470fc65b09807eb0e3662f87ab3800a72d2d90f5a310be65e8c2",
-  "source_archive_sha256": "3c010fcb9f31fb83b0d7e17d36857c288c79c40f7ad2d428d0c9f8b6e99355a1",
+  "pdf_bytes": 2678502,
+  "pdf_sha256": "b29b5864ee95db815e47091a625753d4499640c67fff1310001429dcea36813c",
+  "source_archive_sha256": "ae0459fc1c939f192f3226800a759f7867236c809ac49b15dc8b6a360827cebc",
   "source_files": {
     "Makefile": "66b7af929a52ca3a705d28108ea5e8a2728cab43a94f97fadfcdef5d78125af8",
     "Tectonic.toml": "a72d0c12eb5b9d5d99750ce2cc8b65d7bdb8d8a2938003b4e36339d883638057",
     "appendix_evaluation.tex": "8b5794019d0992151840625f7f5c5d906c4e1f88f8feae5279e73e761ec02521",
-    "appendix_followup_diagnostics.tex": "945eebbeb865868728a905763ab4833e320c8f2b3fdb9a14c96c5d055efd45b1",
+    "appendix_followup_diagnostics.tex": "04ddecd720138430351a4ccab91aeab5c721b7a730c0b40a3d5c4dbc8e145606",
     "appendix_readout_controls.tex": "8f61a51ed3971ad6d29a6792c41168737f3df7e973bdeb22c9958a8a6fbcf5db",
     "appendix_related_work.tex": "fcc12cc06524a5294e5460fef5c2f2ea626581b10e8a611a42247d2cab76be50",
     "figures/lewm_cls_cue_decoders.pdf": "83a5ac4188d6157942bdcbb505762b1904c2b65cf906b85a9d9896505ad854c1",
-    "figures/lewm_goal_landscape_and_portal_swap.pdf": "dbaa4b89ccbb08785eb7057808d147f56188561e717881f7b8be4d7bcca0aaa8",
-    "figures/lewm_portal_swap_raw_event_curves.pdf": "31d8b5e229ccc6a7949d1c233bbb9873530c5afaf381af19b97f9e4dfb10ffe5",
+    "figures/lewm_goal_landscape_and_portal_swap.pdf": "a539c35a2aed4dbd6d5d4fdc704eb1c507f9c23c73c39336287c87e748a84092",
+    "figures/lewm_portal_swap_raw_event_curves.pdf": "8e95095f60775e99e701d5d8d620c7ae541dc593cdfaa056b9242674d9d65eca",
     "figures/lewm_portal_swap_states.pdf": "e3d9b4fa59acda178cfde031090ab8b39101235533fcd644e2071261ecfe3a63",
+    "figures/lewm_portal_swap_trajectories.pdf": "2cc547a9c6d30ac8f6ace1996a8e05e0af0162c840e0595302eca7cfcebba9bc",
     "figures/lewm_similarity_historical_atlas.pdf": "969311b8c8b5536a72c174ba822710386534273c84c2037c42c783503cd4c2ec",
     "figures/lewm_similarity_matched_appendix.pdf": "ba465c214039544f7cc4bbad0074376ae65ad54e3fbd43eb75bcd756f050e4b6",
     "figures/lewm_spatial_three_cue_decoders.pdf": "478a028d4a7ce4a908b87cdb6e79aec5926c95cbfed20ee85f5941e30b8ff5fb",
@@ -46,7 +47,7 @@
     "figures/lewm_transition_diversity_decoder.pdf": "db09f8665ebd9f33f04aa40fd2e4576c2798a3828ea183f291e19ab3ffc885fa",
     "figures/tr2_color_mae_scale.pdf": "208238ab5f67da29e6e8b1a645d7d1da07f89ecd58225914a87b416dbc037193",
     "figures/tunnel_variants_and_rank.pdf": "ecd3e9558a55c7c3008943afdbbc72fe05b80928bf98f5e563ec8dc85781f420",
-    "main.tex": "2db36d687503b8a548be16d971890b147a4bea48c448a592ad9473a6b011dbf0",
+    "main.tex": "b81ad65747eaf121bbfa55727a99d036a780333cf6e2ff7551e56f1e1d5573f2",
     "neurips_2026.sty": "c3fc2894e83d2517ca18b66741d6c595986d97957dc08ec08bb2125a7ec4555a",
     "references.bib": "528f0f9ddc94bd985c797526390fb0a112edf634fe2895c64417b9e076f28889"
   },
@@ -134,7 +135,7 @@
   "submission_sent": false,
   "remaining_form_fields": "Author profiles/order and author-side sharing/release/license confirmations are not supplied or accepted by this workflow.",
   "build_warning": "Vendored lineno.sty:296 invalid UTF-8 warning only; no PDF text replacement characters detected.",
-  "feedback_revision": "Reorganized IDM, spatial aggregation, and matched-ablation appendices with direct agent-position and cue-planning evidence; September 5, 2026",
-  "upload_artifact_directory": "artifact://pta_feedback/appendix_structure/submission",
+  "feedback_revision": "Clear benchmark-led contributions and prose; longer genuine pre-transition curves and paired trajectory illustration; September 5, 2026",
+  "upload_artifact_directory": "artifact://pta_feedback/narrative_revision/submission",
   "prior_font_repairs_apply_to_existing_figures": true
 }

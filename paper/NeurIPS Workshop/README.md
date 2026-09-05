@@ -106,7 +106,7 @@ the appendices; the main text identifies the LeWM adaptations in plain language.
 protocols and interpretation, and literature discussion respectively.
 The main text ends on page four;
 references follow the conclusion and span pages five through six, with the
-appendix continuing below them. The complete PDF is 21 pages.
+appendix continuing below them. The complete PDF is 22 pages.
 
 Layout uses natural vertical spacing, keeps the planning paragraph together,
 and places tables near their discussion. Landscape figures are interleaved
@@ -188,7 +188,7 @@ validation after epoch 10 training and align with those final model weights.
 
 Both follow-ups are complete on main; the anonymous code branch and earlier
 code ZIP remain a separate snapshot. Updated PDF and LaTeX upload files are
-in `runs/pta_feedback/appendix_structure/submission/`. The main paper remains four pages.
+in `runs/pta_feedback/narrative_revision/submission/`. The main paper remains four pages.
 
 A validation-selected two-hidden-layer MLP uses the same frozen checkpoints
 and endpoint targets as the main probes. Across Color/Shape/Palette, current
@@ -260,3 +260,22 @@ files, the shared manifest, and all 400 episode outcomes. No-IDM rank success
 ranges from 0% to 12%, rather than being uniformly zero. The existing six
 matched CLS checkpoints have no planning evaluation, and portal-swap rollouts
 remain an experiment on the primary spatial+IDM models only.
+
+## Narrative and portal-swap illustration revision
+
+The abstract and introduction now begin with Tunnel Room. The introduction
+explicitly identifies three contributions: the controlled benchmark and its
+renderings, LeWM's difficulty using its cues, and the inconclusive study of
+limited cue-revealing transition exposure. Section 2 explains the benchmark's
+simple geometry, variable portal placements/assignments, and matched visual
+variants. Section 4 explains that choosing the nearest entrance is correct
+on R1 and incorrect on R2, and supports the proximity interpretation with
+actual first-entry traces.
+
+Figure 3b and the full appendix curves now start at −15 rather than −10
+primitive steps. All 16 geometries contribute to every displayed point.
+Earlier model-rollout values include observed conditioning states; the
+appendix explicitly reports their counts. Original observations, forecasts,
+and post-transition summaries are unchanged. A new two-panel appendix figure
+shows the actual original/swapped Color paths from the separate training
+geometry, with dashed teleports. It is excluded from the 16-case statistics.

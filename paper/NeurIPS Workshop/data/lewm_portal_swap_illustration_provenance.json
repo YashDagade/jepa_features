@@ -1,0 +1,123 @@
+{
+  "source_inputs": "artifact://pta_feedback/portal_swap/inputs_color.npz",
+  "source_inputs_sha256": "e4b73e7ecec5d0620a294b749f5376bd71ea2e17cc0847e3fffb7cbe79c45008",
+  "source_protocol": "data/lewm_portal_swap_protocol.json",
+  "source_protocol_sha256": "e4d593d96b5b99511cf89e9ed60d2baafba9d1c3ac3642ab92a9f762cf18379f",
+  "output": "figures/lewm_portal_swap_trajectories.pdf",
+  "output_sha256": "2cc547a9c6d30ac8f6ace1996a8e05e0af0162c840e0595302eca7cfcebba9bc",
+  "compact_arrays": "data/lewm_portal_swap_illustration_arrays.npz",
+  "compact_arrays_sha256": "ccbead727ab15b5ff95273fd1f1588c7891a78ddb656e3b9ddd25d03d918ae24",
+  "index": 16,
+  "label": "paper_episode_1893",
+  "sample_group": "training_geometry_illustration",
+  "included_in_16_geometry_aggregates": false,
+  "rendering": "Exact saved Color initial observation pixels, nearest-neighbor display; vector trajectory and annotation overlay. No new rendering, simulation, model inference, or interpolation of positions.",
+  "worlds": {
+    "original": {
+      "agent_position": [
+        29.701961517333984,
+        191.35165405273438
+      ],
+      "agent_render_radius": 9,
+      "endpoint_positions": [
+        [
+          58.82470703125,
+          42.790794372558594
+        ],
+        [
+          86.00526428222656,
+          180.92935180664062
+        ],
+        [
+          153.3388671875,
+          47.52519989013672
+        ],
+        [
+          155.823974609375,
+          144.53587341308594
+        ]
+      ],
+      "landing_offset": 14.0,
+      "layout": "hub_left_two_leaves_right",
+      "marker_height": 18,
+      "marker_style": "filled18x18",
+      "marker_width": 18,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_seed": 42961,
+      "speed": 5,
+      "target_leaf": 1,
+      "target_position": [
+        189.04031372070312,
+        176.97586059570312
+      ],
+      "trigger_radius": 10.0,
+      "identity_mode": "paired_color"
+    },
+    "binding_swap": {
+      "agent_position": [
+        29.701961517333984,
+        191.35165405273438
+      ],
+      "agent_render_radius": 9,
+      "endpoint_positions": [
+        [
+          86.00526428222656,
+          180.92935180664062
+        ],
+        [
+          58.82470703125,
+          42.790794372558594
+        ],
+        [
+          153.3388671875,
+          47.52519989013672
+        ],
+        [
+          155.823974609375,
+          144.53587341308594
+        ]
+      ],
+      "landing_offset": 14.0,
+      "layout": "hub_left_two_leaves_right",
+      "marker_height": 18,
+      "marker_style": "filled18x18",
+      "marker_width": 18,
+      "min_hub_separation": 42.0,
+      "num_leaves": 2,
+      "pairing": 0,
+      "rearm_distance": 28.0,
+      "scenario_seed": 42961,
+      "speed": 5,
+      "target_leaf": 1,
+      "target_position": [
+        189.04031372070312,
+        176.97586059570312
+      ],
+      "trigger_radius": 10.0,
+      "identity_mode": "paired_color"
+    }
+  },
+  "trajectory": "All saved positions at primitive steps 0 through 80. Solid lines connect actual consecutive positions except the portal displacement at step20; that displacement is explicitly dashed. Start is step0; destination marker is the final recorded agent position, not the task goal.",
+  "action_protocol": "Same 80 primitive actions in both worlds: ten stationary actions, straight approach to the nearest physical hub portal, then zero actions.",
+  "binding_swap": "Exchange the two hub endpoint rows while fixing leaf endpoints and pairing; occupied hub locations remain the same, their visible identities swap, and actual destination changes coherently.",
+  "first_portal_step": 20,
+  "before_portal_positions_equal": true,
+  "final_positions": [
+    [
+      179.65692138671875,
+      142.71568298339844
+    ],
+    [
+      177.17181396484375,
+      45.70502471923828
+    ]
+  ],
+  "builder": "artifact://pta_feedback/narrative_revision/build_figures.py",
+  "panel_titles": [
+    "Original world",
+    "Hub colors swapped"
+  ]
+}

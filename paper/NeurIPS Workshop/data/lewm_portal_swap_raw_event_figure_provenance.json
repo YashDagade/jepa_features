@@ -1,0 +1,43 @@
+{
+  "source_arrays": "data/lewm_portal_swap_arrays.npz",
+  "source_arrays_sha256": "d4a4916d3dd25c9ebb0a12661c6b8e88e30172d51b47db3dfec545e8c99823bd",
+  "output": "figures/lewm_portal_swap_raw_event_curves.pdf",
+  "output_sha256": "8e95095f60775e99e701d5d8d620c7ae541dc593cdfaa056b9242674d9d65eca",
+  "relative_sample_steps": [
+    -15,
+    -10,
+    -5,
+    0,
+    5,
+    10,
+    15,
+    20,
+    25,
+    30,
+    35,
+    40,
+    45,
+    50
+  ],
+  "sample_count_at_every_displayed_step": 16,
+  "rollout_conditioning": "Saved rollout sequence begins with the three observed states at absolute primitive steps 0,5,10; all later states are autoregressive predictions. No conditioning or model output was changed.",
+  "forecast_counts_by_relative_step": {
+    "-15": 0,
+    "-10": 4,
+    "-5": 12,
+    "0": 16,
+    "5": 16,
+    "10": 16,
+    "15": 16,
+    "20": 16,
+    "25": 16,
+    "30": 16,
+    "35": 16,
+    "40": 16,
+    "45": 16,
+    "50": 16
+  },
+  "position_curve": "Median and IQR of actual paired position separation at every primitive step, from -15 to50 relative to first post-portal sample.",
+  "summary_sha256_unchanged": "81929e482b4a19137875c52b02317c3310435a34fff754846558a3a1af35ab1d",
+  "builder": "artifact://pta_feedback/narrative_revision/build_figures.py"
+}
