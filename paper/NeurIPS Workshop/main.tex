@@ -210,9 +210,9 @@ Appendix~\ref{app:portal-swap} gives controls and the full protocol.
 \Needspace{8\baselineskip}
 We rank the two hub entrances by distance from the initial agent position.
 In R1 tasks, the nearer entrance leads to the goal room; in R2 tasks, the
-farther one does. Grouping success by required cue gives mixed rates
-(44--75\%), while grouping by rank reveals a consistent R1 advantage
-across variants and planners (Table~\ref{tab:rankplanning}). On Color, cross-entropy
+farther one does. For every variant and planner, the drop in success
+from R1 to R2 exceeds the difference between cue identities
+(Table~\ref{tab:rankplanning}). On Color, cross-entropy
 method (CEM) success falls from 80\% to 16\%, and gradient descent (GD)
 from 64\% to 52\%. The entrance traces reveal a proximity bias: on R2,
 CEM enters the nearer, incorrect tunnel first in 72--88\% of cases across
@@ -223,21 +223,21 @@ gives the entrance counts and protocol.
 \begin{table}[!htbp]
 \centering
 \caption{\textbf{Planning success separates more clearly by rank than by cue.}
-All entries show CEM/GD task success (\%; higher is better).
-R1 and R2 have 25 cases each. Cue success pools both ranks: the first cue
-in each row has 16 cases, the second 34. The full cue-by-rank breakdown
-is in Appendix~\ref{app:planning}.}
+Entries show CEM/GD task success (\%). Cue 1/Cue 2 denote green/orange (Color),
+triangle/diamond (Shape), and green/blue (Palette).
+R1/R2 have 25 cases each; Cue 1/Cue 2 have 16/34 cases, pooling both ranks.
+Appendix~\ref{app:planning} gives the full cue-by-rank breakdown.}
 \label{tab:rankplanning}
 \renewcommand{\arraystretch}{1.12}
 \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lcccc@{}}
 \toprule
-Variant & \multicolumn{2}{c}{Cue-based performance $\uparrow$} & \multicolumn{2}{c}{Rank-based performance $\uparrow$} \\
+Variant & \multicolumn{2}{c}{Rank-based performance $\uparrow$} & \multicolumn{2}{c}{Cue-based performance $\uparrow$} \\
 \cmidrule(lr){2-3}\cmidrule(l){4-5}
- & & & R1 & R2 \\
+ & R1 & R2 & Cue 1 & Cue 2 \\
 \midrule
-Color & \shortstack{Green \\ 56.3/62.5} & \shortstack{Orange \\ 44.1/55.9} & 80/64 & 16/52 \\[4pt]
-Shape & \shortstack{Triangle \\ 68.8/56.3} & \shortstack{Diamond \\ 50.0/58.8} & 88/76 & 24/40 \\[4pt]
-Palette & \shortstack{Green \\ 56.3/75.0} & \shortstack{Blue \\ 52.9/50.0} & 80/84 & 28/32 \\
+Color & 80/64 & 16/52 & 56.3/62.5 & 44.1/55.9 \\
+Shape & 88/76 & 24/40 & 68.8/56.3 & 50.0/58.8 \\
+Palette & 80/84 & 28/32 & 56.3/75.0 & 52.9/50.0 \\
 \bottomrule
 \end{tabular*}
 \end{table}
