@@ -1,0 +1,46 @@
+{
+  "appendix_figure": "figures/lewm_spatial_similarity_appendix.pdf",
+  "appendix_similarity_scale": [
+    0.6,
+    1
+  ],
+  "figure": "figures/lewm_spatial_goal_distance_main.pdf",
+  "png": "figures/lewm_spatial_goal_distance_main.png",
+  "figure_inches": [
+    5.5,
+    4.0
+  ],
+  "builder": "artifact://pta_revision_audit/build_spatial_goal_distance_main.py",
+  "builder_sha256": "b055604a769d2ee75f766d723fb21b5cd0b42f59be8bc9e764b3f473b9bc3845",
+  "compact_arrays": "data/lewm_spatial_similarity_maps.npz",
+  "compact_arrays_sha256": "dc6c3ca657cb2f25485b1c481ff9f5447f945959d83d748f4a7a2c102d523506",
+  "source_provenance": "data/lewm_spatial_similarity_provenance.json",
+  "source_provenance_sha256": "4da9f0ea7c1a42cec400025bc3ba43be12cbce80d03338cadeeba05294c96b75",
+  "model": "lewm_spatial_idm",
+  "readout": "spatial_8x8",
+  "idm_weight": 3.125,
+  "cues": [
+    "color",
+    "shape"
+  ],
+  "references_zero_based": [
+    2,
+    3
+  ],
+  "episode": 1893,
+  "metric": "E(x,g) = sum_d (z_d(x)-z_d(g))^2; unnormalized 192-dimensional current projected states; no actions or predicted rollout",
+  "color_scales": {
+    "color": [
+      0.0,
+      94.76509240875613
+    ],
+    "shape": [
+      0.0,
+      93.49589576582585
+    ]
+  },
+  "color_direction": "viridis_r: yellow low cost, purple high cost; linear normalization; each checkpoint shares one scale across both goals",
+  "display": "20x20 candidate lattice; 210 valid evaluated centers; per-room 8-neighbor inverse squared-distance floor interpolation, weights=1/(distance_squared+0.001); 85% color + 15% original floor; walls, cue markers and reference agent preserved",
+  "reference_marker": "red agent disk shows the goal position; upper-leaf goal top row, lower-leaf goal bottom row",
+  "scope": "Historical spatial+IDM epoch-10 Color and Shape checkpoints aligned to primary probe/planning records; one common layout; fresh static inference, no training; plotting reads persisted arrays; colors are comparable across goals within a column, not numerically across checkpoint columns"
+}

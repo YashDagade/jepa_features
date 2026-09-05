@@ -1,42 +1,43 @@
 # PTA short paper
 
-The anonymous manuscript is **Learning Where, but Not Reliably Which: Cue
-Binding in a JEPA World Model**. Its scope is a controlled Tunnel Rooms case
-study, using coordinate probes (MAE and R²), detached pixel decoders,
-static goal-distance landscapes, and rank-stratified planning. R² belongs to the coordinate probes, not the pixel
-decoders.
+The anonymous manuscript is **Tunnel Rooms Color: Learning Where, but Not
+Reliably Which**. It introduces the controlled routing dataset and documents
+a localization–cue-binding gap through affine probes (MAE and R²), detached
+pixel decoders, static goal-distance maps, and rank-based planning. R² belongs
+to coordinate probes, not pixel reconstructions.
 
-The primary comparison uses native CLS selection with **LeWM+IDM 3.125**
-across matched Color, Shape, and green/blue conditions. This is an augmented
-training objective, not native LeWM. All six conditions (three cues, with and
-without IDM) completed successfully from immutable revision `c4a2df2` on
-September 4, 2026. The matched no-IDM results and historical spatial-readout
-controls are reported separately in the appendix. All results remain
-one-seed cases.
+The primary recipe is **LeWM with spatial 8×8 aggregation and IDM 3.125**.
+Completed Color and Shape checkpoints now align across all four diagnostics.
+Location R² is .934/.907, versus cue R² .224/.203. Rank-R2 planning success is
+16%/24% for CEM and 52%/40% for GD (Color/Shape). A same-campaign LpWM Color
+recipe with the same readout and IDM weight reaches 80%/88% (CEM/GD). Its
+regularizer and activation differ; this is a positive control, not an
+objective-only causal ablation. The paper therefore describes a
+model-dependent challenge rather than a universal JEPA failure.
 
-The primary probe table and three-column decoder figure now use these new
-matched checkpoints. All six final affine probe results reproduce exactly
-from retained frozen features. Dataset, sidecar, configuration, checkpoint
-file, result and feature hashes are preserved in the matched provenance CSV.
-Historical planning, hue-classification and transition-exposure evidence is
-explicitly distinguished because it uses different checkpoints.
+CLS±IDM, alternate-palette spatial runs, and readout mechanics are in the
+appendix. The six matched CLS runs completed on September 4, 2026 from
+immutable source `c4a2df2`; they are separate from the historical primary
+spatial checkpoints. Native CLS without IDM fails both location and cue
+readouts. Spatial Color without IDM retains a selective gap, so IDM is not
+necessary for that observation, but its causal influence is not ruled out.
+The existing green/blue spatial runs use IDM weights 0/.625; they are not
+presented as a matched 3.125 replication.
 
-Jobs 16970286/16970287/16970288 cover Color/Shape/green-blue +IDM and
-16970289/16970290/16970291 their native no-IDM controls. Generated scripts and
-outputs are under ignored `runs/lewm-cue-ablation-v1/`. No paper submission
-has been made.
+A targeted spatial confirmation campaign was submitted on September 4:
+**16981833–16981836**, covering Color/Shape/green-blue + IDM3.125 and Color
+without IDM. All four passed source/data checks and started. Their outputs
+are under ignored `runs/lewm-spatial-confirmation-v1/`; no unfinished result
+is included in the manuscript. This is a launch snapshot, not a live status
+ledger. Existing CLS job IDs are 16970286–16970291.
 
-The main argument now follows cue-conditioned readouts, reconstructions,
-rank-based planning, and a six-panel goal-energy figure that changes the goal
-between both destination rooms for all three matched cue variants. These
-energies compare encoded observations, not predicted action outcomes. The
-conclusion summarizes the observed gap and identifies controlled follow-up tests.
-
-The transition-diversity ablation is consolidated in the appendix. It reports
-more saturated selected decoder examples without consistent coordinate-probe
-recovery, together with the exposure counts and compute confound. The main
-text retains only the rare-crossing hypothesis and an appendix pointer; the
-abstract contains no transition-intervention claim.
+The main energy figure changes the goal between both destination rooms for
+the exact primary Color and Shape checkpoints. Static energies compare
+encoded observations, not predicted teleportation outcomes. The transition
+exposure pilot remains in the appendix: selected reconstructions are more
+saturated, but coordinate probes do not consistently improve and training
+compute increases. The conclusion identifies concrete causal and replication
+tests. No paper submission has been made.
 
 ## Venue and format
 
@@ -67,18 +68,28 @@ bytes. The current PDF is `main.pdf` (generated and ignored by Git).
 
 ## Evidence and completed follow-ups
 
-`data/short_paper_matched_probe_results.csv` contains the six new completed
-conditions and `short_paper_matched_probe_provenance.csv` records their
-verification. `short_paper_cls_decoder_sources.csv` identifies the three
-matched epoch-10 validation montages used in Figure 2: frame 2, all six clips,
-with only empty montage padding removed. Historical tables and source files
-are retained under their original names for the supporting ablations.
+- `data/spatial_primary_probes.csv`, `spatial_primary_planning.csv`, and
+  `spatial_primary_provenance.csv` freeze the aligned main results and
+  distinguish serialized checkpoint-file hashes from canonical state hashes.
+- `spatial_primary_decoder_sources.csv` records all six final-epoch clips at
+  frame 2; `figures/lewm_spatial_primary_decoders.pdf` displays every clip.
+- `spatial_primary_lpwm_planning.csv` and `spatial_primary_lpwm_recipe.json`
+  record the positive-control counts, shared manifest, objective, and source.
+- `lewm_spatial_similarity_maps.npz`, companion provenance and summary record
+  newly evaluated static maps, using strictly loaded historical checkpoints
+  and a dataset-verified renderer. The grid and reference images align with
+  the separate CLS diagnostic protocol.
+- `short_paper_matched_probe_results.csv` and companion provenance retain the
+  six completed CLS conditions. Every affine score reproduces exactly from
+  retained frozen features. The three-cue CLS decoder figure remains in the
+  appendix, including green/blue.
 
 Probe fitting and testing use disjoint episodes from the world-model corpus;
-these are readout tests, not evidence of generalization to unseen world-model
-training episodes. Planning and decoder diagnostics have separate populations
-and protocol boundaries, described in the paper. No new planning scores are
-claimed for the six matched checkpoints.
+these are readout tests, not generalization to episodes unseen during
+world-model training. Planning and decoder diagnostics use separate
+populations, even when the checkpoint agrees. The archived CEM horizon sweep
+used older checkpoints and is not claimed as robustness evidence for the
+primary spatial recipe. All reported training conditions use one seed.
 
 ## Artifacts
 

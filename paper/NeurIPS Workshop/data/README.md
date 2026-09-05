@@ -5,7 +5,17 @@ Large datasets, checkpoints, decoder videos, and raw W&B exports remain outside
 the paper tree.
 
 
-The current main comparison is CLS + IDM 3.125. `short_paper_noidm_color_*`
+The current main comparison is spatial 8×8 + IDM 3.125 on Color and Shape.
+`spatial_primary_probes.csv`, `spatial_primary_planning.csv`, and
+`spatial_primary_provenance.csv` align the primary metrics to exact
+checkpoints, with separate file/state hashes. `spatial_primary_decoder_sources.csv`
+identifies the complete six-clip montage. `spatial_primary_lpwm_planning.csv`
+and `spatial_primary_lpwm_recipe.json` preserve the stronger same-campaign
+LpWM positive control and its objective/activation differences.
+`spatial_alternate_palette_support.csv` retains green/blue runs at IDM0/.625;
+these are appendix support, not matched3.125 primary runs.
+
+The following CLS and legacy files remain supporting evidence. `short_paper_noidm_color_*`
 records independently reproduced, same-campaign no-IDM Color probes, planning,
 and provenance. `short_paper_idm_color_cls_planning.csv` holds the actual
 Color CLS+IDM counts (CEM 68/8%, GD 52/28%), which must not be confused with
@@ -29,7 +39,8 @@ have no planning evaluation, so historical planning remains separate evidence.
 Files used by the LeWM-focused revision:
 
 - `short_paper_probe_results.csv` is the compact, common-contract source for
-  the 4-page paper's LeWM-only affine-probe table. Cue and position values are
+  historical affine-probe comparisons (the active main table uses
+  `spatial_primary_probes.csv`). Cue and position values are
   unweighted four-endpoint means; legacy `encoder` keys are correctly labeled
   as current post-projector states. Shape position $R^2$ was reconstructed
   post hoc from the retained immutable feature cache under the original ridge
@@ -75,7 +86,7 @@ Files used by the LeWM-focused revision:
   palettes. The `analysis_protocol` column distinguishes the prespecified
   episode audit from the weaker media-support summaries.
 - `metric_sensitivity.csv` contains the six-setting standard-palette decoder
-  support-means used for the 4.0--7.5% descriptive range in the main text. The
+  support-means used for the 4.0--7.5% descriptive range in an earlier draft. The
   held-out E024 audit in `lewm_palette_decoder_summary.csv` is the stronger
   inferential result.
 - `historical_lewm_global_probe_rows.csv` records the nine seed-by-feature
@@ -198,7 +209,23 @@ aggregator: Color uses patch passthrough followed by token mean, while Shape
 uses its learned global MLP. The atlas labels distinguish these readouts.
 
 `lewm_goal_distance_main_provenance.json` records the paired-goal main figure
-using the existing compact arrays: three CLS+IDM checkpoints, two leaf goals,
+from the preceding CLS draft using compact arrays: three CLS+IDM checkpoints, two leaf goals,
 and summed squared projected distance. It preserves the input array SHA-256,
 source provenance hash, reference indices, exact per-column scale bounds and
 rendering contract. The input arrays and model outputs were not changed.
+
+`lewm_spatial_similarity_maps.npz` and its companion `_provenance.json`
+contain fresh static maps for the historical spatial + IDM3.125 Color and
+Shape checkpoints used by the primary probes/planning. The NPZ follows the
+existing `lewm_idm_<cue>_<metric>` key schema, but this separate file contains
+SPATIAL readouts; the provenance explicitly labels that distinction. It
+retains all four reference images and E/S arrays plus reference-pair metrics
+and valid-center coordinates; full features remain ignored. The source
+checkpoint hashes match the primary result records. The historical strict
+loader used original configurations and state keys, with no conversion.
+`lewm_spatial_goal_distance_main_provenance.json` records figure scales and
+source hashes. `lewm_spatial_similarity_summary.csv` provides the two leaf
+reference-pair metrics and posthoc Pearson correlation between goal E maps
+over the 210 valid centers. These describe one layout, not aggregate
+performance or absence of all cue information. The summary builder is
+`runs/pta_revision_audit/spatial_map_summary.py`.

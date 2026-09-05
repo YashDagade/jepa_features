@@ -6,6 +6,15 @@ visual inspection. Temporary builders remain under ignored `runs/` paths.
 
 ## Active main figures
 
+The active manuscript uses `tunnel_variants_and_rank.pdf`,
+`lewm_spatial_primary_decoders.pdf`, and `lewm_spatial_goal_distance_main.pdf`.
+The decoder figure includes all six final-epoch clips at frame2 for Color and
+Shape, spatial8×8+IDM3.125, aligned to the primary probe/planning checkpoints.
+`../data/spatial_primary_decoder_sources.csv` records the source files and
+hashes. The paired-goal landscape is documented at the end of this file.
+
+## Retained task and CLS figures
+
 - `tunnel_variants_and_rank` shows real standard Color, Shape, and green/blue
   TR2 frames plus an oracle-certified TR2 rank-2 scenario.  The numbered
   portal order is computed from the evaluation manifest, not from the model.
@@ -88,7 +97,7 @@ account URLs, workstation paths, or mutable run-display titles.
 - `lewm_similarity_matched` shows the three matched CLS+IDM models for an
   upper-leaf reference image, marked by the red agent. Its shared cosine scale
   is [0.6, 1.0], with yellow denoting high similarity. The canvas is 7.2 by
-  2.35 inches. This retained single-goal cosine view is superseded in the main
+  2.35 inches. This retained single-goal cosine view is superseded in the preceding CLS draft
   paper by the paired-goal squared-distance figure.
 - `lewm_similarity_matched_appendix.pdf` has two pages: CLS+IDM, then native
   CLS without IDM. Three rows are Color, Shape, and green/blue. Four columns
@@ -137,3 +146,27 @@ figure and full six-model appendix remain available. Figure-specific source
 hashes, scale bounds and reference indices are recorded in
 `../data/lewm_goal_distance_main_provenance.json`. The ignored builder is
 `runs/pta_revision_audit/build_goal_distance_main.py`.
+
+## Primary spatial checkpoint landscapes
+
+`lewm_spatial_goal_distance_main.pdf` and `.png` are the 5.5 by 4.0 inch
+paired-goal figure for historical Color and Shape spatial readout + IDM3.125
+checkpoints, aligned exactly to the primary probe and planning records.
+Columns are Color/Shape, rows upper/lower leaf goals. Each column shares its
+linear cost scale across goals: yellow low, purple high. Bounds are
+[0,94.7650924] and [0,93.4958958]; the red agent marks the goal.
+`lewm_spatial_similarity_appendix.pdf` adds both cosine and squared-distance
+maps for both goals. Cosine uses the common [0.6,1] scale; E uses each printed
+checkpoint scale. These are fresh static encoded-frame diagnostics, with
+no action-conditioned rollout or new training.
+
+The original immutable historical loader strictly loaded the original config
+and state keys; no checkpoint conversion was performed. Both renderings and
+all four reference frames/coordinates passed byte-exact checks against the
+dataset and prior diagnostic inputs. Episode1893, the 20x20 candidate grid,
+210 valid centers and floor interpolation are unchanged. Source/data details
+are in `../data/lewm_spatial_similarity*` and
+`../data/lewm_spatial_goal_distance_main_provenance.json`. Ignored builders:
+`runs/pta_revision_audit/historical_spatial_similarity.py` and
+`runs/pta_revision_audit/build_spatial_goal_distance_main.py`. Previous CLS
+figures remain explicitly separate; they cannot be relabeled as spatial.

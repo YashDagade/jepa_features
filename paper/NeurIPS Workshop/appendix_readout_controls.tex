@@ -1,0 +1,161 @@
+\section{Readout and inverse-dynamics controls}
+\label{app:ablations}
+
+The primary Color and Shape models use a learned spatial readout and an
+auxiliary inverse-dynamics loss (IDM) of weight 3.125. These are adaptations
+of LeWM: the native model uses CLS selection and prediction MSE plus SIGReg,
+without IDM. We separate readout and objective choices below, retaining
+conditions in which both location and cue readouts are poor.
+
+For the primary models, the objective is
+\[
+ \mathcal L=\mathcal L_{\mathrm{pred}}+.09\mathcal L_{\mathrm{SIGReg}}
+ +\frac{3.125}{10}\,\mathbb E\|h([z_{t+1},z_t])-a_t\|_2^2.
+\]
+Here $a_t$ is the normalized block of five two-dimensional primitive actions;
+the IDM MSE averages over its ten coordinates as well as examples and time.
+The auxiliary head concatenates next then current projected state and applies
+Linear$(384,512)$, LayerNorm, GELU, and Linear$(512,10)$. Its loss propagates
+through both states; the action target is detached. The head is not used by
+the planner. This is the historical auxiliary head, not the different inverse
+model used by SMWM.
+
+\subsection{Historical readout and objective comparison}
+
+Table~\ref{tab:historicalreadout} compares four standard-Color conditions from
+the same historical campaign. The spatial state retains the location--cue
+gap without IDM: location $R^2=.898$, versus cue $R^2=.162$. IDM is therefore
+not necessary for that observed gap. Adding IDM changes both readouts, so
+this control does not rule out its influence on the primary representations.
+The native CLS model without IDM instead has weak readouts of both factors;
+selective geometry preservation is not common to every configuration.
+
+\begin{table}[ht]
+\centering
+\caption{\textbf{Historical readout and objective controls on standard Color.}
+Current projected states at epoch 10, seed 3072; all rows use the same
+four-endpoint coordinate metrics. Spatial denotes the learned
+$8\!\times\!8$ patch readout used by the primary model.}
+\label{tab:historicalreadout}
+\small
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}llrrrr@{}}
+\toprule
+Readout & IDM weight & Cue MAE & Cue $R^2$ & Location MAE & Location $R^2$ \\
+\midrule
+CLS & 0 & 31.16 & -.007 & 17.51 & -.020 \\
+CLS & 3.125 & 27.44 & .307 & 7.42 & .684 \\
+Spatial $8\!\times\!8$ & 0 & 28.40 & .162 & 5.03 & .898 \\
+Spatial $8\!\times\!8$ & 3.125 & 27.40 & .224 & 3.83 & .934 \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\subsection{Current and predicted spatial-state probes}
+
+Table~\ref{tab:spatialfull} gives both states for the primary Color and Shape
+checkpoints. Their source revisions differ, although the readout, IDM weight,
+training budget, and probe protocol agree. Shape's positional probe scores
+were reconstructed from retained frozen features and aligned sidecar targets
+under the original ridge contract, reproducing the archived cue metrics.
+The green/blue runs provide
+additional appearance controls at IDM weights 0 and .625. They show the
+same ordering of location and cue accessibility, but their different
+objective weights prevent a matched three-cue comparison with the primary
+models. All entries use seed 3072 and ten training epochs.
+
+\begin{table}[ht]
+\centering
+\caption{\textbf{Full spatial-state probes and alternate-palette support.}
+All rows use the spatial $8\!\times\!8$ readout. Cells report current
+projected / one-step predicted state; MAE is in pixels and $R^2$ averages
+coordinate-wise scores over four endpoints. The first two rows are the
+primary conditions; green/blue uses different IDM weights.}
+\label{tab:spatialfull}
+\small
+\renewcommand{\arraystretch}{1.12}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}llcccc@{}}
+\toprule
+Cue variant & IDM & Cue MAE & Cue $R^2$ & Location MAE & Location $R^2$ \\
+\midrule
+Color & 3.125 & \curpred{27.40}{27.57} & \curpred{.224}{.226} & \curpred{3.83}{3.66} & \curpred{.934}{.939} \\
+Shape & 3.125 & \curpred{28.05}{28.10} & \curpred{.203}{.214} & \curpred{4.57}{4.41} & \curpred{.907}{.915} \\
+\midrule
+Green/blue & .625 & \curpred{27.66}{27.75} & \curpred{.207}{.208} & \curpred{3.40}{3.35} & \curpred{.945}{.946} \\
+Green/blue & 0 & \curpred{28.50}{28.47} & \curpred{.151}{.156} & \curpred{4.85}{4.89} & \curpred{.894}{.893} \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\subsection{Matched CLS controls across three cue renderings}
+
+A separate six-condition experiment uses native CLS selection and a common
+source revision across Color, Shape, and green/blue, with IDM either absent
+or weighted 3.125 (Table~\ref{tab:matchedidm}). These checkpoints are distinct
+from the historical spatial models in the main paper. Each pair shares the
+data interface, ten-epoch training budget, seed 3072, and seeded initialization
+policy; the IDM head is initialized without advancing the shared-module RNG.
+
+All three CLS models without IDM have negative location and cue $R^2$.
+Adding IDM improves both readouts, more strongly for location. Thus weak
+cue accessibility recurs across the tested configurations, but the selective
+location--cue dissociation does not persist in the native CLS/no-IDM controls.
+Together with Table~\ref{tab:historicalreadout}, these results show that both
+readout and objective matter; they do not identify a unique cause or
+establish that IDM is necessary for LeWM in general.
+
+\begin{table}[ht]
+\centering
+\caption{\textbf{Matched CLS and IDM controls across three cue renderings.}
+Current projected states at epoch 10, seed 3072. All six runs share one source
+revision and the same four-endpoint ridge protocol; they are separate from
+the primary spatial checkpoints.}
+\label{tab:matchedidm}
+\small
+\renewcommand{\arraystretch}{1.12}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lllrrrr@{}}
+\toprule
+Cue variant & Readout & IDM & Cue MAE & Cue $R^2$ & Location MAE & Location $R^2$ \\
+\midrule
+Color & CLS & 0 & 31.48 & -.035 & 17.65 & -.039 \\
+Color & CLS & 3.125 & 28.18 & .264 & 8.16 & .653 \\
+Shape & CLS & 0 & 31.54 & -.006 & 17.55 & -.009 \\
+Shape & CLS & 3.125 & 29.53 & .140 & 12.26 & .392 \\
+Green/blue & CLS & 0 & 31.81 & -.041 & 17.57 & -.035 \\
+Green/blue & CLS & 3.125 & 28.01 & .262 & 8.10 & .661 \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+Figure~\ref{fig:clscontroldecoders} shows detached reconstructions from the
+three +IDM checkpoints in this matched CLS experiment. Cue markers are mixed
+or faint, providing qualitative context for their coordinate probes. The
+fixed room walls alone do not establish recovery of variable geometry, and
+these images are not a quantitative identity test. They must not be
+attributed to the primary spatial readout.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\linewidth]{figures/lewm_cls_cue_decoders.pdf}
+\caption{\textbf{Detached reconstructions from the separate matched CLS controls.}
+Inputs (top) and decoder outputs (bottom) for Color, Shape, and green/blue
+with IDM 3.125, from Table~\ref{tab:matchedidm}. Each column shows frame 2
+of all six logged epoch-10 validation clips, rearranged with only empty
+padding removed. Cue distinctions weaken; the fixed walls alone do not
+establish state-dependent geometry recovery.}
+\label{fig:clscontroldecoders}
+\end{figure}
+
+\section{The spatial patch aggregator}
+
+The primary spatial readout consumes patch tokens only; the native CLS token
+is discarded. For a square ViT patch grid, it reshapes tokens from
+$B\times P\times D$ to $B\times D\times\sqrt P\times\sqrt P$, applies
+adaptive average pooling to $8\times8$, flattens the resulting $64D$ values,
+then applies LayerNorm and a learned linear map to the 192-dimensional
+world-model state. The aggregator is shared across observations in a temporal
+window. CLS controls instead select token zero directly. In both cases,
+the probe labeled ``current'' acts after the model projector, rather than
+directly on raw encoder tokens.

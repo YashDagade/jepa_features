@@ -1,0 +1,3 @@
+cue,readout,idm_weight,epoch,seed,episode,valid_centers,leaf_reference_pair_cosine,leaf_reference_pair_squared,goal_cost_map_pearson_r,source_arrays_sha256,interpretation
+color,spatial_8x8,3.125,10,3072,1893,210,0.9882035935784284,5.0747812296138175,0.9925239188351528,dc6c3ca657cb2f25485b1c481ff9f5447f945959d83d748f4a7a2c102d523506,posthoc descriptive statistics in one fixed layout; no action rollout; no inference of complete cue absence
+shape,spatial_8x8,3.125,10,3072,1893,210,0.9759031518889734,8.113086337262615,0.9864337100720437,dc6c3ca657cb2f25485b1c481ff9f5447f945959d83d748f4a7a2c102d523506,posthoc descriptive statistics in one fixed layout; no action rollout; no inference of complete cue absence

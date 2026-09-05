@@ -1,0 +1,53 @@
+{
+  "model": "LpWM",
+  "readout": "spatial_8x8",
+  "seed": 3072,
+  "epochs": 10,
+  "batch_size": 128,
+  "context_frames": 3,
+  "prediction_intervals": 3,
+  "frame_skip": 5,
+  "source_dataset_sha256": "e134677f2c74d17de8765254a4b97b87c8258a898115e2dd1dcf8b3b2a3df042",
+  "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+  "prediction_loss": "mean squared error",
+  "regularizer": "Product-Laplace InfoReg",
+  "inforeg": {
+    "weight": 10.0,
+    "kwargs": {
+      "mu": -1.0,
+      "p": 1.0,
+      "link_function_type": "ReLU",
+      "loss_func_type": "sliced_wasserstein",
+      "num_slices": 1024,
+      "target_dist_rms_norm": false
+    }
+  },
+  "idm": {
+    "enabled": true,
+    "weight": 3.125
+  },
+  "idm_head": "Linear384to512;LayerNorm512;GELU;Linear512to10",
+  "idm_pair_order": "next_projected,current_projected",
+  "idm_target": "next five normalized primitive actions flattened to10 dimensions",
+  "idm_reduction": "MSE averaged over batch,3 adjacent frame intervals,and10 action coordinates",
+  "optimizer": {
+    "type": "AdamW",
+    "lr": 5e-05,
+    "weight_decay": 0.001
+  },
+  "projector_link": "ReLU (LeWM comparison GELU)",
+  "checkpoint_path": "artifact://Aug02/jepa-color/checkpoints/jepa-color-lpwm-8x8-idm3p125-mum1-p1-tr2-color-color-room-count-s3072-r1/weights_epoch_10.pt",
+  "checkpoint_file_sha256": "685b768347d141e4d380b65f35c18cc777c27b3bb4e130463173b0f38eec3868",
+  "config_path": "artifact://Aug02/jepa-color/checkpoints/jepa-color-lpwm-8x8-idm3p125-mum1-p1-tr2-color-color-room-count-s3072-r1/config.yaml",
+  "config_sha256": "c2062a5f8dc97522369c59d11ebd5274d0557a814e9563262c70e0848f1671ec",
+  "run_info_path": "artifact://Aug02/jepa-color/jepa-color-lpwm-8x8-idm3p125-mum1-p1-tr2-color-color-room-count-s3072-r1/run_info.txt",
+  "run_info_sha256": "4a5bcd8fe466610e40f2c126a9ca90a1b771d816e4cdc235954bcb99e4a5d990",
+  "manifest_sha256": "58cbd330adcfc75bc7d5938f475c847ebfd9ccb97515504431e7438b4178fc0e",
+  "planning": "H5/RH5,actionblock5,budget400,25 per rank;CEM300candidates30elites30iterations;GD100initializations30stepsAdamWlr0.1",
+  "claim_boundary": "same campaign and readout/IDM;different distribution objective and activation,not causal objective-only ablation",
+  "source_file_sha256": {
+    "stable-worldmodel/scripts/train/lpwm.py": "cebe0ddda2663faa7acc5ffc1965faafc43669386b7ef9e300e298fd699a4d05",
+    "stable-worldmodel/stable_worldmodel/wm/idm.py": "674bfeaff5b4af0126c5061332dd8271b9ed6b97e1f3a826f163123a5d046557",
+    "stable-worldmodel/stable_worldmodel/wm/lewm/module.py": "aa60d96b1bf78e5f6f98a5f958adbada082b161f85f2b731a0500146668097e0"
+  }
+}
