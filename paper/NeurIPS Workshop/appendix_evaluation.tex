@@ -1,0 +1,359 @@
+\section{Experimental protocols}
+
+\subsection{Trajectory collection and temporal interface}
+\label{app:collection}
+
+Each two-room scenario randomizes portal geometry, color--position pairing,
+agent start, target leaf, and target position.  Collection generated 55,000
+paired hidden/visible scenarios with a 500-step cap and retained the first
+50,000 for which both scripted routes succeeded; the active corpus is the
+first 10,000 episodes (651,357 stored steps), each ending in success. Scenario
+seeds equal 41021 plus the episode index; each condition's policy random-number
+generator is initialized once with seed 41021.
+
+The visible-condition collector uses a scripted cue-aware oracle that queries
+the scenario pairing, chooses the hub portal paired
+with the target leaf, and follows unit-vector waypoints, using a left-lane
+waypoint when needed to avoid triggering a non-target portal.
+Independent $\mathcal N(0,2^2)$ noise is added to each 2-D action component,
+then components are clipped to $[-1,1]$; with probability .05, the previously
+executed action replaces the new action.  Before collision and portal handling,
+the proposed displacement is the clipped action times 5 pixels.  Shape redraws
+the same portals as neutral
+triangle/diamond markers, while green/blue replaces orange with blue.
+Geometry, actions, targets, rewards, and episode boundaries are unchanged;
+image pixels and cue metadata change with the rendering.
+
+Collection stores every primitive step.  Training constructs four-frame
+clips with up to three context observations at
+\texttt{frameskip}=5 and predicts all three shifted target intervals.
+For each latent transition the five intervening 2-D
+actions are preserved and flattened to a 10-D action block. MPC therefore
+sets \texttt{action\_block}=5: each latent planning step
+contains five potentially different primitive actions. Action blocks preserve
+these actions rather than repeating a single action; the collector's .05
+previous-action repeat probability is a separate perturbation.
+
+Probe fitting and evaluation use disjoint episodes from the same corpus used
+for world-model training. The world-model split is defined over clips and
+does not exclude probe-test
+episodes. These probes consequently measure accessibility in frozen
+representations, rather than generalization to episodes unseen during
+world-model training. We standardize features on the 640-example union of
+fit and validation examples before fitting affine ridge probes with penalty
+$\alpha=10$ and evaluating on 256 test examples. We compute $R^2$ separately for each coordinate and average over the same
+endpoints as MAE. The standard Color four-endpoint constant MAE is 31.19 px; its two-hub constant is
+30.02 px.  Raw patches, selected global states, projected states, and predicted
+states are reported separately wherever stagewise claims are made.
+
+\subsection{Rank-based planning protocol}
+\label{app:planning}
+
+The target rank is computed before evaluation.  Starting at the initial hub
+position, the certifier chooses the closest unvisited portal (endpoint index
+breaks exact ties).  After each hypothetical wrong portal, it excludes that
+portal and recomputes from its prescribed hub-side return position. The
+correct portal's position in this search defines R1 or R2. We sample
+scenarios independently of target rank, then select 25 oracle-solvable
+episodes per rank.
+
+Both planners minimize
+$\lVert\hat z_{t+5}-z_{\mathrm{goal}}\rVert_2^2$, summed over projected-state
+dimensions.  A planning step contains five consecutive 2-D primitive actions,
+so horizon 5 spans 25 primitive steps; receding horizon 5 executes all 25
+before replanning unless the episode terminates.  CEM draws 300 Gaussian
+sequences per iteration from an
+initial zero-mean, unit-variance distribution, forces one sample to the mean,
+keeps 30 elites, and refits mean and standard deviation for 30 iterations.  GD
+optimizes 100 initial sequences for 30 AdamW steps at learning rate .1; the
+first starts at zero and the other 99 receive unit-scale Gaussian noise; added
+action noise is zero and gradient clipping is disabled.  Both use seed 3072
+and solver sub-batch size one.  Optimized normalized coordinates are not
+box-projected; they are inverse-standardized before execution, and the
+environment clips each 2-D action to $[-1,1]^2$.
+
+Evaluation uses agent speed 5, batches 10 environments, and allows 400
+primitive steps (at most 16 planning calls).  Success is terminal entry within
+strict center distance $<16$ px of the requested target; timeouts and
+truncations are failures. Fixed, hashed rank manifests specify all evaluation
+cases. The scripted
+oracle verifies each case in both hidden-search and visible-direct modes
+against its expected portal-entry trace.
+
+The primary Color and Shape planning evaluations, coordinate probes, and
+static landscapes use the same exported epoch-10 spatial $8\times8$ + IDM
+3.125 checkpoints. Figure~\ref{fig:decoders} instead shows snapshots from
+the first batch of the final training epoch: frame index 2 is retained for
+all six recorded clips in each run. These reconstructions precede the
+exported checkpoints. Color uses BF16 evaluation and outline markers,
+whereas its training/probe images use filled markers. Shape uses a separate
+rank manifest with 20-pixel shape markers. Color and Shape originate from
+different source revisions, with the same specified training and solver
+settings. Archived configurations
+and checkpoint hashes identify the conditions.
+
+For R1 and R2 respectively, Color succeeds on 20/25 and 4/25 cases with
+CEM, and 16/25 and 13/25 with GD. Shape succeeds on 22/25 and 6/25 cases
+with CEM, and 19/25 and 10/25 with GD. The six matched CLS checkpoints in
+Table~\ref{tab:matchedidm} have no corresponding planning evaluation.
+
+\section{Representation landscapes and their relation to planning}
+\label{app:landscapes}
+
+\paragraph{Static representation metrics.}
+Let $x_e(p)$ be a rendered observation in scenario $e$ with the agent at legal
+center $p$, and let $z_e(p)$ be its frozen encoder-plus-projector output.
+For a reference image $g=x_e(p_g)$, we compute both
+\[
+ S_e(p,g)=\frac{z_e(p)^\top z_e(p_g)}{\|z_e(p)\|_2\,\|z_e(p_g)\|_2},
+ \qquad
+ E_e(p,g)=\|z_e(p)-z_e(p_g)\|_2^2.
+\]
+High $S$ means high similarity; low $E$ means low static goal-distance cost.
+The historical ``energy landscape'' plots display cosine similarity $S$.
+Neither quantity invokes the action-conditioned predictor. The actual planner
+instead compares its \emph{predicted} terminal state with the goal embedding
+(Appendix~\ref{app:planning}). A high similarity peak is therefore not a high
+planning-cost peak, and these static maps are not action-value functions.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\linewidth,height=.72\textheight,keepaspectratio]{figures/lewm_spatial_similarity_appendix.pdf}
+\caption{\textbf{Primary spatial $8\times8$ + IDM 3.125 landscapes.}
+The Color and Shape checkpoints are those used for the primary coordinate
+probes and planning evaluations. Columns compare cosine similarity $S$ and
+squared distance $E$ for both destination goals. Yellow denotes high
+similarity or low cost. Cosine maps share [.6,1]; each squared-distance pair
+shares its printed scale. The red disk marks the agent position in the
+reference image. Both metrics compare encoded observations.}
+\label{fig:spatiallandscapes}
+\end{figure}
+
+\paragraph{Grid and rendering protocol.}
+We use one fixed training-corpus scenario (episode 1893), selected by the
+historical geometry/reference-placement procedure before inspecting model
+outputs. Its geometry is shared across Color, Shape, and green/blue.
+For the matched CLS controls, the renderer reproduces a stored observation
+byte for byte in each of the three datasets. The primary spatial
+Color and Shape models load with their original historical implementation
+and configurations; no checkpoint conversion is applied, and the renderer
+also reproduces the stored dataset observation exactly. A regular $20\times20$ lattice
+spans the $224\times224$ image, with spacing $223/19\simeq11.74$ pixels;
+210 grid points are valid agent centers. We evaluate the model only at those
+centers, holding portal identity, geometry, and appearance fixed.
+Four unoccluded reference positions are shared across all variants: two in
+the hub near different portals and one in each destination room. Reference
+positions themselves are encoded exactly, even when off the lattice.
+The two primary spatial and six matched CLS epoch-10 checkpoints are frozen;
+encoder inference uses float32 and
+distance arithmetic float64. No decoder, action sequence, or simulator rollout
+is involved. The accompanying data include raw maps and hashes of the checkpoints and
+configurations.
+
+For display only, each floor pixel interpolates the eight nearest valid
+sample centers \emph{within its room}, with weights
+$1/(\|p-q\|_2^2+.001)$. Walls, cue markers, and the red reference-agent disk
+are overlaid unchanged; floor heatmaps use 85\% opacity. The colored floor therefore extends beyond the valid centers used for
+model evaluation. All fresh cosine maps share
+the range [.6, 1]; yellow denotes high similarity. Squared-distance maps use
+one scale per model--cue checkpoint shared across its two destination references, with yellow
+for low cost and purple for high cost. The numerical upper bound is printed
+for each pair. Absolute distances are not calibrated across models.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[page=1,width=\linewidth,height=.78\textheight,keepaspectratio]{figures/lewm_similarity_matched_appendix.pdf}
+\caption{\textbf{Matched CLS+IDM landscapes for both destination references.}
+Rows vary cue rendering; columns show cosine similarity $S$ and squared
+projected distance $E$ for upper- and lower-room reference images. The red
+disk marks the reference-agent position. Yellow means high $S$ or low $E$;
+$S$ has a common scale, and each $E$ pair shares its printed scale. Both
+metrics compare encoded observations, not predicted action outcomes.}
+\label{fig:landscapeidm}
+\end{figure}
+
+\paragraph{Geodesic navigation reference.}
+The right column of Figure~\ref{fig:similarity} is computed from the environment,
+independently of the learned representations. We construct a directed graph
+whose state is agent position together with the endpoint currently locked
+against re-entry. A one-pixel lattice covers valid agent centers in each
+room. Walking edges use 16 directions: axis, diagonal, and $(2,1)$ or $(1,2)$
+offsets with all sign variants. The 210 model-query positions, four references,
+portal endpoints, and exact landing positions are inserted as additional
+nodes with local same-room connections. Every movement is realizable within
+the environment's componentwise action bounds; a zero action is included
+because an armed portal can trigger without displacement.
+
+Each edge applies the swept-segment trigger radius of 10 px. Entry transfers
+the agent to the paired endpoint's exact landing position, offset by 14 px,
+and locks that destination until the agent moves at least 28 px away. The
+edge weight is the Euclidean pre-teleport displacement, matching the
+environment's route-length accounting; the teleportation jump adds no distance.
+Reverse Dijkstra computes the shortest remaining distance to the exact goal
+position, accepting any lock state there. Plotted starting states are unlocked.
+This is a point-goal diagnostic, not distance to the 16-pixel success region
+used in planning evaluation, nor a minimum-time objective.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[page=2,width=\linewidth,height=.78\textheight,keepaspectratio]{figures/lewm_similarity_matched_appendix.pdf}
+\caption{\textbf{Matched native no-IDM landscapes.} The same geometry,
+reference positions, and cosine scale as Figure~\ref{fig:landscapeidm}.
+Native Color and green/blue cosine maps are nearly uniform. Each
+squared-distance pair has its own printed scale; distances are not
+calibrated across models.}
+\label{fig:landscapenative}
+\end{figure}
+
+The shortest paths are exact on this finite graph, which approximates the
+continuous action space. It contains 34,062 states and 549,911 directed edges.
+Halving the lattice spacing changes distances at the 420 displayed
+position--goal pairs by at most .900 px (mean .225 px); this checks spatial
+resolution, not convergence over all action directions. At the two hub
+reference positions, distances to the upper goal are 18.33 and 136.79 px;
+for the lower goal they are 146.20 and 19.10 px. Thus changing the goal
+reverses the preferred portal. For display we sample these distances at the
+same 210 centers and apply the same roomwise interpolation as the learned
+maps. One pixel-distance scale is shared across both goals. This is a
+navigation reference, not a calibrated target for latent squared distance.
+
+\paragraph{Interpretation and limits.}
+The primary spatial models produce destination-reference cosine similarities
+.98820 (Color) and .97590 (Shape), with squared distances 5.075 and 8.113.
+Their goal-energy maps retain low-cost regions near both candidate hub
+portals and both leaf portals, although changing the reference does alter
+the costs. The separate matched CLS+IDM controls give cosine similarities
+.99598 (Color), .99441 (Shape), and .99498 (green/blue), with squared distances
+1.125, 2.483, and 1.910. These nonzero differences could still guide a planner;
+cosine similarity has no calibrated threshold for ``color blindness.''
+These maps characterize goal discrimination in one scene. They do not
+establish whether a model learns teleportation while ignoring endpoint
+pairing; that mechanism requires tests with matched cue swaps and
+action-conditioned portal rollouts.
+
+\paragraph{Historical LeWM atlas.}
+Nine selected final-epoch LeWM cases cover readout, cue, and exposure
+variants. Objectives, readouts, and layouts differ, so this is supplementary
+context rather than a matched benchmark.
+These plots were generated during training on a $40\times40$ grid; the
+standalone plotting default was $20\times20$. Their renderer derived
+heatmap and colorbar percentile bounds from different arrays. We therefore
+omit the inconsistent numerical bars and retain the maps only for
+qualitative comparison. Panels are independently rescaled, with yellow
+indicating relatively high cosine similarity. Brightness is not numerically
+comparable across panels or with the fresh fixed-scale maps.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/lewm_similarity_historical_atlas.pdf}
+\caption{\textbf{Historical LeWM similarity atlas.}
+Nine conditions vary readout, cue, IDM, or transition-window exposure.
+Reference positions are marked in each scene; each map is independently
+rescaled. These are static cosine diagnostics, not action-conditioned
+planning costs.}
+\end{figure}
+
+\section{Additional reconstruction and probe analyses}
+\label{app:quantitative}
+
+A separate historical audit evaluates Color reconstructions from the
+spatial readout. It identifies cue-marker pixels in original frames, excludes
+agent overlap, and classifies corresponding decoded pixels by their nearest
+input-color centroid in CIE L$^*$a$^*$b$^*$ space. Confidence intervals use
+episode-level bootstrap resampling. Across 150 episodes, 300 frames, and
+1,127 cue instances, macro color accuracy is 54.2\% and separation
+retention is 4.85\% (95\% CI [3.57, 6.17]).
+The recorded run identifier links this audit to the primary spatial Color
+run, although the detailed raw artifact was unavailable for independent
+checkpoint-level verification. Its evaluation population is separate from
+the six clips in Figure~\ref{fig:decoders}.
+For the historical Shape audit, location $R^2$ was recomputed from retained
+epoch-10 features under the original ridge contract, reproducing the archived
+MAE. The matched CLS results were computed from their respective final
+checkpoint probe artifacts.
+A smaller audit of historical green/blue media yields 50\% macro accuracy
+and 2.9\% separation retention for the IDM-0 run. Without an episode-level
+confidence interval, these values provide descriptive evidence only. Shape
+reconstructions have not undergone a quantitative identity audit.
+
+\FloatBarrier
+\section{Transition-diversity ablation}
+\label{app:exposure}
+
+\paragraph{Hypothesis and exposure counts.}
+A visible cue does not necessarily contribute equally to every prediction
+error. In Tunnel Rooms, most trajectory steps approach a portal, whereas
+its cue-dependent destination is observed at a crossing. The 10,000-episode
+corpus contains 641,357 raw transitions, of which 12,180 (1.90\%) are
+crossings. Its 463,033 legal training clips produce 1,389,099 target intervals.
+After accounting for overlapping clips and frameskip, crossing-adjacent
+exposure is 8.95\%, while approach motion occurs in 81.6\% of target intervals.
+An interval can contain both events. This imbalance motivates the hypothesis
+that average prediction favors spatial regularities over cue-dependent
+outcomes; it does not establish the cause of the observed readout gap.
+
+\paragraph{Intervention and results.}
+An earlier Color pilot, using a spatial readout and IDM weight 3.125, adds
+transition-centered windows equal to 10\%, 50\%, or 100\% of the original
+training set. Selected decoder outputs appear more saturated and show
+stronger color separation (Figure~\ref{fig:diversity}). Coordinate probes do
+not show a corresponding consistent improvement: current-state cue $R^2$
+is .224, .222, .174, and .200 at 0/10/50/100\% additional windows; predicted-state
+scores are .226, .244, .213, and .231. Four-endpoint cue MAE remains in the
+27.2--28.1 px range. Keeping epochs fixed also increases compute by
+approximately $1.1\times$, $1.5\times$, and $2\times$.
+
+\paragraph{Interpretation and follow-up.}
+More saturated reconstructions suggest transition-focused sampling as a
+candidate intervention, but improved appearance need not mean improved cue
+binding. A decoder can produce distinct colors without assigning the correct
+identity to each portal; coordinate probes ask whether that identity selects
+the correct endpoint. The visual examples also differ across runs, and
+additional optimization could contribute to their appearance. A controlled
+follow-up should match training updates and evaluate the same held-out
+examples for saturation, cue identity, cue-conditioned localization, and
+planning. Cue swaps and portal-crossing rollouts would then test whether
+visual recovery changes predicted destinations and action selection.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{figures/lewm_transition_diversity_decoder.pdf}
+  \caption{\textbf{Transition-focused sampling changes decoder appearance.}
+  Selected spatial $8\times8$ + IDM 3.125 decoder outputs appear more saturated.
+  Frames differ across conditions; correct identity recovery is not measured
+  by this visual comparison. Coordinate $R^2$ does not improve consistently,
+  and added windows increase compute.}
+  \label{fig:diversity}
+\end{figure}
+
+\FloatBarrier
+\section{Interpreting the diagnostic measurements}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.80\linewidth]{figures/tr2_color_mae_scale.pdf}
+  \caption{\textbf{Coordinate error at the task scale.} The gold contour
+  marks predictions with a fixed per-coordinate MAE; the blue point is one
+  example. The spatial Color location error is approximately 4 px, versus
+  27 px for cue-indexed coordinates. The task-specific constant baseline and
+  $R^2$, not a universal pixel threshold, determine the interpretation.}
+  \label{fig:mae}
+\end{figure}
+
+\paragraph{Visible hue remains accessible in patch tokens.}
+A separate binary hue-classification audit of a historical Color+IDM checkpoint
+achieves 100\% balanced accuracy from native patch tokens but 45.3\% from the
+projected state (chance 50\%), using an episode-disjoint validation split.
+This contrast localizes an accessibility gap along the compact-state
+processing path; it does not establish an inability to perceive color.
+Differences in feature dimensionality and readout capacity also preclude a
+direct claim of information loss.
+
+The hue classifier asks which hue occupies a portal slot; the coordinate
+probe asks where a cue-indexed endpoint lies. The hue audit fits on 525
+episodes, selects the ridge penalty using 75 validation episodes, and tests
+on 150 episodes. The 640/256 coordinate protocol instead fixes the penalty.
+Both readouts can miss information outside their chosen function class.
+Likewise, MSE decoding can average uncertain outputs: its population optimum
+is $d^*(z)=\mathbb E[X\mid z]$, but the representation, decoder capacity, and
+optimization can limit the trained decoder.

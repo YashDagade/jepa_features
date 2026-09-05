@@ -1,7 +1,8 @@
 \section{Related work and interpretation}
 \label{app:related}
 
-Predictive feature learning now spans several distinct settings. I-JEPA and
+Predicting in feature space has proved useful across images, videos, and
+action-conditioned environments. I-JEPA and
 V-JEPA learn from masked image and video content
 \citep{assran2023ijepa,bardes2024vjepa}; Image World Models study prediction
 of photometric transformations and the roles of conditioning and predictor
@@ -22,7 +23,8 @@ dynamics end to end with Gaussian distribution regularization
 with readout and inverse-dynamics controls that distinguish accurate
 localization from cue-conditioned endpoint prediction.
 
-Regularization and identifiability provide complementary perspectives.
+The success of feature prediction depends in part on which representations
+its regularizers favor.
 VICReg explicitly controls feature variance and covariance
 \citep{bardes2022vicreg}; LeJEPA studies isotropic Gaussian regularization
 \citep{balestriero2025lejepa}, and Rectified LpJEPA develops sparse,
@@ -35,7 +37,7 @@ not a general guarantee for an action-conditioned predictor. We do not
 establish those assumptions for Tunnel Rooms, so our findings do not
 contradict that theorem.
 
-Feature selection can nevertheless favor the wrong information for a task.
+Predictability can also favor features that are unhelpful for the task.
 Sobal et al. \citep{sobal2022slow} show that JEPAs can prefer stationary
 noise over a moving object in controlled experiments. Littwin et al.
 \citep{littwin2024jepa} analyze a bias toward more predictable features in
@@ -45,7 +47,7 @@ the cause of our cue-binding gap: our cues persist and determine destination
 pairings. The transition-exposure experiment therefore tests a separate
 possibility and remains inconclusive.
 
-Additional training signals offer ways to align representations with action.
+Additional training signals may help preserve distinctions needed for action.
 Sensorimotor World Models use inverse dynamics
 \citep{ivashkov2026sensorimotor}; auxiliary-task theory explains how added
 targets can preserve otherwise unresolved distinctions \citep{yu2025auxjepa}.
@@ -54,7 +56,7 @@ goal-reaching value function \citep{destrade2025value}, while PSG-JEPA adds
 training-time physical-state grounding \citep{yan2026psgjepa}.
 Temporal Straightening regularizes latent trajectories for planning
 \citep{wang2026temporal}; its learned feature aggregation inspires our
-different spatial readout (Appendix~\ref{app:aggregator}). Together, these
-directions motivate testing which additional constraints help retain cue
-identity and destination, beyond improving average prediction or marker
-visibility.
+different spatial readout (Appendix~\ref{app:aggregator}). These approaches
+suggest concrete ways to investigate the Tunnel Rooms result: supervision
+that preserves cue identity and its consequences may matter more than
+improvements in average prediction or marker visibility.

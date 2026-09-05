@@ -1,7 +1,6 @@
 # PTA short paper
 
-The anonymous manuscript is **Tunnel Rooms Color: Learning Where, but Not
-Reliably Which**. It introduces the controlled routing dataset and documents
+The anonymous manuscript is **When LeWM Misses the Color: Cue Binding in Tunnel Rooms**. It introduces the controlled routing dataset and documents
 a localization–cue-binding gap through affine probes (MAE and R²), detached
 pixel decoders, static goal-distance maps, and rank-based planning. R² belongs
 to coordinate probes, not pixel reconstructions.
@@ -63,11 +62,18 @@ made by the revision workflow.
 ## Build
 
 The current draft cites **22 distinct references**, all attached to claims
-in the text. The introduction covers the JEPA, LeJEPA/LpJEPA, and latent
-planning literature; Appendix H develops the connections to identifiability,
+in the text. The introduction motivates cue binding through the JEPA and latent
+planning literature; Appendix H develops the connections to LeJEPA/LpJEPA, identifiability,
 slow features, auxiliary objectives, and value-guided planning. Appendix B credits Temporal
 Straightening for the inspiration behind learned patch aggregation and states
-the architectural and objective differences. The main text ends on page four;
+the architectural and objective differences. The main narrative introduces the dataset, connects the four diagnostics,
+and closes with the inconclusive exposure hypothesis and concrete next tests.
+Readout sizes, loss weights, seeds, and diagnostic mechanics are confined to
+the appendices; the main text identifies the LeWM adaptations in plain language.
+`main.tex` contains this narrative; `appendix_readout_controls.tex`,
+`appendix_evaluation.tex`, and `appendix_related_work.tex` contain the controls,
+protocols and interpretation, and literature discussion respectively.
+The main text ends on page four;
 references follow the conclusion and span pages four through six, with the
 appendix continuing below them. The complete PDF is 16 pages.
 

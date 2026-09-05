@@ -10,8 +10,8 @@
     7.0,
     3.8
   ],
-  "builder": "artifact://pta_revision_audit/plot_geodesic_comparison.py",
-  "builder_sha256": "3920415df6fc36c2f3a757cdc18463e2fe999a9ecd45dee13150418c12123376",
+  "builder": "artifact://pta_revision_audit/plot_geodesic_narrative.py",
+  "builder_sha256": "aea11fe9aa811441509165dead2a5f5ec5a18082f421d12ac9d077dfd4a35da0",
   "compact_arrays": "data/lewm_spatial_similarity_maps.npz",
   "compact_arrays_sha256": "dc6c3ca657cb2f25485b1c481ff9f5447f945959d83d748f4a7a2c102d523506",
   "source_provenance": "data/lewm_spatial_similarity_provenance.json",
