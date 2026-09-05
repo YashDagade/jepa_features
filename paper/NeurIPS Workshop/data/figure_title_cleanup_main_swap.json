@@ -1,0 +1,208 @@
+{
+  "scope": "Five active main/portal-swap figures; text-only cleanup without model evaluation or rerendering observations.",
+  "editing_method": "PyMuPDF text-only redaction with images=0 and graphics=0; retain original panel letters; replace one shortened x-axis label using the existing embedded TrueType font.",
+  "figures": [
+    {
+      "path": "figures/lewm_goal_landscape_and_portal_swap.pdf",
+      "before_sha256": "a539c35a2aed4dbd6d5d4fdc704eb1c507f9c23c73c39336287c87e748a84092",
+      "after_sha256": "b751144f52b2c0f911487831a0f4bce21504dfbb41624b10b6cdab2839deb769",
+      "status": "caption-like text removed",
+      "removed_text": [
+        {
+          "removed_wording": " Goal-distance landscapes and geodesic reference",
+          "original_line": "(a) Goal-distance landscapes and geodesic reference",
+          "rectangle_points": [
+            22.523000717163086,
+            0.4200630187988281,
+            299.727294921875,
+            13.235062599182129
+          ],
+          "replacement": null
+        },
+        {
+          "removed_wording": "Yellow: low cost. Red disk: goal. Scales shared across goals within each column.",
+          "original_line": "Yellow: low cost. Red disk: goal. Scales shared across goals within each column.",
+          "rectangle_points": [
+            133.6439208984375,
+            288.92926025390625,
+            599.4290771484375,
+            302.52301025390625
+          ],
+          "replacement": null
+        },
+        {
+          "removed_wording": " Portal swaps: actual and predicted divergence",
+          "original_line": "(b) Portal swaps: actual and predicted divergence",
+          "rectangle_points": [
+            22.764999389648438,
+            308.54278564453125,
+            281.2225341796875,
+            321.3577880859375
+          ],
+          "replacement": null
+        }
+      ],
+      "preserved_text": "Experimental condition identifiers, axes, tick labels, legends, panel letters, start/destination/goal labels.",
+      "caption_migration": [
+        "Panel(a): goal-distance landscapes and geodesic reference.",
+        "Panel(b): actual-state versus model-rollout divergence under portal swaps.",
+        "Yellow denotes low cost; red disks mark goals; scales are shared across goals within each column."
+      ],
+      "validation": {
+        "page_dimensions_points": [
+          0.0,
+          0.0,
+          720.0,
+          473.6803894042969
+        ],
+        "page_count": 1,
+        "embedded_font_types": [
+          "Type0"
+        ],
+        "raster_image_pixels_identical": true,
+        "render_scale": 2,
+        "changed_pixels": 13984,
+        "changed_pixels_outside_text_edit_rectangles": 0,
+        "plots_images_statistical_marks_scales_and_curves_unchanged": true,
+        "rendered_preview_inspected": true
+      }
+    },
+    {
+      "path": "figures/lewm_portal_swap_raw_event_curves.pdf",
+      "before_sha256": "8e95095f60775e99e701d5d8d620c7ae541dc593cdfaa056b9242674d9d65eca",
+      "after_sha256": "ac22004606deaab922629d201b49d74c8ffeba68c7131efd1c5700d68508feb8",
+      "status": "caption-like text removed",
+      "removed_text": [
+        {
+          "removed_wording": "Steps from first post-portal sample (same physical trajectories for all three cues)",
+          "original_line": "Steps from first post-portal sample (same physical trajectories for all three cues)",
+          "rectangle_points": [
+            165.4343719482422,
+            346.7637634277344,
+            529.7394409179688,
+            357.2487487792969
+          ],
+          "replacement": "Steps from first post-portal sample"
+        }
+      ],
+      "preserved_text": "Experimental condition identifiers, axes, tick labels, legends, panel letters, start/destination/goal labels.",
+      "caption_migration": [
+        "The lower position-separation curve uses the same physical trajectories for all three cue renderings."
+      ],
+      "validation": {
+        "page_dimensions_points": [
+          0.0,
+          0.0,
+          648.0,
+          360.0
+        ],
+        "page_count": 1,
+        "embedded_font_types": [
+          "Type0"
+        ],
+        "raster_image_pixels_identical": true,
+        "render_scale": 2,
+        "changed_pixels": 5352,
+        "changed_pixels_outside_text_edit_rectangles": 0,
+        "plots_images_statistical_marks_scales_and_curves_unchanged": true,
+        "rendered_preview_inspected": true
+      }
+    },
+    {
+      "path": "figures/lewm_portal_swap_states.pdf",
+      "before_sha256": "e3d9b4fa59acda178cfde031090ab8b39101235533fcd644e2071261ecfe3a63",
+      "after_sha256": "e3d9b4fa59acda178cfde031090ab8b39101235533fcd644e2071261ecfe3a63",
+      "status": "already clean; bytes unchanged",
+      "removed_text": [],
+      "preserved_text": "Experimental condition identifiers, axes, tick labels, legends, panel letters, start/destination/goal labels.",
+      "caption_migration": [],
+      "validation": {
+        "page_dimensions_points": [
+          0.0,
+          0.0,
+          720.0,
+          540.0
+        ],
+        "page_count": 1,
+        "embedded_font_types": [
+          "Type0"
+        ],
+        "raster_image_pixels_identical": true,
+        "render_scale": 2,
+        "changed_pixels": 0,
+        "changed_pixels_outside_text_edit_rectangles": 0,
+        "plots_images_statistical_marks_scales_and_curves_unchanged": true,
+        "rendered_preview_inspected": true
+      }
+    },
+    {
+      "path": "figures/lewm_portal_swap_trajectories.pdf",
+      "before_sha256": "2cc547a9c6d30ac8f6ace1996a8e05e0af0162c840e0595302eca7cfcebba9bc",
+      "after_sha256": "a08acf1ea5d73c075c25d18aa5631bceedf49964a9e796a089cd5ca1fbe2ae85",
+      "status": "caption-like text removed",
+      "removed_text": [
+        {
+          "removed_wording": "Same actions, different destination",
+          "original_line": "Same actions, different destination",
+          "rectangle_points": [
+            153.7390594482422,
+            2.350992202758789,
+            364.6530456542969,
+            16.33099365234375
+          ],
+          "replacement": null
+        }
+      ],
+      "preserved_text": "Experimental condition identifiers, axes, tick labels, legends, panel letters, start/destination/goal labels.",
+      "caption_migration": [
+        "The two worlds receive identical actions but reach different destinations."
+      ],
+      "validation": {
+        "page_dimensions_points": [
+          0.0,
+          0.0,
+          518.4000244140625,
+          291.6000061035156
+        ],
+        "page_count": 1,
+        "embedded_font_types": [
+          "Type0"
+        ],
+        "raster_image_pixels_identical": true,
+        "render_scale": 2,
+        "changed_pixels": 3135,
+        "changed_pixels_outside_text_edit_rectangles": 0,
+        "plots_images_statistical_marks_scales_and_curves_unchanged": true,
+        "rendered_preview_inspected": true
+      }
+    },
+    {
+      "path": "figures/tunnel_variants_and_rank.pdf",
+      "before_sha256": "ecd3e9558a55c7c3008943afdbbc72fe05b80928bf98f5e563ec8dc85781f420",
+      "after_sha256": "ecd3e9558a55c7c3008943afdbbc72fe05b80928bf98f5e563ec8dc85781f420",
+      "status": "already clean; bytes unchanged",
+      "removed_text": [],
+      "preserved_text": "Experimental condition identifiers, axes, tick labels, legends, panel letters, start/destination/goal labels.",
+      "caption_migration": [],
+      "validation": {
+        "page_dimensions_points": [
+          0.0,
+          0.0,
+          499.61724853515625,
+          121.62212371826172
+        ],
+        "page_count": 1,
+        "embedded_font_types": [
+          "Type0"
+        ],
+        "raster_image_pixels_identical": true,
+        "render_scale": 2,
+        "changed_pixels": 0,
+        "changed_pixels_outside_text_edit_rectangles": 0,
+        "plots_images_statistical_marks_scales_and_curves_unchanged": true,
+        "rendered_preview_inspected": true
+      }
+    }
+  ],
+  "builder": "artifact://pta_feedback/figure_titles/main_swap/clean_titles.py"
+}

@@ -4,7 +4,7 @@
   "source_arrays": "data/lewm_portal_swap_arrays.npz",
   "source_arrays_sha256": "d4a4916d3dd25c9ebb0a12661c6b8e88e30172d51b47db3dfec545e8c99823bd",
   "output": "figures/lewm_goal_landscape_and_portal_swap.pdf",
-  "output_sha256": "a539c35a2aed4dbd6d5d4fdc704eb1c507f9c23c73c39336287c87e748a84092",
+  "output_sha256": "b751144f52b2c0f911487831a0f4bce21504dfbb41624b10b6cdab2839deb769",
   "geometries": 16,
   "illustration_excluded": true,
   "event_alignment": "First sampled step at or after crossing; event lies in preceding five-step gray interval.",
@@ -49,5 +49,9 @@
   },
   "composition": "Unchanged vector landscape plus numerical plots from retained arrays. Added the common -15-step point, preserving every previously displayed value and all summary statistics.",
   "summary_sha256_unchanged": "81929e482b4a19137875c52b02317c3310435a34fff754846558a3a1af35ab1d",
-  "builder": "artifact://pta_feedback/narrative_revision/build_figures.py"
+  "builder": "artifact://pta_feedback/narrative_revision/build_figures.py",
+  "presentation_revision": {
+    "description": "Removed embedded descriptive titles and caption-like text; retained experimental labels and original plot content.",
+    "audit": "data/figure_title_cleanup_main_swap.json"
+  }
 }

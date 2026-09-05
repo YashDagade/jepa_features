@@ -4,7 +4,7 @@
   "source_protocol": "data/lewm_portal_swap_protocol.json",
   "source_protocol_sha256": "e4d593d96b5b99511cf89e9ed60d2baafba9d1c3ac3642ab92a9f762cf18379f",
   "output": "figures/lewm_portal_swap_trajectories.pdf",
-  "output_sha256": "2cc547a9c6d30ac8f6ace1996a8e05e0af0162c840e0595302eca7cfcebba9bc",
+  "output_sha256": "a08acf1ea5d73c075c25d18aa5631bceedf49964a9e796a089cd5ca1fbe2ae85",
   "compact_arrays": "data/lewm_portal_swap_illustration_arrays.npz",
   "compact_arrays_sha256": "ccbead727ab15b5ff95273fd1f1588c7891a78ddb656e3b9ddd25d03d918ae24",
   "index": 16,
@@ -119,5 +119,9 @@
   "panel_titles": [
     "Original world",
     "Hub colors swapped"
-  ]
+  ],
+  "presentation_revision": {
+    "description": "Removed embedded descriptive titles and caption-like text; retained experimental labels and original plot content.",
+    "audit": "data/figure_title_cleanup_main_swap.json"
+  }
 }

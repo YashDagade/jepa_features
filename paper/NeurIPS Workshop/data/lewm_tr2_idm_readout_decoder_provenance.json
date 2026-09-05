@@ -477,5 +477,9 @@
     }
   ],
   "display_name": "Tunnel Room Color",
-  "current_figure_sha256": "9caecfb460db78fea44e68648975b923cb7eae19722c0294209136faebd516c8"
+  "current_figure_sha256": "3d0f8a123b0ddf42f17ae4b6bda18b65199cc7eb7b045702742e604f8339a287",
+  "presentation_revision": {
+    "description": "Removed embedded descriptive titles and caption-like text; retained experimental labels and original plot content.",
+    "audit": "data/figure_title_cleanup_decoders.json"
+  }
 }

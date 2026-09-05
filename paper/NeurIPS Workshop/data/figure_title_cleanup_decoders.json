@@ -1,0 +1,196 @@
+{
+  "method": "Exact PDF text-only removal with image and drawing redaction disabled; crop empty title/footer margins. No raster or plot data regenerated.",
+  "figures": [
+    {
+      "figure": "paper/NeurIPS Workshop/figures/lewm_tr2_idm_readout_decoders.pdf",
+      "status": "cleaned",
+      "before_sha256": "9caecfb460db78fea44e68648975b923cb7eae19722c0294209136faebd516c8",
+      "after_sha256": "3d0f8a123b0ddf42f17ae4b6bda18b65199cc7eb7b045702742e604f8339a287",
+      "removed_text": [
+        "Tunnel Room Color: IDM weight and state readout",
+        "One shared input; three selected IDM weights for both readouts",
+        "Cue crops: green hub / green leaf / orange hub / orange leaf. Pixels are unchanged."
+      ],
+      "caption_information": "Existing caption already explains common input, IDM weights, readouts and unchanged pixels. Add crop order: green hub, green leaf, orange hub, orange leaf.",
+      "preserved_text": [
+        "CLS",
+        "Input",
+        "IDM 0",
+        "IDM 0.125",
+        "IDM 3.125",
+        "Spatial 8\u00d78"
+      ],
+      "original_page_box": [
+        0.0,
+        0.0,
+        504.0,
+        327.6000061035156
+      ],
+      "final_page_box": [
+        0.0,
+        0.0,
+        504.0,
+        274.0
+      ],
+      "verification": {
+        "embedded_raster_bytes_unchanged": true,
+        "raster_image_instances": 16,
+        "vector_drawings_unchanged_under_crop": true,
+        "removed_text_absent": true,
+        "all_remaining_text_visually_checked": true,
+        "visual_review": "Rendered at 2x after editing; essential labels and legend remain legible, with no new clipping or blank title/footer bands.",
+        "drawing_comparison": "Exact path, geometry and appearance comparison after identical crop, excluding display-list sequence numbers shifted by removed text."
+      }
+    },
+    {
+      "figure": "paper/NeurIPS Workshop/figures/lewm_spatial_three_cue_decoders.pdf",
+      "status": "audited_no_change",
+      "before_sha256": "478a028d4a7ce4a908b87cdb6e79aec5926c95cbfed20ee85f5941e30b8ff5fb",
+      "after_sha256": "478a028d4a7ce4a908b87cdb6e79aec5926c95cbfed20ee85f5941e30b8ff5fb",
+      "removed_text": [],
+      "caption_information": "No title, subtitle, or caption-like footer present; all existing text is a condition label, row label, or legend.",
+      "preserved_text": [
+        "Input",
+        "Color",
+        "Shape",
+        "Palette",
+        "Detached decoder"
+      ],
+      "original_page_box": [
+        0.0,
+        0.0,
+        624.5068969726562,
+        295.64862060546875
+      ],
+      "final_page_box": [
+        0.0,
+        0.0,
+        624.5068969726562,
+        295.64862060546875
+      ],
+      "verification": {
+        "embedded_raster_bytes_unchanged": true,
+        "raster_image_instances": 6,
+        "vector_drawings_unchanged_under_crop": true,
+        "removed_text_absent": true,
+        "all_remaining_text_visually_checked": true,
+        "visual_review": "Rendered original reviewed; only essential condition and row labels are present. PDF retained unchanged.",
+        "drawing_comparison": "Exact path, geometry and appearance comparison after identical crop, excluding display-list sequence numbers shifted by removed text."
+      }
+    },
+    {
+      "figure": "paper/NeurIPS Workshop/figures/lewm_cls_cue_decoders.pdf",
+      "status": "audited_no_change",
+      "before_sha256": "83a5ac4188d6157942bdcbb505762b1904c2b65cf906b85a9d9896505ad854c1",
+      "after_sha256": "83a5ac4188d6157942bdcbb505762b1904c2b65cf906b85a9d9896505ad854c1",
+      "removed_text": [],
+      "caption_information": "No title, subtitle, or caption-like footer present; all existing text is a condition label, row label, or legend.",
+      "preserved_text": [
+        "Input",
+        "Color",
+        "Shape",
+        "Green/blue",
+        "Detached decoder"
+      ],
+      "original_page_box": [
+        0.0,
+        0.0,
+        630.7118530273438,
+        301.9317626953125
+      ],
+      "final_page_box": [
+        0.0,
+        0.0,
+        630.7118530273438,
+        301.9317626953125
+      ],
+      "verification": {
+        "embedded_raster_bytes_unchanged": true,
+        "raster_image_instances": 6,
+        "vector_drawings_unchanged_under_crop": true,
+        "removed_text_absent": true,
+        "all_remaining_text_visually_checked": true,
+        "visual_review": "Rendered original reviewed; only essential condition and row labels are present. PDF retained unchanged.",
+        "drawing_comparison": "Exact path, geometry and appearance comparison after identical crop, excluding display-list sequence numbers shifted by removed text."
+      }
+    },
+    {
+      "figure": "paper/NeurIPS Workshop/figures/lewm_transition_diversity_decoder.pdf",
+      "status": "audited_no_change",
+      "before_sha256": "db09f8665ebd9f33f04aa40fd2e4576c2798a3828ea183f291e19ab3ffc885fa",
+      "after_sha256": "db09f8665ebd9f33f04aa40fd2e4576c2798a3828ea183f291e19ab3ffc885fa",
+      "removed_text": [],
+      "caption_information": "No title, subtitle, or caption-like footer present; all existing text is a condition label, row label, or legend.",
+      "preserved_text": [
+        "baseline",
+        "+10% transition windows",
+        "+50% transition windows",
+        "+100% transition windows"
+      ],
+      "original_page_box": [
+        0.0,
+        0.0,
+        512.3995361328125,
+        106.4778060913086
+      ],
+      "final_page_box": [
+        0.0,
+        0.0,
+        512.3995361328125,
+        106.4778060913086
+      ],
+      "verification": {
+        "embedded_raster_bytes_unchanged": true,
+        "raster_image_instances": 4,
+        "vector_drawings_unchanged_under_crop": true,
+        "removed_text_absent": true,
+        "all_remaining_text_visually_checked": true,
+        "visual_review": "Rendered original reviewed; only essential condition and row labels are present. PDF retained unchanged.",
+        "drawing_comparison": "Exact path, geometry and appearance comparison after identical crop, excluding display-list sequence numbers shifted by removed text."
+      }
+    },
+    {
+      "figure": "paper/NeurIPS Workshop/figures/tr2_color_mae_scale.pdf",
+      "status": "cleaned",
+      "before_sha256": "208238ab5f67da29e6e8b1a645d7d1da07f89ecd58225914a87b416dbc037193",
+      "after_sha256": "31a531e98a1a6bba232fcb845616c6b128af9663995af964a8b5fbad57847bf4",
+      "removed_text": [
+        "location probe",
+        "coarse error",
+        "cue probe",
+        "constant baseline"
+      ],
+      "caption_information": "Four illustrative MAEs, left to right: 4 px location probe, 15 px coarse error, 27 px cue probe, 30 px constant baseline. Keep distinction that diagrams illustrate error magnitudes rather than showing measured predictions.",
+      "preserved_text": [
+        "MAE = 4 px",
+        "MAE = 15 px",
+        "MAE = 27 px",
+        "MAE = 30 px",
+        "true cue-indexed endpoint",
+        "example prediction",
+        "equal-MAE contour: (|\u0394x| + |\u0394y|)/2"
+      ],
+      "original_page_box": [
+        0.0,
+        0.0,
+        512.3995361328125,
+        170.7610626220703
+      ],
+      "final_page_box": [
+        0.0,
+        0.0,
+        512.3995361328125,
+        157.7610626220703
+      ],
+      "verification": {
+        "embedded_raster_bytes_unchanged": true,
+        "raster_image_instances": 4,
+        "vector_drawings_unchanged_under_crop": true,
+        "removed_text_absent": true,
+        "all_remaining_text_visually_checked": true,
+        "visual_review": "Rendered at 2x after editing; essential labels and legend remain legible, with no new clipping or blank title/footer bands.",
+        "drawing_comparison": "Exact path, geometry and appearance comparison after identical crop, excluding display-list sequence numbers shifted by removed text."
+      }
+    }
+  ]
+}

@@ -253,3 +253,12 @@ over 16 evaluation geometries. The full appendix plot retains the additional
 physical-position separation panel. `data/lewm_main_swap_figure_provenance.json`
 records source and output hashes. The temporary builder is under ignored
 `runs/pta_feedback/presentation/`.
+
+## Active figure presentation
+
+All 14 figure placements in the active manuscript were audited for embedded
+descriptive titles, subtitles, and caption-like prose. These explanations now
+belong in the LaTeX captions. Axes, legends, panel letters, and experimental
+condition labels remain in the figures. Text-only PDF edits preserve source
+images and plotted values; verification records are in
+`../data/figure_title_cleanup_{decoders,landscapes,main_swap}.json`.

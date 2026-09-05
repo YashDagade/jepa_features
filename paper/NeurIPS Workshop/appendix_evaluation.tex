@@ -205,7 +205,8 @@ probes and planning evaluations. Columns compare cosine similarity $S$ and
 squared distance $E$ for both destination goals. Yellow denotes high
 similarity or low cost. Cosine maps share [.6,1]; each squared-distance pair
 shares its printed scale. The red disk marks the agent position in the
-reference image. Both metrics compare encoded observations.}
+reference image. Both metrics compare encoded observations at the same
+210 valid agent centers.}
 \label{fig:spatiallandscapes}
 \end{figure}
 
@@ -244,11 +245,11 @@ for each pair. Absolute distances are not calibrated across models.
 \begin{figure}[!htbp]
 \centering
 \includegraphics[page=1,width=\linewidth,height=.78\textheight,keepaspectratio]{figures/lewm_similarity_matched_appendix.pdf}
-\caption{\textbf{Matched CLS+IDM landscapes for both destination references.}
+\caption{\textbf{Matched CLS + IDM 3.125 landscapes for both destination references.}
 Rows vary cue rendering; columns show cosine similarity $S$ and squared
 projected distance $E$ for upper- and lower-room reference images. The red
 disk marks the reference-agent position. Yellow means high $S$ or low $E$;
-$S$ has a common scale, and each $E$ pair shares its printed scale. Both
+$S$ shares [.6,1], and each $E$ pair shares its printed scale. Both
 metrics compare encoded observations, not predicted action outcomes.}
 \label{fig:landscapeidm}
 \end{figure}
@@ -280,6 +281,7 @@ used in planning evaluation, nor a minimum-time objective.
 \includegraphics[page=2,width=\linewidth,height=.78\textheight,keepaspectratio]{figures/lewm_similarity_matched_appendix.pdf}
 \caption{\textbf{Matched native no-IDM landscapes.} The same geometry,
 reference positions, and cosine scale as Figure~\ref{fig:landscapeidm}.
+Yellow denotes high similarity or low energy; purple denotes the opposite.
 Native Color and green/blue cosine maps are nearly uniform. Each
 squared-distance pair has its own printed scale; distances are not
 calibrated across models.}
@@ -332,7 +334,8 @@ comparable across panels or with the fresh fixed-scale maps.
 \caption{\textbf{Historical LeWM similarity atlas.}
 Nine conditions vary readout, cue, IDM, or transition-window exposure.
 Reference positions are marked in each scene; each map is independently
-rescaled. These are static cosine diagnostics, not action-conditioned
+rescaled, with yellow denoting higher similarity and purple lower similarity.
+These are static cosine diagnostics, not action-conditioned
 planning costs.}
 \end{figure}
 
@@ -413,8 +416,10 @@ changes predicted destinations or actions.
   \includegraphics[width=.80\linewidth]{figures/tr2_color_mae_scale.pdf}
   \caption{\textbf{Coordinate error at the task scale.} The gold contour
   marks predictions with a fixed per-coordinate MAE; the blue point is one
-  example. The spatial Color location error is approximately 4 px, versus
-  27 px for cue-indexed coordinates. The task-specific constant baseline and
+  illustrative prediction. From left to right, the panels show 4 px
+  (approximately the spatial Color location error), 15 px (a coarse-error
+  example), 27 px (approximately the cue-coordinate error), and 30 px
+  (an illustrative constant-baseline error). The task-specific constant baseline and
   $R^2$, not a universal pixel threshold, determine the interpretation.}
   \label{fig:mae}
 \end{figure}

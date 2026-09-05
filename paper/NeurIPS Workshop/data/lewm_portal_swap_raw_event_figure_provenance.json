@@ -2,7 +2,7 @@
   "source_arrays": "data/lewm_portal_swap_arrays.npz",
   "source_arrays_sha256": "d4a4916d3dd25c9ebb0a12661c6b8e88e30172d51b47db3dfec545e8c99823bd",
   "output": "figures/lewm_portal_swap_raw_event_curves.pdf",
-  "output_sha256": "8e95095f60775e99e701d5d8d620c7ae541dc593cdfaa056b9242674d9d65eca",
+  "output_sha256": "ac22004606deaab922629d201b49d74c8ffeba68c7131efd1c5700d68508feb8",
   "relative_sample_steps": [
     -15,
     -10,
@@ -39,5 +39,9 @@
   },
   "position_curve": "Median and IQR of actual paired position separation at every primitive step, from -15 to50 relative to first post-portal sample.",
   "summary_sha256_unchanged": "81929e482b4a19137875c52b02317c3310435a34fff754846558a3a1af35ab1d",
-  "builder": "artifact://pta_feedback/narrative_revision/build_figures.py"
+  "builder": "artifact://pta_feedback/narrative_revision/build_figures.py",
+  "presentation_revision": {
+    "description": "Removed embedded descriptive titles and caption-like text; retained experimental labels and original plot content.",
+    "audit": "data/figure_title_cleanup_main_swap.json"
+  }
 }
