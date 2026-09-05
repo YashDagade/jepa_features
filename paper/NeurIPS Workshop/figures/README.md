@@ -9,9 +9,15 @@ visual inspection. Temporary builders remain under ignored `runs/` paths.
 - `tunnel_variants_and_rank` shows real standard Color, Shape, and green/blue
   TR2 frames plus an oracle-certified TR2 rank-2 scenario.  The numbered
   portal order is computed from the evaluation manifest, not from the model.
-- `lewm_cls_cue_decoders` shows all six logged final-epoch clips (frame 2)
-  for Color and Shape under CLS + IDM 3.125. Exact sources are in
-  `data/short_paper_cls_decoder_sources.csv`.
+- `lewm_cls_cue_decoders` shows all six logged epoch-10 validation clips
+  (zero-based frame 2) for Color, Shape, and green/blue under CLS + IDM 3.125.
+  All three models use source `c4a2df269e16`, seed 3072, and the matched
+  six-condition training protocol. The logged four-column GIF grid contains
+  six clips and two empty padding tiles; the figure reflows the six clips
+  into three columns without changing their pixels or order. Exact media,
+  checkpoint-file, and tracked-image hashes are in
+  `data/short_paper_cls_decoder_sources.csv`. The builder is
+  `runs/pta_revision_audit/finalize_matched_cue_results.py`.
 
 ## Historical spatial decoder figure
 
@@ -72,3 +78,39 @@ outputs and checks expected populations or values before writing. Continuous
 colors use perceptually ordered maps; categorical encodings pair color with
 marker, line style, hatching, or direct labels. No panel contains author names,
 account URLs, workstation paths, or mutable run-display titles.
+
+## Static similarity and squared-distance figures
+
+- `lewm_similarity_matched` shows the three matched CLS+IDM models for an
+  upper-leaf reference image, marked by the red agent. Its shared cosine scale
+  is [0.6, 1.0], with yellow denoting high similarity. The canvas is 7.2 by
+  2.35 inches. Main text treats the two bright destination regions as a
+  descriptive finding in one layout, not proof of a learned teleport rule.
+- `lewm_similarity_matched_appendix.pdf` has two pages: CLS+IDM, then native
+  CLS without IDM. Three rows are Color, Shape, and green/blue. Four columns
+  show cosine for the upper/lower reference, then summed squared projected
+  distance for the same two references. Cosine retains the shared main scale;
+  distance shares one printed scale between the two references of each
+  model/cue checkpoint. Yellow means high similarity or low distance.
+- `lewm_similarity_historical_atlas.pdf` has three pages covering 15 selected
+  historical model/readout/cue/exposure conditions across LeWM, PLDM, LpWM,
+  DINO, and SMWM. Each case shows the first hub and first leaf reference.
+  Original map pixels are cropped without recovering numerical values.
+  Their independently normalized colors are retained; inconsistent legacy
+  numerical colorbars are removed. These historical cases are not matched
+  to the new six-checkpoint comparison or to one another.
+
+Fresh maps evaluate only the 210 valid centers of a 20x20 lattice. For display,
+each room's visible floor uses eight-neighbor inverse squared-distance
+interpolation, with weights `1/(distance_squared + 0.001)`. The overlay mixes
+15% original floor and 85% heatmap; walls, markers and the reference agent
+remain byte-identical. These plots use static projected embeddings, with no
+actions, action-conditioned predictions, decoder, or simulator rollout.
+
+The compact reproducibility arrays and provenance are in `../data/` under
+`lewm_similarity*`. Ignored builders are
+`runs/pta_revision_audit/build_fresh_similarity.py` and
+`runs/pta_revision_audit/build_historical_similarity.py`; the frozen diagnostic
+script is `runs/pta_revision_audit/fresh_similarity.py`. The fresh GPU job
+finished without training; all source frames first passed byte-exact checks
+against their dataset renderings.

@@ -7,22 +7,24 @@ rank-stratified planning. R² belongs to the coordinate probes, not the pixel
 decoders.
 
 The primary comparison uses native CLS selection with **LeWM+IDM 3.125**
-for both completed Color and Shape conditions. This is an augmented training
-objective, not native LeWM. The no-IDM and spatial-readout ablations are in the
-appendix. Existing no-IDM Color and green/blue CLS runs both fail location and
-cue probes; the green/blue result is therefore not a palette-specific anomaly
-relative to a matched no-IDM Color control. All results remain one-seed cases.
+across matched Color, Shape, and green/blue conditions. This is an augmented
+training objective, not native LeWM. All six conditions (three cues, with and
+without IDM) completed successfully from immutable revision `c4a2df2` on
+September 4, 2026. The matched no-IDM results and historical spatial-readout
+controls are reported separately in the appendix. All results remain
+one-seed cases.
 
-A six-condition confirmation study was submitted from immutable source
-revision `c4a2df2` on September 4, 2026: three cues, each with native LeWM and LeWM+IDM. Its values must not
-be inferred or inserted before completed artifact checks. The matched
-**green/blue CLS+IDM** row is still unavailable in this working draft, and
-claims of three-cue CLS+IDM replication must await it. The jobs are
-16970286/16970287/16970288 for Color/Shape/green-blue +IDM and
-16970289/16970290/16970291 for the corresponding native no-IDM controls.
-Generated scripts and outputs are under ignored `runs/lewm-cue-ablation-v1/`. The existing historical
-Color/Shape rows are retained as measured evidence. No paper submission has
-been made.
+The primary probe table and three-column decoder figure now use these new
+matched checkpoints. All six final affine probe results reproduce exactly
+from retained frozen features. Dataset, sidecar, configuration, checkpoint
+file, result and feature hashes are preserved in the matched provenance CSV.
+Historical planning, hue-classification and transition-exposure evidence is
+explicitly distinguished because it uses different checkpoints.
+
+Jobs 16970286/16970287/16970288 cover Color/Shape/green-blue +IDM and
+16970289/16970290/16970291 their native no-IDM controls. Generated scripts and
+outputs are under ignored `runs/lewm-cue-ablation-v1/`. No paper submission
+has been made.
 
 The transition-exposure pilot uses a spatial readout and improves selected
 decoder appearances without consistent coordinate-probe recovery; it also
@@ -58,26 +60,24 @@ bytes. The current PDF is `main.pdf` (generated and ignored by Git).
 
 ## Evidence and completed follow-ups
 
-`data/short_paper_probe_results.csv` contains all six completed rows, including
-the September 4 Shape and green/blue CLS follow-ups. Their retained features
-independently reproduce archived cue scores; Shape location scores are
-reconstructed under the same fixed ridge protocol from an aligned sidecar.
-`short_paper_cls_probe_targets.csv` and `short_paper_cls_probe_provenance.csv`
-record target-level results, hashes, and reconstruction checks.
+`data/short_paper_matched_probe_results.csv` contains the six new completed
+conditions and `short_paper_matched_probe_provenance.csv` records their
+verification. `short_paper_cls_decoder_sources.csv` identifies the three
+matched epoch-10 validation montages used in Figure 2: frame 2, all six clips,
+with only empty montage padding removed. Historical tables and source files
+are retained under their original names for the supporting ablations.
 
 Probe fitting and testing use disjoint episodes from the world-model corpus;
-these are readout tests, not evidence of generalization to unseen training
-episodes. Planning and decoder diagnostics have separate populations and
-protocol boundaries, described in the paper. All main experiments have one
-training seed. The completed follow-ups replace the former unverified cells. Compilation
-is self-contained, but the newly requested uniform-IDM palette comparison
-remains pending as described above.
+these are readout tests, not evidence of generalization to unseen world-model
+training episodes. Planning and decoder diagnostics have separate populations
+and protocol boundaries, described in the paper. No new planning scores are
+claimed for the six matched checkpoints.
 
 ## Artifacts
 
 The tracked vector/preview figures and compact CSV inputs make the manuscript
-self-contained for compilation. Three figures are in the main paper; the MAE
-scale illustration is in the appendix. Large datasets, checkpoints, videos,
+self-contained for compilation. Task, decoder, and representation-landscape diagnostics are in the main
+paper; transition-exposure and MAE illustrations are in the appendix. Large datasets, checkpoints, videos,
 Slurm logs, audit tools, and figure builders remain under ignored `runs/` or
 external storage. Builders can depend on those artifacts and are not claimed
 to reproduce experiments from a clean clone. Logical artifact locators and

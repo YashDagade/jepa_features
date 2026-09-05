@@ -9,9 +9,22 @@ The current main comparison is CLS + IDM 3.125. `short_paper_noidm_color_*`
 records independently reproduced, same-campaign no-IDM Color probes, planning,
 and provenance. `short_paper_idm_color_cls_planning.csv` holds the actual
 Color CLS+IDM counts (CEM 68/8%, GD 52/28%), which must not be confused with
-spatial planning. `short_paper_cls_decoder_sources.csv` maps the native-CLS
-Color/Shape decoder figure and Color no-IDM source frames to immutable videos.
-New matched six-condition runs are not yet included in these historical tables.
+spatial planning. These planning runs use historical checkpoints and must not
+be attributed to the newly matched representation checkpoints.
+`short_paper_cls_decoder_sources.csv` maps the matched native-CLS Color,
+Shape, and green/blue decoder figure to epoch-10 validation GIFs, all with
+IDM 3.125 and source `c4a2df269e16`.
+
+`short_paper_matched_probe_results.csv` records all six completed conditions
+(three cues by IDM 0 or 3.125), using one source, seed 3072, ten epochs,
+batch size 128, and the same four-endpoint coordinate contract. All stored
+affine-probe coordinate metrics were independently reproduced exactly from
+their retained feature caches. `short_paper_matched_probe_provenance.csv`
+locks result, feature-cache, sidecar, resolved-config, and checkpoint-file
+hashes. The new standalone probes hash the serialized checkpoint file;
+their explicit `checkpoint_file_sha256` fields must not be confused with the
+historical training callback's canonical tensor-state hashes. These runs
+have no planning evaluation, so historical planning remains separate evidence.
 
 Files used by the LeWM-focused revision:
 
@@ -149,3 +162,37 @@ repository, historical worktrees, manifests, or relevant W&B projects.
 `shape_followup_prespecification.csv` remains a historical launch-time record;
 only its completion field has been reconciled with the finished artifacts. It
 should not be used as a current scheduler ledger.
+
+## Static representation landscapes
+
+- `lewm_similarity_maps.npz` contains compact raw maps for all six matched
+  epoch-10 checkpoints: four reference images, 20x20 cosine and summed squared
+  projected-distance arrays, valid-grid indices/positions, and exact reference
+  positions. It also retains pairwise reference similarities/distances and
+  the three renderings' reference images. Full encoder features stay ignored.
+  There are 210 finite lattice positions per map; other positions are NaN.
+  Keys begin with `lewm_<cue>_` or `lewm_idm_<cue>_`, where cue is `color`,
+  `shape`, or `green_blue`. These arrays permit plotting without GPU inference.
+- `lewm_similarity_summary.csv` provides the reference-pair scores and
+  per-room grid means. All values describe one prespecified layout, episode
+  1893, and are not aggregate planning results.
+- `lewm_similarity_provenance.json` records source revision, checkpoint,
+  configuration, manifest and raw-array hashes, reference coordinates,
+  inference precision, and the exact interpolation/color normalization.
+  `artifact://`, `dataset://`, and `source://` locators preserve provenance
+  without exposing workstation paths; resolved local records stay ignored.
+- `lewm_similarity_historical_provenance.csv` identifies the 15 historical
+  checkpoint conditions and 30 cropped map panels in the three-page atlas.
+  Each retained source was configured for a 40x40 grid. These are qualitative
+  cosine maps with independent percentile scales, not a matched comparison.
+
+Fresh cosine similarity uses current encoder-plus-projector states. The summed
+squared distance uses those same static states; neither statistic calls the
+predictor or evaluates an action sequence. A similarity peak is not a peak
+in the planner's cost. Historical numeric colorbars are omitted because the
+legacy renderer normalized the floor overlay and colorbar from different
+arrays. Fresh maps use the same normalization for their colors and labels.
+
+Historical DINO maps use encoded visual features after their configured
+aggregator: Color uses patch passthrough followed by token mean, while Shape
+uses its learned global MLP. The atlas labels distinguish these readouts.
