@@ -1,14 +1,28 @@
 #!/bin/bash
 set -euo pipefail
 
-# Match three cue renderings under native LeWM and its explicit IDM adaptation.
+# Match cue renderings under explicitly named CLS or spatial LeWM recipes.
 # SOURCE_ROOT may name a clean, immutable worktree; generated jobs stay in runs/.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 SOURCE_ROOT="${SOURCE_ROOT:-${REPO_ROOT}}"
-RUN_ROOT="${RUN_ROOT:-${REPO_ROOT}/runs/lewm-cue-ablation-v1}"
+FEATURE_MODE="${FEATURE_MODE:-global_cls}"
+case "${FEATURE_MODE}" in
+  global_cls)
+    campaign=lewm-cue-ablation-v1
+    representation=actual_vit_cls
+    readout_tag=""
+    ;;
+  global_spatial_8x8)
+    campaign=lewm-spatial-confirmation-v1
+    representation=spatial_8x8_layernorm_linear192
+    readout_tag=spatial8x8-
+    ;;
+  *) echo "FEATURE_MODE must be global_cls or global_spatial_8x8" >&2; exit 1 ;;
+esac
+RUN_ROOT="${RUN_ROOT:-${REPO_ROOT}/runs/${campaign}}"
 WANDB_PROJECT="${WANDB_PROJECT:-JEPA_Features}"
-WANDB_GROUP="${WANDB_GROUP:-lewm-cue-ablation-v1}"
+WANDB_GROUP="${WANDB_GROUP:-${campaign}}"
 DRY_RUN=false
 if [[ "$#" == 1 && "$1" == --dry-run ]]; then
   DRY_RUN=true
@@ -58,7 +72,18 @@ for model in "${MODELS[@]}"; do
   idm_weight=0
   [[ "${model}" != lewm_idm ]] || idm_weight=3.125
 for index in "${!CUES[@]}"; do
-  run_id="${model}-${CUES[index]}-s3072-${SOURCE_COMMIT:0:12}"
+  # Spatial confirmation adds the missing matched +IDM cue comparison and
+  # one Color no-IDM control; existing CLS controls cover all three cues.
+  if [[ "${FEATURE_MODE}" == global_spatial_8x8 && "${model}" == lewm && "${index}" != 0 ]]; then
+    continue
+  fi
+  run_id="${model}-${readout_tag}${CUES[index]}-s3072-${SOURCE_COMMIT:0:12}"
+  config_dir="${SOURCE_ROOT}/stable-worldmodel/scripts/train/config"
+  recipe_hash=$(sha256sum "${config_dir}/${model}.yaml")
+  base_hash=$(sha256sum "${config_dir}/lewm.yaml")
+  feature_hash=$(sha256sum "${config_dir}/feature_mode/${FEATURE_MODE}.yaml")
+  data_config_hash=$(sha256sum "${config_dir}/data/${DATA_CONFIGS[index]}.yaml")
+  entry_hash=$(sha256sum "${SOURCE_ROOT}/stable-worldmodel/scripts/train/${model}.py")
   run_dir="${RUN_ROOT}/${run_id}"
   [[ ! -e "${run_dir}/run_info.txt" ]] || {
     echo "Refusing to overwrite existing run: ${run_dir}" >&2
@@ -75,7 +100,13 @@ dataset_sha256=${DATA_HASHES[index]}
 sidecar=${SIDECARS[index]}
 sidecar_sha256=${SIDECAR_HASHES[index]}
 model=${model}
-representation=actual_vit_cls
+representation=${representation}
+feature_mode=${FEATURE_MODE}
+recipe_config_sha256=${recipe_hash%% *}
+base_config_sha256=${base_hash%% *}
+feature_mode_config_sha256=${feature_hash%% *}
+data_config_sha256=${data_config_hash%% *}
+training_entry_sha256=${entry_hash%% *}
 objective=prediction_mse_plus_sigreg_0.09_plus_idm_${idm_weight}
 initialization=random
 seed=3072
@@ -112,7 +143,7 @@ EOF
 #SBATCH --error=${run_dir}/train-%j.err
 set -euo pipefail
 EOF
-  for name in SOURCE_ROOT SOURCE_COMMIT WANDB_PROJECT WANDB_GROUP; do
+  for name in SOURCE_ROOT SOURCE_COMMIT WANDB_PROJECT WANDB_GROUP FEATURE_MODE; do
     printf '%s=%q\n' "${name}" "${!name}" >> "${job}"
   done
   printf 'RUN_DIR=%q\nRUN_ID=%q\nDATA_CONFIG=%q\nDATASET=%q\nDATA_SHA=%q\nSIDECAR=%q\nSIDECAR_SHA=%q\n' \
@@ -144,7 +175,7 @@ cd "${RUN_DIR}"
 test ! -e wandb_resume.json
 PYTHON=/scratch/yd3062/conda_envs/stable_worldmodel_latest/bin/python
 "${PYTHON}" "${SOURCE_ROOT}/stable-worldmodel/scripts/train/${MODEL}.py" \
-  "data=${DATA_CONFIG}" "data.dataset.name=${DATASET}" \
+  "data=${DATA_CONFIG}" "data.dataset.name=${DATASET}" "feature_mode=${FEATURE_MODE}" \
   epoch_probe=disabled decoder.enabled=true decoder.detach=true \
   "subdir=${RUN_ID}" "output_model_name=${RUN_ID}" \
   seed=3072 trainer.max_epochs=10 loader.batch_size=128 \

@@ -45,4 +45,15 @@ be described as native LeWM. It uses projected `[next, current]` states and a
 512-wide LayerNorm/GELU head to predict the full normalized action block.
 Keep `lewm.py` and its native prediction + SIGReg objective unchanged. Use the
 same source revision, seed, data interfaces, budget, and CLS readout across the
-six conditions. Spatial aggregation is a separate supporting ablation.
+six conditions. The user subsequently selected spatial aggregation plus IDM as the primary
+workshop recipe, with CLS and no-IDM runs as explicit controls. Use the
+existing canonical `feature_mode=global_spatial_8x8` adapter; preserve native
+`global_cls` defaults and do not alter the native objective. A targeted
+confirmation campaign covers spatial+IDM Color/Shape/green-blue and spatial
+Color without IDM under the same source, seed, and budget.
+
+Label readout and IDM weight for every reported condition. The historical
+spatial Color gap occurs with and without IDM; native CLS without IDM fails
+both location and cue probes. Do not describe this as a selective gap that
+persists uniformly across every objective/readout, or as proof that IDM has
+no influence on learned dynamics.
