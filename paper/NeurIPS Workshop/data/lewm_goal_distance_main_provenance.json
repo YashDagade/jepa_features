@@ -1,0 +1,44 @@
+{
+  "figure": "figures/lewm_goal_distance_main.pdf",
+  "png": "figures/lewm_goal_distance_main.png",
+  "figure_inches": [
+    7.2,
+    3.9
+  ],
+  "builder": "artifact://pta_revision_audit/build_goal_distance_main.py",
+  "builder_sha256": "1064a6a684af168e51db30971493805cb1df8264e42cedc2b80684ba1f55856e",
+  "compact_arrays": "data/lewm_similarity_maps.npz",
+  "compact_arrays_sha256": "e71cf5b3c537896ebc4451cdf6254cad7123e43a629f84e6743955e7ae9416c9",
+  "source_provenance": "data/lewm_similarity_provenance.json",
+  "source_provenance_sha256": "7214154489079b3dbd0ef80e9d2fd03c5bff08912cf9237c5229e9f6adf9c0e7",
+  "model": "lewm_idm",
+  "cues": [
+    "color",
+    "shape",
+    "green_blue"
+  ],
+  "references_zero_based": [
+    2,
+    3
+  ],
+  "episode": 1893,
+  "metric": "E(x,g) = sum_d (z_d(x)-z_d(g))^2; unnormalized 192-dimensional current projected states; no actions or predicted rollout",
+  "color_scales": {
+    "color": [
+      0.0,
+      96.78845700696861
+    ],
+    "shape": [
+      0.0,
+      122.03517869305128
+    ],
+    "green_blue": [
+      0.0,
+      103.19211877693944
+    ]
+  },
+  "color_direction": "viridis_r: yellow low cost, purple high cost; linear normalization; each checkpoint shares one scale across both goals",
+  "display": "20x20 candidate lattice; 210 valid evaluated centers; per-room 8-neighbor inverse squared-distance floor interpolation, weights=1/(distance_squared+0.001); 85% color + 15% original floor; walls, cue markers and reference agent preserved",
+  "reference_marker": "red agent disk shows the goal position; upper-leaf goal top row, lower-leaf goal bottom row",
+  "scope": "Three matched CLS+IDM epoch-10 checkpoints; one common layout; no new model inference or training; colors are comparable across goals within a column, not numerically across checkpoint columns"
+}

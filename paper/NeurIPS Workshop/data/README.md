@@ -196,3 +196,9 @@ arrays. Fresh maps use the same normalization for their colors and labels.
 Historical DINO maps use encoded visual features after their configured
 aggregator: Color uses patch passthrough followed by token mean, while Shape
 uses its learned global MLP. The atlas labels distinguish these readouts.
+
+`lewm_goal_distance_main_provenance.json` records the paired-goal main figure
+using the existing compact arrays: three CLS+IDM checkpoints, two leaf goals,
+and summed squared projected distance. It preserves the input array SHA-256,
+source provenance hash, reference indices, exact per-column scale bounds and
+rendering contract. The input arrays and model outputs were not changed.

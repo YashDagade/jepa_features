@@ -1,6 +1,6 @@
 # Figures
 
-The active four-page manuscript uses three LeWM-based main figures and one appendix figure. PDF and PNG
+The active four-page manuscript uses three main figures plus appendix diagnostics. PDF and PNG
 versions are tracked; LaTeX includes the vector PDF, and PNG supports quick
 visual inspection. Temporary builders remain under ignored `runs/` paths.
 
@@ -19,7 +19,11 @@ visual inspection. Temporary builders remain under ignored `runs/` paths.
   `data/short_paper_cls_decoder_sources.csv`. The builder is
   `runs/pta_revision_audit/finalize_matched_cue_results.py`.
 
-## Historical spatial decoder figure
+- `lewm_goal_distance_main` shows both destination goals for all three matched
+  CLS+IDM models as a six-panel static-energy figure. Scales and provenance
+  are described in the paired-goal section below.
+
+## Historical spatial decoder figures
 
 - `lewm_three_cue_decoder_composite` shows input and detached-decoder rows for
   standard green/orange, triangle/diamond Shape, and alternate green/blue cue
@@ -32,8 +36,8 @@ visual inspection. Temporary builders remain under ignored `runs/` paths.
 
 ## Archived supporting figures
 
-The remaining tracked figures support older, broader drafts and appendices but
-are not included by the active `main.tex`.
+The following figures support older, broader drafts and are not part of the
+main argument. Active appendix landscapes are described separately below.
 
 - `lewm_tunnel_pipeline` shows a real three-room factual/counterfactual pair
   with fixed geometry and an exact three-route native-cost profile. The cost
@@ -84,12 +88,12 @@ account URLs, workstation paths, or mutable run-display titles.
 - `lewm_similarity_matched` shows the three matched CLS+IDM models for an
   upper-leaf reference image, marked by the red agent. Its shared cosine scale
   is [0.6, 1.0], with yellow denoting high similarity. The canvas is 7.2 by
-  2.35 inches. Main text treats the two bright destination regions as a
-  descriptive finding in one layout, not proof of a learned teleport rule.
+  2.35 inches. This retained single-goal cosine view is superseded in the main
+  paper by the paired-goal squared-distance figure.
 - `lewm_similarity_matched_appendix.pdf` has two pages: CLS+IDM, then native
   CLS without IDM. Three rows are Color, Shape, and green/blue. Four columns
   show cosine for the upper/lower reference, then summed squared projected
-  distance for the same two references. Cosine retains the shared main scale;
+  distance for the same two references. Cosine retains the shared [0.6, 1.0] scale;
   distance shares one printed scale between the two references of each
   model/cue checkpoint. Yellow means high similarity or low distance.
 - `lewm_similarity_historical_atlas.pdf` has three pages covering 15 selected
@@ -114,3 +118,22 @@ The compact reproducibility arrays and provenance are in `../data/` under
 script is `runs/pta_revision_audit/fresh_similarity.py`. The fresh GPU job
 finished without training; all source frames first passed byte-exact checks
 against their dataset renderings.
+
+## Main paired-goal distance figure
+
+`lewm_goal_distance_main.pdf` and `.png` show static summed squared projected
+distance for the three matched CLS+IDM checkpoints: Color, Shape and green/blue
+columns; upper-leaf and lower-leaf goal rows. Canvas size is 7.2 by 3.9 inches.
+The red agent marks each goal reference. Each column has one linear colorbar
+shared by its two goals: yellow is low cost, purple high cost. Exact maxima
+are 96.7884570, 122.0351787 and 103.1921188 respectively; colors across columns
+do not share an absolute numerical scale. Walls and markers are preserved.
+
+This figure reads the existing compact `lewm_similarity_maps.npz` directly,
+with no model inference or new runs. It uses the same valid-center evaluation
+and floor interpolation described above. `E` compares encoded static frames;
+it is not an action-conditioned predicted rollout cost. The prior cosine
+figure and full six-model appendix remain available. Figure-specific source
+hashes, scale bounds and reference indices are recorded in
+`../data/lewm_goal_distance_main_provenance.json`. The ignored builder is
+`runs/pta_revision_audit/build_goal_distance_main.py`.

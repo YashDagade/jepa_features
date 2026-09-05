@@ -2,8 +2,8 @@
 
 The anonymous manuscript is **Learning Where, but Not Reliably Which: Cue
 Binding in a JEPA World Model**. Its scope is a controlled Tunnel Rooms case
-study, using coordinate probes (MAE and R²), detached pixel decoders, and
-rank-stratified planning. R² belongs to the coordinate probes, not the pixel
+study, using coordinate probes (MAE and R²), detached pixel decoders,
+static goal-distance landscapes, and rank-stratified planning. R² belongs to the coordinate probes, not the pixel
 decoders.
 
 The primary comparison uses native CLS selection with **LeWM+IDM 3.125**
@@ -26,10 +26,17 @@ Jobs 16970286/16970287/16970288 cover Color/Shape/green-blue +IDM and
 outputs are under ignored `runs/lewm-cue-ablation-v1/`. No paper submission
 has been made.
 
-The transition-exposure pilot uses a spatial readout and improves selected
-decoder appearances without consistent coordinate-probe recovery; it also
-changes compute. It is labeled separately from the main CLS results and is
-not claimed to demonstrate a remedy.
+The main argument now follows cue-conditioned readouts, reconstructions,
+rank-based planning, and a six-panel goal-energy figure that changes the goal
+between both destination rooms for all three matched cue variants. These
+energies compare encoded observations, not predicted action outcomes. The
+conclusion summarizes the observed gap and identifies controlled follow-up tests.
+
+The transition-diversity ablation is consolidated in the appendix. It reports
+more saturated selected decoder examples without consistent coordinate-probe
+recovery, together with the exposure counts and compute confound. The main
+text retains only the rare-crossing hypothesis and an appendix pointer; the
+abstract contains no transition-intervention claim.
 
 ## Venue and format
 

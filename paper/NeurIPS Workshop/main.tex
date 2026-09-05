@@ -27,22 +27,20 @@
 
 \begin{abstract}
 A visual world model may localize an object yet struggle to distinguish
-which one an agent should use. We study this gap in Tunnel Rooms, a controlled
-navigation task where portal position determines how to approach a tunnel,
-but a persistent visual cue determines where it leads. Using the CLS-based
-state of LeWorldModel augmented with inverse dynamics (LeWM+IDM), affine
-probes recover position more accurately than coordinates indexed by color
-or shape identity across three cue renderings. Detached reconstructions weaken
-cue distinctions, and static goal maps show broad similarity across destination
-rooms. Separate historical planning runs have lower success when the correct
-portal is farther away. Without
-IDM, both location and cue readouts are poor in the tested native LeWM runs;
-the selective gap therefore concerns the augmented model, not the unmodified
-method. We hypothesize that infrequent cue-dependent crossings contribute
-to this imbalance. An exploratory transition-exposure pilot changes selected
-decoder outputs but provides no consistent probe recovery and changes compute.
-This case study motivates evaluating cue binding separately from location,
-while leaving the mechanism and generality open.
+which one an agent should use. We study this gap in Tunnel Rooms, where
+portal position determines how to approach a tunnel and a persistent cue
+determines where it leads. Across three cue renderings, the CLS-based state
+of LeWorldModel with inverse dynamics (LeWM+IDM) supports substantially
+better affine readout of portal location than cue-conditioned endpoints.
+Detached reconstructions weaken cue distinctions. In a fixed layout, static
+goal-distance maps retain low-cost regions in both destination rooms when
+the goal switches between them. Separate historical planning runs also perform
+worse when the correct portal is farther away. Native no-IDM controls have
+poor readouts of both location and cue, so the selective gap concerns the
+augmented configuration. These complementary diagnostics identify a gap
+between localization and cue binding in a controlled case study, motivating
+explicit tests of whether predictive states retain distinctions needed for
+goal-directed action.
 \end{abstract}
 
 \section{Introduction}
@@ -76,10 +74,10 @@ Our contribution is a controlled empirical observation: in the tested
 CLS-based LeWorldModel with an inverse-dynamics auxiliary loss (LeWM+IDM), the state supplied to prediction supports
 substantially better position than cue-conditioned readout.
 We compare these two targets with the same affine probe, inspect detached
-reconstructions, and assess planning by whether the correct portal is near
-or far. We then examine a transition-exposure pilot. The aim is to establish
-the phenomenon and its boundaries, rather than claim a general failure of
-JEPAs or a validated remedy.
+reconstructions, map the goal-distance landscape, and assess planning by
+whether the correct portal is near or far. Together, these diagnostics test
+whether spatial accessibility is accompanied by the distinctions needed to
+select a destination.
 
 \begin{figure}[t]
   \centering
@@ -119,11 +117,8 @@ training. \emph{Location} targets index the top and bottom portal slots;
 \emph{cue} targets index the same endpoints by their color or shape identity.
 We average errors over both hub and destination endpoints, reporting
 per-coordinate MAE in pixels and $R^2$ for the current \emph{projected} state
-and one-step predicted state. CLS in the table denotes the encoder readout
-used to construct that state, not a probe directly on the raw CLS token.
-The Color probe-training-mean constant has four-endpoint MAE 31.19 px; $R^2\leq0$
+and one-step predicted state. The Color probe-training-mean constant has four-endpoint MAE 31.19 px; $R^2\leq0$
 indicates no improvement in squared error over the test-target mean.
-These $R^2$ scores evaluate coordinate probes, not pixel decoders.
 
 \section{Location is more accessible than cue binding}
 
@@ -159,14 +154,6 @@ Green/blue & \curpred{28.01}{28.12} & \curpred{.262}{.260} & \curpred{8.10}{8.14
 \bottomrule
 \end{tabular*}
 \end{table}
-
-\paragraph{Visible hue remains accessible in patch tokens.}
-A separate binary hue-classification audit of a historical Color+IDM checkpoint
-achieves 100\% balanced accuracy from native patch tokens but 45.3\% from the
-projected state (chance 50\%), using an episode-disjoint validation split.
-The contrast places the observed accessibility gap along the compact-state
-path, rather than establishing an inability to perceive color. Different
-feature dimensions and readout capacities prevent an information-loss claim.
 
 \paragraph{Reconstructions weaken cue distinctions.}
 Pixel decoders trained on detached states reconstruct the shared room
@@ -222,57 +209,59 @@ than filled markers. Optimized actions can exceed bounds before execution
 clips them. These small, one-seed samples provide behavioral context, not a
 causal test of cue loss (Appendix~\ref{app:planning}).
 
-\paragraph{Static goal comparisons reveal broad similarity.}
-We move the agent over a $20\times20$ lattice while holding layout and cues
-fixed, and compare each rendered state's projected embedding with a goal
-image (Figure~\ref{fig:similarity}). Both destination rooms remain highly
-similar to a goal in one of them; the two destination-reference embeddings
-have cosine similarity .994--.996 across the three cue variants.
-This single-layout diagnostic suggests weak goal discrimination, but it
-neither swaps cues nor rolls out actions. Appendix~\ref{app:landscapes}
-provides the squared-distance maps, all six model conditions, and details.
+\section{Goal-distance landscapes}
+
+The probe gap concerns cue-indexed coordinates. We next ask whether the
+state distinguishes the destinations that those cues select. For a fixed
+layout, we render the agent at position $p$ and compare its projected state
+$z(x_p)$ with the goal-image state $z(g)$:
+\[
+ E(p;g)=\|z(x_p)-z(g)\|_2^2.
+\]
+This \emph{static goal energy} is low when the two representations are close.
+It uses the same squared-distance form as the planner's terminal cost, but
+compares encoded observations rather than action-conditioned predictions.
+We evaluate 210 valid agent centers on a $20\times20$ lattice, holding cues
+and geometry fixed. Figure~\ref{fig:similarity} changes the goal between the
+two destination rooms while retaining the same layout across all cue variants.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{figures/lewm_similarity_matched.pdf}
-  \caption{\textbf{A goal in one destination room has high similarity in both.}
-  Static projected-state cosine similarity for the matched CLS+IDM models.
-  Higher values mean closer representations, not higher planning cost.
-  The red disk marks the shared reference-agent position. All panels use
-  the same color scale and contain no action-conditioned predictions.}
+  \includegraphics[width=\linewidth]{figures/lewm_goal_distance_main.pdf}
+  \caption{\textbf{Both destination rooms retain low-energy regions for either goal.}
+  Static squared distance to the goal embedding for the matched CLS+IDM
+  models in one layout. Rows move the reference agent (red disk) between rooms;
+  columns change the cue rendering. Yellow denotes low cost. Each column
+  shares one scale across its two goals. These are encoded-state comparisons,
+  not predicted action outcomes.}
   \label{fig:similarity}
 \end{figure}
 
-\section{Does exposure to cue-dependent transitions matter?}
+In this scene, moving the goal between rooms leaves broad low-energy regions
+in both. The two reference embeddings themselves have squared distances
+1.125 (Color), 2.483 (Shape), and 1.910 (green/blue), and cosine similarities
+.994--.996. These differences are nonzero: whether predicted rollouts can exploit them
+to select the cue-correct portal remains an open question.
+Appendix~\ref{app:landscapes} gives the protocol, cosine maps, and controls.
 
-\paragraph{Hypothesis: visibility is not diagnostic exposure.}
-The cue is present in ordinary frames, and the oracle uses it to select a
-route. Nevertheless, most transitions describe approaching a portal rather
-than experiencing its cue-dependent destination. Of 641,357 raw transitions,
-12,180 (1.90\%) are crossings. Accounting for the actual overlapping training
-clips raises event-adjacent target exposure to 8.95\%; approach motion still
-accounts for 81.6\% of target intervals. We hypothesize that this imbalance
-makes spatial regularities easier to learn than cue-dependent outcomes under
-an average latent prediction objective. The counts motivate the hypothesis;
-they do not establish why the learned state has this structure.
+One possible explanation is that approach motion dominates training while
+few transitions reveal cue-dependent destinations. The cue remains
+visible, but its link to a destination is directly observed at crossings. We examine
+transition-focused sampling as a possible intervention in
+Appendix~\ref{app:exposure}.
 
-\paragraph{An exposure pilot gives mixed evidence.}
-An earlier spatial-readout pilot adds transition-centered windows equal to
-10\%, 50\%, or 100\% of the Color training set, also with IDM 3.125.
-Selected decoder outputs show stronger color separation (Figure~\ref{fig:diversity}),
-but frames differ and cue $R^2$ does not improve consistently
-(Appendix~\ref{app:quantitative}). Fixed epochs also increase compute by
-$1.1\times$, $1.5\times$, and $2\times$. A controlled test must match updates
-and evaluate cue identity and planning on a shared held-out set.
+\section{Conclusion}
 
-\paragraph{Scope and next steps.}
-This is a one-seed study of one model and environment family. IDM, decoder
-capacity, and planning mechanics limit attribution to the JEPA objective.
-Native controls show that the selective gap does not persist across objectives.
-Next, cue-diagnostic exposure should be varied at fixed updates, testing
-identity recognition, identity--location binding, and action selection
-separately. Controlled replication across model families and environments
-is needed.
+Across three Tunnel Rooms renderings, LeWM+IDM supports better affine readout
+of portal geometry than cue-conditioned endpoints. Detached reconstructions
+weaken cue distinctions, static goal energies remain low across destination
+rooms, and separate historical planning runs struggle more when the correct
+portal is farther away. Together, these observations motivate measuring cue
+binding alongside localization. The finding concerns this model and training
+configuration; its cause and broader prevalence remain open. The next steps
+are to vary cue-dependent exposure at fixed updates, test cue swaps with
+action-conditioned portal rollouts, and replicate the diagnostics across
+seeds, models, and environments.
 
 \clearpage
 \bibliographystyle{plainnat}
@@ -454,13 +443,6 @@ from the historical campaign, the same solver settings and episode budget,
 and a separate rank manifest with 20-pixel shape markers. The new six-condition comparison supplies probes and decoder media; no
 planning result is yet available for those checkpoints.
 
-The transition audit counts 10,000 episodes, 641,357 raw transitions, 463,033
-legal training clips, and 1,389,099 predicted intervals.  Event exposure is
-reported both at the raw-transition level and after clip construction to avoid
-equating the two sampling distributions. An interval can contain both
-approach motion and a crossing; their occurrence fractions are not mutually
-exclusive categories.
-
 \section{Representation landscapes and their relation to planning}
 \label{app:landscapes}
 
@@ -596,22 +578,49 @@ and 2.9\% separation retention for the IDM-0 run; it has no episode-level
 confidence interval and is treated as descriptive.  Shape decoder media have
 not received a quantitative identity audit.
 
-For the transition-window pilot, current-state cue $R^2$ is .224, .222, .174,
-and .200 at 0/10/50/100\% additional windows; predicted-state scores are
-.226, .244, .213, and .231. Thus the pilot does not show consistent probe
-recovery. Adding 10\%, 50\%, and 100\% windows increases
-epoch compute by roughly $1.10\times$, $1.50\times$, and $2.00\times$.
-Four-endpoint cue MAE remains in the 27.2--28.1 px range and does not improve
-monotonically.  This is why Figure~\ref{fig:diversity} is presented as a visual
-hypothesis-generating ablation rather than a positive quantitative result.
+\section{Transition-diversity ablation}
+\label{app:exposure}
 
-\section{Transition-exposure decoder examples}
+\paragraph{Hypothesis and exposure counts.}
+A visible cue does not necessarily contribute equally to every prediction
+error. In Tunnel Rooms, most trajectory steps approach a portal, whereas
+its cue-dependent destination is observed at a crossing. The 10,000-episode
+corpus contains 641,357 raw transitions, of which 12,180 (1.90\%) are
+crossings. Its 463,033 legal training clips produce 1,389,099 target intervals.
+After accounting for overlapping clips and frameskip, crossing-adjacent
+exposure is 8.95\%, while approach motion occurs in 81.6\% of target intervals.
+An interval can contain both events. This imbalance motivates the hypothesis
+that average prediction favors spatial regularities over cue-dependent
+outcomes; it does not establish the cause of the observed readout gap.
+
+\paragraph{Intervention and results.}
+An earlier Color pilot, using a spatial readout and IDM weight 3.125, adds
+transition-centered windows equal to 10\%, 50\%, or 100\% of the original
+training set. Selected decoder outputs appear more saturated and show
+stronger color separation (Figure~\ref{fig:diversity}). Coordinate probes do
+not show a corresponding consistent improvement: current-state cue $R^2$
+is .224, .222, .174, and .200 at 0/10/50/100\% additional windows; predicted-state
+scores are .226, .244, .213, and .231. Four-endpoint cue MAE remains in the
+27.2--28.1 px range. Keeping epochs fixed also increases compute by
+approximately $1.1\times$, $1.5\times$, and $2\times$.
+
+\paragraph{Why the discrepancy matters.}
+More saturated reconstructions suggest transition-focused sampling as a
+candidate intervention, but improved appearance need not mean improved cue
+binding. A decoder can produce distinct colors without assigning the correct
+identity to each portal; coordinate probes ask whether that identity selects
+the correct endpoint. The visual examples also differ across runs, and
+additional optimization could contribute to their appearance. A controlled
+follow-up should match training updates and evaluate the same held-out
+examples for saturation, cue identity, cue-conditioned localization, and
+planning. Cue swaps and portal-crossing rollouts would then test whether
+visual recovery changes predicted destinations and action selection.
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\linewidth]{figures/lewm_transition_diversity_decoder.pdf}
-  \caption{\textbf{More transition exposure is suggestive, not a verified
-  fix.} Selected spatial-state decoder outputs show stronger color separation.
+  \caption{\textbf{Transition-focused sampling changes decoder appearance.}
+  Selected spatial-state decoder outputs appear more saturated.
   Frames differ across conditions; correct identity recovery is not measured
   by this visual comparison. Coordinate $R^2$ does not improve consistently,
   and added windows increase compute.}
@@ -631,6 +640,14 @@ hypothesis-generating ablation rather than a positive quantitative result.
   $R^2$, not a universal pixel threshold, determine the interpretation.}
   \label{fig:mae}
 \end{figure}
+
+\paragraph{Visible hue remains accessible in patch tokens.}
+A separate binary hue-classification audit of a historical Color+IDM checkpoint
+achieves 100\% balanced accuracy from native patch tokens but 45.3\% from the
+projected state (chance 50\%), using an episode-disjoint validation split.
+The contrast places the observed accessibility gap along the compact-state
+path, rather than establishing an inability to perceive color. Different
+feature dimensions and readout capacities prevent an information-loss claim.
 
 The hue classifier and coordinate regressor answer different questions.
 The former asks which hue occupies a portal slot; the latter asks where an
