@@ -45,38 +45,38 @@ representations, rather than an inevitable failure of feature-space learning.
 
 \section{Introduction}
 
-Joint-embedding predictive architectures (JEPAs) have attracted growing
-interest as a way to learn from images, video, and interactions without
-reconstructing every pixel. Predicting in learned feature space allows a
-representation to abstract over details that are irrelevant or difficult
-to predict \citep{lecun2022path,assran2023ijepa,bardes2024vjepa}.
-This principle now supports action-conditioned video models such as
-V-JEPA~2 \citep{assran2025vjepa2}, self-supervised learning with LeJEPA
-\citep{balestriero2025lejepa}, and world models for planning, including PLDM,
+Joint-embedding predictive architectures (JEPAs) underpin a growing body of
+work on learning from images, video, and interactions. Predicting in feature
+space allows them to abstract over pixel details that are irrelevant or
+difficult to predict \citep{lecun2022path,assran2023ijepa,bardes2024vjepa}.
+Recent advances span video learning with V-JEPA~2 and~2.1
+\citep{assran2025vjepa2,murlabadia2026vjepa21}, representation regularization
+with LeJEPA and Rectified LpJEPA
+\citep{balestriero2025lejepa,kuang2026rectified}, and planning with PLDM,
 LeWorldModel, and LpWM
-\citep{sobal2025latentplanning,maes2026leworldmodel,kuang2026rectified}.
-For an acting agent, however, a detail that contributes little to average
-prediction error may still determine which action reaches the goal.
+\citep{sobal2025latentplanning,maes2026leworldmodel,kuang2026lpwm}.
+Yet useful abstraction depends on which features survive. LeJEPA theory
+establishes linear recovery of latent variables under specific assumptions
+\citep{klindt2026when}, while slow-feature experiments show that temporal
+predictability can favor unhelpful information \citep{sobal2022slow}.
+For an acting agent, a detail with little influence on average prediction
+error may still determine which action reaches the goal.
 
-Consider two tunnels that look alike except for color. Knowing where they
-are is enough to approach either one; knowing which color leads to the goal
-is necessary to choose the direct route. We construct \emph{Tunnel Rooms Color}
-to separate these requirements. A hub connects to two destination rooms
-through paired portals: entering green teleports the agent beside the other
-green endpoint, and orange follows the same rule. A goal image identifies a
-requested position in a destination room. Portal positions and color
-assignments vary across episodes, so successful cue-guided routing requires
-binding identity to destination. A scripted cue-aware oracle collects
-successful trajectories. Shape and green/blue variants rerender the same
-trajectories while preserving their dynamics (Figure~\ref{fig:taskrank}).
+We construct \emph{Tunnel Rooms Color} to separate knowing where a tunnel is
+from knowing where it leads. A hub connects to two destination rooms through
+paired portals: entering green teleports the agent beside the other green
+endpoint, and orange follows the same rule. A goal image specifies a target
+position in a destination room. Portal positions and color assignments vary
+across episodes, requiring cue--destination binding to choose the direct
+route. A scripted cue-aware oracle collects successful trajectories. Shape
+and green/blue variants rerender the same trajectories while preserving
+their dynamics (Figure~\ref{fig:taskrank}).
 
-We make two contributions. First, we introduce a controlled dataset and a
-rank-based evaluation that expose difficulty beyond simply approaching the
-nearest portal. Second, we document a substantial gap between localization
-and cue binding in a LeWorldModel-based recipe, using coordinate probes,
-detached reconstructions, goal-distance landscapes, and planning. An LpWM
-comparison performs much better on the harder rank, establishing a useful
-positive control. How cue accessibility relates to this planning advantage remains open.
+We contribute a controlled dataset and rank-based evaluation for cue-guided
+routing. We also document a localization--cue-binding gap in a LeWorldModel
+recipe through coordinate probes, reconstructions, goal-distance maps, and
+planning. An LpWM comparison performs better on the harder rank, providing a
+positive control whose relation to cue accessibility remains open.
 
 \begin{figure}[t]
   \centering
@@ -340,12 +340,15 @@ different source revisions, with the same declared training and solver
 settings; the archived configurations and checkpoint hashes identify each
 condition explicitly.
 
-The LpWM-based Color control uses the same source revision, dataset hash,
+The LpWM-based Color control \citep{kuang2026lpwm,kuang2026rectified}
+uses the same source revision, dataset hash,
 rank manifest, readout, IDM head and weight, seed, epochs, and batch size as
 the primary LeWM Color run. It replaces SIGReg with Product-Laplace InfoReg
 (weight 10, $\mu=-1$, $p=1$, 1,024 slices) and uses ReLU in its projection
-path rather than GELU. This makes it a same-campaign recipe comparison,
-not an isolated causal test of the regularizer. Its CEM counts are 23/25 and
+path rather than GELU. These historical settings are not an exact
+reproduction of the published LpWM defaults. This makes it a same-campaign
+recipe comparison, not an isolated causal test of the regularizer.
+Its CEM counts are 23/25 and
 20/25 for R1/R2; GD gives 24/25 and 22/25. LeWM Color gives 20/25 and 4/25
 (CEM), 16/25 and 13/25 (GD); Shape gives 22/25 and 6/25 (CEM), 19/25 and
 10/25 (GD). No planning results are attributed to the six separate matched
@@ -624,5 +627,8 @@ that readout. Likewise, a detached MSE decoder can average uncertain outputs
 because of limitations in its input representation, its own capacity, or
 optimization. Its population optimum is $d^*(z)=\mathbb E[X\mid z]$, but the
 trained finite decoder need not reach that optimum.
+
+\clearpage
+\input{appendix_related_work}
 
 \end{document}

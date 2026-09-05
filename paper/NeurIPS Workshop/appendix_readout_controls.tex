@@ -9,7 +9,10 @@ conditions in which both location and cue readouts are poor.
 
 IDM asks which actions connect two consecutive states. Its gradients encourage
 the representation to retain information useful for reconstructing those
-controls. This complements forward prediction, but does not directly supervise
+controls. Sensorimotor World Models use inverse dynamics to favor controllable
+features \citep{ivashkov2026sensorimotor}; auxiliary-task analyses also study
+how added supervision preserves distinctions that prediction alone may miss
+\citep{yu2025auxjepa}. Our IDM complements forward prediction, but does not directly supervise
 portal color or require correct cue--destination binding. Spatial aggregation
 makes patch position explicit before compressing the tokens into a single
 state. These choices address different parts of the learning problem; their
@@ -26,7 +29,7 @@ The auxiliary head concatenates next then current projected state and applies
 Linear$(384,512)$, LayerNorm, GELU, and Linear$(512,10)$. Its loss propagates
 through both states; the action target is detached. The head is not used by
 the planner. This is the historical auxiliary head, not the different inverse
-model used by SMWM.
+model used by Sensorimotor World Models \citep{ivashkov2026sensorimotor}.
 
 \subsection{Historical readout and objective comparison}
 
@@ -180,6 +183,14 @@ establish state-dependent geometry recovery.}
 \end{figure}
 
 \section{The spatial patch aggregator}
+\label{app:aggregator}
+
+Our spatial readout is inspired by the learned aggregation of visual
+features in \emph{Temporal Straightening for Latent Planning}
+\citep{wang2026temporal}. Wang et al. study convolutional projectors and a
+separate MLP aggregation head for spatial-feature straightening. Our design
+instead compresses a pooled patch grid into the world-model state and does
+not use their temporal-curvature regularizer.
 
 The primary spatial readout consumes patch tokens only; the native CLS token
 is discarded. For a square ViT patch grid, it reshapes tokens from

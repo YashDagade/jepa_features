@@ -1,0 +1,62 @@
+\section{Related work and interpretation}
+\label{app:related}
+
+Predictive feature learning now spans several distinct settings. I-JEPA and
+V-JEPA learn from masked image and video content
+\citep{assran2023ijepa,bardes2024vjepa}; Image World Models study prediction
+of photometric transformations and the roles of conditioning and predictor
+capacity \citep{garrido2024iwm}. V-JEPA~2 connects video pretraining to
+action-conditioned robot planning \citep{assran2025vjepa2}, while
+V-JEPA~2.1 adds dense and intermediate-layer supervision to improve spatial
+and temporal features \citep{murlabadia2026vjepa21}. These successes motivate
+testing which task distinctions remain accessible after prediction in
+feature space, especially when they occupy little of the image.
+
+Latent planning can use either pretrained visual features or representations
+learned jointly with dynamics. DINO-WM predicts spatial patch features from
+a pretrained DINOv2 encoder \citep{zhou2025dinowm,oquab2023dinov2}.
+PLDM learns predictive dynamics from reward-free offline interactions
+\citep{sobal2025latentplanning}; LeWorldModel and LpWM study end-to-end
+learning with different distribution regularizers
+\citep{maes2026leworldmodel,kuang2026lpwm}. Our positive control belongs to
+the latter line, with its particular recipe stated in
+Appendix~\ref{app:planning}. Its stronger planning motivates a controlled
+comparison of learned cue binding; it does not establish that sparsity alone
+explains the difference.
+
+Regularization and identifiability provide complementary perspectives.
+VICReg explicitly controls feature variance and covariance
+\citep{bardes2022vicreg}; LeJEPA studies isotropic Gaussian regularization
+\citep{balestriero2025lejepa}, and Rectified LpJEPA develops sparse,
+nonnegative alternatives \citep{kuang2026rectified}.
+In \emph{When Does LeJEPA Learn a World Model?}, Klindt et al.
+\citep{klindt2026when} establish linear recovery under assumptions including
+independent Gaussian latent variables and stationary additive-noise
+transitions. This is an encoder-side result under a specified data model,
+not a general guarantee for an action-conditioned predictor. We do not
+establish those assumptions for Tunnel Rooms, so our findings do not
+contradict that theorem.
+
+Feature selection can nevertheless favor the wrong information for a task.
+Sobal et al. \citep{sobal2022slow} show that JEPAs can prefer stationary
+noise over a moving object in controlled experiments. Littwin et al.
+\citep{littwin2024jepa} analyze a bias toward more predictable features in
+deep linear self-distillation networks. These results motivate examining
+the relation between predictability and usefulness, but neither identifies
+the cause of our cue-binding gap: our cues persist and determine destination
+pairings. The transition-exposure experiment therefore tests a separate
+possibility and remains inconclusive.
+
+Additional training signals offer ways to align representations with action.
+Sensorimotor World Models use inverse dynamics
+\citep{ivashkov2026sensorimotor}; auxiliary-task theory explains how added
+targets can preserve otherwise unresolved distinctions \citep{yu2025auxjepa}.
+Value-guided JEPA planning explicitly aligns latent distance with a
+goal-reaching value function \citep{destrade2025value}, while PSG-JEPA adds
+training-time physical-state grounding \citep{yan2026psgjepa}.
+Temporal Straightening regularizes latent trajectories for planning
+\citep{wang2026temporal}; its learned feature aggregation inspires our
+different spatial readout (Appendix~\ref{app:aggregator}). Together, these
+directions motivate testing which additional constraints help retain cue
+identity and destination, beyond improving average prediction or marker
+visibility.

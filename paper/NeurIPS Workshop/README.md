@@ -64,6 +64,15 @@ made by the revision workflow.
 
 ## Build
 
+The current draft cites **23 distinct references**, all attached to claims
+in the text. The introduction covers the JEPA, LeJEPA/LpJEPA, and latent
+planning literature; Appendix H develops the connections to identifiability,
+slow features, auxiliary objectives, and value-guided planning. LpWM and
+Rectified LpJEPA are cited as separate papers. Appendix B credits Temporal
+Straightening for the inspiration behind learned patch aggregation and states
+the architectural and objective differences. The main text remains four
+pages; references occupy two pages.
+
 Run from this directory:
 
 ```bash
