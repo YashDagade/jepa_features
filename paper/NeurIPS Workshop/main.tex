@@ -66,6 +66,20 @@ planning through learned dynamics
 A small visual detail, however, may determine which action reaches a goal.
 Our benchmark tests whether that detail remains useful to the model.
 
+% Here we should first start by saying we introduce tunnel room --
+% Feedback
+% We should state our contributions very clearly:
+% 1. we introduce tunnel room
+% 2. we observe that lewm struggles
+% 3. we offer some suggestions as to why, and leave this as an open question
+%
+% we need to do a better job introducing and describing tunnel room. we should state what about it makes it a good benchmark, that is what characteristics/features it is trying to capture. we can keep this very short and precise, but it should definitely be introduced stronger than now, given it is one of our contributions.
+% All our sentences need to be clearer and less choppy. We need to use fewer conjunctions, and instead have more full sentences. It should be easy to read this paper.
+% We need to write more clearly and use less jargon. I think the sentences are too information dense.
+% 3b should have more steps before transition if possible
+% for 3b, we should also have (or in appendix), two images that show both settings and also show a line that shows their trajectory. this should give readers and idea of what this experiment is
+% we should in a simple sentence explain r1 and r2 and show why the distinctin in performance is so drastic between the two.
+
 We make three contributions. First, we introduce Tunnel Room and matched
 color, shape, and palette variants. Second, we document LeWM's difficulty
 using these cues despite its accurate recovery of tunnel locations. Third,
@@ -107,12 +121,16 @@ explain these choices and compare them with the native model.
   \label{fig:taskrank}
 \end{figure}
 
+% Add here why it's necessary to add spatial 8x8 patch and IDM -- IDM for performance patch aggreagtor for better patch accessiblity inspired by ying's approach.
+
 \section{LeWM learns locations more reliably than cues}
 
 We freeze LeWM and fit linear and MLP probes to recover tunnel coordinates.
 Location targets index endpoints by top/bottom position; cue targets index
 them by color or shape. Mean absolute error (MAE) measures pixel error.
 $R^2$ measures the fraction of coordinate variance explained.
+
+% Add MLP results as part of this table as well instead of keeping htem in appendix -- maybe can do linear/MAE
 
 \begin{table}[!htbp]
 \centering
@@ -168,6 +186,8 @@ all cue information is absent. Appendices~\ref{app:ablations}--\ref{app:matcheda
 report the readout and objective controls.
 
 
+
+% Motviate this section by saying soemthign along the liens of the expectation for a cuebind decoder would be that in order to minimize error the decoder will just pick the average cue -- here tehe average shape or color and that's exactly waht we see
 
 A separate decoder reconstructs observations from LeWM's features.
 Its reconstruction loss does not train the world model. The outputs
