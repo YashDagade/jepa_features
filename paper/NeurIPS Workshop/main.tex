@@ -205,23 +205,26 @@ goal between destination rooms (Figure~\ref{fig:similarity}).
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=.82\linewidth]{figures/lewm_spatial_goal_distance_main.pdf}
-  \caption{\textbf{Low costs remain near both candidate tunnels.}
-  Static goal energy for the primary spatial $8\times8$ + IDM 3.125 models
-  in one fixed layout. Rows move the goal agent (red disk) between rooms;
-  yellow denotes low cost. Each column shares a scale across its two goals.
-  These maps compare encoded observations, not teleportation predictions.}
+  \includegraphics[width=\linewidth]{figures/lewm_spatial_goal_distance_main.pdf}
+  \caption{\textbf{A navigation reference distinguishes the cue-correct tunnel.}
+  Left: static energies of spatial $8\times8$ + IDM 3.125 LeWM models.
+  Right: approximate geodesic distance through the true paired portals,
+  shown on the same layout and sample positions. Rows change the goal
+  (red disk); yellow denotes low cost. Each column shares a scale across
+  goals, but latent energy and travel distance have different units.}
   \label{fig:similarity}
 \end{figure}
 
-In this layout, low-cost regions occur near both hub portals and both leaf
-portals for either goal. The two goal embeddings are distinct: their squared
-distance is 5.075 for Color and 8.113 for Shape. The maps therefore suggest
-limited goal selectivity in this scene, rather than complete cue blindness.
-Whether action-conditioned predictions exploit the remaining differences
-to choose a destination requires a separate rollout test.
-Appendix~\ref{app:landscapes} provides cosine maps, rendering details, and
-additional model controls.
+The geodesic reference measures remaining travel distance while respecting
+walls, portal pairings, and the rearm rule. Its low-cost hub region follows
+the portal leading to the requested room. In contrast, the learned energies
+remain low near both hub portals and both leaf portals for either goal.
+This reference illustrates the routing distinction; a useful latent energy
+need not reproduce its numerical values. The two learned goal embeddings
+are distinct, with squared distances 5.075 (Color) and 8.113 (Shape).
+Whether predicted rollouts exploit those differences requires a separate
+test. Appendix~\ref{app:landscapes} gives the geodesic approximation, cosine
+maps, and additional model controls.
 
 A possible explanation is that approach motion dominates training, while
 comparatively few transitions reveal cue-dependent destinations. An exposure
@@ -396,6 +399,40 @@ the range [.6, 1]; yellow denotes high similarity. Squared-distance maps use
 one scale per model--cue checkpoint shared across its two destination references, with yellow
 for low cost and purple for high cost. The numerical upper bound is printed
 for each pair. Absolute distances are not calibrated across models.
+
+\paragraph{Geodesic navigation reference.}
+The right column of Figure~\ref{fig:similarity} is computed from the environment,
+independently of the learned representations. We construct a directed graph
+whose state is agent position together with the endpoint currently locked
+against re-entry. A one-pixel lattice covers valid agent centers in each
+room. Walking edges use 16 directions: axis, diagonal, and $(2,1)$ or $(1,2)$
+offsets with all sign variants. The 210 model-query positions, four references,
+portal endpoints, and exact landing positions are inserted as additional
+nodes with local same-room connections. Every movement is realizable within
+the environment's componentwise action bounds; a zero action is included
+because an armed portal can trigger without displacement.
+
+Each edge applies the swept-segment trigger radius of 10 px. Entry transfers
+the agent to the paired endpoint's exact landing position, offset by 14 px,
+and locks that destination until the agent moves at least 28 px away. The
+edge weight is the Euclidean pre-teleport displacement, matching the
+environment's route-length accounting; the teleportation jump adds no distance.
+Reverse Dijkstra computes the shortest remaining distance to the exact goal
+position, accepting any lock state there. Plotted starting states are unlocked.
+This is a point-goal diagnostic, not distance to the 16-pixel success region
+used in planning evaluation, nor a minimum-time objective.
+
+The shortest paths are exact on this finite graph, which approximates the
+continuous action space. It contains 34,062 states and 549,911 directed edges.
+Halving the lattice spacing changes distances at the 420 displayed
+position--goal pairs by at most .900 px (mean .225 px); this checks spatial
+resolution, not convergence over all action directions. At the two hub
+reference positions, distances to the upper goal are 18.33 and 136.79 px;
+for the lower goal they are 146.20 and 19.10 px. Thus changing the goal
+reverses the preferred portal. For display we sample these distances at the
+same 210 centers and apply the same roomwise interpolation as the learned
+maps. One pixel-distance scale is shared across both goals. This is a
+navigation reference, not a calibrated target for latent squared distance.
 
 \paragraph{Interpretation and limits.}
 The primary spatial models produce destination-reference cosine similarities

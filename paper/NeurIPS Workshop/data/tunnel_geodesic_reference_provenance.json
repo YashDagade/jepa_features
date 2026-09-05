@@ -1,0 +1,77 @@
+{
+  "episode": 1893,
+  "metric": "minimum sum of Euclidean preteleport movement lengths on a finite portal-state graph",
+  "units": "pixels; teleport jump length excluded, following environment route_length",
+  "grid_spacing": 1.0,
+  "directions": "16: axis, diagonal, (2,1)/(1,2) and sign variants; local exact-point connectors and zero actions",
+  "exact_extra_positions": "210 model-query centers, four references, four portal landings, four endpoints",
+  "physics": "same-room segments; mandatory swept radius10 trigger; pairing0; exact14px landing; locked destination until distance>=28",
+  "state": "position and locked endpoint; plotted queries initially unlocked",
+  "goal": "exact reference position in either leaf, with any lock; not the 16px environment success set",
+  "approximation": "shortest paths are exact on the finite graph, not continuous-action optimal distances or calibrated latent energies",
+  "refinement": {
+    "spacing": 0.5,
+    "max_absolute_difference_px": 0.8998248442647139,
+    "mean_absolute_difference_px": 0.22455219918936184
+  },
+  "learned_arrays": "data/lewm_spatial_similarity_maps.npz",
+  "learned_arrays_sha256": "dc6c3ca657cb2f25485b1c481ff9f5447f945959d83d748f4a7a2c102d523506",
+  "reference_arrays": "data/tunnel_geodesic_reference.npz",
+  "reference_arrays_sha256": "5fc9ebe2abf9df0b15289cfee24c79eff8953c8873bd02952ef8aada833b7224",
+  "builder": "artifact://pta_revision_audit/build_geodesic_reference.py",
+  "builder_sha256": "0a25446b0e85321ebdd436649daa5c2e6ba785bf285424e4b400bd11c4d74950",
+  "scenario": {
+    "agent_position": [
+      29.701961517333984,
+      191.35165405273438
+    ],
+    "agent_render_radius": 9,
+    "endpoint_positions": [
+      [
+        58.82470703125,
+        42.790794372558594
+      ],
+      [
+        86.00526428222656,
+        180.92935180664062
+      ],
+      [
+        153.3388671875,
+        47.52519989013672
+      ],
+      [
+        155.823974609375,
+        144.53587341308594
+      ]
+    ],
+    "episode": 1893,
+    "landing_offset": 14.0,
+    "layout": "hub_left_two_leaves_right",
+    "marker_height": 18,
+    "marker_size": 7.0,
+    "marker_stroke_width": 1.0,
+    "marker_style": "filled18x18",
+    "marker_width": 18,
+    "min_hub_separation": 42.0,
+    "num_leaves": 2,
+    "pairing": 0,
+    "rearm_distance": 28.0,
+    "scenario_hash": "c140892f3035d32d8a9955325682085779ded748500b763fc891dfbae3c03add",
+    "scenario_seed": 42961,
+    "speed": 5.0,
+    "target_leaf": 1,
+    "target_position": [
+      189.04031372070312,
+      176.97586059570312
+    ],
+    "trigger_radius": 10.0,
+    "identity_mode": "paired_color"
+  },
+  "source_geometry": "stable-worldmodel/stable_worldmodel/envs/tunnel_rooms/env.py",
+  "source_geometry_sha256": "f0d27e9d5161fc987a9e59d1998186c9f2dbcddae4b35fcc3fa12e7d2f977dba",
+  "collision_agent_radius": 7,
+  "extra_connections": "Each additional node connects bidirectionally to its 16 nearest same-room dense-lattice centers; exact special-node pairs also connect when each displacement component is at most 5 px.",
+  "movement_bound": "Every graph action is (proposed_position-current_position)/5 with each component in [-1,1].",
+  "validation": "data/tunnel_geodesic_reference_validation.json",
+  "validation_sha256": "62e200036fd0d7ca3230b1159efa307628f46964c9c2930b75a349334243ec67"
+}

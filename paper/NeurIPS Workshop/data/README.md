@@ -229,3 +229,29 @@ reference-pair metrics and posthoc Pearson correlation between goal E maps
 over the 210 valid centers. These describe one layout, not aggregate
 performance or absence of all cue information. The summary builder is
 `runs/pta_revision_audit/spatial_map_summary.py`.
+
+## Geodesic navigation reference
+
+`tunnel_geodesic_reference.npz` contains distances to the same two leaf goals
+at the same 210 valid positions as the learned maps. It also retains costs
+at four reference positions, exact portal and landing geometry, and results
+from half-pixel refinement. Its companion provenance JSON specifies the
+finite state and action graph, source physics, and hashes.
+
+State includes the rearm lock; plotted starting states are unlocked. Swept
+triggers, paired landings, and rearming follow the simulator. Costs sum
+physical movement before teleportation, in pixels. Exact point goals differ
+from the planner's 16 px success region. Shortest paths are exact on the
+declared graph; continuous-action optimality and numerical equivalence to
+latent energies are not claimed.
+
+The main figure samples and interpolates this reference exactly as the
+learned maps, with a distinct pixel-distance scale shared by both goals.
+Large computational graphs and temporary builders stay under ignored
+`runs/pta_revision_audit/geodesic_reference/`.
+
+`tunnel_geodesic_reference_validation.json` records independent simulator
+replay: 2,297 sampled edges and 12 complete routes, plus structural checks
+of all 420 query–goal paths. Position and lock states agree exactly; maximum
+accumulated distance error is 1.41e-6 px. Nine relevant historical/current
+physics methods also agree by AST.

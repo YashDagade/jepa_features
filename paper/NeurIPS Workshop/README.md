@@ -32,7 +32,13 @@ is included in the manuscript. This is a launch snapshot, not a live status
 ledger. Existing CLS job IDs are 16970286–16970291.
 
 The main energy figure changes the goal between both destination rooms for
-the exact primary Color and Shape checkpoints. Static energies compare
+the exact primary Color and Shape checkpoints. A third column shows a
+geodesic navigation reference through the true portal pairings, including
+triggering, landing offsets, and rearm state. It uses a one-pixel finite
+movement graph and the same 210 plotted positions; half-pixel refinement
+changes displayed distances by less than .900 px. This reference uses exact
+point goals and pixel path length, not the simulator success region or
+calibrated latent-energy units. Static energies compare
 encoded observations, not predicted teleportation outcomes. The transition
 exposure pilot remains in the appendix: selected reconstructions are more
 saturated, but coordinate probes do not consistently improve and training

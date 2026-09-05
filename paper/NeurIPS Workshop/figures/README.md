@@ -149,10 +149,10 @@ hashes, scale bounds and reference indices are recorded in
 
 ## Primary spatial checkpoint landscapes
 
-`lewm_spatial_goal_distance_main.pdf` and `.png` are the 5.5 by 4.0 inch
-paired-goal figure for historical Color and Shape spatial readout + IDM3.125
-checkpoints, aligned exactly to the primary probe and planning records.
-Columns are Color/Shape, rows upper/lower leaf goals. Each column shares its
+`lewm_spatial_goal_distance_main.pdf` and `.png` compare historical Color
+and Shape spatial + IDM 3.125 checkpoints, aligned exactly to the primary
+probe and planning records, with the geodesic reference described below.
+Rows select upper/lower leaf goals. Each column shares its
 linear cost scale across goals: yellow low, purple high. Bounds are
 [0,94.7650924] and [0,93.4958958]; the red agent marks the goal.
 `lewm_spatial_similarity_appendix.pdf` adds both cosine and squared-distance
@@ -170,3 +170,20 @@ are in `../data/lewm_spatial_similarity*` and
 `runs/pta_revision_audit/historical_spatial_similarity.py` and
 `runs/pta_revision_audit/build_spatial_goal_distance_main.py`. Previous CLS
 figures remain explicitly separate; they cannot be relabeled as spatial.
+
+## Geodesic comparison in the main figure
+
+`lewm_spatial_goal_distance_main.pdf/png` now has three columns: learned
+Color energy, learned Shape energy, and a geodesic navigation reference
+through the true pairing. The figure is 7.0 × 3.8 inches. The learned arrays,
+their scales, and checkpoint attribution remain unchanged.
+
+The geodesic column uses the same 210 positions, exact goal images, roomwise
+interpolation, and preserved markers. Its separate pixel scale is shared
+across goals. It includes triggering, landing, and rearm state, with a
+declared finite movement graph and exact point goals.
+
+Inputs and protocol: `../data/tunnel_geodesic_reference.npz` and companion
+provenance. The builder is ignored
+`runs/pta_revision_audit/plot_geodesic_comparison.py`. This is a navigation
+reference; latent energies need not equal path length.
