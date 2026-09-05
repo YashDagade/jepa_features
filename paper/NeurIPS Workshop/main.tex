@@ -75,12 +75,20 @@ This lets us test the same routing problem under different visual cues.
 We call the association between a cue and its paired destination
 \emph{cue binding}.
 
-A scripted policy provides successful demonstrations of cue-guided routes.
-We train LeWM from scratch on 10,000 trajectories per rendering. It learns
-to predict future features from observation histories and actions. Our
-primary recipe adds spatial features and an inverse-dynamics loss, which
-predicts actions from consecutive states. Appendices~\ref{app:ablations}--\ref{app:matchedablations}
-explain these choices and compare them with the native model.
+We train LeWM \citep{maes2026leworldmodel} on 10,000 expert trajectories to
+predict future projected features from observation and action histories;
+Appendix~\ref{app:collection} details trajectory collection and the temporal
+interface. Our primary configuration augments the native objective with two
+adaptations. First, an inverse-dynamics (IDM) auxiliary loss predicts the
+executed action block from consecutive projected states, encouraging the
+representation to retain action-relevant distinctions
+\citep{ivashkov2026sensorimotor}; without it, agent localization and planning
+degrade sharply (Appendix~\ref{app:ablations}). Second, a learned spatial
+$8\times8$ aggregation, inspired by the feature aggregation of
+\citet{wang2026temporal}, replaces the native CLS readout and improves tunnel
+localization under either objective (Appendix~\ref{app:aggregator}). Matched
+controls that remove either adaptation appear in
+Appendix~\ref{app:matchedablations}.
 
 \begin{figure}[t]
   \centering
@@ -91,24 +99,17 @@ explain these choices and compare them with the native model.
   \label{fig:taskrank}
 \end{figure}
 
-% Add here why it's necessary to add spatial 8x8 patch and IDM -- IDM for performance patch aggreagtor for better patch accessiblity inspired by ying's approach.
-
 \section{LeWM learns locations more reliably than cues}
 
 We freeze LeWM and fit linear and MLP probes to recover tunnel coordinates.
-Location targets index endpoints by top/bottom position; cue targets index
-them by color or shape. Mean absolute error (MAE) measures pixel error.
-$R^2$ measures the fraction of coordinate variance explained.
-
-% Add MLP results as part of this table as well instead of keeping htem in appendix -- maybe can do linear/MAE
+Location targets index endpoints by their top/bottom position; cue targets
+index the same endpoints by their color or shape. We report mean absolute
+error (MAE) in pixels and $R^2$, the fraction of coordinate variance
+explained.
 
 \begin{table}[!htbp]
 \centering
-\caption{\textbf{Linear and MLP probes recover locations more accurately than cues.}
-Entries are linear/MLP MAE (pixels) and $R^2$, averaged over $x/y$;
-MLP values average three fits. Top/bottom are ordered within each room
-group; cue rows identify paired endpoints. Both use the same test episodes,
-with 640/512 fit episodes (Appendix~\ref{app:nonlinear}).}
+\caption{\textbf{Linear and MLP probes recover locations more accurately than cues.} Entries are linear/MLP MAE (pixels) and $R^2$, averaged over $x/y$; MLP values average three fits. Top/bottom are ordered within each room group; cue rows identify paired endpoints. Both use the same test episodes, with 640/512 fit episodes (Appendix~\ref{app:nonlinear}).}
 \label{tab:probes}
 \renewcommand{\arraystretch}{1.10}
 \setlength{\tabcolsep}{3pt}
@@ -145,21 +146,10 @@ Palette & Top & \curpred{4.79}{6.56} & \curpred{.913}{.830} & \curpred{2.63}{3.6
 \end{tabular*}
 \end{table}
 
-Color's linear location MAE is 3.83 pixels ($R^2=.934$), versus 27.40
-($R^2=.224$) for cues (Table~\ref{tab:probes}). Cue error is close to the
-constant baseline of 31.19 pixels. Shape and Palette follow the same pattern.
+As we can see in \ref{tab:probes}, Color's linear location MAE is 3.83 pixels ($R^2=.934$), versus 27.40
+($R^2=.224$) for cues. Similar patterns are observed with MLP.Cue error is close to the constant baseline of 31.19 pixels. Shape and Palette follow the same pattern.
 
-\Needspace{5\baselineskip}
-The MLP also leaves a wide gap (Table~\ref{tab:probes}). These results measure
-how easily the coordinates can be recovered. They do not establish that
-all cue information is absent. Appendices~\ref{app:ablations}--\ref{app:matchedablations}
-report the readout and objective controls.
-
-
-
-% Motviate this section by saying soemthign along the liens of the expectation for a cuebind decoder would be that in order to minimize error the decoder will just pick the average cue -- here tehe average shape or color and that's exactly waht we see
-
-A separate decoder reconstructs observations from LeWM's features.
+We also train a seperate decoder that reconstructs observations from LeWM's features.
 Its reconstruction loss does not train the world model. The outputs
 preserve the room layout but weaken differences between tunnel cues
 (Figure~\ref{fig:decoders}). Blur can also reflect uncertainty or decoder
