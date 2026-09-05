@@ -1,0 +1,123 @@
+{
+  "inputs": [
+    {
+      "readout": "native_cls",
+      "idm_weight": "0.0",
+      "solver": "cem",
+      "run_id": "jepa-color-lewm-idm0p0-tr2-color-color-room-count-s3072-r1",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "manifest_sha256": "58cbd330adcfc75bc7d5938f475c847ebfd9ccb97515504431e7438b4178fc0e",
+      "metrics_path": "artifact://Aug02/jepa-color/jepa-color-lewm-idm0p0-tr2-color-color-room-count-s3072-r1/post_training_eval/cem/metrics.json",
+      "metrics_sha256": "01a5c178271dae2ab702222ea2b34ec2a9d5a8987d70d542e24389cd4a751e48"
+    },
+    {
+      "readout": "native_cls",
+      "idm_weight": "0.0",
+      "solver": "gd",
+      "run_id": "jepa-color-lewm-idm0p0-tr2-color-color-room-count-s3072-r1",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "manifest_sha256": "58cbd330adcfc75bc7d5938f475c847ebfd9ccb97515504431e7438b4178fc0e",
+      "metrics_path": "artifact://Aug02/jepa-color/jepa-color-lewm-idm0p0-tr2-color-color-room-count-s3072-r1/post_training_eval/gd/metrics.json",
+      "metrics_sha256": "8e8bfbdfff7be3016585ddb5bfa2d31b0c712c8e880b16e441cbf97813b80fad"
+    },
+    {
+      "readout": "native_cls",
+      "idm_weight": "3.125",
+      "solver": "cem",
+      "run_id": "jepa-color-lewm-idm3p125-tr2-color-color-room-count-s3072-r1",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "manifest_sha256": "58cbd330adcfc75bc7d5938f475c847ebfd9ccb97515504431e7438b4178fc0e",
+      "metrics_path": "artifact://Aug02/jepa-color/jepa-color-lewm-idm3p125-tr2-color-color-room-count-s3072-r1/post_training_eval/cem/metrics.json",
+      "metrics_sha256": "440c1a4e0a4f5b8d60624ab7ae7a9ca0ce11e9c7277f6988ddbbb113c869e039"
+    },
+    {
+      "readout": "native_cls",
+      "idm_weight": "3.125",
+      "solver": "gd",
+      "run_id": "jepa-color-lewm-idm3p125-tr2-color-color-room-count-s3072-r1",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "manifest_sha256": "58cbd330adcfc75bc7d5938f475c847ebfd9ccb97515504431e7438b4178fc0e",
+      "metrics_path": "artifact://Aug02/jepa-color/jepa-color-lewm-idm3p125-tr2-color-color-room-count-s3072-r1/post_training_eval/gd/metrics.json",
+      "metrics_sha256": "34d64229cb7750d3809abb33e9e294d57c728ce9a761ed46e62e601616f6552a"
+    },
+    {
+      "readout": "spatial_8x8",
+      "idm_weight": "0.0",
+      "solver": "cem",
+      "run_id": "jepa-color-lewm-8x8-idm0p0-tr2-color-color-room-count-s3072-r1",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "manifest_sha256": "58cbd330adcfc75bc7d5938f475c847ebfd9ccb97515504431e7438b4178fc0e",
+      "metrics_path": "artifact://Aug02/jepa-color/jepa-color-lewm-8x8-idm0p0-tr2-color-color-room-count-s3072-r1/post_training_eval/cem/metrics.json",
+      "metrics_sha256": "296e0cf9cc427bcd3612601448bff1fa1dfffe16fe5b443b522283ea480e4ef9"
+    },
+    {
+      "readout": "spatial_8x8",
+      "idm_weight": "0.0",
+      "solver": "gd",
+      "run_id": "jepa-color-lewm-8x8-idm0p0-tr2-color-color-room-count-s3072-r1",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "manifest_sha256": "58cbd330adcfc75bc7d5938f475c847ebfd9ccb97515504431e7438b4178fc0e",
+      "metrics_path": "artifact://Aug02/jepa-color/jepa-color-lewm-8x8-idm0p0-tr2-color-color-room-count-s3072-r1/post_training_eval/gd/metrics.json",
+      "metrics_sha256": "6237b242f73db61556eb5d167967ac3613243b6fc2390cd27b5bf36734bf7272"
+    },
+    {
+      "readout": "spatial_8x8",
+      "idm_weight": "3.125",
+      "solver": "cem",
+      "run_id": "jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "manifest_sha256": "58cbd330adcfc75bc7d5938f475c847ebfd9ccb97515504431e7438b4178fc0e",
+      "metrics_path": "artifact://Aug02/jepa-color/jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1/post_training_eval/cem/metrics.json",
+      "metrics_sha256": "74a18b92ee208834f73754aa7a2b08f6f0e4ada3fd1c7257567be2b9f92a01f8"
+    },
+    {
+      "readout": "spatial_8x8",
+      "idm_weight": "3.125",
+      "solver": "gd",
+      "run_id": "jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "manifest_sha256": "58cbd330adcfc75bc7d5938f475c847ebfd9ccb97515504431e7438b4178fc0e",
+      "metrics_path": "artifact://Aug02/jepa-color/jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1/post_training_eval/gd/metrics.json",
+      "metrics_sha256": "791b867b91ece6387e067f6c9de959bcf192056b51f26bdd8d5648b8290b2dbc"
+    }
+  ],
+  "source_summary": "lewm_idm_readout_planning.csv",
+  "source_summary_sha256": "864f61b7007632d6a22e34716312a793703ecc6e73d4ef42a973ee817661763b",
+  "cases": 400,
+  "cue_mapping": {
+    "Cue 1": "Green",
+    "Cue 2": "Orange"
+  },
+  "denominators": {
+    "R1": 25,
+    "R2": 25,
+    "Cue 1": 16,
+    "Cue 2": 34
+  },
+  "cue_by_rank": {
+    "Green": [
+      12,
+      4
+    ],
+    "Orange": [
+      13,
+      21
+    ]
+  },
+  "validation": "All eight metric hashes, manifest hash, 400 case joins, seeds, rankings, true pairings, outcomes, sixteen published rank-success counts, and primary Color cue breakdown verified.",
+  "limitations": [
+    "One checkpoint per condition",
+    "Cue groups have unequal rank composition",
+    "Same initialization within IDM pairs; encoder initialization differs across readouts"
+  ],
+  "outputs_sha256": {
+    "lewm_idm_readout_cue_cases.csv": "f583b64624d3113232806a2b7eae739cc483722a41263f53645fb33aa8541f26",
+    "lewm_idm_readout_cue_success.csv": "974837d2c68dc575c1537b367b2f14b1c623ef591b2cfc5d674855ac07f8d3cb"
+  },
+  "cue_mapping_verification": {
+    "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+    "source_file": "stable-worldmodel/stable_worldmodel/envs/tunnel_rooms/env.py",
+    "source_sha256": "c255acdced5b0d358379a5498c76ebf9c1d4ef3da312df08ca369c4695c7d6d2",
+    "manifest_contract": "Absent cue_assignment selects identity permutation; endpoint 0 is pair_a_color (green), endpoint 1 is pair_b_color (orange)."
+  }
+}

@@ -94,7 +94,7 @@ made by the revision workflow.
 
 The current draft cites **22 distinct references**, all attached to claims
 in the text. The introduction motivates cue binding through the JEPA and latent
-planning literature; Appendix J develops the connections to LeJEPA/LpJEPA, identifiability,
+planning literature; Appendix K develops the connections to LeJEPA/LpJEPA, identifiability,
 slow features, auxiliary objectives, and value-guided planning. Appendix B credits Temporal
 Straightening for the inspiration behind learned patch aggregation and states
 the architectural and objective differences. The main narrative introduces the dataset, connects the representation, prediction, and planning diagnostics,
@@ -106,7 +106,7 @@ the appendices; the main text identifies the LeWM adaptations in plain language.
 protocols and interpretation, and literature discussion respectively.
 The main text ends on page four;
 references follow the conclusion and span pages five through six, with the
-appendix continuing below them. The complete PDF is 20 pages.
+appendix continuing below them. The complete PDF is 21 pages.
 
 Layout uses natural vertical spacing, keeps the planning paragraph together,
 and places tables near their discussion. Landscape figures are interleaved
@@ -188,7 +188,7 @@ validation after epoch 10 training and align with those final model weights.
 
 Both follow-ups are complete on main; the anonymous code branch and earlier
 code ZIP remain a separate snapshot. Updated PDF and LaTeX upload files are
-in `runs/pta_feedback/compact_planning_table/submission/`. The main paper remains four pages.
+in `runs/pta_feedback/appendix_structure/submission/`. The main paper remains four pages.
 
 A validation-selected two-hidden-layer MLP uses the same frozen checkpoints
 and endpoint targets as the main probes. Across Color/Shape/Palette, current
@@ -222,7 +222,7 @@ goal selection. `data/lewm_planning_goal_sampling_audit.json` verifies all
 Figure 3 combines the unchanged goal landscapes with portal-swap divergence
 curves for all three variants. The main text explains the intervention,
 pre-crossing initialization, static sensitivity, forecast attenuation, and
-remaining alternative explanation; the full controls remain in Appendix I.
+remaining alternative explanation; the full controls remain in Appendix J.
 
 ## Planning by required cue and first entrance
 
@@ -241,3 +241,22 @@ cases; GD does so in 13/25, 14/25, and 18/25. No-entry cases remain in the
 denominator. This supports a proximity bias, strongest for CEM, rather than
 a universal nearest-tunnel policy. These are new analyses of completed runs,
 not additional model evaluations.
+
+## Appendix rationale and matched controls
+
+Appendix A, “Necessity of IDM,” states the predictive/SIGReg/IDM objective
+and separates direct agent-position probes from planning success. Appendix B,
+“Necessity of spatial aggregation,” explains its benefit for tunnel coordinates
+and retains the full readout/IDM reconstruction comparison and aggregation
+mechanism. Appendix C, “Matched ablations without spatial aggregation or IDM,”
+retains all primary current/predicted-state probe rows and matched CLS controls,
+and identifies which aspects of the main result do and do not persist.
+The section titles refer to the motivation for this study's primary recipe;
+the text does not claim that either component is universally necessary.
+
+The historical 2×2 planning table now uses rank-first and cue-based grouped
+columns with CEM/GD pairs. Cue results are verified against eight exact metric
+files, the shared manifest, and all 400 episode outcomes. No-IDM rank success
+ranges from 0% to 12%, rather than being uniformly zero. The existing six
+matched CLS checkpoints have no planning evaluation, and portal-swap rollouts
+remain an experiment on the primary spatial+IDM models only.

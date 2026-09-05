@@ -1,0 +1,255 @@
+{
+  "schema_version": 1,
+  "purpose": "Direct agent-position probes for the historical Color readout-by-IDM planning ablation. These targets measure agent coordinates, not portal endpoint coordinates.",
+  "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+  "source_code": [
+    {
+      "path": "git://cf65948b159c0967ca2dc73d9879490e88a7c6db/stable-worldmodel/stable_worldmodel/probes/location.py",
+      "sha256": "e1a826a7355ee6e4be716aaef96c09626cb1d7e9847421fa8c80ede66ee19d7d"
+    },
+    {
+      "path": "git://cf65948b159c0967ca2dc73d9879490e88a7c6db/stable-worldmodel/scripts/train/_location_probe.py",
+      "sha256": "454268d3b0c78ab81cfbb45133ec5bd58355dadf8609f30556c9ec83691e0428"
+    },
+    {
+      "path": "git://cf65948b159c0967ca2dc73d9879490e88a7c6db/stable-worldmodel/scripts/train/lewm.py",
+      "sha256": "bdd45b833a076e102a691628143e96cc8a0ea3ac40a2cdcdedbb2e8a25c65729"
+    },
+    {
+      "path": "git://cf65948b159c0967ca2dc73d9879490e88a7c6db/stable-worldmodel/stable_worldmodel/wm/idm.py",
+      "sha256": "674bfeaff5b4af0126c5061332dd8271b9ed6b97e1f3a826f163123a5d046557"
+    }
+  ],
+  "sidecar": {
+    "path": "artifact://tunnel_rooms_filled18x18/two_leaf/paired_color/tunnel_room_color_noise_filled18x18_location_probe_cue_and_position.h5",
+    "sha256": "074d876b1af63a94ac2ca0dfe2d749fdfae7e820f2523e8eac994d3f1102d16e",
+    "sample_sha256": "1d2b74dcee68a6318e2c1431fd69ee48c2da8c4126f817a30bcefe6e540196b5",
+    "source_hdf5": "dataset://tunnel_room_color_noise_filled18x18.h5",
+    "source_sha256_recorded_in_sidecar_and_all_caches": "e134677f2c74d17de8765254a4b97b87c8258a898115e2dd1dcf8b3b2a3df042",
+    "source_file_hash_recomputed_in_this_extraction": false,
+    "target_names": [
+      "agent_current_x",
+      "agent_current_y",
+      "agent_future_x",
+      "agent_future_y",
+      "tunnel_green_hub_x",
+      "tunnel_green_hub_y",
+      "tunnel_green_leaf_x",
+      "tunnel_green_leaf_y",
+      "tunnel_orange_hub_x",
+      "tunnel_orange_hub_y",
+      "tunnel_orange_leaf_x",
+      "tunnel_orange_leaf_y",
+      "tunnel_top_hub_x",
+      "tunnel_top_hub_y",
+      "tunnel_top_leaf_x",
+      "tunnel_top_leaf_y",
+      "tunnel_bottom_hub_x",
+      "tunnel_bottom_hub_y",
+      "tunnel_bottom_leaf_x",
+      "tunnel_bottom_leaf_y"
+    ],
+    "split_counts": {
+      "fit": 512,
+      "validation": 128,
+      "test": 256
+    },
+    "agent_labels_exactly_equal_source_pos_agent": true,
+    "unique_episode_count": 896,
+    "history_size": 3,
+    "frameskip": 5,
+    "num_preds": 1
+  },
+  "protocol": {
+    "feature_sources": [
+      "current projected observation state, 192 dimensions",
+      "one-step predicted projected state, 192 dimensions"
+    ],
+    "target_alignment": {
+      "current": "pos_agent at the last of the three observation-history rows",
+      "predicted": "pos_agent five primitive steps after the last observation-history row"
+    },
+    "probe": "Affine standardized ridge regression, alpha=10, float64 solve; fit the union of 512 fit and 128 validation rows, evaluate 256 test rows.",
+    "standardization": "Feature and target means and population standard deviations are fitted on the 640 fitting rows only; each standard deviation is floored at 1e-12. Predictions are transformed back to pixel coordinates before scoring.",
+    "mae": "Mean absolute coordinate error over test examples and the two x/y coordinates, in pixels; not mean Euclidean distance.",
+    "r2": "Compute 1-SSE/SST separately for each coordinate on test rows, then take the unweighted mean of the x/y scores. Zero-variance coordinates are excluded; both agent coordinates vary here.",
+    "split_scope": "One sample per distinct episode; probe partitions are episode-disjoint. World-model training used a clip-wise split, so probe test episodes are not necessarily unseen during representation training.",
+    "checkpoint_verification": "The SHA-256 digest over sorted names, dtype strings, shape strings and contiguous tensor bytes of weights_epoch_10.pt equals the digest in both final probe metrics and feature cache. File SHA-256 is recorded separately. Planning files and saved model configuration use the same run ID and epoch-10 checkpoint campaign.",
+    "no_idm_scope": "Historical zero-weight runs retain the allocated inverse head but set its loss coefficient to zero; these are distinct from later head-free native controls.",
+    "limitations": "One seed per condition. Within each readout the IDM comparison changes its loss weight; between readouts the aggregator changes RNG consumption and encoder initialization. Direct agent-position accuracy does not establish a causal mechanism for planning success."
+  },
+  "records": [
+    {
+      "readout": "native_cls",
+      "idm_weight": 0.0,
+      "run_id": "jepa-color-lewm-idm0p0-tr2-color-color-room-count-s3072-r1",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "seed": 3072,
+      "epoch": 10,
+      "metrics": {
+        "path": "artifact://Aug02/jepa-color/checkpoints/jepa-color-lewm-idm0p0-tr2-color-color-room-count-s3072-r1/location_probe/metrics_v3_fit_end.json",
+        "sha256": "c625cfe8dfa8f4b68b34748cef8d9bee1cf121afdba5636a3d5827e2fc14fe96"
+      },
+      "checkpoint": {
+        "path": "artifact://Aug02/jepa-color/checkpoints/jepa-color-lewm-idm0p0-tr2-color-color-room-count-s3072-r1/weights_epoch_10.pt",
+        "file_sha256": "9103cfc569545c9c7d63064b7ac199543ed8c712d2df3cb1d12338f0a567aa7d",
+        "state_dict_sha256": "35c58ccd062d9f0b58896144021075d1f5d7edc6c3311f7a1f8fa2ea3e27193b"
+      },
+      "feature_cache": {
+        "path": "artifact://Aug02/jepa-color/checkpoints/jepa-color-lewm-idm0p0-tr2-color-color-room-count-s3072-r1/location_probe/features/location_features_v3_fit_end_35c58ccd062d.h5",
+        "sha256": "5da61231ee6ea49e68811f2ee3e4cffa6ce7942fd4ac0c9bb4d09da68c97f876"
+      },
+      "config": {
+        "path": "artifact://Aug02/jepa-color/checkpoints/jepa-color-lewm-idm0p0-tr2-color-color-room-count-s3072-r1/config.yaml",
+        "sha256": "88625eaba56ab980a1b7d70adf5d2b003a2000cc2b13341bc63864a38f2fbad4"
+      },
+      "planning_metrics": [
+        {
+          "solver": "cem",
+          "path": "artifact://Aug02/jepa-color/jepa-color-lewm-idm0p0-tr2-color-color-room-count-s3072-r1/post_training_eval/cem/metrics.json",
+          "sha256": "01a5c178271dae2ab702222ea2b34ec2a9d5a8987d70d542e24389cd4a751e48"
+        },
+        {
+          "solver": "gd",
+          "path": "artifact://Aug02/jepa-color/jepa-color-lewm-idm0p0-tr2-color-color-room-count-s3072-r1/post_training_eval/gd/metrics.json",
+          "sha256": "8e8bfbdfff7be3016585ddb5bfa2d31b0c712c8e880b16e441cbf97813b80fad"
+        }
+      ],
+      "validation": {
+        "checkpoint_state_digest_matches_metrics_and_feature_cache": true,
+        "cache_sample_ids_splits_targets_exactly_match_sidecar": true,
+        "planning_source_hashes_match_lewm_idm_readout_planning_csv": true,
+        "max_absolute_metric_reproduction_error": 4.440892098500626e-16
+      }
+    },
+    {
+      "readout": "native_cls",
+      "idm_weight": 3.125,
+      "run_id": "jepa-color-lewm-idm3p125-tr2-color-color-room-count-s3072-r1",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "seed": 3072,
+      "epoch": 10,
+      "metrics": {
+        "path": "artifact://Aug02/jepa-color/checkpoints/jepa-color-lewm-idm3p125-tr2-color-color-room-count-s3072-r1/location_probe/metrics_v3_fit_end.json",
+        "sha256": "ad47c21f6a0585e9a1a993bff3b2decc4326601fad786a71bfe76e614c183e36"
+      },
+      "checkpoint": {
+        "path": "artifact://Aug02/jepa-color/checkpoints/jepa-color-lewm-idm3p125-tr2-color-color-room-count-s3072-r1/weights_epoch_10.pt",
+        "file_sha256": "cd8e5a062fdcc21c4a7263052f1097a4ab935894d88a34c790b37fd35ab7be4f",
+        "state_dict_sha256": "6b257752bcc808eff280caf3bfa6be60b361c0d28cbe16dc71f4d844443b9970"
+      },
+      "feature_cache": {
+        "path": "artifact://Aug02/jepa-color/checkpoints/jepa-color-lewm-idm3p125-tr2-color-color-room-count-s3072-r1/location_probe/features/location_features_v3_fit_end_6b257752bcc8.h5",
+        "sha256": "2e9b2fa64815dc959d0c9c54017a587028a3c26f6c462b893de44748ecaf0245"
+      },
+      "config": {
+        "path": "artifact://Aug02/jepa-color/checkpoints/jepa-color-lewm-idm3p125-tr2-color-color-room-count-s3072-r1/config.yaml",
+        "sha256": "893fcf5f823608c780c0ce24bddb3c6930796592cf3a9b4421db7bc9e4fa3545"
+      },
+      "planning_metrics": [
+        {
+          "solver": "cem",
+          "path": "artifact://Aug02/jepa-color/jepa-color-lewm-idm3p125-tr2-color-color-room-count-s3072-r1/post_training_eval/cem/metrics.json",
+          "sha256": "440c1a4e0a4f5b8d60624ab7ae7a9ca0ce11e9c7277f6988ddbbb113c869e039"
+        },
+        {
+          "solver": "gd",
+          "path": "artifact://Aug02/jepa-color/jepa-color-lewm-idm3p125-tr2-color-color-room-count-s3072-r1/post_training_eval/gd/metrics.json",
+          "sha256": "34d64229cb7750d3809abb33e9e294d57c728ce9a761ed46e62e601616f6552a"
+        }
+      ],
+      "validation": {
+        "checkpoint_state_digest_matches_metrics_and_feature_cache": true,
+        "cache_sample_ids_splits_targets_exactly_match_sidecar": true,
+        "planning_source_hashes_match_lewm_idm_readout_planning_csv": true,
+        "max_absolute_metric_reproduction_error": 3.552713678800501e-15
+      }
+    },
+    {
+      "readout": "spatial_8x8",
+      "idm_weight": 0.0,
+      "run_id": "jepa-color-lewm-8x8-idm0p0-tr2-color-color-room-count-s3072-r1",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "seed": 3072,
+      "epoch": 10,
+      "metrics": {
+        "path": "artifact://Aug02/jepa-color/checkpoints/jepa-color-lewm-8x8-idm0p0-tr2-color-color-room-count-s3072-r1/location_probe/metrics_v3_fit_end.json",
+        "sha256": "fcbd1cf515d0b41413b03eca549426faed7248bfe8be131b5e658531d6391c95"
+      },
+      "checkpoint": {
+        "path": "artifact://Aug02/jepa-color/checkpoints/jepa-color-lewm-8x8-idm0p0-tr2-color-color-room-count-s3072-r1/weights_epoch_10.pt",
+        "file_sha256": "a2a9608e3eefa33ceb23655aa75143c37f4946e93219adbab67d57b33ded2bc1",
+        "state_dict_sha256": "08b4a93a6fb2b75958aaca39bf7d1568764f5e257a11e79ce1e847382c7701dc"
+      },
+      "feature_cache": {
+        "path": "artifact://Aug02/jepa-color/checkpoints/jepa-color-lewm-8x8-idm0p0-tr2-color-color-room-count-s3072-r1/location_probe/features/location_features_v3_fit_end_08b4a93a6fb2.h5",
+        "sha256": "fe264cf032b3d739853684fad1768be13c14d11047793cd5f2be745e70f25a2d"
+      },
+      "config": {
+        "path": "artifact://Aug02/jepa-color/checkpoints/jepa-color-lewm-8x8-idm0p0-tr2-color-color-room-count-s3072-r1/config.yaml",
+        "sha256": "4133cbe67389b0dda73ce67d52f89018ac97bda535c9be0b3f6258a2301f9db7"
+      },
+      "planning_metrics": [
+        {
+          "solver": "cem",
+          "path": "artifact://Aug02/jepa-color/jepa-color-lewm-8x8-idm0p0-tr2-color-color-room-count-s3072-r1/post_training_eval/cem/metrics.json",
+          "sha256": "296e0cf9cc427bcd3612601448bff1fa1dfffe16fe5b443b522283ea480e4ef9"
+        },
+        {
+          "solver": "gd",
+          "path": "artifact://Aug02/jepa-color/jepa-color-lewm-8x8-idm0p0-tr2-color-color-room-count-s3072-r1/post_training_eval/gd/metrics.json",
+          "sha256": "6237b242f73db61556eb5d167967ac3613243b6fc2390cd27b5bf36734bf7272"
+        }
+      ],
+      "validation": {
+        "checkpoint_state_digest_matches_metrics_and_feature_cache": true,
+        "cache_sample_ids_splits_targets_exactly_match_sidecar": true,
+        "planning_source_hashes_match_lewm_idm_readout_planning_csv": true,
+        "max_absolute_metric_reproduction_error": 7.105427357601002e-15
+      }
+    },
+    {
+      "readout": "spatial_8x8",
+      "idm_weight": 3.125,
+      "run_id": "jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "seed": 3072,
+      "epoch": 10,
+      "metrics": {
+        "path": "artifact://Aug02/jepa-color/checkpoints/jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1/location_probe/metrics_v3_fit_end.json",
+        "sha256": "46e6f55e605f497656649dfc00c11bd3855a74792facafdc73d339cfd1ac5fd5"
+      },
+      "checkpoint": {
+        "path": "artifact://Aug02/jepa-color/checkpoints/jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1/weights_epoch_10.pt",
+        "file_sha256": "9991c7f227cd20f40ac853bb7e690498bbaf5e3fdc4c8d21b953b01774cc4667",
+        "state_dict_sha256": "d8b11fee7c0ba7ee81399605628ddc4ed1d497bfcfc6d546d95b2db8b631acc1"
+      },
+      "feature_cache": {
+        "path": "artifact://Aug02/jepa-color/checkpoints/jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1/location_probe/features/location_features_v3_fit_end_d8b11fee7c0b.h5",
+        "sha256": "01121a290fd17be3b311c0b13135b2aa32f29719744ee77510bc5d5e7473884f"
+      },
+      "config": {
+        "path": "artifact://Aug02/jepa-color/checkpoints/jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1/config.yaml",
+        "sha256": "e2f86ebfbf91de7008aeb6067dd159a31b6f5814510c759b66b29c3187daeea2"
+      },
+      "planning_metrics": [
+        {
+          "solver": "cem",
+          "path": "artifact://Aug02/jepa-color/jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1/post_training_eval/cem/metrics.json",
+          "sha256": "74a18b92ee208834f73754aa7a2b08f6f0e4ada3fd1c7257567be2b9f92a01f8"
+        },
+        {
+          "solver": "gd",
+          "path": "artifact://Aug02/jepa-color/jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1/post_training_eval/gd/metrics.json",
+          "sha256": "791b867b91ece6387e067f6c9de959bcf192056b51f26bdd8d5648b8290b2dbc"
+        }
+      ],
+      "validation": {
+        "checkpoint_state_digest_matches_metrics_and_feature_cache": true,
+        "cache_sample_ids_splits_targets_exactly_match_sidecar": true,
+        "planning_source_hashes_match_lewm_idm_readout_planning_csv": true,
+        "max_absolute_metric_reproduction_error": 1.1102230246251565e-16
+      }
+    }
+  ]
+}

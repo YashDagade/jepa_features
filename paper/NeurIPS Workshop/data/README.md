@@ -388,3 +388,23 @@ The required-cue groups have unequal rank support: Green (both palettes) and
 Triangle have 12 R1/four R2 cases; Orange, Blue, and Diamond have 13 R1/21 R2.
 All 50 cases per solver remain in the analysis. Strata are post hoc, use one
 checkpoint per variant, and do not isolate a preference for individual cues.
+
+### IDM and readout planning controls by required cue
+
+`lewm_idm_readout_cue_success.csv` supplements the historical 2×2
+`lewm_idm_readout_planning.csv` with success counts by required green/orange
+cue, pooled and separated by rank. `lewm_idm_readout_cue_cases.csv` retains
+all 400 episode outcomes from the four readout/IDM conditions and two solvers.
+`lewm_idm_readout_cue_provenance.json` records input hashes, cue-rendering
+semantics, denominators, and independent reproduction of the 16 published
+rank totals and the primary Color cue results. Cue groups contain 16/34
+episodes, with 12/4 and 13/21 cases by R1/R2.
+
+`lewm_idm_agent_position_probes.csv` reports current and predicted agent
+MAE/R² for the same historical Color 2×2 checkpoints. These targets are the
+agent's x/y coordinates, not the four tunnel endpoints. The accompanying
+`lewm_idm_agent_position_provenance.json` verifies all four checkpoint state
+digests, feature/target alignment, source coordinates, fit/test partitions,
+and planning hashes. Replaying all eight ridge probes from retained features
+reproduces the archived metrics to numerical precision. The fit uses 640
+episodes (512 fit plus 128 validation) and the test uses 256 disjoint episodes.

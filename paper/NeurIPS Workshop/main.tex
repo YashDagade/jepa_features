@@ -91,7 +91,7 @@ routes. We train LeWM from scratch on 10,000 trajectories per rendering:
 The model predicts future latent states from observation histories and
 actions. Our primary recipe uses spatial features and an auxiliary
 inverse-dynamics loss that predicts actions from consecutive states;
-Appendix~\ref{app:ablations} compares these additions with the native model.
+Appendices~\ref{app:ablations}--\ref{app:matchedablations} compare these additions with the native model.
 
 \begin{figure}[t]
   \centering
@@ -114,7 +114,7 @@ versus 27.40 pixels and $R^2=.224$ for cues (Table~\ref{tab:probes}). Cue MAE
 is only modestly below the constant predictor's 31.19 pixels. Shape and
 Palette show the same ordering. A small MLP also leaves a wide gap
 (Appendix~\ref{app:nonlinear}). These probes establish unequal accessibility,
-not absence of all cue information. Appendix~\ref{app:ablations} reports
+not absence of all cue information. Appendices~\ref{app:ablations}--\ref{app:matchedablations} report
 readout and objective controls.
 
 \begin{table}[!htbp]
