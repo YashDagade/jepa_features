@@ -255,3 +255,19 @@ replay: 2,297 sampled edges and 12 complete routes, plus structural checks
 of all 420 query–goal paths. Position and lock states agree exactly; maximum
 accumulated distance error is 1.41e-6 px. Nine relevant historical/current
 physics methods also agree by AST.
+
+## Historical decoder factorial and timing
+
+`lewm_tr2_idm_readout_decoder_frames.npz` retains one input plus twelve
+reconstructions from the TR2 CLS/spatial × six-IDM-weight sweep. The companion
+provenance JSON records every source video hash, exact frame and crop,
+configuration, run, source revision, and timing limitation. The stored final
+checkpoint hashes identify the same runs, not the weights that produced
+these periodic training snapshots. W&B rejected their requested history
+step; retained video filename label 90001 is not treated as a verified optimizer
+step or final-checkpoint identifier. Every input video is byte-identical.
+
+`spatial_primary_decoder_sources.csv` now explicitly records that historical
+`final_epoch_*` clips come from the first batch of the final training epoch.
+Their final checkpoint hashes identify run provenance only. This differs
+from the current matched CLS validation GIFs, recorded after final training.

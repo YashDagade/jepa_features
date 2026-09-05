@@ -9,7 +9,9 @@ visual inspection. Temporary builders remain under ignored `runs/` paths.
 The active manuscript uses `tunnel_variants_and_rank.pdf`,
 `lewm_spatial_primary_decoders.pdf`, and `lewm_spatial_goal_distance_main.pdf`.
 The decoder figure includes all six final-epoch clips at frame2 for Color and
-Shape, spatial8×8+IDM3.125, aligned to the primary probe/planning checkpoints.
+Shape, spatial 8×8 + IDM 3.125, from the same runs as the primary probes and
+planning. These clips are captured at the first batch of the final epoch,
+not from the exported final checkpoint.
 `../data/spatial_primary_decoder_sources.csv` records the source files and
 hashes. The paired-goal landscape is documented at the end of this file.
 
@@ -187,3 +189,19 @@ Inputs and protocol: `../data/tunnel_geodesic_reference.npz` and companion
 provenance. The builder is ignored
 `runs/pta_revision_audit/plot_geodesic_comparison.py`. This is a navigation
 reference; latent energies need not equal path length.
+
+## Historical TR2 readout and IDM sweep
+
+`lewm_tr2_idm_readout_decoders.pdf/png` presents the twelve TR2 conditions
+from the first two groups of the archived factorial. It rearranges the six
+IDM weights into two three-column groups, with CLS and spatial rows and a
+shared input. All panels use frame 0 of the first montage clip. Four 30×30 cue
+crops use coordinates derived only from that input. The underlying videos
+have identical input bytes. No hue, saturation, contrast, or content was changed.
+
+Snapshots are retained periodic training media with filename label 90001,
+not final-checkpoint reconstructions. The source report selected a common
+periodic snapshot and a non-occluded frame using the input only. The new
+figure fixes frame 0 across every condition and retains all twelve models.
+`../data/lewm_tr2_idm_readout_decoder_frames.npz` retains the image arrays;
+its companion provenance JSON identifies every source and the figure builder.

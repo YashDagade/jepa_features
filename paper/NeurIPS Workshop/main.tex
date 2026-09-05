@@ -155,16 +155,17 @@ gap without proving that cue information is absent.
   \includegraphics[width=.86\linewidth]{figures/lewm_spatial_primary_decoders.pdf}
   \caption{\textbf{Spatial reconstructions weaken cue distinctions.}
   Inputs (top) and detached outputs (bottom) from the Color and Shape models
-  in Table~\ref{tab:probes}, both spatial $8\times8$ + IDM 3.125. Each column
-  shows frame 2 of all six logged final-epoch clips; no example is removed.
+  in Table~\ref{tab:probes}, both spatial $8\times8$ + IDM 3.125. Frame 2
+  of all six clips is shown, recorded at the first batch of the final epoch;
+  these are training snapshots, not final-checkpoint reconstructions.
   Fixed walls alone do not establish recovery of variable geometry.}
   \label{fig:decoders}
 \end{figure}
 
 We next evaluate planning according to the correct portal's geometry-only
 search rank: R1 is nearer, and R2 is the other portal. CEM and gradient
-descent (GD) both struggle more on R2 for the same LeWM checkpoints used by
-the probes and decoders (Table~\ref{tab:rankplanning}). The LpWM-based recipe
+descent (GD) both struggle more on R2 for the final LeWM checkpoints used by
+the probes (Table~\ref{tab:rankplanning}). The LpWM-based recipe
 reaches 80--88\% on Color R2, compared with LeWM's 16--52\%. Thus the dataset
 separates model recipes even when readout and IDM weight agree. Rank also
 changes route difficulty, so this behavioral gap alone does not isolate cue
@@ -330,8 +331,9 @@ strict center distance $<16$ px of the requested target; timeouts and
 truncations are failures.  Rank manifests are hash-locked, and every selected
 scenario is oracle-certified in hidden-search and visible-direct modes against
 the expected portal-entry trace.  The primary Color and Shape planning evaluations use the same epoch-10
-spatial $8\times8$ + IDM 3.125 checkpoints as their probes, decoder figures,
-and new static landscapes. Color uses BF16 evaluation and outline markers,
+spatial $8\times8$ + IDM 3.125 checkpoints as their probes and new static
+landscapes. The decoder figures show training snapshots from those runs,
+recorded at the first batch of the final epoch, before the exported weights. Color uses BF16 evaluation and outline markers,
 whereas its training/probe images use filled markers. Shape uses a separate
 rank manifest with 20-pixel shape markers. Color and Shape originate from
 different source revisions, with the same declared training and solver

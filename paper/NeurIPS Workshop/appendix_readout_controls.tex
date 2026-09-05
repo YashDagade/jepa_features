@@ -7,6 +7,14 @@ of LeWM: the native model uses CLS selection and prediction MSE plus SIGReg,
 without IDM. We separate readout and objective choices below, retaining
 conditions in which both location and cue readouts are poor.
 
+IDM asks which actions connect two consecutive states. Its gradients encourage
+the representation to retain information useful for reconstructing those
+controls. This complements forward prediction, but does not directly supervise
+portal color or require correct cue--destination binding. Spatial aggregation
+makes patch position explicit before compressing the tokens into a single
+state. These choices address different parts of the learning problem; their
+usefulness must be assessed from the resulting representations.
+
 For the primary models, the objective is
 \[
  \mathcal L=\mathcal L_{\mathrm{pred}}+.09\mathcal L_{\mathrm{SIGReg}}
@@ -50,6 +58,29 @@ Spatial $8\!\times\!8$ & 3.125 & 27.40 & .224 & 3.83 & .934 \\
 \bottomrule
 \end{tabular*}
 \end{table}
+
+Figure~\ref{fig:idmreadoutdecoder} extends the qualitative comparison across
+six IDM weights. Spatial aggregation makes the portal markers more visible
+in this example, including at weight zero. Increasing IDM changes the CLS
+reconstructions, but neither readout consistently restores the green/orange
+distinction. Together with the coordinate controls, this motivates a recipe
+with accurate geometry while leaving cue binding as the unresolved problem;
+the images alone do not establish that either adaptation is necessary.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\linewidth,height=.78\textheight,keepaspectratio]{figures/lewm_tr2_idm_readout_decoders.pdf}
+\caption{\textbf{Readout and IDM change reconstruction without reliably restoring cue identity.}
+The TR2 portion of the historical factorial: six IDM weights, each with CLS
+and spatial $8\times8$ readouts. Every reconstruction uses the same input
+(frame 0, first clip); all twelve conditions are shown. Strips magnify the
+same four cue locations without changing their pixels. These are retained
+training-media snapshots from one seed (3072), not final-checkpoint outputs
+or quantitative identity tests. The zero-weight condition retains an
+allocated IDM head; CLS denotes the native readout.}
+\label{fig:idmreadoutdecoder}
+\end{figure}
+\clearpage
 
 \subsection{Current and predicted spatial-state probes}
 

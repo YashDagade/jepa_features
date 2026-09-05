@@ -7,7 +7,10 @@ pixel decoders, static goal-distance maps, and rank-based planning. R² belongs
 to coordinate probes, not pixel reconstructions.
 
 The primary recipe is **LeWM with spatial 8×8 aggregation and IDM 3.125**.
-Completed Color and Shape checkpoints now align across all four diagnostics.
+Completed Color and Shape checkpoints align across probes, planning, and
+static landscapes. Their decoder figures use the same training runs, but
+show snapshots from the first batch of the final epoch rather than outputs
+of the exported final checkpoint.
 Location R² is .934/.907, versus cue R² .224/.203. Rank-R2 planning success is
 16%/24% for CEM and 52%/40% for GD (Color/Shape). A same-campaign LpWM Color
 recipe with the same readout and IDM weight reaches 80%/88% (CEM/GD). Its
@@ -109,3 +112,18 @@ hashes preserve provenance without embedding workstation paths in the paper.
 
 `research_memo.md` preserves broader evidence history, while `archive/`
 contains superseded drafts; neither defines the short paper's current scope.
+
+## Readout and IDM decoder sweep
+
+The appendix now includes all twelve TR2 conditions from the historical
+factorial: CLS/spatial 8×8 crossed with IDM weights 0, .005, .025, .125, .625,
+and 3.125. One identical input is used throughout, with unchanged cue crops.
+The figure uses retained periodic training media; filename label 90001 is
+not treated as an optimizer-step count or final-checkpoint identifier.
+Spatial aggregation improves marker visibility even without IDM. The text
+explains how IDM trains states to retain action-relevant information without
+claiming that it directly supervises color or that both additions are necessary.
+
+Historical `final_epoch_*` media used in Figure 2 are captured at the first
+batch of the final epoch. The separate matched CLS GIFs instead come from
+validation after epoch 10 training and align with those final model weights.
