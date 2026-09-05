@@ -49,13 +49,13 @@ states are reported separately wherever stagewise claims are made.
 \subsection{Rank-based planning protocol}
 \label{app:planning}
 
-The target rank is computed before evaluation.  Starting at the initial hub
-position, the certifier chooses the closest unvisited portal (endpoint index
-breaks exact ties).  After each hypothetical wrong portal, it excludes that
-portal and recomputes from its prescribed hub-side return position. The
-correct portal's position in this search defines R1 or R2. We sample
-scenarios independently of target rank, then select 25 oracle-solvable
-episodes per rank.
+R1 and R2 describe the goal-reaching task, not fixed tunnel identities.
+Before the first action, we order the two central-room entrances by their
+Euclidean distance from the agent, breaking exact ties by endpoint index.
+R1 means that the nearer entrance connects to the goal room; R2 means that
+the farther entrance does. Thus, choosing the nearest entrance is sufficient
+for R1 but selects the wrong destination for R2. We sample scenarios
+independently of rank, then select 25 oracle-solvable episodes per rank.
 
 Both planners minimize
 $\lVert\hat z_{t+5}-z_{\mathrm{goal}}\rVert_2^2$, summed over projected-state
@@ -235,8 +235,9 @@ the costs. The separate matched CLS+IDM controls give cosine similarities
 cosine similarity has no calibrated threshold for ``color blindness.''
 These maps characterize goal discrimination in one scene. They do not
 establish whether a model learns teleportation while ignoring endpoint
-pairing; that mechanism requires tests with matched cue swaps and
-action-conditioned portal rollouts.
+pairing. Appendix~\ref{app:portal-swap} tests cue swaps and
+action-conditioned portal rollouts, separating static sensitivity from
+predicted consequences without isolating the cause of forecast error.
 
 \paragraph{Historical LeWM atlas.}
 Nine selected final-epoch LeWM cases cover readout, cue, and exposure

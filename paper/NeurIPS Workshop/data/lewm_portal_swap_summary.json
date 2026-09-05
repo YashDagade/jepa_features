@@ -1,0 +1,294 @@
+{
+  "color": {
+    "n_rank_geometries": 16,
+    "binding_energy_over_agent8px": {
+      "mean": 0.9830092634795338,
+      "median": 0.9200270385963729,
+      "q25": 0.7051950716724924,
+      "q75": 1.0593303534008063,
+      "min": 0.32216891931785946,
+      "max": 2.358366339476847
+    },
+    "geometry8px_energy_over_agent8px": {
+      "mean": 6.002790288834248,
+      "median": 5.658420989021167,
+      "q25": 3.9883195475245716,
+      "q75": 7.344769124747965,
+      "min": 1.3948326455976152,
+      "max": 12.657839386694564
+    },
+    "same_state_energy_max": 0.0,
+    "binding_pixel_mse_over_agent8px": {
+      "mean": 1.1048712391245006,
+      "median": 1.1033290070689539,
+      "q25": 1.101358776699188,
+      "q75": 1.1113241448013376,
+      "min": 1.09544808558989,
+      "max": 1.11943599987288
+    },
+    "predicted_over_observed_first3_postportal_samples": {
+      "mean": 0.24819051998228603,
+      "median": 0.2518697404895876,
+      "q25": 0.1701467868812424,
+      "q75": 0.3078255823143415,
+      "min": 0.14504723171511566,
+      "max": 0.38400698468657146
+    },
+    "observed_raw_E_last_preportal_sample": {
+      "mean": 4.094831720380612,
+      "median": 4.178563535487138,
+      "q25": 3.2757828374036055,
+      "q75": 4.9071108643923775,
+      "min": 2.3158154499582793,
+      "max": 6.023972234479308
+    },
+    "observed_raw_E_first3_postportal_samples": {
+      "mean": 12.25271117303117,
+      "median": 11.595944817297827,
+      "q25": 10.614555182714117,
+      "q75": 13.310443894491222,
+      "min": 9.202134990067414,
+      "max": 18.19599976454803
+    },
+    "forecast_raw_E_last_preportal_sample": {
+      "mean": 3.3788479042267734,
+      "median": 3.3109441074103936,
+      "q25": 2.497612058550256,
+      "q75": 4.238705963063219,
+      "min": 1.6737944009767576,
+      "max": 5.026133922383146
+    },
+    "forecast_raw_E_first3_postportal_samples": {
+      "mean": 3.0387275597650607,
+      "median": 2.972617374822513,
+      "q25": 2.106374728801707,
+      "q75": 4.042325750366082,
+      "min": 1.5044235515993682,
+      "max": 4.794343451677537
+    },
+    "all16_forecast_postportal_below_observed": true,
+    "actual_first_transition_steps": [
+      18,
+      15,
+      17,
+      15,
+      20,
+      25,
+      17,
+      16,
+      23,
+      15,
+      18,
+      22,
+      17,
+      25,
+      15,
+      20
+    ],
+    "oracle_first_transition_position_distance": {
+      "mean": 102.8765640258789,
+      "median": 96.10848999023438,
+      "q25": 79.052001953125,
+      "q75": 133.2052459716797,
+      "min": 49.336456298828125,
+      "max": 169.370849609375
+    }
+  },
+  "shape": {
+    "n_rank_geometries": 16,
+    "binding_energy_over_agent8px": {
+      "mean": 1.797171323363159,
+      "median": 1.720420818291369,
+      "q25": 1.1649471551393167,
+      "q75": 2.3371659999704257,
+      "min": 0.5759926851997844,
+      "max": 3.273574892351878
+    },
+    "geometry8px_energy_over_agent8px": {
+      "mean": 5.879660085260644,
+      "median": 5.939031843484814,
+      "q25": 4.42482334730095,
+      "q75": 8.039901025960893,
+      "min": 1.0687188970433308,
+      "max": 9.96813853746111
+    },
+    "same_state_energy_max": 0.0,
+    "binding_pixel_mse_over_agent8px": {
+      "mean": 0.7105617177790122,
+      "median": 0.7047453176514561,
+      "q25": 0.7034868438699357,
+      "q75": 0.7098521677793653,
+      "min": 0.6997114225253744,
+      "max": 0.7923344970005224
+    },
+    "predicted_over_observed_first3_postportal_samples": {
+      "mean": 0.389114230928178,
+      "median": 0.41526187592823,
+      "q25": 0.29847128910251314,
+      "q75": 0.45925555262452195,
+      "min": 0.11627886326449013,
+      "max": 0.780736790358554
+    },
+    "observed_raw_E_last_preportal_sample": {
+      "mean": 9.648296430012714,
+      "median": 8.514155650394907,
+      "q25": 6.622196869689801,
+      "q75": 13.160905975902335,
+      "min": 4.361502999641056,
+      "max": 17.862505565956532
+    },
+    "observed_raw_E_first3_postportal_samples": {
+      "mean": 18.321823131470182,
+      "median": 18.067669125913234,
+      "q25": 15.658328041433535,
+      "q75": 19.732587594263475,
+      "min": 11.16798977122942,
+      "max": 27.247334756924598
+    },
+    "forecast_raw_E_last_preportal_sample": {
+      "mean": 8.306525235851552,
+      "median": 7.585523323734691,
+      "q25": 5.153983876311097,
+      "q75": 10.602579445815934,
+      "min": 3.2015061570805807,
+      "max": 17.862505565956532
+    },
+    "forecast_raw_E_first3_postportal_samples": {
+      "mean": 7.200531058142305,
+      "median": 6.422610686571024,
+      "q25": 4.153566762608426,
+      "q75": 9.525664807590413,
+      "min": 2.5713617686178596,
+      "max": 15.699729608094815
+    },
+    "all16_forecast_postportal_below_observed": true,
+    "actual_first_transition_steps": [
+      18,
+      15,
+      17,
+      15,
+      20,
+      25,
+      17,
+      16,
+      23,
+      15,
+      18,
+      22,
+      17,
+      25,
+      15,
+      20
+    ],
+    "oracle_first_transition_position_distance": {
+      "mean": 102.8765640258789,
+      "median": 96.10848999023438,
+      "q25": 79.052001953125,
+      "q75": 133.2052459716797,
+      "min": 49.336456298828125,
+      "max": 169.370849609375
+    }
+  },
+  "palette": {
+    "n_rank_geometries": 16,
+    "binding_energy_over_agent8px": {
+      "mean": 0.6031352249390876,
+      "median": 0.5757405181506499,
+      "q25": 0.38773843180176526,
+      "q75": 0.6740213663513939,
+      "min": 0.3289627259336539,
+      "max": 1.2757662692892218
+    },
+    "geometry8px_energy_over_agent8px": {
+      "mean": 4.489574685323703,
+      "median": 3.7927202146398535,
+      "q25": 3.2722424893127764,
+      "q75": 5.686532865008683,
+      "min": 0.8264574889407953,
+      "max": 9.219621286373604
+    },
+    "same_state_energy_max": 0.0,
+    "binding_pixel_mse_over_agent8px": {
+      "mean": 0.678973055609563,
+      "median": 0.6780253125838297,
+      "q25": 0.6768145530970728,
+      "q75": 0.6829385394866111,
+      "min": 0.6731822746368025,
+      "max": 0.6879234923295791
+    },
+    "predicted_over_observed_first3_postportal_samples": {
+      "mean": 0.21223835482304712,
+      "median": 0.17713200572429613,
+      "q25": 0.1461498522292011,
+      "q75": 0.2632786294409305,
+      "min": 0.1159136316193554,
+      "max": 0.36988225268561087
+    },
+    "observed_raw_E_last_preportal_sample": {
+      "mean": 3.3923906266464328,
+      "median": 3.0303530638548675,
+      "q25": 2.838584701290814,
+      "q75": 3.9917111353326717,
+      "min": 1.8283282439251836,
+      "max": 5.260563826539256
+    },
+    "observed_raw_E_first3_postportal_samples": {
+      "mean": 11.300101375082647,
+      "median": 10.636275344919362,
+      "q25": 9.158127041198313,
+      "q75": 12.976717009619923,
+      "min": 8.083528583188418,
+      "max": 17.840339962127658
+    },
+    "forecast_raw_E_last_preportal_sample": {
+      "mean": 2.6149886561194773,
+      "median": 2.6677424379652708,
+      "q25": 2.0078785139054354,
+      "q75": 3.1529080621773407,
+      "min": 1.1583214843919323,
+      "max": 3.892971999299525
+    },
+    "forecast_raw_E_first3_postportal_samples": {
+      "mean": 2.3508268380168236,
+      "median": 2.114693635193153,
+      "q25": 1.7182865702474057,
+      "q75": 2.9479853763612676,
+      "min": 1.114268224116701,
+      "max": 4.191284634008464
+    },
+    "all16_forecast_postportal_below_observed": true,
+    "actual_first_transition_steps": [
+      18,
+      15,
+      17,
+      15,
+      20,
+      25,
+      17,
+      16,
+      23,
+      15,
+      18,
+      22,
+      17,
+      25,
+      15,
+      20
+    ],
+    "oracle_first_transition_position_distance": {
+      "mean": 102.8765640258789,
+      "median": 96.10848999023438,
+      "q25": 79.052001953125,
+      "q75": 133.2052459716797,
+      "min": 49.336456298828125,
+      "max": 169.370849609375
+    }
+  },
+  "interpretation": {
+    "selection": "16 archived evaluation geometries, same fixed approach and controls; no inference about entire environment distribution; training-geometry illustration excluded from aggregates",
+    "curves": "Median and interquartile interval across16; each curve normalized within case and model by observed paired E averaged at first3 post-portal samples; no cross-model raw-E comparison",
+    "event_alignment": "First post-portal sample at ceiling(eventstep/5)*5; actual transition occurs within preceding5 primitive steps (gray band); no interpolation of encoded states",
+    "forecast": "First3 observations at steps0,5,10 precede transition; all later predicted states autoregressive with fixed same actions; actual post-transition images never fed back",
+    "geometry_swap": "Hub endpoint rows exchanged: fixed unordered locations, visible hub identity changes, physical destination changes coherently. Separate portal8px translation changes occupied geometry."
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "cue": "shape",
+  "checkpoint": "artifact://pta-feedback/shape/weights_epoch_10.pt",
+  "checkpoint_sha256": "6c58e2a7a7b4bef07e77f09b9cb201f4963f08a5febb310d0a53f0e31d007d5c",
+  "config_sha256": "a6eb5d55385b517eb9bc73b7892fed92af4e0d58ec1f9cbcc758dfb31556c457",
+  "loader_commit": "8353c2b8835da17af3335aff07cf2dcc29394378",
+  "readout": "spatial8x8",
+  "idm_weight": 3.125,
+  "model_source_sha256": "33524a28b9c318c59a92baf3327071988d559bfbf8e993ee572010a38fad127a",
+  "inputs_sha256": "b9a1c6371288524ee4e55de8a5525511a3f17d37f498143ecefd08d2046bed06",
+  "protocol_sha256": "331fac18ecdceceb2a173c8628086042dd39c3d2920a8d99cd4726bdad2874a7",
+  "results_sha256": "eabf0352c6a86b669d71bfd546bc5e9e068dbb0fa4bdb04e33f635d7f21d1998",
+  "dtype": "float32 model, float64 squared distance; TF32 off",
+  "device": "cuda",
+  "forecast": "Open-loop: encode only first3 pre-crossing frames; autoregressively append predictions; never re-encode observed post-crossing states"
+}

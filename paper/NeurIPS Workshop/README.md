@@ -73,7 +73,7 @@ tests. No paper submission has been made.
 The September 5 formatting audit is complete. See [SUBMISSION.md](SUBMISSION.md)
 for the upload files, independently verified source archive, OpenReview fields,
 and deadline. The final PDF contains only embedded Type 1/TrueType fonts;
-tables use the official 10-point size. The source archive rebuilds a
+tables use the official 10-point size. The updated source archive rebuilds a
 byte-identical PDF. No OpenReview submission has been sent.
 
 ## Venue and format
@@ -94,10 +94,10 @@ made by the revision workflow.
 
 The current draft cites **22 distinct references**, all attached to claims
 in the text. The introduction motivates cue binding through the JEPA and latent
-planning literature; Appendix H develops the connections to LeJEPA/LpJEPA, identifiability,
+planning literature; Appendix J develops the connections to LeJEPA/LpJEPA, identifiability,
 slow features, auxiliary objectives, and value-guided planning. Appendix B credits Temporal
 Straightening for the inspiration behind learned patch aggregation and states
-the architectural and objective differences. The main narrative introduces the dataset, connects the four diagnostics,
+the architectural and objective differences. The main narrative introduces the dataset, connects the representation, prediction, and planning diagnostics,
 and closes with the inconclusive exposure hypothesis and concrete next tests.
 Readout sizes, loss weights, seeds, and diagnostic mechanics are confined to
 the appendices; the main text identifies the LeWM adaptations in plain language.
@@ -106,7 +106,7 @@ the appendices; the main text identifies the LeWM adaptations in plain language.
 protocols and interpretation, and literature discussion respectively.
 The main text ends on page four;
 references follow the conclusion and span pages five through six, with the
-appendix continuing below them. The complete PDF is 17 pages.
+appendix continuing below them. The complete PDF is 19 pages.
 
 Layout uses natural vertical spacing, keeps the planning paragraph together,
 and places tables near their discussion. Landscape figures are interleaved
@@ -183,3 +183,31 @@ claiming that it directly supervises color or that both additions are necessary.
 Historical `final_epoch_*` media used in Figure 2 are captured at the first
 batch of the final epoch. The separate matched CLS GIFs instead come from
 validation after epoch 10 training and align with those final model weights.
+
+## September 5 feedback experiments
+
+Both follow-ups are complete on main; the anonymous code branch and earlier
+code ZIP remain a separate snapshot. Updated PDF and LaTeX upload files are
+in `runs/pta_feedback/submission/`. The main paper remains four pages.
+
+A validation-selected two-hidden-layer MLP uses the same frozen checkpoints
+and endpoint targets as the main probes. Across Color/Shape/Palette, current
+cue R² is .273/.261/.259, compared with location R² .885/.857/.874. The MLP
+does not close the gap relative to a ridge baseline fit on the same 512
+episodes. Three probe initializations quantify head variability, not variation
+across world-model training runs. Saved-head replay, fit-only normalization,
+validation selection, and all historical endpoint metrics passed independent
+checks. Full endpoints, protocol, provenance, and the audit are in
+`data/lewm_nonlinear_probe_*`.
+
+The controlled swap experiment uses 16 evaluation geometries and all three
+cue renderings. Swapping the central-room endpoints changes visible cues and
+actual routing together. Encoders respond to this change; they are not cue
+invariant. Under identical actions, observed latent separation increases after
+teleportation, while open-loop forecasts understate it. Median predicted /
+observed squared separation over the first three post-crossing samples is
+.252/.415/.177. A separate training geometry illustrates the intervention and
+is excluded from these aggregates. General forecast error remains an
+alternative explanation. Compact per-case arrays, protocol, input/output
+hashes and validation are in `data/lewm_portal_swap_*`; full experiment
+artifacts and runners remain under ignored `runs/pta_feedback/`.

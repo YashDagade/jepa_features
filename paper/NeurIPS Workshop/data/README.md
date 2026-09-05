@@ -315,3 +315,32 @@ Palette's final-epoch validation clips differ from the historical training
 snapshots in timing and population; every recorded clip is retained. Source
 revision also differs across the primary variants, so nominal recipe agreement
 does not establish a fully controlled palette-only comparison.
+
+## Nonlinear probes and controlled portal swaps
+
+`lewm_nonlinear_probe_endpoints.csv` retains all 480 endpoint/group metric
+rows, including three MLP initializations, matched validation-selected ridge,
+historical fixed-penalty ridge, and constant baselines. The companion summary
+CSV supplies the appendix table. Protocol and provenance JSONs specify the
+512/128/256 episode split, fit-only scaling, validation search, checkpoint
+and cache hashes, target order, and Shape target join. The audit JSON records
+independent saved-model replay and exact metric checks. Probe test episodes
+are held out from probe fitting, not from world-model training.
+
+`lewm_portal_swap_arrays.npz` retains compact per-case energies, pixel controls,
+positions, event steps, and prediction errors for all three renderings.
+The summary CSV/JSON report 16 evaluation geometries, excluding the extra
+illustration geometry. Static energies are normalized by each case's eight-
+pixel agent-shift energy. The post-crossing ratio compares predicted with
+observed squared latent separation over the first three sampled frames after
+the event. Protocol and per-variant provenance record exact scenarios,
+actions, checkpoint/input hashes, inference settings and source revisions.
+Validation records finite outputs, event timing, same-state zero energy,
+output hashes and successful execution. Its filenames and hashes refer to
+original experiment artifacts before copying or sanitizing provenance;
+`compact_arrays.npz` is copied unchanged as `lewm_portal_swap_arrays.npz`.
+
+Static cue sensitivity is nonzero. Forecast attenuation does not by itself
+isolate a cue-specific mechanism or exclude general open-loop prediction
+error. Raw feature arrays, checkpoint weights, fitted probe heads and run
+scripts are stored under ignored `runs/pta_feedback/`.

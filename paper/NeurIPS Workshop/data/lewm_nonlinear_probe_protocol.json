@@ -1,0 +1,50 @@
+{
+  "architecture": [
+    192,
+    256,
+    256,
+    16
+  ],
+  "activation": "ReLU",
+  "probe_seeds": [
+    3072,
+    3073,
+    3074
+  ],
+  "learning_rates": [
+    0.001,
+    0.0003
+  ],
+  "weight_decays": [
+    0.0,
+    0.01
+  ],
+  "optimizer": "AdamW",
+  "batch_size": 512,
+  "max_epochs": 1000,
+  "patience": 100,
+  "minimum_validation_improvement": 1e-06,
+  "selection_metric": "mean squared error of train-standardized coordinates on 128 validation episodes",
+  "scaling": "per-feature and per-coordinate mean/std, fit512 only, std floor1e-12",
+  "split_counts": {
+    "fit": 512,
+    "validation": 128,
+    "test": 256
+  },
+  "ridge_validation_alphas": [
+    0.01,
+    0.1,
+    1.0,
+    10.0,
+    100.0,
+    1000.0
+  ],
+  "constant_baselines": [
+    "fit512 coordinate mean",
+    "fit512 coordinate median"
+  ],
+  "historical_comparator": "fixed alpha10 ridge, fit+validation640, separately labeled",
+  "reporting": "coordinate MAE and mean x/y R2 per endpoint; unweighted means of four location or four cue endpoints",
+  "inference": "MLP trained on CPU float32; ridge and reported metric arithmetic float64",
+  "claim_boundary": "frozen LeWM spatial8x8+IDM3.125 epoch10, one WM seed, historical source revisions differ; nonlinear accessibility is not evidence of use in planning"
+}

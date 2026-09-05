@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "endpoint_metric_rows": 480,
+  "historical_endpoint_rows_checked": 48,
+  "saved_mlp_models_checked": 18,
+  "historical_ridge_max_abs_error": 4.08927459671915e-07,
+  "historical_table_precision_note": "Shape geometry reconstruction entries are rounded to six decimal places; tolerance5e-7",
+  "sklearn_metric_max_abs_error": 0.0,
+  "saved_model_validation_max_abs_error": 0.0,
+  "saved_model_test_prediction_max_abs_error": 0.0,
+  "all_scalers_exactly_fit512_only": true,
+  "all_selected_configs_minimum_validation_loss": true,
+  "test_targets_used_only_for_final_evaluation": true,
+  "summary_uncertainty": "sample SD across three probe initialization seeds, not a confidence interval over datasets or WM seeds"
+}

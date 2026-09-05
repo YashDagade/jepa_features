@@ -43,9 +43,10 @@ coordinates;
 image reconstructions blur cue distinctions; and goal-energy maps assign
 low cost near both candidate tunnels in an illustrated scene. Planning is
 also difficult: success on the farther correct tunnel is 16--52\% across
-Color, Shape, and a green/blue palette. Together, these observations make Tunnel Rooms a
-controlled case study of the gap between learning visual geometry and
-preserving the distinctions needed to act.
+Color, Shape, and a green/blue palette. Controlled cue swaps change the
+representation, yet predicted trajectories understate the separation between
+the resulting destinations. Tunnel Rooms thus tests how visible distinctions
+become useful for predicting and choosing routes.
 \end{abstract}
 
 \section{Introduction}
@@ -69,14 +70,12 @@ choosing between them. The environment separates these abilities with
 minimal visual complexity. Shape and alternate-palette variants let us
 ask whether the difficulty is specific to one choice of colors.
 
-Our study examines LeWorldModel (LeWM). Across linear probes, image
-reconstructions, goal-energy maps, and rank-based planning, we observe a
-consistent difficulty with using cues to identify destinations. The clearest
-contrast is between accurate tunnel localization and much weaker recovery
-of endpoints indexed by color or shape. We contribute the benchmark and
-this empirical finding. Our aim is to establish the phenomenon and make
-its possible causes testable; the experiments do not yet explain why the
-cue is poorly represented or how to recover it reliably.
+We study LeWorldModel (LeWM) through coordinate probes, image
+reconstructions, goal-energy maps, and planning. These tests reveal a gap
+between locating tunnels and recovering their cue-dependent destinations.
+Controlled swaps further distinguish a response to changed cues from a
+prediction of where they lead. We contribute the benchmark and this
+empirical finding; its cause remains open.
 
 \section{Tunnel Rooms: the cue determines the destination}
 
@@ -99,18 +98,21 @@ correct tunnel is nearer from those where it is farther away.
 We consider three renderings of the same trajectories. \emph{Color} uses
 green and orange markers. \emph{Shape} replaces them with triangles and
 diamonds, while \emph{Palette} uses green and blue. These changes preserve
-the underlying positions, actions, and teleportation pairings. Our LeWM variant uses spatial
-features to improve tunnel localization and learns to recover actions
-between states to support planning. Appendix~\ref{app:ablations} reports
-controls for both additions.
+the underlying positions, actions, and teleportation pairings. We train LeWM
+from scratch on 10,000 trajectories per rendering. It predicts the next
+latent state from an observation history and an action sequence. Our primary
+model uses spatial features and an auxiliary inverse-dynamics loss, which
+predicts actions from consecutive states. Appendix~\ref{app:ablations}
+compares both additions with the native model.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{figures/tunnel_variants_and_rank.pdf}
   \caption{\textbf{The same geometry supports different cue-guided routes.}
   (a--c) Color, Shape, and Palette renderings of one trajectory.
-  Matching cues identify paired tunnels. (d) The correct entrance is
-  farther away (R2); the nearer entrance (R1) leads to the wrong room.}
+  Matching cues identify paired tunnels. (d) An R2 task: the entrance leading
+  to the goal room is farther from the agent than the other entrance.
+  R1/R2 rank the correct entrance; they are not fixed tunnel identities.}
   \label{fig:taskrank}
 \end{figure}
 
@@ -129,7 +131,8 @@ Color gives location MAE of 3.83 pixels and $R^2=.934$, versus cue MAE of
 the constant cue predictor's 31.19 pixels. Shape and Palette show the same ordering.
 The representation thus supports accurate localization much more readily
 than cue-conditioned localization. The probes test accessibility to a
-linear readout, not the complete absence of cue information.
+linear readout, not the complete absence of cue information. A small MLP
+also leaves a wide location--cue gap (Appendix~\ref{app:nonlinear}).
 Appendix~\ref{app:ablations} reports controls for the model adaptations
 and additional palette conditions.
 
@@ -187,24 +190,21 @@ the cues that distinguish routes.
   \label{fig:decoders}
 \end{figure}
 
-\Needspace{6\baselineskip}
-We next ask whether the representation distinguishes which tunnel leads
-toward a goal. Holding the layout fixed, we move the agent across the rooms
-and measure the distance between each observation's representation and
-that of a goal image. This produces a \emph{goal-energy landscape}: lower
-energy means greater similarity to the goal. These maps compare observed
-states; they do not evaluate the model's predicted action outcomes.
+\section{From cues to predicted destinations}
 
-Figure~\ref{fig:similarity} contrasts LeWM's landscapes with an approximate geodesic
-reference: the remaining travel distance through the environment's true
-paired tunnels. When the goal switches rooms, the reference favors the
-entrance paired with the new destination. LeWM's maps instead retain low
-energy near both candidate entrances and both destination endpoints.
-The maps are not identical across goals, but their broad similarity
-suggests weak goal discrimination in this scene. The reference illustrates
-the routing distinction rather than prescribing values for latent energy.
-Appendix~\ref{app:landscapes} describes the spatial sampling and provides
-additional landscapes.
+A cue must do more than change an image representation: it must distinguish
+routes to a goal. We first compare each observed state's representation
+with a fixed goal image while moving the agent through the rooms.
+Lower \emph{goal energy} means greater similarity to that goal; this static
+map does not use the dynamics predictor.
+
+Figure~\ref{fig:similarity} contrasts these maps with an approximate geodesic
+reference through the true paired tunnels. Switching the goal room changes
+which entrance the reference favors. LeWM retains broad low-energy regions
+near both entrances and destination endpoints. The maps do change with the
+goal, but distinguish the routes less clearly in this scene. The reference
+illustrates a routing distinction; it does not prescribe latent energy values.
+Appendix~\ref{app:landscapes} gives the sampling procedure and further maps.
 
 \begin{figure}[!t]
   \centering
@@ -217,29 +217,36 @@ additional landscapes.
   \label{fig:similarity}
 \end{figure}
 
+We then exchange the two central-room cues, keeping the unordered portal
+locations fixed and changing which destination each entrance reaches.
+The encoder responds to this swap. Under identical actions, however, the
+observed states separate further after teleportation while open-loop predictions
+understate that separation (Appendix~\ref{app:portal-swap}). This tests a
+cue's consequences more directly, although general rollout error may also
+contribute.
+
 \Needspace{8\baselineskip}
-Do these representation-level difficulties accompany poor planning?
-We group tasks by the correct entrance's distance rank: R1 means it is
-nearer, and R2 means it is farther away. We evaluate two planners,
-cross-entropy method (CEM) and gradient descent (GD). Both have lower
-success on R2 across all three variants (Table~\ref{tab:rankplanning}).
-On Color, CEM falls from 80\% to 16\%, and GD from 64\% to 52\%.
-These results show that the benchmark challenges LeWM beyond simply
-approaching a nearby tunnel. Longer routes can also be harder to plan,
-so the rank comparison supports the overall finding without isolating
-cue binding as its cause. The full planning protocol appears in
-Appendix~\ref{app:planning}.
+We rank the two central-room entrances by distance from the initial agent
+position. In R1 tasks, the nearer entrance leads to the goal room; in R2
+tasks, the agent must choose the farther entrance instead. These ranks
+describe tasks, not fixed colors or tunnel positions. Both cross-entropy
+method (CEM) and gradient-descent (GD) planning are less successful on R2
+across all variants (Table~\ref{tab:rankplanning}). On Color, CEM success
+falls from 80\% to 16\%, and GD from 64\% to 52\%. Longer routes may themselves
+be harder to plan, so this contrast does not isolate cue binding as the
+cause. Appendix~\ref{app:planning} gives the full protocol.
 
 \begin{table}[!htbp]
 \centering
 \caption{\textbf{Planning is less successful when the correct tunnel is farther away.}
 LeWM success over 25 episodes per rank, using the checkpoints evaluated by
-the linear probes. CEM: cross-entropy method; GD: gradient descent.}
+the linear probes. R1: the nearer entrance reaches the goal room; R2: the
+farther entrance does. CEM: cross-entropy method; GD: gradient descent.}
 \label{tab:rankplanning}
 \renewcommand{\arraystretch}{1.12}
 \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrr@{}}
 \toprule
-Variant & CEM R1 & CEM R2 & GD R1 & GD R2 \\
+Variant & CEM R1 $\uparrow$ & CEM R2 $\uparrow$ & GD R1 $\uparrow$ & GD R2 $\uparrow$ \\
 \midrule
 Color & 80\% & 16\% & 64\% & 52\% \\
 Shape & 88\% & 24\% & 76\% & 40\% \\
@@ -250,25 +257,18 @@ Palette & 80\% & 28\% & 84\% & 32\% \\
 
 \section{Discussion and conclusion}
 
-Tunnel Rooms exposes a simple difficulty: learning where a tunnel is does
-not ensure learning which destination its cue identifies. In the tested
-LeWM representations, linear probes, reconstructions, goal-energy maps,
-and planning provide complementary evidence of this gap.
+Tunnel Rooms separates locating an entrance from knowing where it leads.
+LeWM's linear and nonlinear probes recover location more reliably than cue
+binding. The encoder detects controlled cue swaps, but predicted rollouts
+understate their consequences after teleportation. Planning is also less
+successful when reaching the goal requires choosing the farther entrance.
 
-One possible explanation is that training contains many approaches to a
-tunnel but relatively few crossings that reveal its cue-dependent
-destination. We test this hypothesis by increasing crossing-related
-training windows. Selected reconstructions show more saturated colors,
-but cue MAE and $R^2$ do not improve consistently; clearer colors do not
-yet demonstrate better cue binding. The result remains inconclusive,
-and the intervention also increases training effort
-(Appendix~\ref{app:exposure}).
-
-Our evidence is limited to a small set of LeWM runs and one illustrated
-landscape. Matched cue swaps, predicted tunnel crossings, and exposure
-changes at fixed training effort would help distinguish failures to
-represent cues from failures to use them. Replication across runs and
-environments will establish how broadly this difficulty holds.
+One possible explanation is limited exposure to crossings that reveal cue
+binding. Increasing crossing-related training windows produces brighter
+reconstructions without consistent gains in cue MAE or $R^2$; the result is
+inconclusive (Appendix~\ref{app:exposure}). Further work should separate cue
+binding from general prediction error, hold training effort fixed in exposure
+ablations, and replicate these findings across runs and environments.
 
 \clearpage
 
@@ -282,6 +282,9 @@ environments will establish how broadly this difficulty holds.
 \input{appendix_readout_controls}
 
 \input{appendix_evaluation}
+
+\FloatBarrier
+\input{appendix_followup_diagnostics}
 
 \FloatBarrier
 \input{appendix_related_work}

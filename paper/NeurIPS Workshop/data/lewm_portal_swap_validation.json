@@ -1,0 +1,56 @@
+{
+  "color": {
+    "finite_all_features_and_metrics": true,
+    "all_first_events_after_initial_history": true,
+    "first_event_min": 15,
+    "first_event_max": 25,
+    "same_state_static_energy_max": 0.0
+  },
+  "shape": {
+    "finite_all_features_and_metrics": true,
+    "all_first_events_after_initial_history": true,
+    "first_event_min": 15,
+    "first_event_max": 25,
+    "same_state_static_energy_max": 0.0
+  },
+  "palette": {
+    "finite_all_features_and_metrics": true,
+    "all_first_events_after_initial_history": true,
+    "first_event_min": 15,
+    "first_event_max": 25,
+    "same_state_static_energy_max": 0.0
+  },
+  "slurm": {
+    "job_id": 16999335,
+    "state": "COMPLETED",
+    "exit_code": "0:0",
+    "elapsed": "00:05:27"
+  },
+  "outputs_sha256": {
+    "color_illustration_states.png": "ef1e99180a2b4f44d37612b64c1f95b4049ba4d31a5e14f19f010d2f1b20b32f",
+    "compact_arrays.npz": "d4a4916d3dd25c9ebb0a12661c6b8e88e30172d51b47db3dfec545e8c99823bd",
+    "experiment.py": "20fdfe09196140cbe0cde0450e5f14e767c7af73829ef7806f86d60529007369",
+    "inputs_color.npz": "e4b73e7ecec5d0620a294b749f5376bd71ea2e17cc0847e3fffb7cbe79c45008",
+    "inputs_palette.npz": "ea485f81efe152597b74fc780922b9b98083f3f05fe4bc7ff29a3774ddc96f52",
+    "inputs_shape.npz": "b9a1c6371288524ee4e55de8a5525511a3f17d37f498143ecefd08d2046bed06",
+    "palette_illustration_states.png": "4ce07338746b785df7746be6342d78a9c09e5fbe20a88b65d3373f2fdefd1079",
+    "portal_swap_actual_trajectories.pdf": "e9debe17de42e7c18b24103b1c46d7156320ea1721da9fe43ecdd45b84cff8a2",
+    "portal_swap_actual_trajectories.png": "cf5e3ae648baf4226a898fcdc27f0dc737b957554845f37d87f45e88063f278b",
+    "portal_swap_raw_event_curves.pdf": "31d8b5e229ccc6a7949d1c233bbb9873530c5afaf381af19b97f9e4dfb10ffe5",
+    "portal_swap_raw_event_curves.png": "559a2d853c9160040948edbe403b2e017d78d0270ce8b32248d6b64e44591b8f",
+    "portal_swap_states.pdf": "e3d9b4fa59acda178cfde031090ab8b39101235533fcd644e2071261ecfe3a63",
+    "portal_swap_states.png": "1d72a463656799fe7c79d5f4fde93989f37c756ed905bf1ad9276632d0afa48c",
+    "portal_swap_summary.pdf": "c627b37faae4d6df187cb7c58c361a29ecd9b8ed4d5af24d6f7cee9934e831b6",
+    "portal_swap_summary.png": "486bac84b5127a1ddd1ea5a99aef26a0eed73e6257a14f35df2004df34da544f",
+    "protocol.json": "331fac18ecdceceb2a173c8628086042dd39c3d2920a8d99cd4726bdad2874a7",
+    "provenance_color.json": "53c826d9756e9fe450f6828e00b1e20a38508f17140f098644f550aca26b6564",
+    "provenance_palette.json": "adb8e382f444ef0ee8ab5d3332fa5a8141ec4aaad0bc32f33a34ccced048bc75",
+    "provenance_shape.json": "20cb98c784d4c03ddfd13ee1920b6955bba7b9745d437adeae245d77e36bda53",
+    "results_color.npz": "26784623a6045afac89d048cde0d2e1d9d5e0b7820e833cf83299666784c64fd",
+    "results_palette.npz": "1076c51abde88159bb1f782a41a66ce5a026a7fa28e5c3d8888b80719842b5e8",
+    "results_shape.npz": "eabf0352c6a86b669d71bfd546bc5e9e068dbb0fa4bdb04e33f635d7f21d1998",
+    "shape_illustration_states.png": "7cf675e3f75dd2414ccf4e08f8b0601bc918da38cc8a599ed43c5dd69d338c5b",
+    "summarize.py": "4d9ed990e330f1dc0e65ad6c09e366a7e9908e354305f4d655484a83fe1d1d8e",
+    "summary.json": "81929e482b4a19137875c52b02317c3310435a34fff754846558a3a1af35ab1d"
+  }
+}

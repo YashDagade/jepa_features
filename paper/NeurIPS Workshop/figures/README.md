@@ -225,3 +225,16 @@ figures were regenerated with `pdf.fonttype = 42` for NeurIPS compliance.
 Page dimensions and embedded scientific image bytes are unchanged; rendering
 differences are confined to font rasterization. Before/after hashes and visual
 comparison measurements are in `../data/submission_format_audit.json`.
+
+
+## Controlled portal swaps
+
+`lewm_portal_swap_states.pdf` illustrates the visible/routing intervention and
+agent/portal-translation controls on a single training geometry excluded from
+aggregate statistics. `lewm_portal_swap_raw_event_curves.pdf` plots observed
+and predicted paired squared latent separation over 16 evaluation geometries,
+with medians and interquartile bands, plus actual position separation. Time
+zero is the first five-step sample at or after crossing; raw latent scales
+are only comparable within each model. `data/lewm_portal_swap_arrays.npz`
+retains the numerical plotting inputs. Source plots and larger artifacts are
+under ignored `runs/pta_feedback/portal_swap/`.

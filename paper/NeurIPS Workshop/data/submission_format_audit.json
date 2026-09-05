@@ -8,7 +8,7 @@
   "official_style_byte_identical": true,
   "review_mode": "dblblindworkshop",
   "main_pages": 4,
-  "total_pages": 17,
+  "total_pages": 19,
   "references_start_page": 5,
   "cited_references": 22,
   "paper_size_points": [
@@ -17,23 +17,26 @@
   ],
   "font_types": {
     "Type1": 12,
-    "Type0": 16
+    "Type0": 18
   },
   "all_fonts_embedded": true,
   "type3_fonts": 0,
   "body_and_table_font": "official normal 10 TeX points",
   "no_overfull_or_undefined_references": true,
   "author_metadata_empty": true,
-  "pdf_bytes": 2559759,
-  "pdf_sha256": "67c3d7a1267f6ef547c4b9a41c4ffe33242923a9321c2dbeec94db4e11d159c0",
-  "source_archive_sha256": "f8b29bc4229212aabc3061b5c3b849d67ecd2ea01bbc152712570eef8a06991d",
+  "pdf_bytes": 2618646,
+  "pdf_sha256": "63aafd285db08a3e85b3fb8dd9fa8bf60df90719bff123a98e861a9586333a70",
+  "source_archive_sha256": "5a036765ef5d676de3bec7ed2ce45d39d5ba8c7cb37869152b2bf50fb41677f7",
   "source_files": {
     "Makefile": "66b7af929a52ca3a705d28108ea5e8a2728cab43a94f97fadfcdef5d78125af8",
     "Tectonic.toml": "a72d0c12eb5b9d5d99750ce2cc8b65d7bdb8d8a2938003b4e36339d883638057",
-    "appendix_evaluation.tex": "ee46da3aa633e64bd8e036e089e92322501856665e321c3db4e9f5c5ce34bfe3",
-    "appendix_readout_controls.tex": "c55c3d81961be4baa3f47b66d4d11c067203ae4079412fc22d96ae13f39230fd",
+    "appendix_evaluation.tex": "3d4ec944e6f20654eca381ff807c84bd9d8bdc02293da9aff96ecb232ac23edb",
+    "appendix_followup_diagnostics.tex": "945eebbeb865868728a905763ab4833e320c8f2b3fdb9a14c96c5d055efd45b1",
+    "appendix_readout_controls.tex": "660db8b48d13c8fe1575771613c3b2136e81f54333abb448c2eee266b0919d11",
     "appendix_related_work.tex": "6b6faf1a71a42e9f2b607038694d8aaf044fff35a7ed2ca8ec0140ff770c206d",
     "figures/lewm_cls_cue_decoders.pdf": "83a5ac4188d6157942bdcbb505762b1904c2b65cf906b85a9d9896505ad854c1",
+    "figures/lewm_portal_swap_raw_event_curves.pdf": "31d8b5e229ccc6a7949d1c233bbb9873530c5afaf381af19b97f9e4dfb10ffe5",
+    "figures/lewm_portal_swap_states.pdf": "e3d9b4fa59acda178cfde031090ab8b39101235533fcd644e2071261ecfe3a63",
     "figures/lewm_similarity_historical_atlas.pdf": "969311b8c8b5536a72c174ba822710386534273c84c2037c42c783503cd4c2ec",
     "figures/lewm_similarity_matched_appendix.pdf": "ba465c214039544f7cc4bbad0074376ae65ad54e3fbd43eb75bcd756f050e4b6",
     "figures/lewm_spatial_three_cue_decoders.pdf": "478a028d4a7ce4a908b87cdb6e79aec5926c95cbfed20ee85f5941e30b8ff5fb",
@@ -43,11 +46,11 @@
     "figures/lewm_transition_diversity_decoder.pdf": "db09f8665ebd9f33f04aa40fd2e4576c2798a3828ea183f291e19ab3ffc885fa",
     "figures/tr2_color_mae_scale.pdf": "208238ab5f67da29e6e8b1a645d7d1da07f89ecd58225914a87b416dbc037193",
     "figures/tunnel_variants_and_rank.pdf": "4331d26806dc31cfa9838dd679a1401b5df8ebc96ec823366fe123d1a8c9c8ab",
-    "main.tex": "da4d48e27a5045324f72bf11bf62b851cce0f568f90f66667f37d8ad7c2bed00",
+    "main.tex": "9b8c82e5a473bb9ccf716c6eae875998b99298be38ee8d8948e392b5a724e378",
     "neurips_2026.sty": "c3fc2894e83d2517ca18b66741d6c595986d97957dc08ec08bb2125a7ec4555a",
     "references.bib": "528f0f9ddc94bd985c797526390fb0a112edf634fe2895c64417b9e076f28889"
   },
-  "independent_source_build": "passed; PDF byte-identical to manuscript build",
+  "independent_source_build": "passed; feedback source ZIP rebuilds a byte-identical PDF",
   "font_repairs": [
     {
       "path": "figures/lewm_cls_cue_decoders.pdf",
@@ -130,5 +133,8 @@
   ],
   "submission_sent": false,
   "remaining_form_fields": "Author profiles/order and author-side sharing/release/license confirmations are not supplied or accepted by this workflow.",
-  "build_warning": "Vendored lineno.sty:296 invalid UTF-8 warning only; no PDF text replacement characters detected."
+  "build_warning": "Vendored lineno.sty:296 invalid UTF-8 warning only; no PDF text replacement characters detected.",
+  "feedback_revision": "Completed nonlinear probes and controlled portal swaps; September 5, 2026",
+  "upload_artifact_directory": "artifact://pta_feedback/submission",
+  "prior_font_repairs_apply_to_existing_figures": true
 }
