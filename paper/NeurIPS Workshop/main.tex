@@ -41,10 +41,10 @@ Color and Shape variants. Detached reconstructions weaken cue distinctions,
 and static goal-distance maps assign low costs near both candidate tunnels
 in an illustrated layout. Rank-based planning reveals a corresponding
 behavioral difficulty: LeWM succeeds on only 16--52\% of Color episodes where
-the correct portal is farther away, compared with 80--88\% for an LpWM-based
-recipe with the same readout and inverse-dynamics weight. These results
-identify cue binding as an open, model-dependent challenge for predictive
-representations, rather than an inevitable failure of feature-space learning.
+the correct portal is farther away. These observations expose a gap between
+accurate localization and cue-guided routing in the tested LeWM recipe,
+motivating a closer study of which task-relevant distinctions its predictive
+representation retains.
 \end{abstract}
 
 \section{Introduction}
@@ -56,9 +56,8 @@ difficult to predict \citep{lecun2022path,assran2023ijepa,bardes2024vjepa}.
 Recent advances span video learning with V-JEPA~2 and~2.1
 \citep{assran2025vjepa2,murlabadia2026vjepa21}, representation regularization
 with LeJEPA and Rectified LpJEPA
-\citep{balestriero2025lejepa,kuang2026rectified}, and planning with PLDM,
-LeWorldModel, and LpWM
-\citep{sobal2025latentplanning,maes2026leworldmodel,kuang2026lpwm}.
+\citep{balestriero2025lejepa,kuang2026rectified}, and planning with PLDM
+and LeWorldModel \citep{sobal2025latentplanning,maes2026leworldmodel}.
 Yet useful abstraction depends on which features survive. LeJEPA theory
 establishes linear recovery of latent variables under specific assumptions
 \citep{klindt2026when}, while slow-feature experiments show that temporal
@@ -79,8 +78,7 @@ their dynamics (Figure~\ref{fig:taskrank}).
 We contribute a controlled dataset and rank-based evaluation for cue-guided
 routing. We also document a localization--cue-binding gap in a LeWorldModel
 recipe through coordinate probes, reconstructions, goal-distance maps, and
-planning. An LpWM comparison performs better on the harder rank, providing a
-positive control whose relation to cue accessibility remains open.
+planning.
 
 \begin{figure}[t]
   \centering
@@ -103,9 +101,7 @@ Both components are explicit adaptations: native LeWM uses CLS selection
 without IDM. Appendix~\ref{app:ablations} compares readout and objective choices. Training
 starts from random initialization and uses 10,000 successful trajectories,
 ten epochs, batch size 128, and seed 3072; all reported results are one-seed
-cases. The LpWM-based planning comparison shares the spatial readout, IDM
-weight, Color corpus, and training budget, but differs in its regularizer
-and activation (Appendix~\ref{app:planning}).
+cases.
 
 We freeze each world model and ask the same affine ridge probe to recover
 the same four portal endpoints, indexed in two ways. \emph{Location} uses
@@ -170,11 +166,9 @@ gap without proving that cue information is absent.
 We next evaluate planning according to the correct portal's geometry-only
 search rank: R1 is nearer, and R2 is the other portal. CEM and gradient
 descent (GD) both struggle more on R2 for the final LeWM checkpoints used by
-the probes (Table~\ref{tab:rankplanning}). The LpWM-based recipe
-reaches 80--88\% on Color R2, compared with LeWM's 16--52\%. Thus the dataset
-separates model recipes even when readout and IDM weight agree. Rank also
-changes route difficulty, so this behavioral gap alone does not isolate cue
-binding. Color planning uses outline rather than filled markers; the
+the probes (Table~\ref{tab:rankplanning}). The drop occurs for both Color
+and Shape. Rank also changes route difficulty, so this behavioral gap alone
+does not isolate cue binding. Color planning uses outline rather than filled markers; the
 appendix records this rendering difference and the full solver protocol.
 \par
 \end{samepage}
@@ -182,20 +176,18 @@ appendix records this rendering difference and the full solver protocol.
 \begin{table}[!htbp]
 \centering
 \caption{\textbf{Planning success falls on the farther correct portal.}
-Percent success over 25 episodes per rank; all rows use spatial $8\times8$
-and IDM 3.125. LeWM checkpoints match Table~\ref{tab:probes}; LpWM is a
-same-campaign positive control, not an objective-only ablation.}
+LeWM success over 25 episodes per rank; both variants use spatial $8\times8$
+and IDM 3.125. Checkpoints match Table~\ref{tab:probes}.}
 \label{tab:rankplanning}
 \small
 \renewcommand{\arraystretch}{1.12}
 \setlength{\tabcolsep}{3pt}
 \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lllrrrr@{}}
 \toprule
-Model / variant & Readout & IDM & CEM R1 & CEM R2 & GD R1 & GD R2 \\
+Variant & Readout & IDM & CEM R1 & CEM R2 & GD R1 & GD R2 \\
 \midrule
-LeWM / Color & $8\times8$ & 3.125 & 80\% & 16\% & 64\% & 52\% \\
-LeWM / Shape & $8\times8$ & 3.125 & 88\% & 24\% & 76\% & 40\% \\
-LpWM / Color & $8\times8$ & 3.125 & 92\% & 80\% & 96\% & 88\% \\
+Color & $8\times8$ & 3.125 & 80\% & 16\% & 64\% & 52\% \\
+Shape & $8\times8$ & 3.125 & 88\% & 24\% & 76\% & 40\% \\
 \bottomrule
 \end{tabular*}
 \end{table}
@@ -245,12 +237,11 @@ suggestive of an intervention, but leaves the mechanism and remedy unresolved.
 Tunnel Rooms Color separates knowing where a portal is from knowing where
 it leads. In the tested LeWM recipe, accurate localization coexists with
 weak cue-conditioned readout, mixed reconstructions, limited selectivity in
-static goal landscapes, and poor farther-portal planning. LpWM's stronger
-planning shows that this difficulty depends on the model recipe. The next
-step is to explain that difference through cue swaps and predicted portal
-crossings, exposure changes at fixed training updates, and replication across
-seeds, models, and environments. These tests would establish when predictive
-abstraction preserves the distinctions an agent needs to act.
+static goal landscapes, and poor farther-portal planning. The next step is
+to investigate this gap through cue swaps and predicted portal crossings,
+exposure changes at fixed training updates, and replication across seeds
+and environments. These tests would clarify how LeWM retains the
+distinctions an agent needs to choose the correct destination.
 
 % Compact reference entries without changing the body font or page geometry.
 \setlength{\bibsep}{2pt}
@@ -347,16 +338,7 @@ different source revisions, with the same declared training and solver
 settings; the archived configurations and checkpoint hashes identify each
 condition explicitly.
 
-The LpWM-based Color control \citep{kuang2026lpwm,kuang2026rectified}
-uses the same source revision, dataset hash,
-rank manifest, readout, IDM head and weight, seed, epochs, and batch size as
-the primary LeWM Color run. It replaces SIGReg with Product-Laplace InfoReg
-(weight 10, $\mu=-1$, $p=1$, 1,024 slices) and uses ReLU in its projection
-path rather than GELU. These historical settings are not an exact
-reproduction of the published LpWM defaults. This makes it a same-campaign
-recipe comparison, not an isolated causal test of the regularizer.
-Its CEM counts are 23/25 and
-20/25 for R1/R2; GD gives 24/25 and 22/25. LeWM Color gives 20/25 and 4/25
+LeWM Color gives 20/25 and 4/25
 (CEM), 16/25 and 13/25 (GD); Shape gives 22/25 and 6/25 (CEM), 19/25 and
 10/25 (GD). No planning results are attributed to the six separate matched
 CLS checkpoints in Table~\ref{tab:matchedidm}.
@@ -495,9 +477,9 @@ teleportation is learned but endpoint pairing is ignored. Testing that claim
 requires matched cue swaps and action-conditioned portal rollouts.
 
 \paragraph{Historical model atlas.}
-Fifteen selected final-epoch cases cover five model families and relevant
-readout, cue, and exposure variants. Objectives, architectures, and layouts
-differ, so this is supplementary context rather than a matched benchmark.
+Nine selected final-epoch LeWM cases cover readout, cue, and exposure
+variants. Objectives, readouts, and layouts differ, so this is supplementary
+context rather than a matched benchmark.
 These callback plots used a $40\times40$ grid; the standalone default was
 $20\times20$. The legacy renderer derived heatmap and colorbar percentile
 bounds from different arrays. We retain the qualitative maps but omit the
@@ -507,27 +489,12 @@ comparable across panels or with the fresh fixed-scale maps.
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[page=1,width=.94\linewidth,height=.80\textheight,keepaspectratio]{figures/lewm_similarity_historical_atlas.pdf}
-\caption{\textbf{Historical similarity atlas, part 1 of 3.}
-Condition labels identify the checkpoint family and adaptation. Reference
-positions are marked in each scene; each map is independently rescaled.
-These are static cosine diagnostics, not action-conditioned planning costs.}
-\end{figure}
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[page=2,width=.86\linewidth,height=.80\textheight,keepaspectratio]{figures/lewm_similarity_historical_atlas.pdf}
-\caption{\textbf{Historical similarity atlas, part 2 of 3.}
-Condition labels identify the checkpoint family and adaptation. Reference
-positions are marked in each scene; each map is independently rescaled.
-These are static cosine diagnostics, not action-conditioned planning costs.}
-\par\medskip
-\centering
-\includegraphics[page=3,width=.86\linewidth,height=.80\textheight,keepaspectratio]{figures/lewm_similarity_historical_atlas.pdf}
-\caption{\textbf{Historical similarity atlas, part 3 of 3.}
-Condition labels identify the checkpoint family and adaptation. Reference
-positions are marked in each scene; each map is independently rescaled.
-These are static cosine diagnostics, not action-conditioned planning costs.}
+\includegraphics[width=\linewidth]{figures/lewm_similarity_historical_atlas.pdf}
+\caption{\textbf{Historical LeWM similarity atlas.}
+Nine conditions vary readout, cue, IDM, or transition-window exposure.
+Reference positions are marked in each scene; each map is independently
+rescaled. These are static cosine diagnostics, not action-conditioned
+planning costs.}
 \end{figure}
 
 \section{Additional quantitative context}

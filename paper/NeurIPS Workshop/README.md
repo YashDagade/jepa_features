@@ -12,11 +12,9 @@ static landscapes. Their decoder figures use the same training runs, but
 show snapshots from the first batch of the final epoch rather than outputs
 of the exported final checkpoint.
 Location R² is .934/.907, versus cue R² .224/.203. Rank-R2 planning success is
-16%/24% for CEM and 52%/40% for GD (Color/Shape). A same-campaign LpWM Color
-recipe with the same readout and IDM weight reaches 80%/88% (CEM/GD). Its
-regularizer and activation differ; this is a positive control, not an
-objective-only causal ablation. The paper therefore describes a
-model-dependent challenge rather than a universal JEPA failure.
+16%/24% for CEM and 52%/40% for GD (Color/Shape). The main study concerns
+cue binding in this LeWM recipe and its readout and inverse-dynamics
+controls; it does not establish a universal JEPA failure.
 
 CLS±IDM, alternate-palette spatial runs, and readout mechanics are in the
 appendix. The six matched CLS runs completed on September 4, 2026 from
@@ -64,21 +62,20 @@ made by the revision workflow.
 
 ## Build
 
-The current draft cites **23 distinct references**, all attached to claims
+The current draft cites **22 distinct references**, all attached to claims
 in the text. The introduction covers the JEPA, LeJEPA/LpJEPA, and latent
 planning literature; Appendix H develops the connections to identifiability,
-slow features, auxiliary objectives, and value-guided planning. LpWM and
-Rectified LpJEPA are cited as separate papers. Appendix B credits Temporal
+slow features, auxiliary objectives, and value-guided planning. Appendix B credits Temporal
 Straightening for the inspiration behind learned patch aggregation and states
 the architectural and objective differences. The main text ends on page four;
 references follow the conclusion and span pages four through six, with the
-appendix continuing below them. The complete PDF is 17 pages.
+appendix continuing below them. The complete PDF is 16 pages.
 
 Layout uses natural vertical spacing, keeps the planning paragraph together,
 and places tables near their discussion. Landscape figures are interleaved
-with their methods, and the last two atlas panels share a page. References
+with their methods; the historical atlas combines nine LeWM cases in one figure. References
 use abbreviated author names and compact entry spacing. The official style,
-body font, margins, all research text, and all figure panels are preserved.
+body font and margins are preserved.
 
 Run from this directory:
 
@@ -98,8 +95,6 @@ bytes. The current PDF is `main.pdf` (generated and ignored by Git).
   distinguish serialized checkpoint-file hashes from canonical state hashes.
 - `spatial_primary_decoder_sources.csv` records all six final-epoch clips at
   frame 2; `figures/lewm_spatial_primary_decoders.pdf` displays every clip.
-- `spatial_primary_lpwm_planning.csv` and `spatial_primary_lpwm_recipe.json`
-  record the positive-control counts, shared manifest, objective, and source.
 - `lewm_spatial_similarity_maps.npz`, companion provenance and summary record
   newly evaluated static maps, using strictly loaded historical checkpoints
   and a dataset-verified renderer. The grid and reference images align with

@@ -16,13 +16,11 @@ Latent planning can use either pretrained visual features or representations
 learned jointly with dynamics. DINO-WM predicts spatial patch features from
 a pretrained DINOv2 encoder \citep{zhou2025dinowm,oquab2023dinov2}.
 PLDM learns predictive dynamics from reward-free offline interactions
-\citep{sobal2025latentplanning}; LeWorldModel and LpWM study end-to-end
-learning with different distribution regularizers
-\citep{maes2026leworldmodel,kuang2026lpwm}. Our positive control belongs to
-the latter line, with its particular recipe stated in
-Appendix~\ref{app:planning}. Its stronger planning motivates a controlled
-comparison of learned cue binding; it does not establish that sparsity alone
-explains the difference.
+\citep{sobal2025latentplanning}; LeWorldModel learns representations and
+dynamics end to end with Gaussian distribution regularization
+\citep{maes2026leworldmodel}. We study cue binding within this LeWM framework,
+with readout and inverse-dynamics controls that distinguish accurate
+localization from cue-conditioned endpoint prediction.
 
 Regularization and identifiability provide complementary perspectives.
 VICReg explicitly controls feature variance and covariance
