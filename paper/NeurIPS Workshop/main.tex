@@ -31,10 +31,12 @@
 \raggedbottom
 
 \begin{abstract}
-We introduce Tunnel Room, a navigation benchmark in which visual cues, such as color or shape, determine where each tunnel leads. A goal image specifies the destination, and reaching it requires selecting the correct tunnel even when another entrance is closer. We find that a trained LeWorldModel (LeWM) accurately represents tunnel locations but struggles to use the cues that distinguish their destinations. Across three renderings, linear probes achieve mean $R^2$ above $.90$ for tunnel locations, but only $.20$--$.26$ when predicting tunnel coordinates based on their visual cues. A frozen decoder trained on these representations provides complementary evidence: rather than preserving the distinct colors of the two tunnels, its reconstructions tend toward their average color. Goal-energy maps similarly exhibit broad low-cost regions around both tunnel routes, suggesting that the model represents where the tunnels are without clearly distinguishing which cue corresponds to which route. Consistent with this representational gap, planning success decreases when the correct entrance is farther away, while entrance traces reveal a preference for the nearer tunnel regardless of its cue. Swapping the cues changes the model's encoding, yet predicted features diverge substantially less than observed features after teleportation. Together, these findings expose a gap between learning where a tunnel is and using its visual cue to predict where it leads. What gives rise to this gap remains an open question.
+We introduce Tunnel Room, a navigation benchmark in which visual cues, such as color or shape, determine where each tunnel leads. A goal image specifies the destination, and reaching it requires selecting the correct tunnel even when another entrance is closer. We find that a trained LeWorldModel (LeWM) accurately represents tunnel locations but struggles to use the cues that distinguish their destinations. Across three renderings, linear probes achieve mean $R^2$ above $.90$ for tunnel locations, but only $.20$--$.26$ when predicting tunnel coordinates based on their visual cues. A frozen decoder trained on these representations provides complementary evidence: rather than preserving the distinct colors of the two tunnels, its reconstructions tend toward their average color. Goal-energy maps similarly exhibit broad low-cost regions around both tunnel routes, suggesting that the model represents where the tunnels are without clearly distinguishing which cue corresponds to which route. Consistent with this representational gap, planning success decreases when the correct entrance is farther away, while entrance traces reveal a preference for the nearer tunnel regardless of its cue. Swapping the cues changes the model's encoding, yet predicted features diverge substantially less than observed features after teleportation. Together, these findings expose a gap between learning where a tunnel is and using its visual cue to predict where it leads. 
 \end{abstract}
 
 \section{Introduction}
+
+% First talk about JEPA and then talk about Tunnel Room color. 
 
 We introduce \emph{Tunnel Room}, a navigation benchmark for testing whether
 a world model uses a visible cue to choose a route. Matching tunnel colors
@@ -58,6 +60,7 @@ we examine limited exposure to cue-revealing transitions as a possible
 explanation. This ablation is inconclusive, leaving the mechanism open
 for further study.
 
+% We could make contributions a numbered list -- it looks nicer
 \section{Tunnel Room: the cue determines the destination}
 
 A central room, or hub, has two tunnel entrances. Each connects to a tunnel
@@ -76,9 +79,8 @@ We call the association between a cue and its paired destination
 \emph{cue binding}.
 
 We train LeWM \citep{maes2026leworldmodel} on 10,000 expert trajectories to
-predict future projected features from observation and action histories;
-Appendix~\ref{app:collection} details trajectory collection and the temporal
-interface. Our primary configuration augments the native objective with two
+predict future latents from observation and action histories;
+Appendix~\ref{app:collection} details trajectory collection. Our primary configuration augments the native objective with two
 adaptations. First, an inverse-dynamics (IDM) auxiliary loss predicts the
 executed action block from consecutive projected states, encouraging the
 representation to retain action-relevant distinctions
