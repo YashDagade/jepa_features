@@ -1,23 +1,28 @@
 \section{Shape and Palette comparisons}
 \label{app:variants}
 
-The main paper focuses on Color. Shape and Palette repeat the same routing
-problem with triangles/diamonds and green/blue cues, respectively. They show
-the same qualitative ordering: location coordinates are easier to recover
-than cue-indexed coordinates, and planning is less successful when the
-correct entrance is farther away. The values differ across variants; these
-single-model comparisons do not establish statistical equivalence.
+The main paper focuses on Color. We repeat the same experiments with Shape
+(triangles/diamonds) and Palette (green/blue) and observe the same overall
+pattern: tunnel locations are easier to recover than cue identity, and
+planning performs worse when the correct tunnel is farther away. Although
+the exact results vary across variants, all three exhibit the same qualitative
+trend.
 
-Tables~\ref{tab:variantprobes} and \ref{tab:variantrankplanning} retain the
-complete results, including Color as a reference. Linear location $R^2$
-averages .907 and .930 for Shape and Palette, versus .203 and .258 for cue
-coordinates. The MLP preserves this gap. Decoder and landscape comparisons
-appear in Figures~\ref{fig:variant-decoders} and
-\ref{fig:variant-landscapes-swaps}. The quantitative landscape protocol is in
-Appendix~\ref{app:landscapes}; Appendix~\ref{app:portal-swap} gives the full
-swap controls and uncertainty. Source revisions and decoder snapshot times
-differ, as detailed in Appendix~\ref{app:planning}.
-
+Tables~\ref{tab:variantprobes} and \ref{tab:variantrankplanning} report the
+full results for all three variants, with Color included for comparison.
+For Shape and Palette, linear probes achieve mean location $R^2$ of $.907$
+and $.930$, respectively, compared with only $.203$ and $.258$ for
+cue-indexed coordinates; MLP probes show the same gap. Decoder
+reconstructions and energy landscapes provide complementary evidence in
+Figures~\ref{fig:variant-decoders} and
+\ref{fig:variant-landscapes-swaps}. Additional details on the landscape,
+cue-swap, and planning protocols, including differences in model revisions
+and decoder checkpoints, are provided in
+Appendices~\ref{app:landscapes}, \ref{app:portal-swap}, and
+\ref{app:planning}. Together, these results show that the observed behavior is not specific to
+the original color cues, but generalizes across multiple forms of visual
+cueing.
+ 
 \begin{table}[!htbp]
 \centering
 \caption{\textbf{Linear and MLP probes recover locations more accurately than cues.} Entries are linear/MLP MAE (pixels) and $R^2$, averaged over $x/y$; MLP values average three fits. Top/bottom are ordered within each room group; cue rows identify paired endpoints. Both use the same test episodes, with 640/512 fit episodes (Appendix~\ref{app:nonlinear}).}
@@ -89,17 +94,20 @@ Palette & 80/84 & 28/32 & 56.3/75.0 & 52.9/50.0 \\
   Appendix~\ref{app:planning}.}
   \label{fig:variant-decoders}
 \end{figure}
-
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figures/lewm_goal_landscape_and_portal_swap.pdf}
-  \caption{\textbf{Goal energy and predicted dynamics both weaken route distinctions.}
-  (a) LeWM goal energies and geodesic distance; rows switch the goal room.
-  Yellow denotes low cost; red disks mark goals. Each column shares a scale across goals;
-  latent energy and travel distance have different units.
-  (b) Cue swaps: squared distance between the two worlds' encoded observations (blue)
-  or model rollouts (orange). Early rollout values include conditioning observations.
-  Medians and interquartile bands cover the same 16 geometries at every step.
-  The gray interval contains teleportation. Latent scales differ across models.}
+  \caption{\textbf{Weak route distinctions persist across cue variants.}
+  (a) Goal-energy landscapes for Color, Shape, and Palette, compared with
+  geodesic distance under the true tunnel pairings. Rows switch the goal room;
+  yellow denotes lower energy or distance and red disks mark goals. Across
+  variants, LeWM assigns low energy near multiple tunnel endpoints rather than
+  selectively favoring the tunnel paired with the goal.
+  (b) Cue-swap experiments compare the distance between paired encoded
+  observations (blue) with the distance between their predicted rollouts
+  (orange). After teleportation (gray), observed states separate sharply while
+  predicted states remain substantially closer across all three variants.
+  Curves show medians and interquartile ranges over the same 16 geometries;
+  latent scales differ across models.}
   \label{fig:variant-landscapes-swaps}
 \end{figure}

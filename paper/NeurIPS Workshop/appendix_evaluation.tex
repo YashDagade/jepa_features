@@ -15,6 +15,8 @@ redraw the same trajectories without changing geometry, actions, or goals.
 Training uses four-frame clips at stride five; each latent transition
 receives all five intervening 2-D actions as a 10-D block.
 
+%  #TODO: can you fix this such that non linear probes become part of this paragrpah and don't make it a seperate appendix section instead just include it here and then get rid of any sectoin that says it's a seprate setction an instead maybe create a new section called probes for both linear and MLP probes and include both of them here right next to each other and get rid of other places where non-linear section is mentioned and make this transtiion smooth and make sure everyting renders properly and correctly. Get rid of this colmment once this is resolved.  Don't cahnge too much about the pargraph sentences and writing style I made tehse changes myself so please keep it like that. 
+
 Linear probes standardize features and fit ridge regression ($\alpha=10$)
 on 640 episodes, then evaluate on 256 disjoint episodes. These episodes
 belong to the world-model training corpus: the probes measure frozen-feature
@@ -22,6 +24,23 @@ accessibility, not generalization to unseen training episodes. MAE and $R^2$
 are averaged over endpoint coordinates; the Color constant-predictor MAE is
 31.19 pixels. Figure~\ref{fig:mae} illustrates the coordinate-error scale.
 Nonlinear fitting is described in Appendix~\ref{app:nonlinear}.
+
+\section{Nonlinear probes}
+\label{app:nonlinear}
+
+LeWM's original study uses nonlinear probes to assess physical quantities
+\citep{maes2026leworldmodel}. Our MLP has two 256-unit ReLU hidden layers
+and predicts 16 coordinates for four position-indexed and four cue-indexed
+endpoints. We use 512 fit, 128 validation, and 256 test episodes, with
+normalization fitted only on the fit split. AdamW trains full batches for
+up to 1,000 epochs with patience 100. Validation MSE selects the learning
+rate ($10^{-3}$ or $3\times10^{-4}$), weight decay (0 or .01), and stopping
+epoch. Tables~\ref{tab:probes} and \ref{tab:variantprobes} average three MLP
+initializations and compare them with linear probes fitted on 640 episodes;
+both use the same 256 test episodes.
+
+
+
 
 \begin{figure}[h]
   \centering
@@ -35,43 +54,42 @@ Nonlinear fitting is described in Appendix~\ref{app:nonlinear}.
   $R^2$, not a universal pixel threshold, determine the interpretation.}
   \label{fig:mae}
 \end{figure}
-
 \subsection{Rank-based planning protocol}
 \label{app:planning}
 
-We sample geometry, cue pairing, a valid hub start, and a valid goal in a
-leaf. Goals are sampled positions, not frames at a fixed 25-step offset.
-R1/R2 indicate whether the nearer/farther hub entrance reaches the goal
-room. Fixed manifests retain 25 oracle-solvable cases per rank. Success
-requires entering a 16-pixel radius around the goal within 400 primitive
-steps; timeouts count as failures.
+For each episode, we sample a geometry, cue pairing, valid hub start, and
+goal position in a leaf room. Unlike evaluations that select a future state
+from the same trajectory (e.g., a fixed temporal offset) as the goal, we
+sample the goal position independently. The planner must therefore infer
+which tunnel leads to the goal. We classify episodes by \emph{rank}: in R1, the entrance nearest
+the agent leads to the goal room; in R2, the farther entrance does.
+Our evaluation criterion contain 25 oracle-solvable cases of each rank.
+An episode succeeds if the agent comes within 16 pixels of the goal within
+400 primitive steps; timeouts are failures.
 
-Both planners minimize squared distance from the predicted terminal state
-to the goal representation. The horizon contains five latent steps, each
-with five primitive actions; all 25 actions execute before replanning.
-CEM uses 300 sequences, 30 elites, and 30 iterations, starting from a
-unit-variance Gaussian and including its mean. GD uses 100 sequences and
-30 AdamW steps at learning rate .1, with one zero initialization and 99
-Gaussian initializations. Both use seed 3072; actions are inverse-standardized
-and clipped by the environment.
+Both planners minimize the squared distance between the predicted terminal
+representation and the goal representation. Each planning horizon comprises
+five latent steps of five primitive actions each, with all 25 actions executed
+before replanning. CEM optimizes 300 candidate sequences using 30 elites for
+30 iterations, initialized from a unit-variance Gaussian with its mean included.
+GD optimizes 100 sequences for 30 AdamW steps at learning rate $.1$, using one
+zero initialization and 99 Gaussian initializations. Both planners use seed
+3072; actions are inverse-standardized and clipped to the environment bounds.
 
-Probes, planning, and energy maps use the same epoch-10 spatial+IDM
-checkpoints. Color uses BF16 evaluation and filled 18-pixel markers;
-Palette shares its case geometry and solver settings. Shape uses a separate
-manifest and 20-pixel markers. Source revisions differ across variants.
-Decoder montages show frame 2 of six clips: Color/Shape come from the first
-batch of the final epoch, while Palette comes from final validation.
-These snapshots precede or follow training updates and are qualitative.
+Probes, planning experiments, and energy landscapes all use the same epoch-10
+spatial+IDM checkpoints.
 
-Cue groups identify the entrance required by the goal, not the entrance
-chosen. Their rank mixtures differ: Green/Triangle has 12 R1 and four R2
-cases, while Orange/Blue/Diamond has 13 and 21. Table~\ref{tab:cuebyrank}
-reports these strata separately. Table~\ref{tab:firstentrance} records the
-first actual teleport, retaining no-entry episodes. First entrance and final
-success differ: entering the correct room need not reach the goal, and an
-agent can recover after choosing incorrectly. No random-policy success
-baseline is measured.
+Cue groups are defined by the tunnel required to reach the goal, rather than
+the tunnel selected by the planner. Because these groups contain different
+rank distributions, we report cue-by-rank results separately in
+Table~\ref{tab:cuebyrank}: Green/Triangle contains 12 R1 and 4 R2 episodes,
+whereas Orange/Blue/Diamond contains 13 R1 and 21 R2 episodes.
 
+Table~\ref{tab:firstentrance} separately reports the first tunnel entered,
+including episodes in which no tunnel is reached. First entrance and final
+success measure different behaviors: entering the correct leaf does not
+guarantee reaching the goal, and a planner may recover after initially
+entering the wrong tunnel. We do not include a random-policy success baseline.
 \begin{table}[!htbp]
 \centering
 \caption{\textbf{Success falls on the farther entrance for both cue identities.}
@@ -135,12 +153,38 @@ walking distance. We evaluate both maps at the same positions and interpolate
 within each room for display. Yellow indicates low energy, with a shared
 scale across the two goals in each column. Learned energy uses squared
 feature units; the reference uses pixels. These maps compare observed states;
-the planner applies the learned energy to predicted states. The implementation
-and saved map values accompany the code.
+the planner applies the learned energy to predicted states. 
 
 \FloatBarrier
 \section{Transition-diversity ablation}
 \label{app:exposure}
+%  TODO: This is qiute limited you should explain how we construct transition diversity clips first of all and second explain what these clips are. here is a useful write up to go off of
+% I appended a mixture of 0\% (normal) 10\% 50\% and 100\% of these short clips along with the our long trajectories and trained PLDM LeWM and Dino on top of it.
+
+% Every epoch first retains all \verb|416,730| ordinary training windows. The sampler then draws approximately \verb|ratio x 416,730| additional clips from the transition manifest and globally shuffles the combined epoch. It balances additions across the three transition slots, not within every minibatch. Validation remains the original unmodified 10\% split.
+
+% \begin{table}
+% \centering
+
+% \begin{tabular}{l l l}
+% Extra transition ratio & Final transition share & Epoch compute \\
+
+% 10\% & 9.1\% & 1.10× \\
+% 25\% & 20.0\% & 1.25× \\
+% 50\% & 33.3\% & 1.50× \\
+% 100\% & 50.0\% & 2.00× \\
+
+% \end{tabular}
+
+% \end{table}
+
+% Each added transition clip guarantees that exactly \textbf{one} of those three predictions crosses a portal. Therefore:
+
+% That is \verb|50 / 300 = 16.7%| guaranteed crossing targets.. The ordinary half already contains naturally occurring portal transitions, adding approximately another \verb|4.47%|. Therefore 16.67\% guaranteed + 4.47\% natural = 21.14\% of the dataset for 100\% is that of transition clips. This however so far has not led to a direct increase in dataset quality.
+
+% Use sometihng like that and make this section better -- once again once using this feel free to get rid of this commetn and delete this. 
+
+
 
 Cue-dependent crossings make up only 1.90\% of raw transitions and touch
 8.95\% of training target intervals. We therefore test whether greater
