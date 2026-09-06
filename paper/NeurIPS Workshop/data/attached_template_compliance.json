@@ -36,7 +36,7 @@
   "type3_fonts": 0,
   "abstract_one_paragraph": true,
   "no_overfull_or_unresolved_references": true,
-  "pdf_sha256": "0f2e978c8e31f88621a0c901f5a445dfbe615c3476c5464116b695bc9cad325c",
+  "pdf_sha256": "17f7fe6548245a2a79b89527b1ab98a94c58aff4ede4df4953b4bccfdb6ebb38",
   "fixes": [
     "Removed raggedbottom and custom bibliography spacing.",
     "Used the explicitly permitted 9-point references.",

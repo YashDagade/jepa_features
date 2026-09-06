@@ -1,0 +1,16 @@
+{
+  "pulled_revision": "f485a96",
+  "prior_revision": "347f6bd",
+  "cited_references": 23,
+  "missing_citations": [],
+  "uncited_bibliography_entries": [],
+  "missing_cross_references": [],
+  "readout_table_bodies_unchanged": true,
+  "readout_figure_inclusions_unchanged": true,
+  "repairs": [
+    "Restored CLS figure caption closing brace and reference label.",
+    "Clarified that the six CLS replications share one implementation, distinct from the four readout controls.",
+    "Preserved training-snapshot status and encoder-initialization difference in short caption notes.",
+    "Removed two trailing spaces."
+  ]
+}

@@ -21,7 +21,7 @@ trajectories for ten epochs, with batch size 128 and seed 3072. For a
 SIGReg encourages isotropic Gaussian states. The target $a_t$ contains five
 normalized 2-D actions. The training-only inverse head is
 Linear$(384,512)$, LayerNorm, GELU, and Linear$(512,10)$; its gradients pass
-through both states. We use $\lambda_{\mathrm{IDM}}=3.125$. 
+through both states. We use $\lambda_{\mathrm{IDM}}=3.125$.
 
 \subsection{Agent localization and planning}
 
@@ -86,7 +86,7 @@ Replacing CLS with spatial aggregation improves tunnel localization under
 both objectives (Table~\ref{tab:readoutcontrols}). With IDM, tunnel MAE
 falls from 7.42 to 3.83 pixels and $R^2$ rises from .684 to .934. This gain
 concerns tunnel positions: agent-position probes are stronger with CLS+IDM
-(Table~\ref{tab:agentidm}). 
+(Table~\ref{tab:agentidm}).
 
 \begin{table}[ht]
 \centering
@@ -94,7 +94,8 @@ concerns tunnel positions: agent-position probes are stronger with CLS+IDM
 Current projected states from the same four epoch-10 Color checkpoints as
 Tables~\ref{tab:agentidm} and \ref{tab:idmplanning}, all trained with the same
 implementation and seed 3072. MAE and $R^2$ use the same four tunnel endpoints,
-indexed by cue or position; agent coordinates are evaluated separately.}
+indexed by cue or position; agent coordinates are evaluated separately.
+Encoder initialization differs between readouts.}
 \label{tab:readoutcontrols}
 \renewcommand{\arraystretch}{1.12}
 \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}llrrrr@{}}
@@ -113,8 +114,8 @@ Spatial $8\!\times\!8$ & 3.125 & 27.40 & .224 & 3.83 & .934 \\
 \centering
 \includegraphics[width=\linewidth,height=.78\textheight,keepaspectratio]{figures/lewm_tr2_idm_readout_decoders.pdf}
 \caption{\textbf{IDM and spatial readout change reconstructions while cue distinctions remain weak.}
-Three IDM weights (0, .125, and 3.125) from a Color decoder sweep are
-shown with both CLS and spatial $8\times8$ readouts, giving six conditions for the same input
+Training snapshots for three IDM weights (0, .125, and 3.125) from a Color
+decoder sweep are shown with both CLS and spatial $8\times8$ readouts, giving six conditions for the same input
 (frame 0, first clip). Strips enlarge the green hub, green leaf, orange hub, and orange leaf
 cues, from left to right, without altering their pixels. Final-checkpoint probe results are reported in Table~\ref{tab:readoutcontrols}.
 The zero-weight condition retains an allocated IDM head; CLS
@@ -154,8 +155,8 @@ below. Cue-swap rollouts use the primary spatial+IDM models.
 
 To test whether the location--cue gap depends on spatial aggregation, we train
 six additional CLS-based models across Color, Shape, and Palette, with and
-without IDM (Table~\ref{tab:matchedidm}). These models use separate
-implementations and checkpoints from the readout controls in
+without IDM (Table~\ref{tab:matchedidm}). All six models share one
+implementation; their implementation and checkpoints differ from the readout controls in
 Table~\ref{tab:readoutcontrols}. With IDM, location $R^2$ exceeds cue $R^2$
 across all three variants, reproducing the main qualitative result without
 spatial aggregation. Without IDM, both location and cue $R^2$ become negative,
@@ -193,5 +194,6 @@ Green/blue & CLS & 3.125 & 28.01 & .262 & 8.10 & .661 \\
 \caption{\textbf{Cue distinctions weaken in the matched CLS reconstructions.}
 Inputs (top) and decoder outputs (bottom) for Color, Shape, and green/blue
 with IDM 3.125, from Table~\ref{tab:matchedidm}. Each column shows frame 2
-of all six logged epoch-10 validation clips.
+of all six logged epoch-10 validation clips.}
+\label{fig:clscontroldecoders}
 \end{figure}
