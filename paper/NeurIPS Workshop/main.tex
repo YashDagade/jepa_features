@@ -31,7 +31,24 @@
 \raggedbottom
 
 \begin{abstract}
-We introduce Tunnel Room, a navigation benchmark in which visual cues, such as color or shape, determine where each tunnel leads. A goal image specifies the destination, and reaching it requires selecting the correct tunnel even when another entrance is closer. We find that a trained LeWorldModel (LeWM) accurately represents tunnel locations but struggles to use the cues that distinguish their destinations. Across three renderings, linear probes achieve mean $R^2$ above $.90$ for tunnel locations, but only $.20$--$.26$ when predicting tunnel coordinates based on their visual cues. A frozen decoder trained on these representations provides complementary evidence: rather than preserving the distinct colors of the two tunnels, its reconstructions tend toward their average color. Goal-energy maps similarly exhibit broad low-cost regions around both tunnel routes, suggesting that the model represents where the tunnels are without clearly distinguishing which cue corresponds to which route. Consistent with this representational gap, planning success decreases when the correct entrance is farther away, while entrance traces reveal a preference for the nearer tunnel regardless of its cue. Swapping the cues changes the model's encoding, yet predicted features diverge substantially less than observed features after teleportation. Together, these findings expose a gap between learning where a tunnel is and using its visual cue to predict where it leads. 
+We introduce Tunnel Room, a navigation benchmark in which visual cues
+determine where a tunnel leads. A goal image specifies the destination;
+reaching it directly requires choosing the correct entrance even when
+another tunnel is closer. We study LeWorldModel (LeWM) with an
+inverse-dynamics loss and spatial aggregation. On Tunnel Room Color, its
+linear probes recover tunnel locations with mean $R^2=.934$, but achieve
+only $.224$ for coordinates identified by color. Nonlinear probes leave
+the gap largely intact. Detached-decoder reconstructions mix tunnel colors,
+while goal-energy maps show broad low-cost regions near both routes in an
+illustrated layout. Planning success decreases when the correct entrance
+is farther away, and entrance traces reveal a preference for the nearer
+tunnel. Swapping colors changes the encoding, yet predicted features
+diverge less than observed features after teleportation. Shape and
+alternate-palette variants reproduce these qualitative patterns. Together,
+these results expose a gap between learning where a tunnel is and using
+its cue to predict where it leads. Limited exposure to cue-revealing
+transitions is one possible explanation, but our ablation is inconclusive;
+the mechanism remains open.
 \end{abstract}
 
 \section{Introduction}
@@ -54,7 +71,7 @@ planning through learned dynamics
 A small visual detail, however, may determine which action reaches a goal.
 Our benchmark tests whether that detail remains useful to the model. 
 
-Our first contribution is Tunnel Room dataset with it's color, shape, and palette variants. Second, we document LeWM's difficulty
+Our first contribution is the Tunnel Room dataset with its color, shape, and palette variants. Second, we document LeWM's difficulty
 using these cues despite its accurate recovery of tunnel locations. Third,
 we examine limited exposure to cue-revealing transitions as a possible
 explanation. This ablation is inconclusive, leaving the mechanism open
@@ -78,7 +95,7 @@ This lets us test the same routing problem under different visual cues.
 We call the association between a cue and its paired destination
 \emph{cue binding}.
 
-We train LeWM \citep{maes2026leworldmodel} on 10,000 expert trajectories to
+For Color, we train LeWM \citep{maes2026leworldmodel} on 10,000 expert trajectories to
 predict future latents from observation and action histories;
 Appendix~\ref{app:collection} details trajectory collection. Our primary configuration augments the native objective with two
 adaptations. First, an inverse-dynamics (IDM) auxiliary loss predicts the
@@ -103,70 +120,62 @@ Appendix~\ref{app:matchedablations}.
 
 \section{LeWM learns locations more reliably than cues}
 
-We freeze LeWM and fit linear and MLP probes to recover tunnel coordinates.
+We focus on Color in the main paper. Shape and Palette show the same
+qualitative pattern (Appendix~\ref{app:variants}). We freeze LeWM and fit
+linear and MLP probes to recover tunnel coordinates.
 Location targets index endpoints by their top/bottom position; cue targets
-index the same endpoints by their color or shape. We report mean absolute
+index the same endpoints by their color. We report mean absolute
 error (MAE) in pixels and $R^2$, the fraction of coordinate variance
 explained.
 
 \begin{table}[!htbp]
 \centering
-\caption{\textbf{Linear and MLP probes recover locations more accurately than cues.} Entries are linear/MLP MAE (pixels) and $R^2$, averaged over $x/y$; MLP values average three fits. Top/bottom are ordered within each room group; cue rows identify paired endpoints. Both use the same test episodes, with 640/512 fit episodes (Appendix~\ref{app:nonlinear}).}
+\caption{\textbf{Color probes recover locations more accurately than cue pairings.} Entries are linear/MLP MAE (pixels) and $R^2$, averaged over $x/y$; MLP values average three fits. Top/bottom are ordered within each room group; cue rows identify paired endpoints. Both use the same test episodes, with 640/512 fit episodes (Appendix~\ref{app:nonlinear}).}
 \label{tab:probes}
 \renewcommand{\arraystretch}{1.10}
 \setlength{\tabcolsep}{3pt}
-\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}llrrrr@{}}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrr@{}}
 \toprule
- & & \multicolumn{2}{c}{Central room} & \multicolumn{2}{c}{Destination rooms} \\
-\cmidrule(lr){3-4}\cmidrule(l){5-6}
-Variant & Endpoint & MAE $\downarrow$ & $R^2\uparrow$ & MAE $\downarrow$ & $R^2\uparrow$ \\
+ & \multicolumn{2}{c}{Central room} & \multicolumn{2}{c}{Destination rooms} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+Endpoint & MAE $\downarrow$ & $R^2\uparrow$ & MAE $\downarrow$ & $R^2\uparrow$ \\
 \midrule
-Color & Top & \curpred{4.63}{6.14} & \curpred{.919}{.851} & \curpred{2.72}{3.82} & \curpred{.960}{.925} \\
- & Bottom & \curpred{5.14}{6.34} & \curpred{.900}{.844} & \curpred{2.82}{4.06} & \curpred{.958}{.919} \\
+Top & \curpred{4.63}{6.14} & \curpred{.919}{.851} & \curpred{2.72}{3.82} & \curpred{.960}{.925} \\
+Bottom & \curpred{5.14}{6.34} & \curpred{.900}{.844} & \curpred{2.82}{4.06} & \curpred{.958}{.919} \\
 \noalign{\vskip 2pt}
-\cdashline{2-6}[.5pt/2pt]
+\cdashline{1-5}[.5pt/2pt]
 \noalign{\vskip 2pt}
- & Green & \curpred{25.05}{25.43} & \curpred{.256}{.275} & \curpred{29.81}{29.47} & \curpred{.180}{.257} \\
- & Orange & \curpred{25.01}{25.40} & \curpred{.289}{.318} & \curpred{29.72}{29.72} & \curpred{.172}{.240} \\
-\midrule
-Shape & Top & \curpred{5.88}{7.27} & \curpred{.868}{.803} & \curpred{3.19}{4.32} & \curpred{.941}{.905} \\
- & Bottom & \curpred{6.06}{7.28} & \curpred{.872}{.809} & \curpred{3.14}{4.16} & \curpred{.948}{.911} \\
-\noalign{\vskip 2pt}
-\cdashline{2-6}[.5pt/2pt]
-\noalign{\vskip 2pt}
- & Triangle & \curpred{25.18}{25.36} & \curpred{.229}{.284} & \curpred{30.75}{29.91} & \curpred{.144}{.207} \\
- & Diamond & \curpred{25.80}{25.76} & \curpred{.253}{.310} & \curpred{30.47}{29.95} & \curpred{.184}{.241} \\
-\midrule
-Palette & Top & \curpred{4.79}{6.56} & \curpred{.913}{.830} & \curpred{2.63}{3.68} & \curpred{.962}{.929} \\
- & Bottom & \curpred{5.34}{7.00} & \curpred{.893}{.821} & \curpred{2.96}{4.04} & \curpred{.952}{.915} \\
-\noalign{\vskip 2pt}
-\cdashline{2-6}[.5pt/2pt]
-\noalign{\vskip 2pt}
- & Green & \curpred{24.93}{25.80} & \curpred{.262}{.265} & \curpred{29.06}{30.00} & \curpred{.217}{.211} \\
- & Blue & \curpred{24.95}{25.89} & \curpred{.315}{.303} & \curpred{28.88}{29.44} & \curpred{.239}{.257} \\
+Green & \curpred{25.05}{25.43} & \curpred{.256}{.275} & \curpred{29.81}{29.47} & \curpred{.180}{.257} \\
+Orange & \curpred{25.01}{25.40} & \curpred{.289}{.318} & \curpred{29.72}{29.72} & \curpred{.172}{.240} \\
 \bottomrule
 \end{tabular*}
 \end{table}
 
-As we can see in \ref{tab:probes}, Color's linear location MAE is 3.83 pixels ($R^2=.934$), versus 27.40
-($R^2=.224$) for cues. Similar patterns are observed with MLP.Cue error is close to the constant baseline of 31.19 pixels. Shape and Palette follow the same pattern.
+Color's linear location MAE is 3.83 pixels ($R^2=.934$), versus 27.40
+($R^2=.224$) for cue coordinates (Table~\ref{tab:probes}). The MLP also leaves
+a wide gap: mean location $R^2$ is .885, versus .273 for cues. These probes
+measure how easily coordinates can be recovered; they do not establish
+that all color information is absent.
 
-We also train a seperate decoder that reconstructs observations from LeWM's features.
-Its reconstruction loss does not train the world model. The outputs
-preserve the room layout but weaken differences between tunnel cues
-(Figure~\ref{fig:decoders}). Blur can also reflect uncertainty or decoder
-limitations \citep{mathieu2016video}. We therefore interpret these images
-alongside the coordinate probes.
+A detached decoder reconstructs observations from LeWM's frozen features.
+Its reconstruction loss does not train the world model. The outputs retain
+the room layout but mix the green and orange markers
+(Figure~\ref{fig:decoders}a). Blur can also reflect uncertainty or decoder
+limitations \citep{mathieu2016video}, so we interpret these images alongside
+the coordinate probes.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{figures/lewm_spatial_three_cue_decoders.pdf}
-  \caption{\textbf{Reconstructions preserve the rooms but weaken their cues.}
-  Original observations (top) and decoded images (bottom) for Color, Shape,
-  and Palette. All six recorded clips per variant are shown. Snapshot
-  timing and the decoder protocol are given in
-  Appendix~\ref{app:planning}.}
+  \includegraphics[width=\linewidth]{figures/lewm_color_reconstruction_and_energy.pdf}
+  \caption{\textbf{Color reconstructions and goal energies weaken route distinctions.}
+  (a) All six Color inputs (top) and detached-decoder outputs (bottom).
+  (b) LeWM goal energy and (c) geodesic distance through the true tunnel
+  pairings. Map rows switch the goal room; red disks mark goals and yellow
+  denotes low cost. Each map column shares a scale across goals.
+  Latent energy and travel distance have different units.
+  Appendices~\ref{app:planning} and \ref{app:landscapes} give the protocols.}
   \label{fig:decoders}
+  \label{fig:similarity}
 \end{figure}
 
 \FloatBarrier
@@ -178,69 +187,65 @@ indicate more similar representations. The maps compare encoded images
 without using the dynamics predictor. A shortest-path reference changes
 its preferred entrance when we switch the goal room. LeWM instead shows
 broad low-energy regions near both routes in this layout
-(Figure~\ref{fig:similarity}a). Appendix~\ref{app:landscapes} explains how
+(Figure~\ref{fig:similarity}b--c). Appendix~\ref{app:landscapes} explains how
 we compute these maps.
 
-\begin{figure}[!t]
-  \centering
-  \includegraphics[width=\linewidth]{figures/lewm_goal_landscape_and_portal_swap.pdf}
-  \caption{\textbf{Goal similarity and predicted dynamics both weaken route distinctions.}
-  (a) LeWM goal energies and geodesic distance; rows switch the goal room.
-  Yellow denotes low cost; red disks mark goals. Each column shares a scale across goals;
-  latent energy and travel distance have different units.
-  (b) Cue swaps: squared distance between the two worlds' encoded observations (blue)
-  or model rollouts (orange). Early rollout values include conditioning observations.
-  Medians and interquartile bands cover the same 16 geometries at every step.
-  The gray interval contains teleportation. Latent scales differ across models.}
-  \label{fig:similarity}
-\end{figure}
 
 We next test whether LeWM predicts the consequences of a cue change.
 We swap the two hub cues while keeping tunnel locations and leaf cues fixed.
 The same entrance now leads to a different destination. Both worlds receive
 identical actions, so the agents follow the same path until teleportation
-sends them to different rooms. The paired paths are illustrated in
-Appendix~\ref{app:portal-swap}. Model forecasts use observations collected
+sends them to different rooms. Figure~\ref{fig:color-swap}a illustrates the paired paths. Model forecasts use observations collected
 before the crossing and receive no later images.
 
-LeWM detects the static cue change: its response is comparable to that of
-an eight-pixel agent translation. After teleportation, its predicted states separate much
-less than the encoded observations
-(Figure~\ref{fig:similarity}b). Across variants, the median ratio of predicted
-to observed separation is .18--.42 over the first three post-crossing
-samples. General prediction error could contribute to this discrepancy.
-Appendix~\ref{app:portal-swap} gives the controls and protocol.
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=\linewidth]{figures/lewm_color_portal_swap.pdf}
+  \caption{\textbf{Predicted features separate too little after a cue swap.}
+  (a) The same actions reach different rooms after swapping the hub colors.
+  Solid lines show motion; dashed lines show teleportation. The illustration
+  is excluded from the quantitative evaluation. (b) Color's paired latent
+  distances: observed states (blue) and model rollouts (orange), with medians
+  and interquartile bands over 16 geometries. Early rollout values include
+  conditioning observations. The gray interval contains teleportation.}
+  \label{fig:color-swap}
+\end{figure}
+
+LeWM detects the static cue change: its squared-distance response is .92
+of the response to an eight-pixel agent translation, taking the median
+across geometries. After teleportation, its predicted states separate much
+less than the encoded observations (Figure~\ref{fig:color-swap}b). The median
+ratio of predicted to observed separation is .25 over the first three
+post-crossing samples. General prediction error could contribute to this
+discrepancy. Appendix~\ref{app:portal-swap} gives the controls and protocol.
 
 \Needspace{8\baselineskip}
 In R1 tasks, the correct entrance is nearer to the agent. In R2 tasks,
 it is farther away. Choosing the nearest entrance is therefore correct
-on R1 and wrong on R2. For every variant and planner, the R1--R2 success
-gap exceeds the difference between cues (Table~\ref{tab:rankplanning}).
+on R1 and wrong on R2. For both planners, the R1--R2 success
+gap exceeds the difference between green and orange cues (Table~\ref{tab:rankplanning}).
 On Color, cross-entropy method (CEM) success falls from 80\% to 16\%.
 Gradient descent (GD) success falls from 64\% to 52\%. Entrance traces support a
 proximity bias: on R2, CEM enters the nearer, incorrect tunnel first in
-72--88\% of cases across variants. GD does so in 52--72\%. Longer routes
+88\% of Color cases. GD does so in 52\%. Longer routes
 may also be harder to plan. Appendix~\ref{app:planning} gives the entrance
 counts and protocol.
 
 \begin{table}[!htbp]
 \centering
-\caption{\textbf{Planning success separates more clearly by rank than by cue.}
-Entries show CEM/GD task success (\%). Cue 1/Cue 2 denote green/orange (Color),
-triangle/diamond (Shape), and green/blue (Palette).
-R1/R2 have 25 cases each; Cue 1/Cue 2 have 16/34 cases, pooling both ranks.
-Appendix~\ref{app:planning} gives the full cue-by-rank breakdown.}
+\caption{\textbf{Color planning success differs more by rank than by cue.}
+Entries show CEM/GD success (\%). R1/R2 have 25 cases each; Green/Orange
+have 16/34 cases, pooling both ranks. Cue labels identify the tunnel
+required by the goal. Appendix~\ref{app:planning} gives the cue-by-rank breakdown.}
 \label{tab:rankplanning}
 \renewcommand{\arraystretch}{1.12}
-\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lcccc@{}}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}cccc@{}}
 \toprule
-Variant & \multicolumn{2}{c}{Rank-based performance $\uparrow$} & \multicolumn{2}{c}{Cue-based performance $\uparrow$} \\
-\cmidrule(lr){2-3}\cmidrule(l){4-5}
- & R1 & R2 & Cue 1 & Cue 2 \\
+\multicolumn{2}{c}{Rank-based success $\uparrow$} & \multicolumn{2}{c}{Cue-based success $\uparrow$} \\
+\cmidrule(lr){1-2}\cmidrule(l){3-4}
+R1 & R2 & Green & Orange \\
 \midrule
-Color & 80/64 & 16/52 & 56.3/62.5 & 44.1/55.9 \\
-Shape & 88/76 & 24/40 & 68.8/56.3 & 50.0/58.8 \\
-Palette & 80/84 & 28/32 & 56.3/75.0 & 52.9/50.0 \\
+80/64 & 16/52 & 56.3/62.5 & 44.1/55.9 \\
 \bottomrule
 \end{tabular*}
 \end{table}
@@ -279,5 +284,8 @@ environments.
 
 \FloatBarrier
 \input{appendix_related_work}
+
+\FloatBarrier
+\input{appendix_variants}
 
 \end{document}

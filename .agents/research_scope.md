@@ -57,3 +57,10 @@ spatial Color gap occurs with and without IDM; native CLS without IDM fails
 both location and cue probes. Do not describe this as a selective gap that
 persists uniformly across every objective/readout, or as proof that IDM has
 no influence on learned dynamics.
+
+## Current workshop focus
+
+The main workshop narrative and subsequent experiments focus on Tunnel Room
+Color (green/orange). Preserve existing Shape and Palette results in the
+appendix; do not launch new variant runs unless the user requests them.
+Report their shared qualitative pattern without claiming statistical equivalence.

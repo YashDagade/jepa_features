@@ -17,13 +17,13 @@ and a patience of 100 epochs. Selection minimizes the mean squared error of
 standardized coordinates across all targets. A ridge comparator uses the
 same fit/validation split and selects its penalty from
 $\{.01,.1,1,10,100,1000\}$; all six state/variant combinations select 100.
-Test results are evaluated after these choices are fixed. Table~\ref{tab:probes}
+Test results are evaluated after these choices are fixed. Table~\ref{tab:variantprobes}
 pairs the original fixed-penalty linear probe, fit on 640 episodes, with
 the mean of the three MLP fits. Both use the same 256 test episodes.
 The 512-episode ridge comparison below controls for the fitting budget.
 
 The MLP reaches cue $R^2=.259$--$.273$ for current states, while location
-$R^2$ remains much higher at $.857$--$.885$ (Table~\ref{tab:probes}). Its cue
+$R^2$ remains much higher at $.857$--$.885$ (Table~\ref{tab:variantprobes}). Its cue
 scores are close to the matched-budget ridge baseline ($.250$--$.271$),
 while its location scores are lower (ridge: $.894$--$.923$). Across the
 three MLP initializations, the sample SD of current-state mean $R^2$ is

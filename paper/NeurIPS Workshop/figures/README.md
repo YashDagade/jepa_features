@@ -256,9 +256,19 @@ records source and output hashes. The temporary builder is under ignored
 
 ## Active figure presentation
 
-All 14 figure placements in the active manuscript were audited for embedded
+Before the Color-focused reorganization, all 14 figure placements were audited for embedded
 descriptive titles, subtitles, and caption-like prose. These explanations now
 belong in the LaTeX captions. Axes, legends, panel letters, and experimental
 condition labels remain in the figures. Text-only PDF edits preserve source
 images and plotted values; verification records are in
 `../data/figure_title_cleanup_{decoders,landscapes,main_swap}.json`.
+
+## Color-focused main figures
+
+`lewm_color_reconstruction_and_energy.pdf` combines all six Color input/decoder
+examples with the original Color energy maps and geodesic reference.
+`lewm_color_portal_swap.pdf` pairs the saved two-world trajectory illustration
+with the Color divergence curve. These are vector compositions of existing
+verified assets, with source hashes and panel bounds in
+`../data/color_focus_figure_provenance.json`. Figure 1 is unchanged. The complete
+three-variant figures remain available in Appendix L and the detailed protocols.

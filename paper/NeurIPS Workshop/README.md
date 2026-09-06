@@ -106,7 +106,7 @@ the appendices; the main text identifies the LeWM adaptations in plain language.
 protocols and interpretation, and literature discussion respectively.
 The main text ends on page four;
 references follow the conclusion and span pages five through six, with the
-appendix continuing below them. The complete PDF is 22 pages.
+appendix continuing below them. The complete PDF is 24 pages.
 
 Layout uses natural vertical spacing, keeps the planning paragraph together,
 and places tables near their discussion. Landscape figures are interleaved
@@ -129,7 +129,8 @@ bytes. The current PDF is `main.pdf` (generated and ignored by Git).
 
 - `data/spatial_primary_probe_targets.csv` gives all individual endpoint MAE
   and R² values for current and predicted states. Table 1 displays each current
-  endpoint separately, distinguishing central and destination rooms. Each entry
+  Color endpoint separately, distinguishing central and destination rooms.
+  Appendix L retains all three variants. Each entry
   now pairs linear/MLP values, with dotted rules separating location and cue
   targets. `data/table1_linear_mlp_endpoints.csv` retains the unrounded values
   and MLP seed variability; its audit verifies every original linear entry.
@@ -193,7 +194,7 @@ validation after epoch 10 training and align with those final model weights.
 
 Both follow-ups are complete on main; the anonymous code branch and earlier
 code ZIP remain a separate snapshot. Updated PDF and LaTeX upload files are
-in `runs/pta_feedback/overleaf_sync/submission/`. The main paper remains four pages.
+in `runs/pta_feedback/color_focus/submission/`. The main paper remains four pages.
 
 A validation-selected two-hidden-layer MLP uses the same frozen checkpoints
 and endpoint targets as the main probes. Across Color/Shape/Palette, current
@@ -284,3 +285,10 @@ appendix explicitly reports their counts. Original observations, forecasts,
 and post-transition summaries are unchanged. A new two-panel appendix figure
 shows the actual original/swapped Color paths from the separate training
 geometry, with dashed teleports. It is excluded from the 16-case statistics.
+
+The main results focus on Color. Figure 1 still introduces all variants;
+Table 1 retains Color linear/MLP endpoints, Figure 2 combines Color decoder
+and learned/geodesic maps, Figure 3 pairs Color swap scenes with divergence,
+and Table 2 reports Color R1/R2 and Green/Orange success. Appendix L retains
+the complete three-variant tables and figures. No results were discarded or
+recomputed for this presentation change.

@@ -1,0 +1,107 @@
+{
+  "method": "Vector PDF composition of explicitly bounded panels from the existing audited figures. No image editing, model inference, simulation, or changes to numerical data.",
+  "sources": {
+    "lewm_spatial_three_cue_decoders.pdf": "478a028d4a7ce4a908b87cdb6e79aec5926c95cbfed20ee85f5941e30b8ff5fb",
+    "lewm_goal_landscape_and_portal_swap.pdf": "b751144f52b2c0f911487831a0f4bce21504dfbb41624b10b6cdab2839deb769",
+    "lewm_portal_swap_trajectories.pdf": "a08acf1ea5d73c075c25d18aa5631bceedf49964a9e796a089cd5ca1fbe2ae85"
+  },
+  "outputs": [
+    {
+      "file": "figures/lewm_color_reconstruction_and_energy.pdf",
+      "sha256": "5af0ab5d59246ba8ddb6fb0b8f3a428886d0dcc490ab65d873fb0f939d2e121d",
+      "panels": [
+        {
+          "source": "lewm_spatial_three_cue_decoders.pdf",
+          "source_clip_pt": [
+            0,
+            0,
+            218,
+            295.65
+          ],
+          "destination_pt": [
+            0,
+            22,
+            218,
+            317.65
+          ]
+        },
+        {
+          "source": "lewm_goal_landscape_and_portal_swap.pdf",
+          "source_clip_pt": [
+            0,
+            18,
+            200,
+            288
+          ],
+          "destination_pt": [
+            230,
+            22,
+            430,
+            292
+          ]
+        },
+        {
+          "source": "lewm_goal_landscape_and_portal_swap.pdf",
+          "source_clip_pt": [
+            547,
+            38,
+            720,
+            288
+          ],
+          "destination_pt": [
+            446,
+            42,
+            619,
+            292
+          ]
+        }
+      ],
+      "labels": [
+        "(a)",
+        "(b)",
+        "(c)",
+        "Geodesic reference"
+      ]
+    },
+    {
+      "file": "figures/lewm_color_portal_swap.pdf",
+      "sha256": "c2ec89363643f4245f4c92c61e968042cc3fd2b70fcdd997f6a2586c6fd523a2",
+      "panels": [
+        {
+          "source": "lewm_portal_swap_trajectories.pdf",
+          "source_clip_pt": [
+            15,
+            27,
+            502,
+            283
+          ],
+          "destination_pt": [
+            0,
+            22,
+            393,
+            228.58
+          ]
+        },
+        {
+          "source": "lewm_goal_landscape_and_portal_swap.pdf",
+          "source_clip_pt": [
+            13,
+            327,
+            237,
+            462
+          ],
+          "destination_pt": [
+            421,
+            36,
+            720,
+            216.2
+          ]
+        }
+      ],
+      "labels": [
+        "(a)",
+        "(b)"
+      ]
+    }
+  ]
+}
