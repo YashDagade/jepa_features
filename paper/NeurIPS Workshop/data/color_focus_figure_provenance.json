@@ -1,5 +1,5 @@
 {
-  "method": "Main Figure 2 uses the first two Color clips (frame 2), with input and reconstruction side by side. Goal-energy and geodesic panels are uniformly scaled from their existing PDF; all three columns share image bounds. Figure 3 is unchanged.",
+  "method": "Main Figure 2 uses the first two Color clips (frame 2), with input and reconstruction side by side. Goal-energy and geodesic panels are uniformly scaled from their existing PDF; all three columns share image bounds and the interpanel gaps include labels and color bars. Figure 3 is unchanged.",
   "source_arrays": "data/lewm_portal_swap_illustration_arrays.npz",
   "source_arrays_sha256": "ccbead727ab15b5ff95273fd1f1588c7891a78ddb656e3b9ddd25d03d918ae24",
   "sources": {
@@ -10,7 +10,7 @@
   "outputs": [
     {
       "file": "figures/lewm_color_reconstruction_and_energy.pdf",
-      "sha256": "e1b5d470a30b9ee9c1ea15abe9dac8c0129f365a9f010a89ee46700520e062f7",
+      "sha256": "6031ed6c98d9545e3c24da6681c1ba3377f068a20deed5f2e3d22d89754ec77e",
       "panels": [
         {
           "source": "figures/source/spatial_primary_standard_green_orange_original_frame2.png",
@@ -114,9 +114,9 @@
             288
           ],
           "destination_pt": [
-            462,
+            430,
             35.038903249451074,
-            609.0861060750043,
+            577.0861060750043,
             247.59107965841682
           ]
         }
@@ -188,5 +188,9 @@
     "frame_index": 2,
     "selection": "First two clips in recorded order, without filtering by reconstruction quality. Full six-clip montage retained in appendix.",
     "source_pixels_unchanged": true
+  },
+  "interpanel_gaps_pt": {
+    "a_to_b": 23.314117431640625,
+    "b_to_c": 23.35882568359375
   }
 }
