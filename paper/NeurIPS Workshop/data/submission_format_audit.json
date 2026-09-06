@@ -24,12 +24,12 @@
   "body_and_table_font": "official normal 10 TeX points",
   "no_overfull_or_undefined_references": true,
   "author_metadata_empty": true,
-  "pdf_bytes": 2499235,
-  "pdf_sha256": "cb1a4cf0266f4dc8e4b18f8682a69631710b9b725fb7b06e1b6e79e743965c6d",
-  "source_archive_sha256": "1228a65f9aa83451c377aee26555e706c7e94768f82bf9db5ba36da007e420f9",
+  "pdf_bytes": 2499233,
+  "pdf_sha256": "b5449d96c2f4f05884ca9d66dd1470238574f912f48482fc9d7b973f1ad97353",
+  "source_archive_sha256": "a45fddee6678f07149297675c8511d74581c95866c0d2af61ef8d44bff841ec7",
   "source_files": {
     "Tectonic.toml": "a72d0c12eb5b9d5d99750ce2cc8b65d7bdb8d8a2938003b4e36339d883638057",
-    "appendix_evaluation.tex": "b2ded3c168ec44c242d56eb54e1fbbd7cabdfda49fb8574689d70b20b7b0d42d",
+    "appendix_evaluation.tex": "f764770da7e631776cf91529b945b2cb14d1a7bcc7cf6729cb013dc8e10ff940",
     "appendix_followup_diagnostics.tex": "261c331d1b34fa54b6905f1d70d834f38f91b47037f75e0ab465d1c93cc17d1c",
     "appendix_readout_controls.tex": "d60118b77509d9e852f9aea4e09bffe0f696e394d03bd83250873d53863fe2e1",
     "appendix_related_work.tex": "c485515770f79ff57d2c0c97c63333bdae18a90ba004ebceb5b9426058825df3",
@@ -43,7 +43,7 @@
     "figures/lewm_transition_diversity_decoder.pdf": "db09f8665ebd9f33f04aa40fd2e4576c2798a3828ea183f291e19ab3ffc885fa",
     "figures/tr2_color_mae_scale.pdf": "31a531e98a1a6bba232fcb845616c6b128af9663995af964a8b5fbad57847bf4",
     "figures/tunnel_variants_and_rank.pdf": "ecd3e9558a55c7c3008943afdbbc72fe05b80928bf98f5e563ec8dc85781f420",
-    "main.tex": "8b633acb34a86bac3409ade64020c765aedf41ed1bab4180ee9c11a57a5898ac",
+    "main.tex": "a47846e565446c2a9f0f08a8860428f357984804c39e17714a018bce3c353fe7",
     "neurips_2026.sty": "c3fc2894e83d2517ca18b66741d6c595986d97957dc08ec08bb2125a7ec4555a",
     "references.bib": "11419ef44acfcab0fa40e189e8cabcc8bbd116d0bacfd242a3427fb03361f9b7",
     "README.txt": "d1da7d7c1e212cc511ed43fd7bd89d21b2d2900ec14f2022d149c375a0299f01"
@@ -132,8 +132,8 @@
   "submission_sent": false,
   "remaining_form_fields": "Author profiles/order and author-side sharing/release/license confirmations are not supplied or accepted by this workflow.",
   "build_warning": "Vendored lineno.sty:296 invalid UTF-8 warning only; no PDF text replacement characters detected.",
-  "feedback_revision": "Resolved all appendix TODOs while preserving author prose: joint probes; verified crossing-window construction and sampler; removed shift controls and redundant figures; September 6, 2026",
-  "upload_artifact_directory": "artifact://pta_feedback/todo_revision/submission",
+  "feedback_revision": "Targeted proofreading: effect, variations, All three variants, criteria contain; verified Figure 3b renders cleanly; September 6, 2026",
+  "upload_artifact_directory": "artifact://pta_feedback/proofread/submission",
   "prior_font_repairs_apply_to_existing_figures": true,
   "source_archive_cleanup": {
     "verified_date": "2026-09-06",
@@ -150,5 +150,15 @@
     "figure_metadata_and_attachment_scan": "passed",
     "readme_build_command_verified": true,
     "pdf_matches_current_manuscript": true
+  },
+  "proofreading_validation": {
+    "fixes": [
+      "affect to effect",
+      "varations to variations",
+      "Both variants to All three variants",
+      "criterion contain to criteria contain",
+      "coordinate-error cross-reference to Probes subsection"
+    ],
+    "figure_3b": "Rendered standalone figure and final manuscript page inspected; Color panel only, no overlapping Shape or Palette panels; figure asset unchanged."
   }
 }
