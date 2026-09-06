@@ -1,122 +1,76 @@
 \section{Experimental protocols}
 \label{app:protocols}
 
-\subsection{Trajectory collection and temporal interface}
+\subsection{Trajectory collection and probes}
 \label{app:collection}
 
-Each two-tunnel scenario randomizes portal geometry, color--position pairing,
-agent start, target leaf, and target position.  Collection generated 55,000
-paired hidden/visible scenarios with a 500-step cap and retained the first
-50,000 for which both scripted routes succeeded; the active corpus is the
-first 10,000 episodes (651,357 stored steps), each ending in success. Scenario
-seeds equal 41021 plus the episode index; each condition's policy random-number
-generator is initialized once with seed 41021.
+The corpus contains 10,000 successful episodes (651,357 stored steps),
+selected from paired hidden/visible scenarios solved within 500 steps.
+Each scenario randomizes tunnel positions and cue pairing, agent start,
+target leaf, and target position. A cue-aware scripted policy approaches
+the correct entrance with Gaussian action noise (standard deviation 2),
+a .05 probability of repeating the previous action, and componentwise
+clipping to $[-1,1]$. Agent speed is 5 pixels per step. Shape and Palette
+redraw the same trajectories without changing geometry, actions, or goals.
+Training uses four-frame clips at stride five; each latent transition
+receives all five intervening 2-D actions as a 10-D block.
 
-The visible-condition collector uses a scripted cue-aware oracle that queries
-the scenario pairing, chooses the hub portal paired
-with the target leaf, and follows unit-vector waypoints, using a left-lane
-waypoint when needed to avoid triggering a non-target portal.
-Independent $\mathcal N(0,2^2)$ noise is added to each 2-D action component,
-then components are clipped to $[-1,1]$; with probability .05, the previously
-executed action replaces the new action.  Before collision and portal handling,
-the proposed displacement is the clipped action times 5 pixels.  Shape redraws
-the same portals as neutral
-triangle/diamond markers, while green/blue replaces orange with blue.
-Geometry, actions, targets, rewards, and episode boundaries are unchanged;
-image pixels and cue metadata change with the rendering.
+Linear probes standardize features and fit ridge regression ($\alpha=10$)
+on 640 episodes, then evaluate on 256 disjoint episodes. These episodes
+belong to the world-model training corpus: the probes measure frozen-feature
+accessibility, not generalization to unseen training episodes. MAE and $R^2$
+are averaged over endpoint coordinates; the Color constant-predictor MAE is
+31.19 pixels. Figure~\ref{fig:mae} illustrates the coordinate-error scale.
+Nonlinear fitting is described in Appendix~\ref{app:nonlinear}.
 
-Collection stores every primitive step.  Training constructs four-frame
-clips with up to three context observations at
-\texttt{frameskip}=5 and predicts all three shifted target intervals.
-For each latent transition the five intervening 2-D
-actions are preserved and flattened to a 10-D action block. MPC therefore
-sets \texttt{action\_block}=5: each latent planning step
-contains five potentially different primitive actions. Action blocks preserve
-these actions rather than repeating a single action; the collector's .05
-previous-action repeat probability is a separate perturbation.
-
-Probe fitting and evaluation use disjoint episodes from the same corpus used
-for world-model training. The world-model split is defined over clips and
-does not exclude probe-test
-episodes. These probes consequently measure accessibility in frozen
-representations, rather than generalization to episodes unseen during
-world-model training. We standardize features on the 640-example union of
-fit and validation examples before fitting affine ridge probes with penalty
-$\alpha=10$ and evaluating on 256 test examples. We compute $R^2$ separately for each coordinate and average over the same
-endpoints as MAE. The standard Color four-endpoint constant MAE is 31.19 px; its two-hub constant is
-30.02 px.  Raw patches, selected global states, projected states, and predicted
-states are reported separately wherever stagewise claims are made.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.80\linewidth]{figures/tr2_color_mae_scale.pdf}
+  \caption{\textbf{Coordinate error at the task scale.} The gold contour
+  marks predictions with a fixed per-coordinate MAE; the blue point is one
+  illustrative prediction. From left to right, the panels show 4 px
+  (approximately the spatial Color location error), 15 px (a coarse-error
+  example), 27 px (approximately the cue-coordinate error), and 30 px
+  (an illustrative constant-baseline error). The task-specific constant baseline and
+  $R^2$, not a universal pixel threshold, determine the interpretation.}
+  \label{fig:mae}
+\end{figure}
 
 \subsection{Rank-based planning protocol}
 \label{app:planning}
 
-Evaluation samples portal geometry and pairing, a valid hub start, a target
-leaf, and a valid position in that leaf. The goal image renders the agent at
-this target in the same layout. Goals are not chosen from recorded trajectories
-at \texttt{goal\_offset\_steps=25}; the 25-step planning horizon below is separate.
+We sample geometry, cue pairing, a valid hub start, and a valid goal in a
+leaf. Goals are sampled positions, not frames at a fixed 25-step offset.
+R1/R2 indicate whether the nearer/farther hub entrance reaches the goal
+room. Fixed manifests retain 25 oracle-solvable cases per rank. Success
+requires entering a 16-pixel radius around the goal within 400 primitive
+steps; timeouts count as failures.
 
-We rank the two hub entrances by Euclidean distance from the initial agent
-position, breaking ties by endpoint index. R1 means the nearer entrance
-reaches the goal room; R2 means the farther one does. Ranks describe tasks,
-not fixed colors or tunnel identities. Scenarios are sampled before rank
-stratification, which retains 25 oracle-solvable cases per rank.
+Both planners minimize squared distance from the predicted terminal state
+to the goal representation. The horizon contains five latent steps, each
+with five primitive actions; all 25 actions execute before replanning.
+CEM uses 300 sequences, 30 elites, and 30 iterations, starting from a
+unit-variance Gaussian and including its mean. GD uses 100 sequences and
+30 AdamW steps at learning rate .1, with one zero initialization and 99
+Gaussian initializations. Both use seed 3072; actions are inverse-standardized
+and clipped by the environment.
 
-Both planners minimize
-$\lVert\hat z_{t+5}-z_{\mathrm{goal}}\rVert_2^2$, summed over projected-state
-dimensions.  A planning step contains five consecutive 2-D primitive actions,
-so horizon 5 spans 25 primitive steps; receding horizon 5 executes all 25
-before replanning unless the episode terminates.  CEM draws 300 Gaussian
-sequences per iteration from an
-initial zero-mean, unit-variance distribution, forces one sample to the mean,
-keeps 30 elites, and refits mean and standard deviation for 30 iterations.  GD
-optimizes 100 initial sequences for 30 AdamW steps at learning rate .1; the
-first starts at zero and the other 99 receive unit-scale Gaussian noise; added
-action noise is zero and gradient clipping is disabled.  Both use seed 3072
-and solver sub-batch size one.  Optimized normalized coordinates are not
-box-projected; they are inverse-standardized before execution, and the
-environment clips each 2-D action to $[-1,1]^2$.
+Probes, planning, and energy maps use the same epoch-10 spatial+IDM
+checkpoints. Color uses BF16 evaluation and filled 18-pixel markers;
+Palette shares its case geometry and solver settings. Shape uses a separate
+manifest and 20-pixel markers. Source revisions differ across variants.
+Decoder montages show frame 2 of six clips: Color/Shape come from the first
+batch of the final epoch, while Palette comes from final validation.
+These snapshots precede or follow training updates and are qualitative.
 
-Evaluation uses agent speed 5, batches 10 environments, and allows 400
-primitive steps (at most 16 planning calls).  Success is terminal entry within
-strict center distance $<16$ px of the requested target; timeouts and
-truncations are failures. Fixed, hashed rank manifests specify all evaluation
-cases. The scripted
-oracle verifies each case in both hidden-search and visible-direct modes
-against its expected portal-entry trace.
-
-The primary Color, Shape, and Palette planning evaluations, coordinate probes, and
-static landscapes use the same exported epoch-10 spatial $8\times8$ + IDM
-3.125 checkpoints. In Figure~\ref{fig:variant-decoders}, Color and Shape snapshots come from
-the first batch of the final training epoch, preceding the exported
-checkpoint. Palette snapshots come from validation after the final epoch.
-We retain frame index 2 of all six clips per run; clip populations and
-capture times differ, so this is a qualitative comparison. Color uses BF16 evaluation and filled 18-pixel
-markers, matching its training/probe rendering. Shape uses a separate
-rank manifest with 20-pixel shape markers. Color and Shape originate from
-different source revisions. Palette uses a later implementation with the
-same nominal training recipe and filled 18-pixel green/blue markers. Its
-evaluation retains the historical CEM/GD solvers and Color case geometry,
-changing the cue palette. This aligns solver settings and cases while
-leaving source revision as a comparison limitation. Archived configurations
-and checkpoint hashes identify the conditions.
-
-For R1 and R2 respectively, Color succeeds on 20/25 and 4/25 cases with
-CEM, and 16/25 and 13/25 with GD. Shape succeeds on 22/25 and 6/25 cases
-with CEM, and 19/25 and 10/25 with GD. Palette succeeds on 20/25 and
-7/25 cases with CEM, and 21/25 and 8/25 with GD. The six matched CLS checkpoints in
-Table~\ref{tab:matchedidm} have no corresponding planning evaluation.
-
-\paragraph{Required cues and entrance choices.}
-The cue columns of Table~\ref{tab:variantrankplanning} group episodes by the cue
-on the entrance that leads to the requested goal room, not by the entrance
-actually chosen. Green in Color and Palette, and Triangle in Shape, each
-have 12 R1 and four R2 cases; Orange, Blue, and Diamond each have 13 R1 and
-21 R2 cases. Thus the pooled cue rates compare different mixtures of ranks.
-These descriptive strata were formed after evaluation and do not establish
-a preference for a particular color or shape. Each variant uses one model
-checkpoint, and the four-case R2 strata are especially imprecise.
-Table~\ref{tab:cuebyrank} gives the full breakdown: success is lower on R2
-for every cue and both planners.
+Cue groups identify the entrance required by the goal, not the entrance
+chosen. Their rank mixtures differ: Green/Triangle has 12 R1 and four R2
+cases, while Orange/Blue/Diamond has 13 and 21. Table~\ref{tab:cuebyrank}
+reports these strata separately. Table~\ref{tab:firstentrance} records the
+first actual teleport, retaining no-entry episodes. First entrance and final
+success differ: entering the correct room need not reach the goal, and an
+agent can recover after choosing incorrectly. No random-policy success
+baseline is measured.
 
 \begin{table}[!htbp]
 \centering
@@ -145,17 +99,6 @@ Palette & Green & 12/4 & 56.3 & 75.0 & 0.0 & 75.0 & 91.7 & 25.0 \\
 \bottomrule
 \end{tabular*}
 \end{table}
-
-To test whether proximity influences entrance choice, we also inspect the
-first actual hub-to-leaf teleport in each episode. On R2, the nearer entrance
-is incorrect by construction. Table~\ref{tab:firstentrance} shows that CEM
-usually enters it first, whereas GD is more mixed: on Color, GD chooses
-the nearer entrance in 13 cases and the farther one in 12. Episodes with
-no hub entry remain in the denominator. First entrance and final success
-measure different behaviors: an agent can recover after entering the wrong
-room, or enter the correct room but fail to reach the goal position.
-A 50\% success rate therefore does not establish chance-level tunnel
-choice; no random-policy task-success baseline is measured here.
 
 \begin{table}[!htbp]
 \centering
@@ -199,37 +142,14 @@ and saved map values accompany the code.
 \section{Transition-diversity ablation}
 \label{app:exposure}
 
-\paragraph{Hypothesis and exposure counts.}
-A visible cue does not necessarily contribute equally to every prediction
-error. In Tunnel Room, most trajectory steps approach a portal, whereas
-its cue-dependent destination is observed at a crossing. The 10,000-episode
-corpus contains 641,357 raw transitions, of which 12,180 (1.90\%) are
-crossings. Its 463,033 legal training clips produce 1,389,099 target intervals.
-After accounting for overlapping clips and frameskip, crossing-adjacent
-exposure is 8.95\%, while approach motion occurs in 81.6\% of target intervals.
-An interval can contain both events. This imbalance motivates the hypothesis
-that average prediction favors spatial regularities over cue-dependent
-outcomes; it does not establish the cause of the observed readout gap.
-
-\paragraph{Intervention and results.}
-An earlier Color pilot, using a spatial readout and IDM weight 3.125, adds
-transition-centered windows equal to 10\%, 50\%, or 100\% of the original
-training set. Selected decoder outputs appear more saturated and show
-stronger color separation (Figure~\ref{fig:diversity}). Coordinate probes do
-not show a corresponding consistent improvement: current-state cue $R^2$
-is .224, .222, .174, and .200 at 0/10/50/100\% additional windows; predicted-state
-scores are .226, .244, .213, and .231. Four-endpoint cue MAE remains in the
-27.2--28.1 px range. Keeping epochs fixed also increases compute by
-approximately $1.1\times$, $1.5\times$, and $2\times$.
-
-\paragraph{Interpretation and follow-up.}
-More saturated reconstructions do not establish cue binding: distinct colors
-can still be assigned to the wrong endpoints. Frames differ across conditions,
-and increased optimization may contribute to their appearance. A controlled
-follow-up should fix the training budget and evaluate identical held-out
-examples for saturation, identity, cue-conditioned localization, and planning.
-Cue swaps and portal-crossing rollouts can then test whether visual recovery
-changes predicted destinations or actions.
+Cue-dependent crossings make up only 1.90\% of raw transitions and touch
+8.95\% of training target intervals. We therefore test whether greater
+crossing exposure helps: a Color pilot adds transition-centered windows
+equal to 10\%, 50\%, or 100\% of the original set. Reconstructions appear
+more saturated (Figure~\ref{fig:diversity}), but cue $R^2$ changes from .224
+to .222/.174/.200 and MAE remains 27.2--28.1 pixels. Frames differ and the
+extra windows also increase compute, so the result is inconclusive; a
+matched-budget comparison is needed.
 
 \begin{figure}[ht]
   \centering
@@ -240,38 +160,3 @@ changes predicted destinations or actions.
   improve consistently; added windows increase compute.}
   \label{fig:diversity}
 \end{figure}
-
-\FloatBarrier
-\section{Additional readout diagnostics}
-\label{app:diagnostics}
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=.80\linewidth]{figures/tr2_color_mae_scale.pdf}
-  \caption{\textbf{Coordinate error at the task scale.} The gold contour
-  marks predictions with a fixed per-coordinate MAE; the blue point is one
-  illustrative prediction. From left to right, the panels show 4 px
-  (approximately the spatial Color location error), 15 px (a coarse-error
-  example), 27 px (approximately the cue-coordinate error), and 30 px
-  (an illustrative constant-baseline error). The task-specific constant baseline and
-  $R^2$, not a universal pixel threshold, determine the interpretation.}
-  \label{fig:mae}
-\end{figure}
-
-\paragraph{Visible hue remains accessible in patch tokens.}
-A separate binary hue-classification audit of a historical Color+IDM checkpoint
-achieves 100\% balanced accuracy from native patch tokens but 45.3\% from the
-projected state (chance 50\%), using an episode-disjoint validation split.
-This contrast localizes an accessibility gap along the compact-state
-processing path; it does not establish an inability to perceive color.
-Differences in feature dimensionality and readout capacity also preclude a
-direct claim of information loss.
-
-The hue classifier asks which hue occupies a portal slot; the coordinate
-probe asks where a cue-indexed endpoint lies. The hue audit fits on 525
-episodes, selects the ridge penalty using 75 validation episodes, and tests
-on 150 episodes. The 640/256 coordinate protocol instead fixes the penalty.
-Both readouts can miss information outside their chosen function class.
-Likewise, MSE decoding can average uncertain outputs: its population optimum
-is $d^*(z)=\mathbb E[X\mid z]$, but the representation, decoder capacity, and
-optimization can limit the trained decoder.
