@@ -12,7 +12,7 @@
   "checklist_authority": "https://ptaworkshop.github.io/call-for-papers.html",
   "checklist_rule": "Submissions do not need to include the NeurIPS Paper Checklist.",
   "main_pages": 4,
-  "total_pages": 14,
+  "total_pages": 15,
   "references_start_page": 5,
   "body_and_table_size_tex_pt": 10,
   "references_size_tex_pt": 9,
@@ -36,7 +36,7 @@
   "type3_fonts": 0,
   "abstract_one_paragraph": true,
   "no_overfull_or_unresolved_references": true,
-  "pdf_sha256": "b8c5c684409e949012676e540747f6cd1884741ec47cc8ae707947fbeacd0d92",
+  "pdf_sha256": "0f2e978c8e31f88621a0c901f5a445dfbe615c3476c5464116b695bc9cad325c",
   "fixes": [
     "Removed raggedbottom and custom bibliography spacing.",
     "Used the explicitly permitted 9-point references.",

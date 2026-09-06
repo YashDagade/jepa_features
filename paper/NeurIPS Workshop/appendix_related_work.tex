@@ -8,8 +8,9 @@ PLDM and LeWM \citep{sobal2025latentplanning,maes2026leworldmodel}. Tunnel
 Room tests whether the features used for prediction retain small cues that
 change the destination of an action.
 
-Representation objectives offer different inductive biases: VICReg controls
-variance and covariance \citep{bardes2022vicreg}, LeJEPA uses Gaussian
+Representation objectives offer different inductive biases: VCReg and its variants,
+including Radial-VCReg, regularize feature statistics
+\citep{bardes2022vicreg,kuang2026radialvcreg}, LeJEPA uses Gaussian
 regularization \citep{balestriero2025lejepa}, and Rectified LpJEPA encourages
 sparse nonnegative features \citep{kuang2026rectified}. LeJEPA identifiability
 results assume particular latent distributions and dynamics
