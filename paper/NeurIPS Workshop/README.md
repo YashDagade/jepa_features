@@ -194,7 +194,7 @@ validation after epoch 10 training and align with those final model weights.
 
 Both follow-ups are complete on main; the anonymous code branch and earlier
 code ZIP remain a separate snapshot. Updated PDF and LaTeX upload files are
-in `runs/pta_feedback/visual_polish/submission/`. The main paper remains four pages.
+in `runs/pta_feedback/compact_table/submission/`. The main paper remains four pages.
 
 A validation-selected two-hidden-layer MLP uses the same frozen checkpoints
 and endpoint targets as the main probes. Across Color/Shape/Palette, current

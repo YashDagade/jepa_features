@@ -221,19 +221,19 @@ ratio of predicted to observed separation is .25 over the first three
 post-crossing samples. General prediction error could contribute to this
 discrepancy. Appendix~\ref{app:portal-swap} gives the controls and protocol.
 
-\Needspace{8\baselineskip}
-In R1 tasks, the correct entrance is nearer to the agent. In R2 tasks,
-it is farther away. Choosing the nearest entrance is therefore correct
-on R1 and wrong on R2. For both planners, the R1--R2 success
-gap exceeds the difference between green and orange cues (Table~\ref{tab:rankplanning}).
-On Color, cross-entropy method (CEM) success falls from 80\% to 16\%.
-Gradient descent (GD) success falls from 64\% to 52\%. Entrance traces support a
-proximity bias: on R2, CEM enters the nearer, incorrect tunnel first in
-88\% of Color cases. GD does so in 52\%. Longer routes
-may also be harder to plan. Appendix~\ref{app:planning} gives the entrance
-counts and protocol.
-
-\begin{table}[!htbp]
+\begin{table}[H]
+\noindent
+\begin{minipage}[t]{.35\linewidth}
+\vspace{0pt}
+\raggedright
+In R1 tasks, the correct entrance is nearer to the agent; in R2, it is
+farther away. Choosing the nearest entrance is therefore correct on R1
+and wrong on R2. For both planners, success differs more by rank than by
+cue (Table~\ref{tab:rankplanning}). Cross-entropy method (CEM) success
+falls from 80\% to 16\%; gradient descent (GD) falls from 64\% to 52\%.
+\end{minipage}\hfill
+\begin{minipage}[t]{.61\linewidth}
+\vspace{0pt}
 \centering
 \caption{\textbf{Color planning success differs more by rank than by cue.}
 Entries show CEM/GD success (\%). R1/R2 have 25 cases each; Green/Orange
@@ -251,7 +251,14 @@ R1 & R2 & Green & Orange \\
 \curpred{80.0}{64.0} & \curpred{16.0}{52.0} & \curpred{56.3}{62.5} & \curpred{44.1}{55.9} \\
 \bottomrule
 \end{tabular}
+\end{minipage}
 \end{table}
+
+Entrance traces support a proximity bias: on R2, CEM enters the nearer,
+incorrect tunnel first in 88\% of Color cases. GD does so in 52\%.
+Longer routes may also be harder to plan. Appendix~\ref{app:planning}
+gives the entrance counts and protocol.
+
 
 \Needspace{10\baselineskip}
 \section{Discussion and conclusion}
