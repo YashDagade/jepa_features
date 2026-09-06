@@ -1,7 +1,7 @@
 \section{Experimental protocols}
 \label{app:protocols}
 
-\subsection{Trajectory collection and probes}
+\subsection{Trajectory collection}
 \label{app:collection}
 
 The corpus contains 10,000 successful episodes (651,357 stored steps),
@@ -15,7 +15,8 @@ redraw the same trajectories without changing geometry, actions, or goals.
 Training uses four-frame clips at stride five; each latent transition
 receives all five intervening 2-D actions as a 10-D block.
 
-%  #TODO: can you fix this such that non linear probes become part of this paragrpah and don't make it a seperate appendix section instead just include it here and then get rid of any sectoin that says it's a seprate setction an instead maybe create a new section called probes for both linear and MLP probes and include both of them here right next to each other and get rid of other places where non-linear section is mentioned and make this transtiion smooth and make sure everyting renders properly and correctly. Get rid of this colmment once this is resolved.  Don't cahnge too much about the pargraph sentences and writing style I made tehse changes myself so please keep it like that. 
+\subsection{Probes}
+\label{app:probes}
 
 Linear probes standardize features and fit ridge regression ($\alpha=10$)
 on 640 episodes, then evaluate on 256 disjoint episodes. These episodes
@@ -23,10 +24,6 @@ belong to the world-model training corpus: the probes measure frozen-feature
 accessibility, not generalization to unseen training episodes. MAE and $R^2$
 are averaged over endpoint coordinates; the Color constant-predictor MAE is
 31.19 pixels. Figure~\ref{fig:mae} illustrates the coordinate-error scale.
-Nonlinear fitting is described in Appendix~\ref{app:nonlinear}.
-
-\section{Nonlinear probes}
-\label{app:nonlinear}
 
 LeWM's original study uses nonlinear probes to assess physical quantities
 \citep{maes2026leworldmodel}. Our MLP has two 256-unit ReLU hidden layers
@@ -38,9 +35,6 @@ rate ($10^{-3}$ or $3\times10^{-4}$), weight decay (0 or .01), and stopping
 epoch. Tables~\ref{tab:probes} and \ref{tab:variantprobes} average three MLP
 initializations and compare them with linear probes fitted on 640 episodes;
 both use the same 256 test episodes.
-
-
-
 
 \begin{figure}[h]
   \centering
@@ -158,42 +152,55 @@ the planner applies the learned energy to predicted states.
 \FloatBarrier
 \section{Transition-diversity ablation}
 \label{app:exposure}
-%  TODO: This is qiute limited you should explain how we construct transition diversity clips first of all and second explain what these clips are. here is a useful write up to go off of
-% I appended a mixture of 0\% (normal) 10\% 50\% and 100\% of these short clips along with the our long trajectories and trained PLDM LeWM and Dino on top of it.
-
-% Every epoch first retains all \verb|416,730| ordinary training windows. The sampler then draws approximately \verb|ratio x 416,730| additional clips from the transition manifest and globally shuffles the combined epoch. It balances additions across the three transition slots, not within every minibatch. Validation remains the original unmodified 10\% split.
-
-% \begin{table}
-% \centering
-
-% \begin{tabular}{l l l}
-% Extra transition ratio & Final transition share & Epoch compute \\
-
-% 10\% & 9.1\% & 1.10× \\
-% 25\% & 20.0\% & 1.25× \\
-% 50\% & 33.3\% & 1.50× \\
-% 100\% & 50.0\% & 2.00× \\
-
-% \end{tabular}
-
-% \end{table}
-
-% Each added transition clip guarantees that exactly \textbf{one} of those three predictions crosses a portal. Therefore:
-
-% That is \verb|50 / 300 = 16.7%| guaranteed crossing targets.. The ordinary half already contains naturally occurring portal transitions, adding approximately another \verb|4.47%|. Therefore 16.67\% guaranteed + 4.47\% natural = 21.14\% of the dataset for 100\% is that of transition clips. This however so far has not led to a direct increase in dataset quality.
-
-% Use sometihng like that and make this section better -- once again once using this feel free to get rid of this commetn and delete this. 
-
-
-
 Cue-dependent crossings make up only 1.90\% of raw transitions and touch
 8.95\% of training target intervals. We therefore test whether greater
-crossing exposure helps: a Color pilot adds transition-centered windows
-equal to 10\%, 50\%, or 100\% of the original set. Reconstructions appear
-more saturated (Figure~\ref{fig:diversity}), but cue $R^2$ changes from .224
-to .222/.174/.200 and MAE remains 27.2--28.1 pixels. Frames differ and the
-extra windows also increase compute, so the result is inconclusive; a
-matched-budget comparison is needed.
+crossing exposure helps. We identify tunnel crossings in the recorded
+Color trajectories and retain every valid 20-step window with exactly one
+crossing in its first 15 actions. The model sees four observations at
+steps 0, 5, 10, and 15, so each added clip contains three prediction
+intervals, exactly one of which crosses a tunnel. These clips reuse the
+original observations and actions; they do not introduce new trajectories.
+
+Every epoch retains all 416,730 ordinary training windows. We then add
+approximately 10\%, 50\%, or 100\% as many crossing clips from the training
+split, with a small adjustment to fill complete batches. We balance the
+added clips across the three possible crossing intervals and shuffle them
+with the ordinary windows. This balance holds over the epoch, not within
+every minibatch. When a crossing-interval pool is exhausted, we reshuffle
+it and draw from it again. Validation remains the original unmodified
+10\% split.
+
+The added ratio is relative to the ordinary windows, so a 100\% addition
+makes crossing clips half of the final epoch (Table~\ref{tab:exposuremix}).
+Only one of each clip's three prediction intervals crosses a tunnel.
+These added clips therefore contribute about 16.7\% crossing targets at
+this ratio. Including the crossings already present in the ordinary
+windows brings the estimated total to 21.1\%, using the corpus rate of
+8.95\% for the ordinary windows.
+
+\begin{table}[!htbp]
+\centering
+\caption{\textbf{Extra crossing clips increase exposure and training cost.}
+Ratios and epoch sizes are approximate because added counts are adjusted
+for complete batches. The added-clip share counts only the extra draws;
+ordinary windows also contain naturally occurring crossings.}
+\label{tab:exposuremix}
+\begin{tabular}{@{}rrr@{}}
+\toprule
+Added clips / ordinary windows & Added share of final epoch & Relative epoch size \\
+\midrule
+0\% & 0\% & $1.00\times$ \\
+10\% & 9.1\% & $1.10\times$ \\
+50\% & 33.3\% & $1.50\times$ \\
+100\% & 50.0\% & $2.00\times$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Reconstructions appear more saturated (Figure~\ref{fig:diversity}), but cue
+$R^2$ changes from .224 to .222/.174/.200 and MAE remains 27.2--28.1 pixels.
+Frames differ and the extra windows also increase compute, so the result
+is inconclusive; a matched-budget comparison is needed.
 
 \begin{figure}[ht]
   \centering

@@ -8,60 +8,35 @@ thereby changing destinations without moving entrances. Across 16 geometries
 steps, an approach to the nearer entrance, then zero actions. Crossing
 occurs at steps 15--25. Geometry and actions are shared across variants.
 Figure~\ref{fig:color-swap}a uses a separate illustration excluded from these
-statistics. Static controls translate the agent or both hub portals by
-eight pixels (Figure~\ref{fig:swap-states}); distances compare each altered
-state with its original projected state.
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=\linewidth]{figures/lewm_portal_swap_states.pdf}
-\caption{\textbf{Swapping visible cues changes where the same entrance leads.}
-Original worlds, cue swaps, and eight-pixel translations of the agent or
-central-room portals, for all three renderings of one illustration geometry.
-The swap preserves occupied portal locations and destination-room cues.}
-\label{fig:swap-states}
-\end{figure}
+statistics.
 
 Rollouts are conditioned on observations at steps 0, 5, and 10, then use
 only predicted history and five-action blocks. We separately encode the
-actual trajectories. Figure~\ref{fig:swap-curves} aligns the first sampled
+actual trajectories. Figure~\ref{fig:color-swap}b aligns the first sampled
 post-crossing frame to zero; its preceding five-step interval contains the
 crossing. Every point uses the same 16 cases. At $-15/-10/-5$, only 0/4/12
 rollout values are forecasts; the rest are conditioning observations. All
 values from zero onward are forecasts. Table~\ref{tab:swap} summarizes the
-static controls and first three post-crossing samples. General forecast
+first three post-crossing samples. General forecast
 error remains an alternative explanation for attenuated separation.
-% TODO: From the main paper we removed the 8 pixel comment as well -- there is no need for it and I am not sure waht it's saying is clear let's get rid of it. Let's also get rid of this figure we don't nee dthis figure so let's get rid of this and the 8 pixel shift or shit in genral that's not a good / intutive way to measure thigns and I read it multiple tiems and din't undertand it better.  Please get rid of that 8 pixcel transaltion commetna dn also this figure I dont' follow it or understand it and I am not sure if it's necessary to include in this paper. 
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=\linewidth]{figures/lewm_portal_swap_raw_event_curves.pdf}
-\caption{\textbf{Observed trajectories diverge at the portal; predictions understate the change.}
-Top: paired squared latent distances for actual observations (blue) and
-model rollouts (orange). Early rollout values include conditioning
-observations. Bottom: actual position separation, shared across renderings.
-Every sample summarizes the same 16 geometries with medians and interquartile bands.
-The gray interval contains the first portal transition. Latent scales are
-interpreted within each model, not across columns.}
-\label{fig:swap-curves}
-\end{figure}
 
 \begin{table}[!htbp]
 \centering
-\caption{\textbf{Cue swaps are detectable, but their predicted consequences are attenuated.}
-Static ratios use each case's agent-shift energy. The forecast ratio compares
+\caption{\textbf{Predictions understate the consequences of a cue swap.}
+The forecast ratio compares
 mean predicted and observed separation over the first three post-crossing
 samples. Entries show medians [25th, 75th percentiles] across 16 geometries,
 not confidence intervals.}
 \label{tab:swap}
 \renewcommand{\arraystretch}{1.12}
 \setlength{\tabcolsep}{4pt}
-\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrr@{}}
+\begin{tabular}{@{}lr@{}}
 \toprule
-Variant & Cue swap / agent shift & Portal shift / agent shift & Forecast / observed \\
+Variant & Forecast / observed \\
 \midrule
-Color & 0.92 [0.71, 1.06] & 5.66 [3.99, 7.34] & 0.25 [0.17, 0.31] \\
-Shape & 1.72 [1.16, 2.34] & 5.94 [4.42, 8.04] & 0.42 [0.30, 0.46] \\
-Palette & 0.58 [0.39, 0.67] & 3.79 [3.27, 5.69] & 0.18 [0.15, 0.26] \\
+Color & 0.25 [0.17, 0.31] \\
+Shape & 0.42 [0.30, 0.46] \\
+Palette & 0.18 [0.15, 0.26] \\
 \bottomrule
-\end{tabular*}
+\end{tabular}
 \end{table}

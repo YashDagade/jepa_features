@@ -30,13 +30,13 @@
   "captions": "Figures below, tables above.",
   "font_types": {
     "Type1": 13,
-    "Type0": 28
+    "Type0": 24
   },
   "all_fonts_embedded": true,
   "type3_fonts": 0,
   "abstract_one_paragraph": true,
   "no_overfull_or_unresolved_references": true,
-  "pdf_sha256": "554b521105a55587199492942925caf5309937ee7ff26d77564b0e04663589f5",
+  "pdf_sha256": "cb1a4cf0266f4dc8e4b18f8682a69631710b9b725fb7b06e1b6e79e743965c6d",
   "fixes": [
     "Removed raggedbottom and custom bibliography spacing.",
     "Used the explicitly permitted 9-point references.",

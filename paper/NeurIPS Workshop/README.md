@@ -194,7 +194,7 @@ validation after epoch 10 training and align with those final model weights.
 
 Both follow-ups are complete on main; the anonymous code branch and earlier
 code ZIP remain a separate snapshot. Updated PDF and LaTeX upload files are
-in `runs/pta_feedback/source_cleanup/submission/`. The main paper remains four pages.
+in `runs/pta_feedback/todo_revision/submission/`. The main paper remains four pages.
 
 A validation-selected two-hidden-layer MLP uses the same frozen checkpoints
 and endpoint targets as the main probes. Across Color/Shape/Palette, current
@@ -278,16 +278,27 @@ variants. Section 4 explains that choosing the nearest entrance is correct
 on R1 and incorrect on R2, and supports the proximity interpretation with
 actual first-entry traces.
 
-Figure 3b and the full appendix curves now start at −15 rather than −10
+Figure 3b starts at −15 rather than −10
 primitive steps. All 16 geometries contribute to every displayed point.
 Earlier model-rollout values include observed conditioning states; the
 appendix explicitly reports their counts. Original observations, forecasts,
-and post-transition summaries are unchanged. A new two-panel appendix figure
-shows the actual original/swapped Color paths from the separate training
-geometry, with dashed teleports. It is excluded from the 16-case statistics.
+and post-transition summaries are unchanged. Figure 3a illustrates the
+original/swapped Color paths from a separate training geometry, excluded
+from the 16-case statistics. The redundant appendix curves and shift-control
+illustrations are omitted, along with the eight-pixel control columns.
 
 The main results focus on Color. Figure 1 still introduces all variants;
 Table 1 retains Color linear/MLP endpoints, Figure 2 combines Color decoder
 and learned/geodesic maps, Figure 3 pairs Color swap scenes with divergence,
 and Table 2 reports Color R1/R2 and Green/Orange success. Appendix A retains
 the complete three-variant tables and figures. The primary measurements are unchanged. The old landscape atlas and additional reconstruction audit section are omitted.
+
+## Appendix TODO revision
+
+Linear and nonlinear probe protocols now share Appendix E.2, with the
+existing wording and training choices preserved. Appendix G explains how
+extra single-crossing windows are selected from the original trajectories,
+balanced across prediction intervals, and added to each epoch. It distinguishes
+added-clip share from crossing-target exposure and retains the inconclusive
+probe results. Appendix H retains only the paired rollout protocol and
+forecast/observed ratios. All three TODO comment groups have been resolved.
