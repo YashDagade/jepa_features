@@ -108,10 +108,10 @@ The main text ends on page four;
 references follow the conclusion and span pages five through six, with the
 appendix continuing below them. The complete PDF is 15 pages.
 
-Layout uses natural vertical spacing, keeps the planning paragraph together,
+Layout uses the official vertical-spacing defaults, keeps the planning paragraph together,
 and places tables near their discussion. Landscape figures are interleaved
 with a concise energy-map protocol; the historical atlas is omitted. References
-use abbreviated author names and compact entry spacing. The official style,
+use abbreviated author names and the permitted 9-point font. The official style,
 body font and margins are preserved.
 
 Run from this directory:
@@ -194,7 +194,7 @@ validation after epoch 10 training and align with those final model weights.
 
 Both follow-ups are complete on main; the anonymous code branch and earlier
 code ZIP remain a separate snapshot. Updated PDF and LaTeX upload files are
-in `runs/pta_feedback/panel_spacing/submission/`. The main paper remains four pages.
+in `runs/pta_feedback/template_check/submission/`. The main paper remains four pages.
 
 A validation-selected two-hidden-layer MLP uses the same frozen checkpoints
 and endpoint targets as the main probes. Across Color/Shape/Palette, current
@@ -250,7 +250,7 @@ not additional model evaluations.
 
 ## Appendix rationale and matched controls
 
-Appendix B, “Inverse Dynamics Modeling Loss,” states the predictive/SIGReg/IDM objective
+Appendix B, “Inverse dynamics modeling loss,” states the predictive/SIGReg/IDM objective
 and separates direct agent-position probes from planning success. Appendix C,
 “Spatial aggregation,” explains its benefit for tunnel coordinates
 and retains the full readout/IDM reconstruction comparison and aggregation

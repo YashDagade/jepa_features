@@ -28,9 +28,6 @@
 \begin{document}
 \maketitle
 
-% Keep natural paragraph and heading gaps when large floats constrain a page.
-\raggedbottom
-
 \begin{abstract}
 Joint-Embedding Predictive Architectures (JEPAs) learn representations that
 abstract away visual details unnecessary for prediction, but which information
@@ -264,10 +261,12 @@ destinations and planning.
 
 \clearpage
 
-% Compact reference entries without changing the body font or page geometry.
-\setlength{\bibsep}{2pt}
+% The supplied template permits 9-point references.
+\begingroup
+\small
 \bibliographystyle{abbrvnat}
 \bibliography{references}
+\endgroup
 
 \appendix
 
