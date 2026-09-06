@@ -92,10 +92,10 @@ made by the revision workflow.
 
 ## Build
 
-The current draft cites **22 distinct references**, all attached to claims
+The current draft cites **21 distinct references**, all attached to claims
 in the text. The introduction motivates cue binding through the JEPA and latent
 planning literature; Appendix K develops the connections to LeJEPA/LpJEPA, identifiability,
-slow features, auxiliary objectives, and value-guided planning. Appendix B credits Temporal
+slow features, auxiliary objectives, and value-guided planning. Appendix C credits Temporal
 Straightening for the inspiration behind learned patch aggregation and states
 the architectural and objective differences. The main narrative introduces the dataset, connects the representation, prediction, and planning diagnostics,
 and closes with the inconclusive exposure hypothesis and concrete next tests.
@@ -106,11 +106,11 @@ the appendices; the main text identifies the LeWM adaptations in plain language.
 protocols and interpretation, and literature discussion respectively.
 The main text ends on page four;
 references follow the conclusion and span pages five through six, with the
-appendix continuing below them. The complete PDF is 24 pages.
+appendix continuing below them. The complete PDF is 20 pages.
 
 Layout uses natural vertical spacing, keeps the planning paragraph together,
 and places tables near their discussion. Landscape figures are interleaved
-with their methods; the historical atlas combines nine LeWM cases in one figure. References
+with a concise energy-map protocol; the historical atlas is omitted. References
 use abbreviated author names and compact entry spacing. The official style,
 body font and margins are preserved.
 
@@ -130,7 +130,7 @@ bytes. The current PDF is `main.pdf` (generated and ignored by Git).
 - `data/spatial_primary_probe_targets.csv` gives all individual endpoint MAE
   and R² values for current and predicted states. Table 1 displays each current
   Color endpoint separately, distinguishing central and destination rooms.
-  Appendix L retains all three variants. Each entry
+  Appendix A retains all three variants. Each entry
   now pairs linear/MLP values, with dotted rules separating location and cue
   targets. `data/table1_linear_mlp_endpoints.csv` retains the unrounded values
   and MLP seed variability; its audit verifies every original linear entry.
@@ -194,7 +194,7 @@ validation after epoch 10 training and align with those final model weights.
 
 Both follow-ups are complete on main; the anonymous code branch and earlier
 code ZIP remain a separate snapshot. Updated PDF and LaTeX upload files are
-in `runs/pta_feedback/no_teleport_arrow/submission/`. The main paper remains four pages.
+in `runs/pta_feedback/compact_energy/submission/`. The main paper remains four pages.
 
 A validation-selected two-hidden-layer MLP uses the same frozen checkpoints
 and endpoint targets as the main probes. Across Color/Shape/Palette, current
@@ -250,11 +250,11 @@ not additional model evaluations.
 
 ## Appendix rationale and matched controls
 
-Appendix A, “Necessity of IDM,” states the predictive/SIGReg/IDM objective
-and separates direct agent-position probes from planning success. Appendix B,
-“Necessity of spatial aggregation,” explains its benefit for tunnel coordinates
+Appendix B, “Inverse Dynamics Modeling Loss,” states the predictive/SIGReg/IDM objective
+and separates direct agent-position probes from planning success. Appendix C,
+“Spatial aggregation,” explains its benefit for tunnel coordinates
 and retains the full readout/IDM reconstruction comparison and aggregation
-mechanism. Appendix C, “Matched ablations without spatial aggregation or IDM,”
+mechanism. Appendix D, “Matched ablations without spatial aggregation or IDM,”
 retains all primary current/predicted-state probe rows and matched CLS controls,
 and identifies which aspects of the main result do and do not persist.
 The section titles refer to the motivation for this study's primary recipe;
@@ -289,6 +289,5 @@ geometry, with dashed teleports. It is excluded from the 16-case statistics.
 The main results focus on Color. Figure 1 still introduces all variants;
 Table 1 retains Color linear/MLP endpoints, Figure 2 combines Color decoder
 and learned/geodesic maps, Figure 3 pairs Color swap scenes with divergence,
-and Table 2 reports Color R1/R2 and Green/Orange success. Appendix L retains
-the complete three-variant tables and figures. No results were discarded or
-recomputed for this presentation change.
+and Table 2 reports Color R1/R2 and Green/Orange success. Appendix A retains
+the complete three-variant tables and figures. The primary measurements are unchanged. The old landscape atlas and additional reconstruction audit section are omitted.

@@ -1,5 +1,5 @@
 {
-  "method": "Uniformly scale existing decoder and goal-map panels to align image top and bottom edges. Replot the trajectory illustration from unchanged saved images and positions, using curved dashed connectors for instantaneous teleportation. Compose with the unchanged Color divergence panel.",
+  "method": "Main Figure 2 uses the first two Color clips (frame 2), with input and reconstruction side by side. Goal-energy and geodesic panels are uniformly scaled from their existing PDF; all three columns share image bounds. Figure 3 is unchanged.",
   "source_arrays": "data/lewm_portal_swap_illustration_arrays.npz",
   "source_arrays_sha256": "ccbead727ab15b5ff95273fd1f1588c7891a78ddb656e3b9ddd25d03d918ae24",
   "sources": {
@@ -10,25 +10,87 @@
   "outputs": [
     {
       "file": "figures/lewm_color_reconstruction_and_energy.pdf",
-      "sha256": "c607898540e6adcbe439fe0ddfab61ec95cce01c1218f488d5d702c0c363b590",
+      "sha256": "e1b5d470a30b9ee9c1ea15abe9dac8c0129f365a9f010a89ee46700520e062f7",
       "panels": [
         {
-          "source": "lewm_spatial_three_cue_decoders.pdf",
-          "source_clip_pt": [
+          "source": "figures/source/spatial_primary_standard_green_orange_original_frame2.png",
+          "source_sha256": "51587af9cfad700687e9be93b1005224058662eaff08a24ac4ddcc47fb0da431",
+          "clip_index_zero_based": 0,
+          "frame_index": 2,
+          "crop_px": [
             0,
             0,
-            218,
-            295.65
+            224,
+            224
           ],
           "destination_pt": [
-            0,
-            22,
-            218,
-            317.65
-          ]
+            0.0,
+            36.0,
+            101.0,
+            137.0
+          ],
+          "pixels_unchanged": true
         },
         {
-          "source": "lewm_goal_landscape_and_portal_swap.pdf",
+          "source": "figures/source/spatial_primary_standard_green_orange_original_frame2.png",
+          "source_sha256": "51587af9cfad700687e9be93b1005224058662eaff08a24ac4ddcc47fb0da431",
+          "clip_index_zero_based": 1,
+          "frame_index": 2,
+          "crop_px": [
+            224,
+            0,
+            448,
+            224
+          ],
+          "destination_pt": [
+            0.0,
+            145.0,
+            101.0,
+            246.0
+          ],
+          "pixels_unchanged": true
+        },
+        {
+          "source": "figures/source/spatial_primary_standard_green_orange_decoded_frame2.png",
+          "source_sha256": "8a2d77c4745eb833241fbc589651673748907d774bcb56f807807c4dcb34d45d",
+          "clip_index_zero_based": 0,
+          "frame_index": 2,
+          "crop_px": [
+            0,
+            0,
+            224,
+            224
+          ],
+          "destination_pt": [
+            109.0,
+            36.0,
+            210.0,
+            137.0
+          ],
+          "pixels_unchanged": true
+        },
+        {
+          "source": "figures/source/spatial_primary_standard_green_orange_decoded_frame2.png",
+          "source_sha256": "8a2d77c4745eb833241fbc589651673748907d774bcb56f807807c4dcb34d45d",
+          "clip_index_zero_based": 1,
+          "frame_index": 2,
+          "crop_px": [
+            224,
+            0,
+            448,
+            224
+          ],
+          "destination_pt": [
+            109.0,
+            145.0,
+            210.0,
+            246.0
+          ],
+          "pixels_unchanged": true
+        },
+        {
+          "source": "figures/lewm_goal_landscape_and_portal_swap.pdf",
+          "source_sha256": "b751144f52b2c0f911487831a0f4bce21504dfbb41624b10b6cdab2839deb769",
           "source_clip_pt": [
             0,
             18,
@@ -36,14 +98,15 @@
             288
           ],
           "destination_pt": [
-            230,
-            18.883198745299776,
-            451.24116338932333,
-            317.5587693208862
+            238,
+            18.034729136733812,
+            408.0417411271726,
+            247.59107965841682
           ]
         },
         {
-          "source": "lewm_goal_landscape_and_portal_swap.pdf",
+          "source": "figures/lewm_goal_landscape_and_portal_swap.pdf",
+          "source_sha256": "b751144f52b2c0f911487831a0f4bce21504dfbb41624b10b6cdab2839deb769",
           "source_clip_pt": [
             547,
             38,
@@ -51,10 +114,10 @@
             288
           ],
           "destination_pt": [
-            470,
-            41.007315084232104,
-            661.3736063317647,
-            317.55876932088626
+            462,
+            35.038903249451074,
+            609.0861060750043,
+            247.59107965841682
           ]
         }
       ]
@@ -98,16 +161,16 @@
   ],
   "aligned_image_bounds_pt": {
     "a": [
-      42.25779724121094,
-      315.4886169433594
+      36.0,
+      246.0
     ],
     "b": [
-      42.25779724121094,
-      315.4886169433593
+      36.0,
+      246.0
     ],
     "c": [
-      42.25779724121094,
-      315.4886169433594
+      36.0,
+      246.0
     ]
   },
   "trajectory_validation": {
@@ -116,5 +179,14 @@
     "only_discontinuity_step": 20,
     "teleport_connector_endpoints": "Last pre-portal and first post-portal positions; connector curvature is schematic, not a physical trajectory.",
     "new_simulation_or_inference": false
+  },
+  "decoder_selection": {
+    "clip_indices_zero_based": [
+      0,
+      1
+    ],
+    "frame_index": 2,
+    "selection": "First two clips in recorded order, without filtering by reconstruction quality. Full six-clip montage retained in appendix.",
+    "source_pixels_unchanged": true
   }
 }

@@ -1,4 +1,5 @@
 \section{Experimental protocols}
+\label{app:protocols}
 
 \subsection{Trajectory collection and temporal interface}
 \label{app:collection}
@@ -106,7 +107,7 @@ with CEM, and 19/25 and 10/25 with GD. Palette succeeds on 20/25 and
 Table~\ref{tab:matchedidm} have no corresponding planning evaluation.
 
 \paragraph{Required cues and entrance choices.}
-The cue columns of Table~\ref{tab:variantrankplanning} groups episodes by the cue
+The cue columns of Table~\ref{tab:variantrankplanning} group episodes by the cue
 on the entrance that leads to the requested goal room, not by the entrance
 actually chosen. Green in Color and Palette, and Triangle in Shape, each
 have 12 R1 and four R2 cases; Orange, Blue, and Diamond each have 13 R1 and
@@ -177,190 +178,22 @@ Palette & CEM & 18 & 7 & 0 \\
 \end{tabular*}
 \end{table}
 
-\section{Representation landscapes and their relation to planning}
+\section{Energy-map construction}
 \label{app:landscapes}
 
-\paragraph{Static representation metrics.}
-Let $x_e(p)$ be a rendered observation in scenario $e$ with the agent at legal
-center $p$, and let $z_e(p)$ be its frozen encoder-plus-projector output.
-For a reference image $g=x_e(p_g)$, we compute both
-\[
- S_e(p,g)=\frac{z_e(p)^\top z_e(p_g)}{\|z_e(p)\|_2\,\|z_e(p_g)\|_2},
- \qquad
- E_e(p,g)=\|z_e(p)-z_e(p_g)\|_2^2.
-\]
-High $S$ means high similarity; low $E$ means low static goal-distance cost.
-The historical ``energy landscape'' plots display cosine similarity $S$.
-Neither quantity invokes the action-conditioned predictor. The actual planner
-instead compares its \emph{predicted} terminal state with the goal embedding
-(Appendix~\ref{app:planning}). A high similarity peak is therefore not a high
-planning-cost peak, and these static maps are not action-value functions.
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=\linewidth,height=.72\textheight,keepaspectratio]{figures/lewm_spatial_three_cue_landscapes.pdf}
-\caption{\textbf{Primary spatial $8\times8$ + IDM 3.125 landscapes.}
-The Color, Shape, and Palette checkpoints are those used for the primary coordinate
-probes and planning evaluations. Columns compare cosine similarity $S$ and
-squared distance $E$ for both destination goals. Yellow denotes high
-similarity or low cost. Cosine maps share [.6,1]; each squared-distance pair
-shares its printed scale. The red disk marks the agent position in the
-reference image. Both metrics compare encoded observations at the same
-210 valid agent centers.}
-\label{fig:spatiallandscapes}
-\end{figure}
-
-\paragraph{Grid and rendering protocol.}
-We use one fixed training-corpus scenario (episode 1893), selected by the
-historical geometry/reference-placement procedure before inspecting model
-outputs. Its geometry is shared across Color, Shape, and green/blue.
-For the matched CLS controls, the renderer reproduces a stored observation
-byte for byte in each of the three datasets. The primary spatial
-Color and Shape models load with their original historical implementation
-and configurations; Palette uses its own source revision and strict loader.
-No checkpoint conversion is applied, and each renderer reproduces a stored
-dataset observation exactly. A regular $20\times20$ lattice
-spans the $224\times224$ image, with spacing $223/19\simeq11.74$ pixels;
-210 grid points are valid agent centers. We evaluate the model only at those
-centers, holding portal identity, geometry, and appearance fixed.
-Four unoccluded reference positions are shared across all variants: two in
-the hub near different portals and one in each destination room. Reference
-positions themselves are encoded exactly, even when off the lattice.
-The three primary spatial and six matched CLS epoch-10 checkpoints are frozen;
-encoder inference uses float32 and
-distance arithmetic float64. No decoder, action sequence, or simulator rollout
-is involved. The accompanying data include raw maps and hashes of the checkpoints and
-configurations.
-
-For display only, each floor pixel interpolates the eight nearest valid
-sample centers \emph{within its room}, with weights
-$1/(\|p-q\|_2^2+.001)$. Walls, cue markers, and the red reference-agent disk
-are overlaid unchanged; floor heatmaps use 85\% opacity. The colored floor therefore extends beyond the valid centers used for
-model evaluation. All fresh cosine maps share
-the range [.6, 1]; yellow denotes high similarity. Squared-distance maps use
-one scale per model--cue checkpoint shared across its two destination references, with yellow
-for low cost and purple for high cost. The numerical upper bound is printed
-for each pair. Absolute distances are not calibrated across models.
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[page=1,width=\linewidth,height=.78\textheight,keepaspectratio]{figures/lewm_similarity_matched_appendix.pdf}
-\caption{\textbf{Matched CLS + IDM 3.125 landscapes for both destination references.}
-Rows vary cue rendering; columns show cosine similarity $S$ and squared
-projected distance $E$ for upper- and lower-room reference images. The red
-disk marks the reference-agent position. Yellow means high $S$ or low $E$;
-$S$ shares [.6,1], and each $E$ pair shares its printed scale. Both
-metrics compare encoded observations, not predicted action outcomes.}
-\label{fig:landscapeidm}
-\end{figure}
-
-\paragraph{Geodesic navigation reference.}
-The right column of Figure~\ref{fig:similarity} is computed from the environment,
-independently of the learned representations. We construct a directed graph
-whose state is agent position together with the endpoint currently locked
-against re-entry. A one-pixel lattice covers valid agent centers in each
-room. Walking edges use 16 directions: axis, diagonal, and $(2,1)$ or $(1,2)$
-offsets with all sign variants. The 210 model-query positions, four references,
-portal endpoints, and exact landing positions are inserted as additional
-nodes with local same-room connections. Every movement is realizable within
-the environment's componentwise action bounds; a zero action is included
-because an armed portal can trigger without displacement.
-
-Each edge applies the swept-segment trigger radius of 10 px. Entry transfers
-the agent to the paired endpoint's exact landing position, offset by 14 px,
-and locks that destination until the agent moves at least 28 px away. The
-edge weight is the Euclidean pre-teleport displacement, matching the
-environment's route-length accounting; the teleportation jump adds no distance.
-Reverse Dijkstra computes the shortest remaining distance to the exact goal
-position, accepting any lock state there. Plotted starting states are unlocked.
-This is a point-goal diagnostic, not distance to the 16-pixel success region
-used in planning evaluation, nor a minimum-time objective.
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[page=2,width=\linewidth,height=.78\textheight,keepaspectratio]{figures/lewm_similarity_matched_appendix.pdf}
-\caption{\textbf{Matched native no-IDM landscapes.} The same geometry,
-reference positions, and cosine scale as Figure~\ref{fig:landscapeidm}.
-Yellow denotes high similarity or low energy; purple denotes the opposite.
-Native Color and green/blue cosine maps are nearly uniform. Each
-squared-distance pair has its own printed scale; distances are not
-calibrated across models.}
-\label{fig:landscapenative}
-\end{figure}
-
-The shortest paths are exact on this finite graph, which approximates the
-continuous action space. It contains 34,062 states and 549,911 directed edges.
-Halving the lattice spacing changes distances at the 420 displayed
-position--goal pairs by at most .900 px (mean .225 px); this checks spatial
-resolution, not convergence over all action directions. At the two hub
-reference positions, distances to the upper goal are 18.33 and 136.79 px;
-for the lower goal they are 146.20 and 19.10 px. Thus changing the goal
-reverses the preferred portal. For display we sample these distances at the
-same 210 centers and apply the same roomwise interpolation as the learned
-maps. One pixel-distance scale is shared across both goals. This is a
-navigation reference, not a calibrated target for latent squared distance.
-
-\paragraph{Interpretation and limits.}
-The primary spatial models produce destination-reference cosine similarities
-.98820 (Color), .97590 (Shape), and .97994 (Palette), with squared
-distances 5.075, 8.113, and 7.132, respectively.
-Their goal-energy maps retain low-cost regions near both candidate hub
-portals and both leaf portals, although changing the reference does alter
-the costs. The separate matched CLS+IDM controls give cosine similarities
-.99598 (Color), .99441 (Shape), and .99498 (green/blue), with squared distances
-1.125, 2.483, and 1.910. These nonzero differences could still guide a planner;
-cosine similarity has no calibrated threshold for ``color blindness.''
-These maps characterize goal discrimination in one scene. They do not
-establish whether a model learns teleportation while ignoring endpoint
-pairing. Appendix~\ref{app:portal-swap} tests cue swaps and
-action-conditioned portal rollouts, separating static sensitivity from
-predicted consequences without isolating the cause of forecast error.
-
-\paragraph{Historical LeWM atlas.}
-Nine selected final-epoch LeWM cases cover readout, cue, and exposure
-variants. Objectives, readouts, and layouts differ, so this is supplementary
-context rather than a matched benchmark.
-These plots were generated during training on a $40\times40$ grid; the
-standalone plotting default was $20\times20$. Their renderer derived
-heatmap and colorbar percentile bounds from different arrays. We therefore
-omit the inconsistent numerical bars and retain the maps only for
-qualitative comparison. Panels are independently rescaled, with yellow
-indicating relatively high cosine similarity. Brightness is not numerically
-comparable across panels or with the fresh fixed-scale maps.
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=\linewidth]{figures/lewm_similarity_historical_atlas.pdf}
-\caption{\textbf{Historical LeWM similarity atlas.}
-Nine conditions vary readout, cue, IDM, or transition-window exposure.
-Reference positions are marked in each scene; each map is independently
-rescaled, with yellow denoting higher similarity and purple lower similarity.
-These are static cosine diagnostics, not action-conditioned
-planning costs.}
-\end{figure}
-
-\section{Additional reconstruction and probe analyses}
-\label{app:quantitative}
-
-A separate historical audit evaluates Color reconstructions from the
-spatial readout. It identifies cue-marker pixels in original frames, excludes
-agent overlap, and classifies corresponding decoded pixels by their nearest
-input-color centroid in CIE L$^*$a$^*$b$^*$ space. Confidence intervals use
-episode-level bootstrap resampling. Across 150 episodes, 300 frames, and
-1,127 cue instances, macro color accuracy is 54.2\% and separation
-retention is 4.85\% (95\% CI [3.57, 6.17]).
-The recorded run identifier links this audit to the primary spatial Color
-run, although the detailed raw artifact was unavailable for independent
-checkpoint-level verification. Its evaluation population is separate from
-the six clips in Figure~\ref{fig:decoders}.
-For the historical Shape audit, location $R^2$ was recomputed from retained
-epoch-10 features under the original ridge contract, reproducing the archived
-MAE. The matched CLS results were computed from their respective final
-checkpoint probe artifacts.
-A smaller audit of historical green/blue media yields 50\% macro accuracy
-and 2.9\% separation retention for the IDM-0 run. Without an episode-level
-confidence interval, these values provide descriptive evidence only. Shape
-reconstructions have not undergone a quantitative identity audit.
+We fix one layout and place the agent at the 210 valid centers of a
+$20\times20$ image grid, holding tunnel positions and cues unchanged.
+For each goal image, the learned energy $E$ is the squared distance between
+the frozen projected features of the current observation and the goal.
+The geodesic reference energy is the shortest remaining walking distance
+through the true paired tunnels, computed on a navigation graph that follows
+the environment's portal-entry and re-entry rules; teleportation adds no
+walking distance. We evaluate both maps at the same positions and interpolate
+within each room for display. Yellow indicates low energy, with a shared
+scale across the two goals in each column. Learned energy uses squared
+feature units; the reference uses pixels. These maps compare observed states;
+the planner applies the learned energy to predicted states. The implementation
+and saved map values accompany the code.
 
 \FloatBarrier
 \section{Transition-diversity ablation}
@@ -409,7 +242,8 @@ changes predicted destinations or actions.
 \end{figure}
 
 \FloatBarrier
-\section{Interpreting the diagnostic measurements}
+\section{Additional readout diagnostics}
+\label{app:diagnostics}
 
 \begin{figure}[h]
   \centering
