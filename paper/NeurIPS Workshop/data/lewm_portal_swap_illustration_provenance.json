@@ -4,7 +4,7 @@
   "source_protocol": "data/lewm_portal_swap_protocol.json",
   "source_protocol_sha256": "e4d593d96b5b99511cf89e9ed60d2baafba9d1c3ac3642ab92a9f762cf18379f",
   "output": "figures/lewm_portal_swap_trajectories.pdf",
-  "output_sha256": "53167fd976de8be26d13709a39abf2b531d35d314b2da5800e578e1624ca9d7b",
+  "output_sha256": "7900646bde0b4f713df2cfaf4372eea5fdead2a2ddf86aadae4841691aa8304b",
   "compact_arrays": "data/lewm_portal_swap_illustration_arrays.npz",
   "compact_arrays_sha256": "ccbead727ab15b5ff95273fd1f1588c7891a78ddb656e3b9ddd25d03d918ae24",
   "index": 16,
@@ -121,7 +121,7 @@
     "Hub colors swapped"
   ],
   "presentation_revision": {
-    "description": "Simplified start/end legend and curved dashed teleport arrows, retaining every recorded position and the saved initial image pixels.",
+    "description": "Simplified start/end legend and curved dashed teleport connectors, retaining every recorded position and the saved initial image pixels.",
     "audit": "data/color_focus_figure_provenance.json"
   }
 }

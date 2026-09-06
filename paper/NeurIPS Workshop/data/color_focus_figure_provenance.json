@@ -1,11 +1,11 @@
 {
-  "method": "Uniformly scale existing decoder and goal-map panels to align image top and bottom edges. Replot the trajectory illustration from unchanged saved images and positions, using curved dashed arrows for instantaneous teleportation. Compose with the unchanged Color divergence panel.",
+  "method": "Uniformly scale existing decoder and goal-map panels to align image top and bottom edges. Replot the trajectory illustration from unchanged saved images and positions, using curved dashed connectors for instantaneous teleportation. Compose with the unchanged Color divergence panel.",
   "source_arrays": "data/lewm_portal_swap_illustration_arrays.npz",
   "source_arrays_sha256": "ccbead727ab15b5ff95273fd1f1588c7891a78ddb656e3b9ddd25d03d918ae24",
   "sources": {
     "lewm_spatial_three_cue_decoders.pdf": "478a028d4a7ce4a908b87cdb6e79aec5926c95cbfed20ee85f5941e30b8ff5fb",
     "lewm_goal_landscape_and_portal_swap.pdf": "b751144f52b2c0f911487831a0f4bce21504dfbb41624b10b6cdab2839deb769",
-    "lewm_portal_swap_trajectories.pdf": "53167fd976de8be26d13709a39abf2b531d35d314b2da5800e578e1624ca9d7b"
+    "lewm_portal_swap_trajectories.pdf": "7900646bde0b4f713df2cfaf4372eea5fdead2a2ddf86aadae4841691aa8304b"
   },
   "outputs": [
     {
@@ -61,7 +61,7 @@
     },
     {
       "file": "figures/lewm_color_portal_swap.pdf",
-      "sha256": "6cec1c3a0a8dcad724c742113fa70153b93b1c6aaf2906d1220898098efee3d6",
+      "sha256": "8aeb9519cd46bc6c34e296055121ec500af3c73d78a445288d2d488b2d29d635",
       "panels": [
         {
           "source": "lewm_portal_swap_trajectories.pdf",
@@ -114,7 +114,7 @@
     "images_from_original_saved_array": true,
     "all_81_positions_per_world_retained": true,
     "only_discontinuity_step": 20,
-    "teleport_arrow_endpoints": "Last pre-portal and first post-portal positions; arrow curvature is schematic, not a physical trajectory.",
+    "teleport_connector_endpoints": "Last pre-portal and first post-portal positions; connector curvature is schematic, not a physical trajectory.",
     "new_simulation_or_inference": false
   }
 }
