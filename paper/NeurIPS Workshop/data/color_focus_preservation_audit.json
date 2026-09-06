@@ -12,5 +12,6 @@
   "references_start_page": 5,
   "total_pages": 24,
   "variant_appendix": "Appendix L: Shape and Palette comparisons",
-  "no_new_training_or_evaluation": true
+  "no_new_training_or_evaluation": true,
+  "subsequent_presentation_revision": "Trajectory illustration restyled from the same saved arrays; current presentation audit is data/color_focus_figure_provenance.json."
 }

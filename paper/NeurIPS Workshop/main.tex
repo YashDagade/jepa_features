@@ -8,6 +8,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
+\usepackage{array}
 \usepackage{arydshln}
 \usepackage{float}
 \usepackage{placeins}
@@ -203,8 +204,9 @@ before the crossing and receive no later images.
   \includegraphics[width=\linewidth]{figures/lewm_color_portal_swap.pdf}
   \caption{\textbf{Predicted features separate too little after a cue swap.}
   (a) The same actions reach different rooms after swapping the hub colors.
-  Solid lines show motion; dashed lines show teleportation. The illustration
-  is excluded from the quantitative evaluation. (b) Color's paired latent
+  Solid lines show motion; curved dashed arrows denote teleportation, not
+  movement through walls. Red disks mark starts and open circles mark ends.
+  The illustration is excluded from the quantitative evaluation. (b) Color's paired latent
   distances: observed states (blue) and model rollouts (orange), with medians
   and interquartile bands over 16 geometries. Early rollout values include
   conditioning observations. The gray interval contains teleportation.}
@@ -238,16 +240,17 @@ Entries show CEM/GD success (\%). R1/R2 have 25 cases each; Green/Orange
 have 16/34 cases, pooling both ranks. Cue labels identify the tunnel
 required by the goal. Appendix~\ref{app:planning} gives the cue-by-rank breakdown.}
 \label{tab:rankplanning}
-\renewcommand{\arraystretch}{1.12}
-\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}cccc@{}}
+\renewcommand{\arraystretch}{1.30}
+\setlength{\tabcolsep}{0pt}
+\begin{tabular}{@{}*{4}{>{\centering\arraybackslash}p{.25\linewidth}}@{}}
 \toprule
 \multicolumn{2}{c}{Rank-based success $\uparrow$} & \multicolumn{2}{c}{Cue-based success $\uparrow$} \\
-\cmidrule(lr){1-2}\cmidrule(l){3-4}
+\cmidrule(lr){1-2}\cmidrule(lr){3-4}
 R1 & R2 & Green & Orange \\
 \midrule
-80/64 & 16/52 & 56.3/62.5 & 44.1/55.9 \\
+\curpred{80.0}{64.0} & \curpred{16.0}{52.0} & \curpred{56.3}{62.5} & \curpred{44.1}{55.9} \\
 \bottomrule
-\end{tabular*}
+\end{tabular}
 \end{table}
 
 \Needspace{10\baselineskip}

@@ -1,14 +1,16 @@
 {
-  "method": "Vector PDF composition of explicitly bounded panels from the existing audited figures. No image editing, model inference, simulation, or changes to numerical data.",
+  "method": "Uniformly scale existing decoder and goal-map panels to align image top and bottom edges. Replot the trajectory illustration from unchanged saved images and positions, using curved dashed arrows for instantaneous teleportation. Compose with the unchanged Color divergence panel.",
+  "source_arrays": "data/lewm_portal_swap_illustration_arrays.npz",
+  "source_arrays_sha256": "ccbead727ab15b5ff95273fd1f1588c7891a78ddb656e3b9ddd25d03d918ae24",
   "sources": {
     "lewm_spatial_three_cue_decoders.pdf": "478a028d4a7ce4a908b87cdb6e79aec5926c95cbfed20ee85f5941e30b8ff5fb",
     "lewm_goal_landscape_and_portal_swap.pdf": "b751144f52b2c0f911487831a0f4bce21504dfbb41624b10b6cdab2839deb769",
-    "lewm_portal_swap_trajectories.pdf": "a08acf1ea5d73c075c25d18aa5631bceedf49964a9e796a089cd5ca1fbe2ae85"
+    "lewm_portal_swap_trajectories.pdf": "53167fd976de8be26d13709a39abf2b531d35d314b2da5800e578e1624ca9d7b"
   },
   "outputs": [
     {
       "file": "figures/lewm_color_reconstruction_and_energy.pdf",
-      "sha256": "5af0ab5d59246ba8ddb6fb0b8f3a428886d0dcc490ab65d873fb0f939d2e121d",
+      "sha256": "c607898540e6adcbe439fe0ddfab61ec95cce01c1218f488d5d702c0c363b590",
       "panels": [
         {
           "source": "lewm_spatial_three_cue_decoders.pdf",
@@ -35,9 +37,9 @@
           ],
           "destination_pt": [
             230,
-            22,
-            430,
-            292
+            18.883198745299776,
+            451.24116338932333,
+            317.5587693208862
           ]
         },
         {
@@ -49,37 +51,31 @@
             288
           ],
           "destination_pt": [
-            446,
-            42,
-            619,
-            292
+            470,
+            41.007315084232104,
+            661.3736063317647,
+            317.55876932088626
           ]
         }
-      ],
-      "labels": [
-        "(a)",
-        "(b)",
-        "(c)",
-        "Geodesic reference"
       ]
     },
     {
       "file": "figures/lewm_color_portal_swap.pdf",
-      "sha256": "c2ec89363643f4245f4c92c61e968042cc3fd2b70fcdd997f6a2586c6fd523a2",
+      "sha256": "6cec1c3a0a8dcad724c742113fa70153b93b1c6aaf2906d1220898098efee3d6",
       "panels": [
         {
           "source": "lewm_portal_swap_trajectories.pdf",
           "source_clip_pt": [
-            15,
-            27,
-            502,
-            283
+            0,
+            17,
+            489.6,
+            251
           ],
           "destination_pt": [
             0,
-            22,
-            393,
-            228.58
+            20,
+            405,
+            213.56617647058823
           ]
         },
         {
@@ -91,17 +87,34 @@
             462
           ],
           "destination_pt": [
-            421,
+            426,
             36,
-            720,
-            216.2
+            650,
+            171
           ]
         }
-      ],
-      "labels": [
-        "(a)",
-        "(b)"
       ]
     }
-  ]
+  ],
+  "aligned_image_bounds_pt": {
+    "a": [
+      42.25779724121094,
+      315.4886169433594
+    ],
+    "b": [
+      42.25779724121094,
+      315.4886169433593
+    ],
+    "c": [
+      42.25779724121094,
+      315.4886169433594
+    ]
+  },
+  "trajectory_validation": {
+    "images_from_original_saved_array": true,
+    "all_81_positions_per_world_retained": true,
+    "only_discontinuity_step": 20,
+    "teleport_arrow_endpoints": "Last pre-portal and first post-portal positions; arrow curvature is schematic, not a physical trajectory.",
+    "new_simulation_or_inference": false
+  }
 }

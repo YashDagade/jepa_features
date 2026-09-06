@@ -268,7 +268,10 @@ images and plotted values; verification records are in
 `lewm_color_reconstruction_and_energy.pdf` combines all six Color input/decoder
 examples with the original Color energy maps and geodesic reference.
 `lewm_color_portal_swap.pdf` pairs the saved two-world trajectory illustration
-with the Color divergence curve. These are vector compositions of existing
-verified assets, with source hashes and panel bounds in
+with the Color divergence curve. The energy panels are scaled uniformly to
+match the reconstruction column height. The trajectory illustration is drawn
+from the unchanged saved image/position arrays, with curved dashed arrows
+for instantaneous teleports and a compact start/end legend. Composition bounds,
+source hashes, and trajectory checks are recorded in
 `../data/color_focus_figure_provenance.json`. Figure 1 is unchanged. The complete
 three-variant figures remain available in Appendix L and the detailed protocols.
