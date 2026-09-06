@@ -1,0 +1,69 @@
+{
+  "verified_date": "2026-09-06",
+  "base_revision": "e40a751",
+  "retained_table_labels": [
+    "tab:agentidm",
+    "tab:idmplanning",
+    "tab:readoutcontrols"
+  ],
+  "retained_tables_numerically_unchanged": true,
+  "cohort": [
+    {
+      "readout": "native_cls",
+      "idm_weight": 0.0,
+      "run_id": "jepa-color-lewm-idm0p0-tr2-color-color-room-count-s3072-r1",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "checkpoint_file_sha256": "9103cfc569545c9c7d63064b7ac199543ed8c712d2df3cb1d12338f0a567aa7d",
+      "checkpoint_state_sha256": "35c58ccd062d9f0b58896144021075d1f5d7edc6c3311f7a1f8fa2ea3e27193b"
+    },
+    {
+      "readout": "native_cls",
+      "idm_weight": 3.125,
+      "run_id": "jepa-color-lewm-idm3p125-tr2-color-color-room-count-s3072-r1",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "checkpoint_file_sha256": "cd8e5a062fdcc21c4a7263052f1097a4ab935894d88a34c790b37fd35ab7be4f",
+      "checkpoint_state_sha256": "6b257752bcc808eff280caf3bfa6be60b361c0d28cbe16dc71f4d844443b9970"
+    },
+    {
+      "readout": "spatial_8x8",
+      "idm_weight": 0.0,
+      "run_id": "jepa-color-lewm-8x8-idm0p0-tr2-color-color-room-count-s3072-r1",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "checkpoint_file_sha256": "a2a9608e3eefa33ceb23655aa75143c37f4946e93219adbab67d57b33ded2bc1",
+      "checkpoint_state_sha256": "08b4a93a6fb2b75958aaca39bf7d1568764f5e257a11e79ce1e847382c7701dc"
+    },
+    {
+      "readout": "spatial_8x8",
+      "idm_weight": 3.125,
+      "run_id": "jepa-color-lewm-8x8-idm3p125-tr2-color-color-room-count-s3072-r1",
+      "source_commit": "cf65948b159c0967ca2dc73d9879490e88a7c6db",
+      "checkpoint_file_sha256": "9991c7f227cd20f40ac853bb7e690498bbaf5e3fdc4c8d21b953b01774cc4667",
+      "checkpoint_state_sha256": "d8b11fee7c0ba7ee81399605628ddc4ed1d497bfcfc6d546d95b2db8b631acc1"
+    }
+  ],
+  "removed_table_labels": [
+    "tab:matchedidm",
+    "tab:spatialfull"
+  ],
+  "removed_figure_labels": [
+    "fig:idmreadoutdecoder",
+    "fig:clscontroldecoders"
+  ],
+  "reason": "Separate CLS fits and mixed-revision spatial rows duplicate nominal configurations; retain a single four-checkpoint Color cohort for the objective/readout argument.",
+  "shape_probes": "Primary Shape location metrics remain reported; clarified that ridge probes were fitted to saved frozen features after training, using the same protocol and splits. No values were imputed or changed.",
+  "variant_limit": "Different training code revisions remain explicitly disclosed in Appendix A; comparison is not an isolated cue-appearance ablation.",
+  "raw_result_files_preserved": {
+    "short_paper_probe_results.csv": "236463ace0e50aaf722f4d7c287973ff3242a7f5d9b69ab1406ce7e725c81cef",
+    "short_paper_noidm_color_probes.csv": "cf78ae1386b6849233f4e0537113891347b62baa13849385836a5d8cbf53c6d9",
+    "short_paper_matched_probe_results.csv": "01c2837c4aa97cc0cd6746f245b08b04c929b90d74351220b98f63d76428e999",
+    "lewm_idm_agent_position_probes.csv": "59b24cc06f1556d8846c87a804950981994c071ae08e0a26c1cbab4422c4ac2f",
+    "lewm_idm_readout_planning.csv": "864f61b7007632d6a22e34716312a793703ecc6e73d4ef42a973ee817661763b"
+  },
+  "cross_references_valid": true,
+  "main_pages": 4,
+  "total_pages": 13,
+  "cited_references": 21,
+  "source_rebuild": "byte-identical",
+  "pdf_sha256": "f919d33a5787b3dd97694fc540258e36fbe64fd480bdbb2ecf11ae4fc25bef3d",
+  "source_archive_sha256": "f9025c34e0a19f69774d32283cebd93250b479022812828468003d2d2028ce4b"
+}

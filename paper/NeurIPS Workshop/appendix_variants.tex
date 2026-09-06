@@ -16,12 +16,17 @@ cue-indexed coordinates; MLP probes show the same gap. Decoder
 reconstructions and energy landscapes provide complementary evidence in
 Figures~\ref{fig:variant-decoders} and
 \ref{fig:variant-landscapes-swaps}. Additional details on the landscape,
-cue-swap, and planning protocols, including differences in model revisions
-and decoder checkpoints, are provided in
+cue-swap, and planning protocols are provided in
 Appendices~\ref{app:landscapes}, \ref{app:portal-swap}, and
 \ref{app:planning}. Together, these results show that the observed behavior is not specific to
 the original color cues, but generalizes across multiple forms of visual
 cueing.
+
+The variants use separately trained checkpoints from different code revisions,
+so these comparisons do not isolate cue appearance as the only change.
+Shape location probes were fitted after training to saved frozen features,
+using the same ridge procedure and episode splits described in
+Appendix~\ref{app:probes}.
  
 \begin{table}[!htbp]
 \centering

@@ -16,12 +16,12 @@ Location R² is .934/.907/.930, versus cue R² .224/.203/.258
 cue binding in this LeWM recipe and its readout and inverse-dynamics
 controls; it does not establish a universal JEPA failure.
 
-CLS±IDM, alternate-palette spatial runs, and readout mechanics are in the
-appendix. The six matched CLS runs completed on September 4, 2026 from
-immutable source `c4a2df2`; they are separate from the historical primary
-spatial checkpoints. Native CLS without IDM fails both location and cue
-readouts. Spatial Color without IDM retains a selective gap, so IDM is not
-necessary for that observation, but its causal influence is not ruled out.
+The appendix uses one Color 2×2 readout/IDM cohort from source `cf65948`
+for agent probes, planning, and tunnel probes. Spatial Color without IDM
+retains a selective gap, whereas CLS without IDM fails both location and
+cue readouts. The separate six-run CLS cohort from `c4a2df2` and the older
+alternate-palette controls remain in the data archive but are omitted from
+the paper to avoid duplicating nominal configurations from different runs.
 The appendix now includes the historical Color 2×2 planning ablation, with
 all 16 rank/solver results in `data/lewm_idm_readout_planning.csv`. For the
 spatial readout, IDM raises success over 50 cases from 8% to 48% (CEM) and
@@ -32,8 +32,8 @@ consumes RNG first. Spatial aggregation improves location MAE from 7.42 to
 3.83 pixels with IDM fixed; it does not restore cue binding. These one-seed
 results motivate the configuration without claiming universal necessity.
 
-The existing green/blue spatial runs use IDM weights 0/.625; they are not
-presented as a matched 3.125 replication.
+The older green/blue spatial runs with IDM weights 0/.625 are omitted from
+the manuscript; the primary Palette results remain in Appendix A.
 
 A targeted spatial confirmation campaign was submitted on September 4:
 **16981833–16981836**, covering Color/Shape/green-blue + IDM3.125 and Color
@@ -94,7 +94,7 @@ made by the revision workflow.
 
 The current draft cites **21 distinct references**, all attached to claims
 in the text. The introduction motivates cue binding through the JEPA and latent
-planning literature; Appendix J develops the connections to LeJEPA/LpJEPA, identifiability,
+planning literature; Appendix H develops the connections to LeJEPA/LpJEPA, identifiability,
 slow features, auxiliary objectives, and value-guided planning. Appendix C credits Temporal
 Straightening for the inspiration behind learned patch aggregation and states
 the architectural and objective differences. The main narrative introduces the dataset, connects the representation, prediction, and planning diagnostics,
@@ -106,7 +106,7 @@ the appendices; the main text identifies the LeWM adaptations in plain language.
 protocols and interpretation, and literature discussion respectively.
 The main text ends on page four;
 references follow the conclusion and span pages five through six, with the
-appendix continuing below them. The complete PDF is 15 pages.
+appendix continuing below them. The complete PDF is 13 pages.
 
 Layout uses the official vertical-spacing defaults, keeps the planning paragraph together,
 and places tables near their discussion. Landscape figures are interleaved
@@ -176,15 +176,10 @@ contains superseded drafts; neither defines the short paper's current scope.
 
 ## Readout and IDM decoder sweep
 
-The appendix displays six Tunnel Room conditions from the historical factorial:
-CLS/spatial 8×8 crossed with IDM weights 0, .125, and 3.125. One identical
-input is used throughout, with unchanged cue crops. The full twelve-condition
-source arrays and provenance remain available.
-The figure uses retained periodic training media; filename label 90001 is
-not treated as an optimizer-step count or final-checkpoint identifier.
-Spatial aggregation improves marker visibility even without IDM. The text
-explains how IDM trains states to retain action-relevant information without
-claiming that it directly supervises color or that both additions are necessary.
+The historical decoder sweep and separate CLS montage are omitted from the
+manuscript. Their source arrays and provenance are retained for traceability;
+they are not dependencies of the submission ZIP. The ablation argument now
+uses the matched-checkpoint numerical tables in Appendices B and C.
 
 Historical `final_epoch_*` media used in Figure 2 are captured at the first
 batch of the final epoch. The separate matched CLS GIFs instead come from
@@ -194,7 +189,7 @@ validation after epoch 10 training and align with those final model weights.
 
 Both follow-ups are complete on main; the anonymous code branch and earlier
 code ZIP remain a separate snapshot. Updated PDF and LaTeX upload files are
-in `runs/pta_feedback/proofread/submission/`. The main paper remains four pages.
+in `runs/pta_feedback/consistent_controls/submission/`. The main paper remains four pages.
 
 A validation-selected two-hidden-layer MLP uses the same frozen checkpoints
 and endpoint targets as the main probes. Across Color/Shape/Palette, current
@@ -225,10 +220,9 @@ end at a sampled position in a randomly chosen leaf, with the goal image
 rendered directly. The 25-primitive-step planning horizon does not determine
 goal selection. `data/lewm_planning_goal_sampling_audit.json` verifies all
 50 cases per variant and their shared geometry, starts, goals, and ranks.
-Figure 3 combines the unchanged goal landscapes with portal-swap divergence
-curves for all three variants. The main text explains the intervention,
-pre-crossing initialization, static sensitivity, forecast attenuation, and
-remaining alternative explanation; the full controls remain in Appendix I.
+Figure 3 combines the Color paired-world illustration with its portal-swap
+divergence curve. Appendix G gives the rollout protocol and forecast ratios;
+static translation controls are omitted.
 
 ## Planning by required cue and first entrance
 
@@ -250,15 +244,12 @@ not additional model evaluations.
 
 ## Appendix rationale and matched controls
 
-Appendix B, “Inverse dynamics modeling loss,” states the predictive/SIGReg/IDM objective
-and separates direct agent-position probes from planning success. Appendix C,
-“Spatial aggregation,” explains its benefit for tunnel coordinates
-and retains the full readout/IDM reconstruction comparison and aggregation
-mechanism. Appendix D, “Matched ablations without spatial aggregation or IDM,”
-retains all primary current/predicted-state probe rows and matched CLS controls,
-and identifies which aspects of the main result do and do not persist.
-The section titles refer to the motivation for this study's primary recipe;
-the text does not claim that either component is universally necessary.
+Appendix B states the predictive/SIGReg/IDM objective and separates agent
+localization from planning success. Appendix C explains spatial aggregation
+and reports tunnel probes from exactly the same four Color checkpoints.
+Its final paragraph summarizes what removal of either component establishes.
+The separate matched-ablation section and mixed-run tables are omitted.
+These controls motivate the primary recipe without claiming universal necessity.
 
 The historical 2×2 planning table now uses rank-first and cue-based grouped
 columns with CEM/GD pairs. Cue results are verified against eight exact metric
@@ -295,10 +286,10 @@ the complete three-variant tables and figures. The primary measurements are unch
 
 ## Appendix TODO revision
 
-Linear and nonlinear probe protocols now share Appendix E.2, with the
-existing wording and training choices preserved. Appendix G explains how
+Linear and nonlinear probe protocols now share Appendix D.2, with the
+existing wording and training choices preserved. Appendix F explains how
 extra single-crossing windows are selected from the original trajectories,
 balanced across prediction intervals, and added to each epoch. It distinguishes
 added-clip share from crossing-target exposure and retains the inconclusive
-probe results. Appendix H retains only the paired rollout protocol and
+probe results. Appendix G retains only the paired rollout protocol and
 forecast/observed ratios. All three TODO comment groups have been resolved.
