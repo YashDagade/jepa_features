@@ -1,0 +1,32 @@
+{
+  "verified_date": "2026-09-06",
+  "restored_from_revision": "e40a751",
+  "restored_table": "tab:matchedidm",
+  "restored_figures": [
+    "fig:idmreadoutdecoder",
+    "fig:clscontroldecoders"
+  ],
+  "first_four_readout_table_bodies_unchanged": true,
+  "restored_figure_assets_byte_identical": true,
+  "cohort_distinction": "Table 8 is a separate six-model CLS replication; Table 7 retains the four Color checkpoints used for agent probes and planning.",
+  "snapshot_distinction": "IDM/readout figure contains training snapshots; CLS replication figure contains logged epoch-10 validation reconstructions.",
+  "former_table9_still_omitted": true,
+  "stable_worldmodel_citation": {
+    "key": "maes2026stableworldmodel",
+    "authoritative_sources": [
+      "https://galilai-group.github.io/stable-worldmodel/",
+      "https://arxiv.org/abs/2605.21800"
+    ],
+    "placement": [
+      "Introduction opening sentence",
+      "Appendix B implementation credit"
+    ]
+  },
+  "cited_references": 22,
+  "cross_references_valid": true,
+  "main_pages": 4,
+  "total_pages": 14,
+  "source_rebuild": "byte-identical",
+  "pdf_sha256": "b8c5c684409e949012676e540747f6cd1884741ec47cc8ae707947fbeacd0d92",
+  "source_archive_sha256": "9b0adc041a2b519076950a141dfc0176f1c54b10a3b7447fb543de316b2559a2"
+}

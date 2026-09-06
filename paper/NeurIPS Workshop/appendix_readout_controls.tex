@@ -6,6 +6,7 @@ leaving cue binding unsupervised.
 
 \subsection{Predictive and inverse-dynamics objectives}
 
+Our implementation builds on Stable WorldModel \citep{maes2026stableworldmodel}.
 We train randomly initialized ViT-tiny models on 10,000 successful
 trajectories for ten epochs, with batch size 128 and seed 3072. For a
 192-dimensional projected state $z_t$ and its prediction $\hat z_{t+1}$,
@@ -115,6 +116,21 @@ Spatial $8\!\times\!8$ & 3.125 & 27.40 & .224 & 3.83 & .934 \\
 \end{tabular*}
 \end{table}
 
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth,height=.78\textheight,keepaspectratio]{figures/lewm_tr2_idm_readout_decoders.pdf}
+\caption{\textbf{IDM and spatial readout change reconstructions while cue distinctions remain weak.}
+Three IDM weights (0, .125, and 3.125) from a Color decoder sweep are
+shown with both CLS and spatial $8\times8$ readouts, giving six conditions for the same input
+(frame 0, first clip). Strips enlarge the green hub, green leaf, orange hub, and orange leaf
+cues, from left to right, without altering their pixels. The images are training snapshots from one seed
+(3072), rather than final-checkpoint reconstructions or quantitative tests of
+identity. Final-checkpoint probe results are reported in Table~\ref{tab:readoutcontrols}.
+The zero-weight condition retains an allocated IDM head; CLS
+denotes the native readout.}
+\label{fig:idmreadoutdecoder}
+\end{figure}
+
 \subsection{Spatial readout}
 
 Inspired by learned feature aggregation in Temporal Straightening
@@ -123,7 +139,9 @@ tokens to an $8\times8$ grid. Flattening, LayerNorm, and a learned linear
 map produce a 192-dimensional feature. Unlike Temporal Straightening, we
 apply no temporal-curvature regularizer. Both readouts use LeWM's
 Linear$(192,2048)$--BatchNorm--GELU--Linear$(2048,192)$ projector; current-state
-probes act on its output.
+probes act on its output. Figure~\ref{fig:idmreadoutdecoder} illustrates
+how the readout and IDM weight affect reconstruction: spatial aggregation
+makes tunnel markers more visible, but their cue distinctions remain weak.
 
 \subsection{Why we use IDM and spatial aggregation}
 
@@ -133,5 +151,56 @@ easier to distinguish from broader failure: weak cue recovery persists with
 CLS+IDM and with spatial features without IDM, but removing both impairs
 location recovery too (Table~\ref{tab:readoutcontrols}). These controls
 motivate our configuration without establishing universal necessity.
+The separate CLS replication below tests this gap across all three variants.
 Cue-swap rollouts use only the primary spatial+IDM models; the ablations
 therefore do not replicate every main-paper diagnostic.
+
+\FloatBarrier
+\subsection{CLS replication across variants}
+\label{app:clsreplication}
+
+We also train a separate set of six CLS models on Color, Shape, and Palette,
+with and without IDM (Table~\ref{tab:matchedidm}). These runs share one
+training implementation, a ten-epoch budget, and seed 3072. Their implementation
+and checkpoints differ from those in Table~\ref{tab:readoutcontrols}, so the
+numerical entries are separate results rather than alternative scores for
+the same models. With IDM, location $R^2$ exceeds cue $R^2$ in every variant;
+without it, both are negative. Their detached reconstructions retain mixed
+or faint markers (Figure~\ref{fig:clscontroldecoders}). These models have no
+planning evaluation; they provide an additional test of feature accessibility.
+
+\begin{table}[ht]
+\centering
+\caption{\textbf{A separate CLS replication across three cue renderings.}
+Current projected states at epoch 10, seed 3072. All six runs share one
+training implementation and the same four-endpoint ridge protocol. These
+are separate checkpoints from Table~\ref{tab:readoutcontrols}; each IDM pair
+shares initialization of common modules.}
+\label{tab:matchedidm}
+\renewcommand{\arraystretch}{1.12}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lllrrrr@{}}
+\toprule
+Variant & Readout & IDM & Cue MAE $\downarrow$ & Cue $R^2\uparrow$ & Tunnel MAE $\downarrow$ & Tunnel $R^2\uparrow$ \\
+\midrule
+Color & CLS & 0 & 31.48 & -.035 & 17.65 & -.039 \\
+Color & CLS & 3.125 & 28.18 & .264 & 8.16 & .653 \\
+Shape & CLS & 0 & 31.54 & -.006 & 17.55 & -.009 \\
+Shape & CLS & 3.125 & 29.53 & .140 & 12.26 & .392 \\
+Green/blue & CLS & 0 & 31.81 & -.041 & 17.57 & -.035 \\
+Green/blue & CLS & 3.125 & 28.01 & .262 & 8.10 & .661 \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\linewidth]{figures/lewm_cls_cue_decoders.pdf}
+\caption{\textbf{Cue distinctions weaken in the matched CLS reconstructions.}
+Inputs (top) and decoder outputs (bottom) for Color, Shape, and green/blue
+with IDM 3.125, from Table~\ref{tab:matchedidm}. Each column shows frame 2
+of all six logged epoch-10 validation clips, rearranged with only empty
+padding removed. The fixed walls alone do not
+establish state-dependent geometry recovery.}
+\label{fig:clscontroldecoders}
+\end{figure}

@@ -19,9 +19,10 @@ controls; it does not establish a universal JEPA failure.
 The appendix uses one Color 2×2 readout/IDM cohort from source `cf65948`
 for agent probes, planning, and tunnel probes. Spatial Color without IDM
 retains a selective gap, whereas CLS without IDM fails both location and
-cue readouts. The separate six-run CLS cohort from `c4a2df2` and the older
-alternate-palette controls remain in the data archive but are omitted from
-the paper to avoid duplicating nominal configurations from different runs.
+cue readouts. The separate six-run CLS cohort from `c4a2df2` is reported as a replication
+in Appendix C.3, with its matched decoder montage. These are separate
+checkpoints from the four Color controls. The older mixed-weight Palette
+controls remain archived and are omitted from the paper.
 The appendix now includes the historical Color 2×2 planning ablation, with
 all 16 rank/solver results in `data/lewm_idm_readout_planning.csv`. For the
 spatial readout, IDM raises success over 50 cases from 8% to 48% (CEM) and
@@ -106,7 +107,7 @@ the appendices; the main text identifies the LeWM adaptations in plain language.
 protocols and interpretation, and literature discussion respectively.
 The main text ends on page four;
 references follow the conclusion and span pages five through six, with the
-appendix continuing below them. The complete PDF is 13 pages.
+appendix continuing below them. The complete PDF is 14 pages.
 
 Layout uses the official vertical-spacing defaults, keeps the planning paragraph together,
 and places tables near their discussion. Landscape figures are interleaved
@@ -176,10 +177,11 @@ contains superseded drafts; neither defines the short paper's current scope.
 
 ## Readout and IDM decoder sweep
 
-The historical decoder sweep and separate CLS montage are omitted from the
-manuscript. Their source arrays and provenance are retained for traceability;
-they are not dependencies of the submission ZIP. The ablation argument now
-uses the matched-checkpoint numerical tables in Appendices B and C.
+The IDM/readout decoder sweep and matched CLS montage are restored in
+Appendix C and included in the submission ZIP. The sweep shows three IDM
+weights with both readouts using training snapshots. The CLS montage shows
+logged epoch-10 validation reconstructions from the separate six-model
+replication. Both are qualitative complements to the probe tables.
 
 Historical `final_epoch_*` media used in Figure 2 are captured at the first
 batch of the final epoch. The separate matched CLS GIFs instead come from
@@ -189,7 +191,7 @@ validation after epoch 10 training and align with those final model weights.
 
 Both follow-ups are complete on main; the anonymous code branch and earlier
 code ZIP remain a separate snapshot. Updated PDF and LaTeX upload files are
-in `runs/pta_feedback/consistent_controls/submission/`. The main paper remains four pages.
+in `runs/pta_feedback/cls_replication/submission/`. The main paper remains four pages.
 
 A validation-selected two-hidden-layer MLP uses the same frozen checkpoints
 and endpoint targets as the main probes. Across Color/Shape/Palette, current
@@ -248,7 +250,8 @@ Appendix B states the predictive/SIGReg/IDM objective and separates agent
 localization from planning success. Appendix C explains spatial aggregation
 and reports tunnel probes from exactly the same four Color checkpoints.
 Its final paragraph summarizes what removal of either component establishes.
-The separate matched-ablation section and mixed-run tables are omitted.
+Appendix C.3 restores the cross-variant CLS table and matched decoder
+figure as a separate replication; the mixed-run spatial table remains omitted.
 These controls motivate the primary recipe without claiming universal necessity.
 
 The historical 2×2 planning table now uses rank-first and cue-based grouped
@@ -293,3 +296,11 @@ balanced across prediction intervals, and added to each epoch. It distinguishes
 added-clip share from crossing-target exposure and retains the inconclusive
 probe results. Appendix G retains only the paired rollout protocol and
 forecast/observed ratios. All three TODO comment groups have been resolved.
+
+## Restored replication and codebase citation
+
+Table 8 retains all six original CLS/IDM rows, and its caption distinguishes
+those checkpoints from Table 7. Both the matched CLS decoder figure and
+the IDM/readout snapshot figure are restored. No results or image assets
+were changed. Stable WorldModel is cited in the introduction and credited
+as the implementation base in Appendix B, using arXiv:2605.21800.

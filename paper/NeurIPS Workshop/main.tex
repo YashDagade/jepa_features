@@ -51,7 +51,7 @@ asymmetry remains an open question.
 \label{sec:introduction}
 
 Joint-Embedding Predictive Architectures (JEPAs) have emerged as a promising approach to visual representation learning and world modeling
-\citep{assran2023ijepa,bardes2024vjepa,assran2025vjepa2,murlabadia2026vjepa21}.
+\citep{assran2023ijepa,bardes2024vjepa,assran2025vjepa2,murlabadia2026vjepa21,maes2026stableworldmodel}.
 By predicting in latent space rather than pixel space, JEPAs can abstract away visual details that are unnecessary for the predictive objective
 \citep{lecun2022path,balestriero2025lejepa}.
 Such representations can support planning through learned latent dynamics
@@ -68,7 +68,7 @@ Tunnel Room consists of a central \emph{hub} and two \emph{leaf} rooms connected
 
 We construct three variants that preserve the same navigation problem while changing the visual cue: \emph{Color} uses green/orange tunnels, \emph{Shape} uses triangles/diamonds, and \emph{Palette} uses green/blue. We refer to the association between a tunnel's visual cue and its paired destination as the \emph{cue-binding}. We focus on Color in the main text and report Shape and Palette results in Appendix~\ref{app:variants}. All three variants show the same qualitative pattern: locations are easier to recover than cue-indexed endpoints.
 
-We train LeWM \citep{maes2026leworldmodel} on 10,000 expert trajectories to predict future latent states from observation and action histories. Our primary configuration adds an inverse-dynamics (IDM) auxiliary objective \citep{ivashkov2026sensorimotor} and replaces the native CLS readout with a learned spatial $8\times8$ aggregation inspired by \citet{wang2026temporal}. These modifications substantially improve localization and planning relative to the native configuration; Appendices~\ref{app:ablations} and \ref{app:aggregator} explain the two modifications and test their removal. Appendix~\ref{app:protocols} describes trajectory collection and evaluation.
+We train LeWM \citep{maes2026leworldmodel} on 10,000 expert trajectories to predict future latent states from observation and action histories. Our primary configuration adds an inverse-dynamics (IDM) auxiliary objective \citep{ivashkov2026sensorimotor} and replaces the native CLS readout with a learned spatial $8\times8$ aggregation inspired by \citet{wang2026temporal}. These modifications substantially improve localization and planning relative to the native configuration; Appendices~\ref{app:ablations} and \ref{app:aggregator} explain the two modifications and test their removal, including CLS replications across all three variants. Appendix~\ref{app:protocols} describes trajectory collection and evaluation.
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{figures/tunnel_variants_and_rank.pdf}
