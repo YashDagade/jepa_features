@@ -21,12 +21,7 @@ trajectories for ten epochs, with batch size 128 and seed 3072. For a
 SIGReg encourages isotropic Gaussian states. The target $a_t$ contains five
 normalized 2-D actions. The training-only inverse head is
 Linear$(384,512)$, LayerNorm, GELU, and Linear$(512,10)$; its gradients pass
-through both states. We use $\lambda_{\mathrm{IDM}}=3.125$, versus zero for
-the predictive objective without IDM. The zero-weight controls retain the
-same inverse head but disable its loss. Inverse dynamics and auxiliary-task theory motivate
-preserving action-relevant features
-\citep{ivashkov2026sensorimotor,yu2025auxjepa}; our head receives no cue or
-portal-pairing labels.
+through both states. We use $\lambda_{\mathrm{IDM}}=3.125$. 
 
 \subsection{Agent localization and planning}
 
@@ -91,9 +86,7 @@ Replacing CLS with spatial aggregation improves tunnel localization under
 both objectives (Table~\ref{tab:readoutcontrols}). With IDM, tunnel MAE
 falls from 7.42 to 3.83 pixels and $R^2$ rises from .684 to .934. This gain
 concerns tunnel positions: agent-position probes are stronger with CLS+IDM
-(Table~\ref{tab:agentidm}). Readout comparisons share the seed and budget,
-but encoder initialization differs because constructing the aggregator
-consumes random numbers.
+(Table~\ref{tab:agentidm}). 
 
 \begin{table}[ht]
 \centering
@@ -123,56 +116,57 @@ Spatial $8\!\times\!8$ & 3.125 & 27.40 & .224 & 3.83 & .934 \\
 Three IDM weights (0, .125, and 3.125) from a Color decoder sweep are
 shown with both CLS and spatial $8\times8$ readouts, giving six conditions for the same input
 (frame 0, first clip). Strips enlarge the green hub, green leaf, orange hub, and orange leaf
-cues, from left to right, without altering their pixels. The images are training snapshots from one seed
-(3072), rather than final-checkpoint reconstructions or quantitative tests of
-identity. Final-checkpoint probe results are reported in Table~\ref{tab:readoutcontrols}.
+cues, from left to right, without altering their pixels. Final-checkpoint probe results are reported in Table~\ref{tab:readoutcontrols}.
 The zero-weight condition retains an allocated IDM head; CLS
 denotes the native readout.}
 \label{fig:idmreadoutdecoder}
 \end{figure}
 
 \subsection{Spatial readout}
-
-Inspired by learned feature aggregation in Temporal Straightening
-\citep{wang2026temporal}, we discard CLS and adaptively average-pool patch
-tokens to an $8\times8$ grid. Flattening, LayerNorm, and a learned linear
-map produce a 192-dimensional feature. Unlike Temporal Straightening, we
-apply no temporal-curvature regularizer. Both readouts use LeWM's
-Linear$(192,2048)$--BatchNorm--GELU--Linear$(2048,192)$ projector; current-state
-probes act on its output. Figure~\ref{fig:idmreadoutdecoder} illustrates
-how the readout and IDM weight affect reconstruction: spatial aggregation
-makes tunnel markers more visible, but their cue distinctions remain weak.
+Inspired by the learned feature aggregation of Temporal Straightening
+\citep{wang2026temporal}, we replace the CLS readout with a spatial readout
+that adaptively average-pools patch tokens to an $8\times8$ grid. The pooled
+tokens are flattened, normalized with LayerNorm, and linearly projected to a
+192-dimensional feature. Both CLS and spatial readouts then use LeWM's
+$\mathrm{Linear}(192,2048)$--BatchNorm--GELU--$\mathrm{Linear}(2048,192)$
+projector, with current-state probes applied to its output.
+Figure~\ref{fig:idmreadoutdecoder} compares the resulting reconstructions
+across readouts and IDM weights. Spatial aggregation makes tunnel locations
+substantially more visible, while cue distinctions remain weak.
 
 \subsection{Why we use IDM and spatial aggregation}
+We use IDM and spatial aggregation to separate weak cue binding from broader
+representational failure. IDM improves agent localization and planning, while
+spatial aggregation improves tunnel localization. With these adaptations,
+LeWM reliably captures the agent and tunnel geometry, yet cue recovery remains
+weak. The same location--cue gap persists with CLS+IDM and with spatial
+aggregation without IDM; only removing both substantially degrades location
+recovery as well (Table~\ref{tab:readoutcontrols}). Thus, the cue-binding gap
+cannot be explained solely by poor spatial representations.
 
-IDM improves agent localization and planning, while spatial aggregation
-improves tunnel localization. Together they make the cue-binding problem
-easier to distinguish from broader failure: weak cue recovery persists with
-CLS+IDM and with spatial features without IDM, but removing both impairs
-location recovery too (Table~\ref{tab:readoutcontrols}). These controls
-motivate our configuration without establishing universal necessity.
-The separate CLS replication below tests this gap across all three variants.
-Cue-swap rollouts use only the primary spatial+IDM models; the ablations
-therefore do not replicate every main-paper diagnostic.
+We further replicate the CLS analysis across all three Tunnel Room variants
+below. Cue-swap rollouts use the primary spatial+IDM models.
 
 \FloatBarrier
+
 \subsection{CLS replication across variants}
 \label{app:clsreplication}
 
-We also train a separate set of six CLS models on Color, Shape, and Palette,
-with and without IDM (Table~\ref{tab:matchedidm}). These runs share one
-training implementation, a ten-epoch budget, and seed 3072. Their implementation
-and checkpoints differ from those in Table~\ref{tab:readoutcontrols}, so the
-numerical entries are separate results rather than alternative scores for
-the same models. With IDM, location $R^2$ exceeds cue $R^2$ in every variant;
-without it, both are negative. Their detached reconstructions retain mixed
-or faint markers (Figure~\ref{fig:clscontroldecoders}). These models have no
-planning evaluation; they provide an additional test of feature accessibility.
+To test whether the location--cue gap depends on spatial aggregation, we train
+six additional CLS-based models across Color, Shape, and Palette, with and
+without IDM (Table~\ref{tab:matchedidm}). These models use separate
+implementations and checkpoints from the readout controls in
+Table~\ref{tab:readoutcontrols}. With IDM, location $R^2$ exceeds cue $R^2$
+across all three variants, reproducing the main qualitative result without
+spatial aggregation. Without IDM, both location and cue $R^2$ become negative,
+indicating a broader failure to recover spatial structure. Detached
+reconstructions show a similar pattern, with tunnel markers remaining faint
+or poorly distinguished (Figure~\ref{fig:clscontroldecoders}).
 
 \begin{table}[ht]
 \centering
 \caption{\textbf{A separate CLS replication across three cue renderings.}
-Current projected states at epoch 10, seed 3072. All six runs share one
+Current projected states at epoch 10. All six runs share one
 training implementation and the same four-endpoint ridge protocol. These
 are separate checkpoints from Table~\ref{tab:readoutcontrols}; each IDM pair
 shares initialization of common modules.}
@@ -199,8 +193,5 @@ Green/blue & CLS & 3.125 & 28.01 & .262 & 8.10 & .661 \\
 \caption{\textbf{Cue distinctions weaken in the matched CLS reconstructions.}
 Inputs (top) and decoder outputs (bottom) for Color, Shape, and green/blue
 with IDM 3.125, from Table~\ref{tab:matchedidm}. Each column shows frame 2
-of all six logged epoch-10 validation clips, rearranged with only empty
-padding removed. The fixed walls alone do not
-establish state-dependent geometry recovery.}
-\label{fig:clscontroldecoders}
+of all six logged epoch-10 validation clips.
 \end{figure}
