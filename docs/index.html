@@ -46,7 +46,7 @@
     }
 
     .container {
-      max-width: 920px;
+      max-width: 960px;
       margin: 0 auto;
       padding: 0 24px;
     }
@@ -196,7 +196,7 @@
     }
 
     section {
-      margin-bottom: 48px;
+      margin-bottom: 52px;
     }
 
     h2 {
@@ -236,6 +236,7 @@
       text-decoration: underline;
     }
 
+    /* Headline metrics */
     .metrics-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -276,6 +277,7 @@
       color: var(--ink-muted);
     }
 
+    /* Tables */
     .table-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -410,6 +412,303 @@
       vertical-align: middle;
     }
 
+    /* Interactive Demo Cards */
+    .demo-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      margin: 22px 0 30px;
+      overflow: hidden;
+    }
+
+    .demo-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 20px;
+      background: var(--surface-subtle);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .demo-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .demo-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #1e40af;
+      background: #dbeafe;
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+
+    .demo-heading {
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .seg-group {
+      display: inline-flex;
+      background: #e5e7eb;
+      padding: 3px;
+      border-radius: 9px;
+      gap: 2px;
+    }
+
+    .seg-btn {
+      border: none;
+      background: transparent;
+      color: var(--ink-secondary);
+      font-family: "Inter", sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: background 0.14s ease, color 0.14s ease, box-shadow 0.14s ease;
+    }
+
+    .seg-btn:hover {
+      color: var(--ink);
+    }
+
+    .seg-btn.active {
+      background: #ffffff;
+      color: var(--ink);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
+    }
+
+    .ctrl-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: var(--ink);
+      font-family: "Inter", sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.14s ease, border-color 0.14s ease;
+    }
+
+    .ctrl-btn:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+    }
+
+    .ctrl-btn.active {
+      background: var(--ink);
+      color: #ffffff;
+      border-color: var(--ink);
+    }
+
+    .demo-body {
+      padding: 20px;
+    }
+
+    .demo-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .demo-grid-swap {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.38fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .canvas-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #fbfcfd;
+      border: 1px solid #edf0f4;
+      border-radius: 10px;
+      padding: 14px;
+    }
+
+    .panel-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .panel-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .status-chip {
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: #334155;
+      white-space: nowrap;
+    }
+
+    .status-chip.ok {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-chip.fail {
+      background: #ffedd5;
+      color: #9a3412;
+    }
+
+    .status-chip.teleport {
+      background: #ede9fe;
+      color: #5b21b6;
+    }
+
+    canvas.env-canvas {
+      width: 100%;
+      max-width: 260px;
+      aspect-ratio: 1 / 1;
+      border-radius: 6px;
+      display: block;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+    }
+
+    canvas.plot-canvas {
+      width: 100%;
+      height: 244px;
+      display: block;
+    }
+
+    .panel-note {
+      margin-top: 10px;
+      font-size: 0.81rem;
+      line-height: 1.48;
+      color: var(--ink-muted);
+      text-align: center;
+    }
+
+    .scrubber-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      flex-wrap: wrap;
+    }
+
+    .scrubber-bar input[type="range"] {
+      flex: 1;
+      min-width: 180px;
+      accent-color: #1d4ed8;
+      cursor: pointer;
+    }
+
+    .readout-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.78rem;
+      color: var(--ink-secondary);
+    }
+
+    .readout-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 7px;
+    }
+
+    .swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    .colorbar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      max-width: 260px;
+      margin-top: 10px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.74rem;
+      color: var(--ink-muted);
+    }
+
+    .colorbar-grad {
+      flex: 1;
+      height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #fde725 0%, #7ad151 25%, #22a884 50%, #2a788e 75%, #440154 100%);
+      border: 1px solid rgba(15, 23, 42, 0.12);
+    }
+
+    .hover-readout {
+      margin-top: 14px;
+      padding: 10px 14px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.83rem;
+      color: var(--ink-secondary);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .demo-caption {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      background: #fbfcfd;
+      font-size: 0.86rem;
+      line-height: 1.56;
+      color: var(--ink-secondary);
+    }
+
+    .demo-caption strong {
+      color: var(--ink);
+    }
+
+    /* Static Figure & Text Boxes */
     .figure-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -506,12 +805,25 @@
       color: var(--ink-muted);
     }
 
-    @media (max-width: 760px) {
+    @media (max-width: 820px) {
+      .demo-grid-swap {
+        grid-template-columns: 1fr 1fr;
+      }
+      .demo-grid-swap .plot-panel {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 720px) {
       header.hero {
         padding: 44px 0 32px;
       }
       .metrics-grid {
         grid-template-columns: repeat(2, 1fr);
+      }
+      .demo-grid-2,
+      .demo-grid-swap {
+        grid-template-columns: 1fr;
       }
       .abstract-box,
       .code-callout {
@@ -559,6 +871,10 @@
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg>
           Code (GitHub)
         </a>
+        <a class="btn btn-secondary" href="#interactive-demos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Live Demos
+        </a>
         <a class="btn btn-secondary" href="#bibtex">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
           BibTeX
@@ -568,6 +884,7 @@
   </header>
 
   <main class="container">
+    <!-- 1. QUANTITATIVE RESULTS FIRST -->
     <section id="results-overview">
       <div class="metrics-grid">
         <div class="metric-card">
@@ -686,6 +1003,189 @@
       </div>
     </section>
 
+    <!-- 2. INTERACTIVE ENVIRONMENT ANIMATIONS -->
+    <section id="interactive-demos">
+      <h2>Interactive Environment Animations</h2>
+      <p>
+        Explore the Tunnel Room environment and our paper's findings interactively below. Demo 1 simulates the exact Tunnel Room geometry and cue variants; Demos 2 and 3 animate the <strong>actual frozen trajectories, latent rollout curves, and 20&times;20 goal-energy arrays</strong> reported in the paper.
+      </p>
+
+      <!-- DEMO 1: LIVE R1 vs R2 PLANNING -->
+      <div class="demo-card" id="demo-planning">
+        <div class="demo-toolbar">
+          <div class="demo-title-group">
+            <span class="demo-pill">Interactive Demo 1</span>
+            <span class="demo-heading">Cue-Guided Navigation vs. Nearest-Tunnel Bias (R1 vs. R2)</span>
+          </div>
+          <div class="controls-row">
+            <div class="seg-group" data-group="plan-variant" role="group" aria-label="Cue variant">
+              <button class="seg-btn active" data-val="color">Color</button>
+              <button class="seg-btn" data-val="shape">Shape</button>
+              <button class="seg-btn" data-val="palette">Palette</button>
+            </div>
+            <div class="seg-group" data-group="plan-rank" role="group" aria-label="Task rank">
+              <button class="seg-btn active" data-val="r2">R2 (Farther)</button>
+              <button class="seg-btn" data-val="r1">R1 (Nearer)</button>
+            </div>
+            <button class="ctrl-btn" id="plan-play">Pause</button>
+            <button class="ctrl-btn" id="plan-replay">Replay</button>
+          </div>
+        </div>
+
+        <div class="demo-body">
+          <div class="demo-grid-2">
+            <div class="canvas-panel">
+              <div class="panel-header">
+                <span class="panel-title">True Cue-Guided Policy</span>
+                <span class="status-chip" id="plan-oracle-status">Navigating...</span>
+              </div>
+              <canvas id="canvas-plan-oracle" class="env-canvas" width="224" height="224"></canvas>
+              <p class="panel-note" id="plan-oracle-note">Identifies the goal room's cue and travels to the matching tunnel even when it is farther away.</p>
+            </div>
+
+            <div class="canvas-panel">
+              <div class="panel-header">
+                <span class="panel-title">Proximity-Biased (LeWM CEM)</span>
+                <span class="status-chip" id="plan-cem-status">Navigating...</span>
+              </div>
+              <canvas id="canvas-plan-cem" class="env-canvas" width="224" height="224"></canvas>
+              <p class="panel-note" id="plan-cem-note">Drawn to the nearer tunnel entrance regardless of cue—succeeding on R1 (80%) but entering the wrong tunnel first in 88% of Color R2 cases.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-caption">
+          <strong>Why R2 exposes cue-binding failure:</strong> Because a nearest-tunnel strategy succeeds whenever the correct tunnel is closer (R1), R1 performance alone cannot distinguish cue understanding from spatial proximity. Switching to <strong>R2</strong> separates knowing <em>where tunnels are</em> from knowing <em>where they lead</em>.
+        </div>
+      </div>
+
+      <!-- DEMO 2: REAL-DATA CUE SWAP ROLLOUT -->
+      <div class="demo-card" id="demo-swap">
+        <div class="demo-toolbar">
+          <div class="demo-title-group">
+            <span class="demo-pill">Real Paper Data · Demo 2</span>
+            <span class="demo-heading">Controlled Cue-Swap Rollouts (16 Eval Geometries)</span>
+          </div>
+          <div class="controls-row">
+            <div class="seg-group" data-group="swap-variant" role="group" aria-label="Swap variant">
+              <button class="seg-btn active" data-val="color">Color</button>
+              <button class="seg-btn" data-val="shape">Shape</button>
+              <button class="seg-btn" data-val="palette">Palette</button>
+            </div>
+            <button class="ctrl-btn" id="swap-play">Pause</button>
+          </div>
+        </div>
+
+        <div class="demo-body">
+          <div class="demo-grid-swap">
+            <div class="canvas-panel">
+              <div class="panel-header">
+                <span class="panel-title">Original World</span>
+                <span class="status-chip" id="swap-orig-status">Hub</span>
+              </div>
+              <canvas id="canvas-swap-orig" class="env-canvas" width="224" height="224"></canvas>
+              <p class="panel-note">Enters bottom hub tunnel &rarr; teleports to <strong>lower leaf</strong>.</p>
+            </div>
+
+            <div class="canvas-panel">
+              <div class="panel-header">
+                <span class="panel-title">Hub Cues Swapped</span>
+                <span class="status-chip" id="swap-swapped-status">Hub</span>
+              </div>
+              <canvas id="canvas-swap-swapped" class="env-canvas" width="224" height="224"></canvas>
+              <p class="panel-note">Same action sequence &rarr; teleports to <strong>upper leaf</strong>.</p>
+            </div>
+
+            <div class="canvas-panel plot-panel">
+              <div class="panel-header">
+                <span class="panel-title">Paired Latent Distance <em>E</em></span>
+                <span class="status-chip" id="swap-step-badge">t = -15</span>
+              </div>
+              <canvas id="canvas-swap-plot" class="plot-canvas"></canvas>
+              <p class="panel-note">Median &amp; IQR across 16 evaluation geometries. Gray band marks the tunnel crossing.</p>
+            </div>
+          </div>
+
+          <div class="scrubber-bar">
+            <label for="swap-scrubber" style="font-size:0.82rem;font-weight:600;color:var(--ink);">Step relative to crossing:</label>
+            <input type="range" id="swap-scrubber" min="5" max="70" value="5" step="1" />
+            <div class="readout-row">
+              <span class="readout-badge"><span class="swatch" style="background:#1f77b4"></span>Observed: <strong id="swap-obs-val">--</strong></span>
+              <span class="readout-badge"><span class="swatch" style="background:#ff7f0e"></span>LeWM Rollout: <strong id="swap-pred-val">--</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-caption">
+          <strong>Drag the scrubber across t = 0:</strong> Identical actions before the crossing lead to opposite leaf rooms once the hub cues are swapped. Encoded observations (blue) separate sharply after teleportation, while LeWM's open-loop latent rollout (orange) barely diverges—showing that detected cue differences are weakly propagated into predicted destinations.
+        </div>
+      </div>
+
+      <!-- DEMO 3: REAL-DATA GOAL ENERGY LANDSCAPE EXPLORER -->
+      <div class="demo-card" id="demo-landscape">
+        <div class="demo-toolbar">
+          <div class="demo-title-group">
+            <span class="demo-pill">Real Paper Data · Demo 3</span>
+            <span class="demo-heading">Goal-Energy Landscape vs. True Geodesic Distance</span>
+          </div>
+          <div class="controls-row">
+            <div class="seg-group" data-group="land-variant" role="group" aria-label="Landscape variant">
+              <button class="seg-btn active" data-val="color">Color</button>
+              <button class="seg-btn" data-val="shape">Shape</button>
+              <button class="seg-btn" data-val="palette">Palette</button>
+            </div>
+            <div class="seg-group" data-group="land-goal" role="group" aria-label="Goal room">
+              <button class="seg-btn active" data-val="upper">Goal: Upper Leaf</button>
+              <button class="seg-btn" data-val="lower">Goal: Lower Leaf</button>
+            </div>
+            <button class="ctrl-btn active" id="land-auto">Auto-Switch: On</button>
+          </div>
+        </div>
+
+        <div class="demo-body">
+          <div class="demo-grid-2">
+            <div class="canvas-panel">
+              <div class="panel-header">
+                <span class="panel-title" id="land-lewm-title">LeWM Goal Energy <em>E</em></span>
+                <span class="status-chip fail">Both hub tunnels low</span>
+              </div>
+              <canvas id="canvas-land-lewm" class="env-canvas" width="224" height="224"></canvas>
+              <div class="colorbar-wrap">
+                <span>0 (low)</span>
+                <div class="colorbar-grad"></div>
+                <span id="land-lewm-max">94.8</span>
+              </div>
+              <p class="panel-note">When the goal switches rooms, bright yellow low-energy hotspots linger around <em>both</em> hub tunnels.</p>
+            </div>
+
+            <div class="canvas-panel">
+              <div class="panel-header">
+                <span class="panel-title">Geodesic Reference (px)</span>
+                <span class="status-chip ok">Tracks paired tunnel</span>
+              </div>
+              <canvas id="canvas-land-geo" class="env-canvas" width="224" height="224"></canvas>
+              <div class="colorbar-wrap">
+                <span>0 px</span>
+                <div class="colorbar-grad"></div>
+                <span id="land-geo-max">200.7 px</span>
+              </div>
+              <p class="panel-note">True shortest walking path cleanly shifts its yellow low-energy basin to whichever hub tunnel matches the goal room.</p>
+            </div>
+          </div>
+
+          <div class="hover-readout" id="land-hover-bar">
+            <span><strong>Hover over either map</strong> to inspect exact frozen grid values at any room location.</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--ink-muted);">20&times;20 evaluation grid · 210 navigable cells</span>
+          </div>
+        </div>
+
+        <div class="demo-caption">
+          <strong>Watch the hub room as the goal switches:</strong> Yellow denotes lower energy (closer to the red goal). The geodesic reference cleanly swaps its low-energy funnel from the top hub tunnel (Upper goal) to the bottom hub tunnel (Lower goal), whereas LeWM assigns low energy near both hub entrances regardless of the goal room.
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. ABSTRACT -->
     <section id="abstract">
       <h2>Abstract</h2>
       <div class="abstract-box">
@@ -695,12 +1195,11 @@
       </div>
     </section>
 
-    <section id="visual-diagnostics">
-      <h2>Visual Diagnostics &amp; Rollout Analysis</h2>
-
-      <h3>Detached Reconstructions &amp; Goal-Energy Landscapes</h3>
+    <!-- 4. DECODER RECONSTRUCTIONS & BENCHMARK FIGURES -->
+    <section id="paper-figures">
+      <h2>Paper Figures</h2>
       <p>
-        Training a detached pixel decoder on frozen LeWM representations preserves room geometry and tunnel locations while washing out cue identity toward the mean of the two colors. Similarly, learned latent goal-energy landscapes assign low energy near multiple tunnel endpoints regardless of which leaf room holds the goal, unlike the true geodesic distance.
+        Alongside the interactive animations above, detached pixel decoders provide direct visual confirmation that LeWM preserves room geometry and tunnel positions while washing out cue identity toward the mean hue (Figure 2a).
       </p>
 
       <div class="figure-card">
@@ -708,30 +1207,9 @@
         <p class="figure-caption">
           <strong>Figure 2: LeWM preserves tunnel geometry but weakens cue binding.</strong>
           (a) Two Color observations and their detached-decoder reconstructions.
-          (b) Learned goal energy <em>E</em> and (c) geodesic reference energy as the goal switches between upper and lower leaf rooms (red dots). Yellow denotes low energy.
+          (b) Learned goal energy <em>E</em> and (c) geodesic reference energy as the goal switches between leaf rooms (red dots).
         </p>
       </div>
-
-      <h3>Controlled Cue Swaps</h3>
-      <p>
-        Swapping the two hub colors while holding tunnel locations, leaf colors, and actions fixed keeps trajectories identical prior to entering the tunnel, then sends the agents to opposite leaf rooms after teleportation. Conditioned only on pre-crossing observations, LeWM's open-loop rollouts substantially understate the true post-teleportation divergence.
-      </p>
-
-      <div class="figure-card">
-        <img src="assets/fig3_portal_swap.png" alt="Paired worlds with swapped hub colors and divergence curves for observed states versus LeWM model rollouts" />
-        <p class="figure-caption">
-          <strong>Figure 3: Predicted features separate too little after a cue swap.</strong>
-          (a) Paired worlds differ only in hub cue assignment; identical action sequences lead to different leaf rooms after teleportation.
-          (b) Paired latent distance between the two worlds for encoded observations (blue) and open-loop LeWM rollouts (orange), showing medians and interquartile ranges over 16 geometries.
-        </p>
-      </div>
-    </section>
-
-    <section id="benchmark">
-      <h2>The Tunnel Room Benchmark</h2>
-      <p>
-        Tunnel Room consists of a central <em>hub</em> and two <em>leaf</em> rooms connected by paired teleporting tunnels whose positions and cue pairings vary across episodes. We provide three matched cue variants—<strong>Color</strong> (green/orange), <strong>Shape</strong> (triangle/diamond), and <strong>Palette</strong> (green/blue)—and evaluate planners on <strong>R1</strong> (correct tunnel nearer) versus <strong>R2</strong> (correct tunnel farther) episodes.
-      </p>
 
       <div class="figure-card">
         <img src="assets/fig1_tunnel_variants_and_rank.png" alt="Tunnel Room variants (Color, Shape, Palette) and a Rank-2 planning task" />
@@ -743,6 +1221,7 @@
       </div>
     </section>
 
+    <!-- 5. CODE & REPRODUCIBILITY -->
     <section id="code">
       <h2>Code &amp; Reproducibility</h2>
       <div class="code-callout">
@@ -766,6 +1245,7 @@ python scripts/probes/location_probe.py --help</code></pre>
       </div>
     </section>
 
+    <!-- 6. CITATION -->
     <section id="bibtex">
       <h2>Citation</h2>
       <div class="bibtex-wrap">
@@ -779,6 +1259,7 @@ python scripts/probes/location_probe.py --help</code></pre>
       </div>
     </section>
 
+    <!-- 7. ACKNOWLEDGMENTS -->
     <section id="acknowledgments">
       <h2>Acknowledgments</h2>
       <div class="ack-box">
@@ -799,7 +1280,12 @@ python scripts/probes/location_probe.py --help</code></pre>
     </div>
   </footer>
 
+  <script src="assets/interactive_data.js"></script>
   <script>
+  (function () {
+    "use strict";
+
+    // Copy BibTeX button
     document.getElementById("copy-bibtex").addEventListener("click", function () {
       const text = document.getElementById("bibtex-code").textContent;
       navigator.clipboard.writeText(text).then(() => {
@@ -807,6 +1293,773 @@ python scripts/probes/location_probe.py --help</code></pre>
         setTimeout(() => { this.textContent = "Copy BibTeX"; }, 1800);
       });
     });
+
+    // Exact Tunnel Room rendering constants from stable_worldmodel/envs/tunnel_rooms/rendering.py
+    const IMG_SIZE = 224;
+    const BORDER = 14;
+    const WALL_CENTER = 112;
+    const HALF_WALL = 5;
+    const COL_WALL = "#181c20";
+    const COL_FLOOR = "#f4f5f1";
+    const COL_AGENT = "#d5262d";
+    const COL_GREEN = "#28994e";
+    const COL_ORANGE = "#e88e22";
+    const COL_BLUE = "#5362d8";
+    const COL_SHAPE = "#3e5e70";
+
+    // Viridis LUT (reversed: 0 -> yellow low energy, 1 -> purple high energy, matching Figure 2b/c)
+    const VIRIDIS_STOPS = [
+      [253, 231, 37],
+      [181, 222, 43],
+      [110, 206, 88],
+      [53, 183, 121],
+      [31, 158, 137],
+      [38, 130, 142],
+      [49, 104, 142],
+      [62, 73, 137],
+      [72, 40, 120],
+      [68, 1, 84]
+    ];
+
+    function viridisLowYellow(t) {
+      const clamped = Math.max(0, Math.min(1, t));
+      const pos = clamped * (VIRIDIS_STOPS.length - 1);
+      const i0 = Math.floor(pos);
+      const i1 = Math.min(VIRIDIS_STOPS.length - 1, i0 + 1);
+      const f = pos - i0;
+      const c0 = VIRIDIS_STOPS[i0];
+      const c1 = VIRIDIS_STOPS[i1];
+      const r = Math.round(c0[0] + (c1[0] - c0[0]) * f);
+      const g = Math.round(c0[1] + (c1[1] - c0[1]) * f);
+      const b = Math.round(c0[2] + (c1[2] - c0[2]) * f);
+      return `rgb(${r},${g},${b})`;
+    }
+
+    function drawWalls(ctx, fillFloor) {
+      if (fillFloor) {
+        ctx.fillStyle = COL_FLOOR;
+        ctx.fillRect(0, 0, IMG_SIZE, IMG_SIZE);
+      }
+      ctx.fillStyle = COL_WALL;
+      // Outer border
+      ctx.fillRect(0, 0, IMG_SIZE, BORDER);
+      ctx.fillRect(0, IMG_SIZE - BORDER, IMG_SIZE, BORDER);
+      ctx.fillRect(0, 0, BORDER, IMG_SIZE);
+      ctx.fillRect(IMG_SIZE - BORDER, 0, BORDER, IMG_SIZE);
+      // Vertical hub-leaf divider
+      ctx.fillRect(WALL_CENTER - HALF_WALL, 0, HALF_WALL * 2, IMG_SIZE);
+      // Horizontal leaf-leaf divider
+      ctx.fillRect(WALL_CENTER - HALF_WALL, WALL_CENTER - HALF_WALL, IMG_SIZE - (WALL_CENTER - HALF_WALL), HALF_WALL * 2);
+    }
+
+    function drawMarker(ctx, x, y, cue, variant) {
+      ctx.save();
+      if (variant === "shape") {
+        ctx.fillStyle = COL_SHAPE;
+        if (cue === 0) {
+          // Upward triangle (18x18)
+          ctx.beginPath();
+          ctx.moveTo(x, y - 9);
+          ctx.lineTo(x - 9, y + 9);
+          ctx.lineTo(x + 9, y + 9);
+          ctx.closePath();
+          ctx.fill();
+        } else {
+          // Diamond (20x20)
+          ctx.beginPath();
+          ctx.moveTo(x, y - 10);
+          ctx.lineTo(x + 10, y);
+          ctx.lineTo(x, y + 10);
+          ctx.lineTo(x - 10, y);
+          ctx.closePath();
+          ctx.fill();
+        }
+      } else {
+        ctx.fillStyle = cue === 0 ? COL_GREEN : (variant === "palette" ? COL_BLUE : COL_ORANGE);
+        ctx.fillRect(Math.round(x - 9), Math.round(y - 9), 18, 18);
+      }
+      ctx.restore();
+    }
+
+    function drawGoalStar(ctx, x, y) {
+      ctx.save();
+      ctx.fillStyle = "#b91c1c";
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      const spikes = 5, outerR = 7.5, innerR = 3.4;
+      for (let i = 0; i < spikes * 2; i++) {
+        const r = i % 2 === 0 ? outerR : innerR;
+        const a = (i * Math.PI) / spikes - Math.PI / 2;
+        const px = x + Math.cos(a) * r;
+        const py = y + Math.sin(a) * r;
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawAgent(ctx, x, y, pulse) {
+      ctx.save();
+      if (pulse > 0) {
+        ctx.strokeStyle = `rgba(124, 58, 237, ${(1 - pulse) * 0.85})`;
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.arc(x, y, 9 + pulse * 20, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.fillStyle = COL_AGENT;
+      ctx.beginPath();
+      ctx.arc(x, y, 9, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawTeleportArc(ctx, x0, y0, x1, y1, progress) {
+      if (progress <= 0) return;
+      ctx.save();
+      ctx.strokeStyle = "#6d28d9";
+      ctx.lineWidth = 2.4;
+      ctx.setLineDash([5, 4]);
+      ctx.beginPath();
+      const cx = (x0 + x1) * 0.5;
+      const cy = Math.min(y0, y1) - 22;
+      const steps = 28;
+      const maxI = Math.max(1, Math.floor(steps * Math.min(1, progress)));
+      for (let i = 0; i <= maxI; i++) {
+        const t = i / steps;
+        const inv = 1 - t;
+        const px = inv * inv * x0 + 2 * inv * t * cx + t * t * x1;
+        const py = inv * inv * y0 + 2 * inv * t * cy + t * t * y1;
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function wireSegmented(groupName, onChange) {
+      const container = document.querySelector(`.seg-group[data-group="${groupName}"]`);
+      if (!container) return;
+      container.addEventListener("click", (e) => {
+        const btn = e.target.closest(".seg-btn");
+        if (!btn) return;
+        container.querySelectorAll(".seg-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        onChange(btn.dataset.val);
+      });
+    }
+
+    /* ================================================================
+       DEMO 1: LIVE R1 vs R2 PLANNING ANIMATION
+       ================================================================ */
+    (function initPlanningDemo() {
+      const cOracle = document.getElementById("canvas-plan-oracle");
+      const cCem = document.getElementById("canvas-plan-cem");
+      const ctxO = cOracle.getContext("2d");
+      const ctxC = cCem.getContext("2d");
+      const statusO = document.getElementById("plan-oracle-status");
+      const statusC = document.getElementById("plan-cem-status");
+      const noteC = document.getElementById("plan-cem-note");
+      const btnPlay = document.getElementById("plan-play");
+      const btnReplay = document.getElementById("plan-replay");
+
+      let variant = "color";
+      let rank = "r2";
+      let playing = true;
+      let t = 0; // 0..1 cycle
+
+      // Geometry matching Figure 1d (R2: top orange is correct & farther; bottom green is nearer & wrong)
+      // On R1, agent starts near top orange entrance so nearest tunnel happens to be correct!
+      const endpoints = [
+        { x: 64, y: 52, cue: 1, id: "hub_top" },     // orange / diamond / blue -> upper leaf
+        { x: 76, y: 184, cue: 0, id: "hub_bot" },    // green / triangle / green -> lower leaf
+        { x: 152, y: 74, cue: 1, id: "leaf_top" },   // upper leaf landing
+        { x: 150, y: 150, cue: 0, id: "leaf_bot" }   // lower leaf landing
+      ];
+      const goal = { x: 184, y: 50 };
+
+      function getStart() {
+        return rank === "r2" ? { x: 46, y: 146 } : { x: 42, y: 74 };
+      }
+
+      function lerp(a, b, u) { return a + (b - a) * u; }
+      function ease(u) { return u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; }
+
+      function renderAgentScene(ctx, pathMode, u) {
+        drawWalls(ctx, true);
+        for (const ep of endpoints) drawMarker(ctx, ep.x, ep.y, ep.cue, variant);
+        drawGoalStar(ctx, goal.x, goal.y);
+
+        const start = getStart();
+        // pathMode: "correct" goes to hub_top -> leaf_top -> goal; "wrong" goes to hub_bot -> leaf_bot -> stuck
+        const goesCorrect = pathMode === "correct";
+        const hubTarget = goesCorrect ? endpoints[0] : endpoints[1];
+        const leafLand = goesCorrect ? { x: 162, y: 74 } : { x: 160, y: 150 };
+        const endPos = goesCorrect ? goal : { x: 176, y: 132 };
+
+        // Phase timing: 0..0.46 approach, 0.46..0.56 teleport, 0.56..0.82 move in leaf, 0.82..1.0 hold
+        let ax, ay, pulse = 0, phase = "approach";
+        const trail1End = Math.min(1, u / 0.46);
+        const tpProg = u <= 0.46 ? 0 : Math.min(1, (u - 0.46) / 0.10);
+        const leafProg = u <= 0.56 ? 0 : Math.min(1, (u - 0.56) / 0.26);
+
+        // Draw pre-teleport trail
+        ctx.save();
+        ctx.strokeStyle = "#0f766e";
+        ctx.lineWidth = 2.6;
+        ctx.beginPath();
+        ctx.moveTo(start.x, start.y);
+        const p1x = lerp(start.x, hubTarget.x, ease(trail1End));
+        const p1y = lerp(start.y, hubTarget.y, ease(trail1End));
+        ctx.lineTo(p1x, p1y);
+        ctx.stroke();
+        ctx.restore();
+
+        // Start dot marker
+        ctx.save();
+        ctx.fillStyle = "rgba(213, 38, 45, 0.28)";
+        ctx.beginPath();
+        ctx.arc(start.x, start.y, 4.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        if (u < 0.46) {
+          ax = p1x; ay = p1y;
+          phase = "approach";
+        } else if (u < 0.56) {
+          drawTeleportArc(ctx, hubTarget.x, hubTarget.y, leafLand.x, leafLand.y, tpProg);
+          ax = lerp(hubTarget.x, leafLand.x, ease(tpProg));
+          ay = lerp(hubTarget.y, leafLand.y, ease(tpProg));
+          pulse = tpProg;
+          phase = "teleport";
+        } else {
+          drawTeleportArc(ctx, hubTarget.x, hubTarget.y, leafLand.x, leafLand.y, 1);
+          ax = lerp(leafLand.x, endPos.x, ease(leafProg));
+          ay = lerp(leafLand.y, endPos.y, ease(leafProg));
+          ctx.save();
+          ctx.strokeStyle = goesCorrect ? "#0f766e" : "#c2410c";
+          ctx.lineWidth = 2.6;
+          ctx.beginPath();
+          ctx.moveTo(leafLand.x, leafLand.y);
+          ctx.lineTo(ax, ay);
+          ctx.stroke();
+          ctx.restore();
+          phase = leafProg >= 0.99 ? (goesCorrect ? "success" : "wrong") : "leaf";
+        }
+
+        drawAgent(ctx, ax, ay, pulse);
+        return phase;
+      }
+
+      function setChip(el, phase) {
+        el.className = "status-chip";
+        if (phase === "approach") el.textContent = "Approaching tunnel...";
+        else if (phase === "teleport") { el.textContent = "Teleporting!"; el.classList.add("teleport"); }
+        else if (phase === "leaf") el.textContent = "In leaf room...";
+        else if (phase === "success") { el.textContent = "Reached goal"; el.classList.add("ok"); }
+        else { el.textContent = "Wrong leaf room"; el.classList.add("fail"); }
+      }
+
+      function drawFrame() {
+        const pO = renderAgentScene(ctxO, "correct", t);
+        const pC = renderAgentScene(ctxC, rank === "r2" ? "wrong" : "correct", t);
+        setChip(statusO, pO);
+        setChip(statusC, pC);
+      }
+
+      wireSegmented("plan-variant", (v) => { variant = v; drawFrame(); });
+      wireSegmented("plan-rank", (v) => {
+        rank = v;
+        t = 0;
+        noteC.innerHTML = rank === "r2"
+          ? "Drawn to the nearer tunnel entrance regardless of cue—entering the wrong tunnel first in <strong>88%</strong> of Color R2 cases (16% success)."
+          : "On R1, the nearest tunnel happens to lead to the goal room—so a proximity-biased planner succeeds (<strong>80%</strong> Color R1) without binding cues.";
+        drawFrame();
+      });
+
+      btnPlay.addEventListener("click", () => {
+        playing = !playing;
+        btnPlay.textContent = playing ? "Pause" : "Play";
+      });
+      btnReplay.addEventListener("click", () => {
+        t = 0;
+        playing = true;
+        btnPlay.textContent = "Pause";
+        drawFrame();
+      });
+
+      let last = performance.now();
+      function loop(now) {
+        const dt = Math.min(0.05, (now - last) / 1000);
+        last = now;
+        if (playing) {
+          t += dt * 0.24;
+          if (t > 1) t = 0;
+          drawFrame();
+        }
+        requestAnimationFrame(loop);
+      }
+      drawFrame();
+      requestAnimationFrame(loop);
+    })();
+
+    /* ================================================================
+       DEMO 2: REAL-DATA CUE SWAP ROLLOUT ANIMATOR
+       ================================================================ */
+    (function initSwapDemo() {
+      const DATA = window.TUNNEL_ROOM_DATA && window.TUNNEL_ROOM_DATA.swap;
+      if (!DATA) return;
+
+      const cOrig = document.getElementById("canvas-swap-orig");
+      const cSwap = document.getElementById("canvas-swap-swapped");
+      const cPlot = document.getElementById("canvas-swap-plot");
+      const ctxO = cOrig.getContext("2d");
+      const ctxS = cSwap.getContext("2d");
+      const ctxP = cPlot.getContext("2d");
+      const scrubber = document.getElementById("swap-scrubber");
+      const btnPlay = document.getElementById("swap-play");
+      const badgeOrig = document.getElementById("swap-orig-status");
+      const badgeSwap = document.getElementById("swap-swapped-status");
+      const badgeStep = document.getElementById("swap-step-badge");
+      const obsValEl = document.getElementById("swap-obs-val");
+      const predValEl = document.getElementById("swap-pred-val");
+
+      let variant = "color";
+      let playing = true;
+      let stepFloat = 5.0; // primitive step 5..70 (crossing at 20 -> rel -15..+50)
+      const crossStep = DATA.first_portal_step; // 20
+
+      function interpCurve(relSteps, vals, relNow) {
+        if (relNow <= relSteps[0]) return vals[0];
+        if (relNow >= relSteps[relSteps.length - 1]) return vals[vals.length - 1];
+        for (let i = 0; i < relSteps.length - 1; i++) {
+          const r0 = relSteps[i], r1 = relSteps[i + 1];
+          if (relNow >= r0 && relNow <= r1) {
+            const f = (relNow - r0) / (r1 - r0);
+            return vals[i] + (vals[i + 1] - vals[i]) * f;
+          }
+        }
+        return vals[vals.length - 1];
+      }
+
+      function renderWorld(ctx, endpoints, positions, stepIdx, isSwapped) {
+        drawWalls(ctx, true);
+        for (const ep of endpoints) drawMarker(ctx, ep.x, ep.y, ep.cue, variant);
+
+        const s = Math.max(0, Math.min(positions.length - 1, Math.round(stepIdx)));
+        // Pre-crossing trail
+        const preEnd = Math.min(s, crossStep - 1);
+        if (preEnd >= 1) {
+          ctx.save();
+          ctx.strokeStyle = "#0f766e";
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(positions[0][0], positions[0][1]);
+          for (let i = 1; i <= preEnd; i++) ctx.lineTo(positions[i][0], positions[i][1]);
+          ctx.stroke();
+          ctx.restore();
+        }
+        // Teleport arc & post-crossing trail
+        let pulse = 0;
+        if (s >= crossStep) {
+          const pre = positions[crossStep - 1];
+          const post = positions[crossStep];
+          drawTeleportArc(ctx, pre[0], pre[1], post[0], post[1], 1);
+          if (s - crossStep < 6) pulse = (s - crossStep) / 6;
+
+          if (s > crossStep) {
+            ctx.save();
+            ctx.strokeStyle = isSwapped ? "#2563eb" : "#0f766e";
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(post[0], post[1]);
+            for (let i = crossStep + 1; i <= s; i++) ctx.lineTo(positions[i][0], positions[i][1]);
+            ctx.stroke();
+            ctx.restore();
+          }
+        }
+        // Start marker
+        ctx.save();
+        ctx.fillStyle = "rgba(213, 38, 45, 0.3)";
+        ctx.beginPath();
+        ctx.arc(positions[0][0], positions[0][1], 4.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        drawAgent(ctx, positions[s][0], positions[s][1], pulse);
+      }
+
+      function renderPlot(relNow) {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = cPlot.getBoundingClientRect();
+        const W = Math.max(240, Math.round(rect.width || 300));
+        const H = Math.max(200, Math.round(rect.height || 244));
+        if (cPlot.width !== W * dpr || cPlot.height !== H * dpr) {
+          cPlot.width = W * dpr;
+          cPlot.height = H * dpr;
+        }
+        ctxP.save();
+        ctxP.scale(dpr, dpr);
+        ctxP.clearRect(0, 0, W, H);
+
+        const curve = DATA.curves[variant];
+        const xs = curve.rel_steps;
+        const xMin = -15, xMax = 50;
+        const yMax = Math.ceil(Math.max(...curve.obs_q75) * 1.12);
+        const pad = { l: 40, r: 14, t: 16, b: 34 };
+        const pw = W - pad.l - pad.r;
+        const ph = H - pad.t - pad.b;
+
+        const mapX = (r) => pad.l + ((r - xMin) / (xMax - xMin)) * pw;
+        const mapY = (v) => pad.t + ph - (v / yMax) * ph;
+
+        // Background grid
+        ctxP.strokeStyle = "#e5e7eb";
+        ctxP.lineWidth = 1;
+        const yTicks = 4;
+        ctxP.font = "11px 'JetBrains Mono', monospace";
+        ctxP.fillStyle = "#6b7280";
+        ctxP.textAlign = "right";
+        ctxP.textBaseline = "middle";
+        for (let k = 0; k <= yTicks; k++) {
+          const val = (yMax * k) / yTicks;
+          const y = mapY(val);
+          ctxP.beginPath();
+          ctxP.moveTo(pad.l, y);
+          ctxP.lineTo(W - pad.r, y);
+          ctxP.stroke();
+          ctxP.fillText(Math.round(val).toString(), pad.l - 6, y);
+        }
+
+        // Gray crossing band [-5, 0]
+        const gx0 = mapX(-5), gx1 = mapX(0);
+        ctxP.fillStyle = "rgba(148, 163, 184, 0.22)";
+        ctxP.fillRect(gx0, pad.t, gx1 - gx0, ph);
+
+        // Helper for IQR band + median line
+        function drawSeries(q25, med, q75, strokeCol, fillCol) {
+          ctxP.beginPath();
+          for (let i = 0; i < xs.length; i++) {
+            const x = mapX(xs[i]), y = mapY(q75[i]);
+            if (i === 0) ctxP.moveTo(x, y); else ctxP.lineTo(x, y);
+          }
+          for (let i = xs.length - 1; i >= 0; i--) {
+            ctxP.lineTo(mapX(xs[i]), mapY(q25[i]));
+          }
+          ctxP.closePath();
+          ctxP.fillStyle = fillCol;
+          ctxP.fill();
+
+          ctxP.beginPath();
+          for (let i = 0; i < xs.length; i++) {
+            const x = mapX(xs[i]), y = mapY(med[i]);
+            if (i === 0) ctxP.moveTo(x, y); else ctxP.lineTo(x, y);
+          }
+          ctxP.strokeStyle = strokeCol;
+          ctxP.lineWidth = 2.5;
+          ctxP.stroke();
+        }
+
+        drawSeries(curve.obs_q25, curve.obs_med, curve.obs_q75, "#1f77b4", "rgba(31, 119, 180, 0.18)");
+        drawSeries(curve.pred_q25, curve.pred_med, curve.pred_q75, "#ff7f0e", "rgba(255, 127, 14, 0.20)");
+
+        // Playhead line
+        const px = mapX(Math.max(xMin, Math.min(xMax, relNow)));
+        ctxP.strokeStyle = "#111827";
+        ctxP.lineWidth = 1.5;
+        ctxP.setLineDash([4, 3]);
+        ctxP.beginPath();
+        ctxP.moveTo(px, pad.t);
+        ctxP.lineTo(px, pad.t + ph);
+        ctxP.stroke();
+        ctxP.setLineDash([]);
+
+        // Playhead dots
+        const obsNow = interpCurve(xs, curve.obs_med, relNow);
+        const predNow = interpCurve(xs, curve.pred_med, relNow);
+        for (const [val, col] of [[obsNow, "#1f77b4"], [predNow, "#ff7f0e"]]) {
+          ctxP.fillStyle = "#ffffff";
+          ctxP.beginPath();
+          ctxP.arc(px, mapY(val), 5.5, 0, Math.PI * 2);
+          ctxP.fill();
+          ctxP.fillStyle = col;
+          ctxP.beginPath();
+          ctxP.arc(px, mapY(val), 3.8, 0, Math.PI * 2);
+          ctxP.fill();
+        }
+
+        // X axis ticks
+        ctxP.textAlign = "center";
+        ctxP.textBaseline = "top";
+        ctxP.fillStyle = "#6b7280";
+        for (const tick of [-15, 0, 15, 30, 45]) {
+          ctxP.fillText(tick.toString(), mapX(tick), pad.t + ph + 6);
+        }
+        ctxP.fillStyle = "#374151";
+        ctxP.font = "11px 'Inter', sans-serif";
+        ctxP.fillText("Steps from crossing", pad.l + pw * 0.5, H - 13);
+
+        // Compact legend
+        ctxP.fillStyle = "rgba(255,255,255,0.88)";
+        ctxP.strokeStyle = "#e5e7eb";
+        ctxP.lineWidth = 1;
+        const lx = W - pad.r - 122, ly = pad.t + 8;
+        ctxP.fillRect(lx, ly, 116, 40);
+        ctxP.strokeRect(lx, ly, 116, 40);
+        ctxP.font = "600 10.5px 'Inter', sans-serif";
+        ctxP.textAlign = "left";
+        ctxP.textBaseline = "middle";
+        ctxP.fillStyle = "#1f77b4"; ctxP.fillRect(lx + 8, ly + 11, 12, 3);
+        ctxP.fillStyle = "#111827"; ctxP.fillText("Observed states", lx + 25, ly + 13);
+        ctxP.fillStyle = "#ff7f0e"; ctxP.fillRect(lx + 8, ly + 27, 12, 3);
+        ctxP.fillStyle = "#111827"; ctxP.fillText("LeWM rollout", lx + 25, ly + 29);
+
+        ctxP.restore();
+
+        obsValEl.textContent = obsNow.toFixed(2);
+        predValEl.textContent = predNow.toFixed(2);
+      }
+
+      function renderAll() {
+        const s = Math.round(stepFloat);
+        const rel = s - crossStep;
+        scrubber.value = s;
+        renderWorld(ctxO, DATA.endpoints_orig, DATA.positions_orig, s, false);
+        renderWorld(ctxS, DATA.endpoints_swap, DATA.positions_swap, s, true);
+        renderPlot(rel);
+
+        badgeStep.textContent = `t = ${rel >= 0 ? "+" : ""}${rel}`;
+        badgeOrig.className = "status-chip";
+        badgeSwap.className = "status-chip";
+        if (s < crossStep) {
+          badgeOrig.textContent = "Hub (identical)";
+          badgeSwap.textContent = "Hub (identical)";
+        } else if (s < crossStep + 5) {
+          badgeOrig.textContent = "Teleporting!"; badgeOrig.classList.add("teleport");
+          badgeSwap.textContent = "Teleporting!"; badgeSwap.classList.add("teleport");
+        } else {
+          badgeOrig.textContent = "Lower leaf"; badgeOrig.classList.add("fail");
+          badgeSwap.textContent = "Upper leaf"; badgeSwap.classList.add("ok");
+        }
+      }
+
+      wireSegmented("swap-variant", (v) => { variant = v; renderAll(); });
+      scrubber.addEventListener("input", () => {
+        playing = false;
+        btnPlay.textContent = "Play";
+        stepFloat = Number(scrubber.value);
+        renderAll();
+      });
+      btnPlay.addEventListener("click", () => {
+        playing = !playing;
+        btnPlay.textContent = playing ? "Pause" : "Play";
+      });
+
+      window.addEventListener("resize", renderAll);
+
+      let last = performance.now();
+      function loop(now) {
+        const dt = Math.min(0.05, (now - last) / 1000);
+        last = now;
+        if (playing) {
+          // Slightly slower right around the crossing so viewers catch the divergence!
+          const speed = (stepFloat >= 16 && stepFloat <= 26) ? 7.5 : 15;
+          stepFloat += dt * speed;
+          if (stepFloat > 70) stepFloat = 5;
+          renderAll();
+        }
+        requestAnimationFrame(loop);
+      }
+      renderAll();
+      requestAnimationFrame(loop);
+    })();
+
+    /* ================================================================
+       DEMO 3: REAL-DATA GOAL-ENERGY LANDSCAPE EXPLORER
+       ================================================================ */
+    (function initLandscapeDemo() {
+      const DATA = window.TUNNEL_ROOM_DATA && window.TUNNEL_ROOM_DATA.landscapes;
+      if (!DATA) return;
+
+      const cLewm = document.getElementById("canvas-land-lewm");
+      const cGeo = document.getElementById("canvas-land-geo");
+      const ctxL = cLewm.getContext("2d");
+      const ctxG = cGeo.getContext("2d");
+      const maxL = document.getElementById("land-lewm-max");
+      const maxG = document.getElementById("land-geo-max");
+      const titleL = document.getElementById("land-lewm-title");
+      const btnAuto = document.getElementById("land-auto");
+      const hoverBar = document.getElementById("land-hover-bar");
+
+      let variant = "color";
+      let targetGoal = 0; // 0 = upper, 1 = lower
+      let blend = 0;      // smooth 0..1 interpolation between upper & lower
+      let autoSwitch = true;
+      let autoTimer = 0;
+      let hoverCell = null; // { r, c }
+
+      const rowY = DATA.row_y;
+      const colX = DATA.col_x;
+      const cellW = 12.2;
+      const cellH = 12.2;
+
+      function drawHeatmap(ctx, upperGrid, lowerGrid, vmax, highlightCell) {
+        ctx.fillStyle = COL_FLOOR;
+        ctx.fillRect(0, 0, IMG_SIZE, IMG_SIZE);
+
+        for (let r = 0; r < 20; r++) {
+          const cy = rowY[r];
+          if (cy === null) continue;
+          for (let c = 0; c < 20; c++) {
+            const cx = colX[c];
+            if (cx === null) continue;
+            const v0 = upperGrid[r][c];
+            const v1 = lowerGrid[r][c];
+            if (v0 === null || v1 === null) continue;
+            const v = v0 + (v1 - v0) * blend;
+            ctx.fillStyle = viridisLowYellow(v / vmax);
+            ctx.fillRect(cx - cellW * 0.52, cy - cellH * 0.52, cellW * 1.04, cellH * 1.04);
+          }
+        }
+
+        // Draw walls crisply over heatmap edges
+        drawWalls(ctx, false);
+
+        // Draw tunnel markers
+        for (const ep of DATA.endpoints) {
+          drawMarker(ctx, ep.x, ep.y, ep.cue, variant);
+        }
+
+        // Draw smooth-transitioning red goal disk
+        const g0 = DATA.goals[0], g1 = DATA.goals[1];
+        const gx = g0.x + (g1.x - g0.x) * blend;
+        const gy = g0.y + (g1.y - g0.y) * blend;
+        ctx.save();
+        ctx.fillStyle = "#dc2626";
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(gx, gy, 7.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+
+        // Optional hovered cell outline
+        if (highlightCell) {
+          const hx = colX[highlightCell.c];
+          const hy = rowY[highlightCell.r];
+          if (hx !== null && hy !== null && upperGrid[highlightCell.r][highlightCell.c] !== null) {
+            ctx.save();
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(hx - cellW * 0.5, hy - cellH * 0.5, cellW, cellH);
+            ctx.restore();
+          }
+        }
+      }
+
+      function updateHoverBar() {
+        const gLabel = targetGoal === 0 ? "Upper leaf room" : "Lower leaf room";
+        if (!hoverCell) {
+          hoverBar.innerHTML = `<span><strong>Goal: ${gLabel}</strong> &mdash; Hover over either map to inspect exact frozen grid values.</span><span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--ink-muted);">20&times;20 grid &middot; 210 navigable cells</span>`;
+          return;
+        }
+        const { r, c } = hoverCell;
+        const vData = DATA[variant];
+        const gData = DATA.geodesic;
+        const lv0 = vData.upper[r][c], lv1 = vData.lower[r][c];
+        const gv0 = gData.upper[r][c], gv1 = gData.lower[r][c];
+        if (lv0 === null || gv0 === null) return;
+        const lv = lv0 + (lv1 - lv0) * blend;
+        const gv = gv0 + (gv1 - gv0) * blend;
+        const room = colX[c] < WALL_CENTER ? "Hub" : (rowY[r] < WALL_CENTER ? "Upper leaf" : "Lower leaf");
+        hoverBar.innerHTML = `<span><strong>${room}</strong> (x=${colX[c].toFixed(0)}, y=${rowY[r].toFixed(0)}) &middot; Goal: ${gLabel}</span><span style="font-family:'JetBrains Mono',monospace;font-size:0.8rem;">LeWM E = <strong>${lv.toFixed(1)}</strong> &nbsp;|&nbsp; Geodesic = <strong>${gv.toFixed(1)} px</strong></span>`;
+      }
+
+      function renderMaps() {
+        const vData = DATA[variant];
+        const gData = DATA.geodesic;
+        const prettyV = variant.charAt(0).toUpperCase() + variant.slice(1);
+        titleL.innerHTML = `LeWM Goal Energy <em>E</em> (${prettyV})`;
+        maxL.textContent = vData.vmax.toFixed(1);
+        maxG.textContent = `${gData.vmax.toFixed(1)} px`;
+        drawHeatmap(ctxL, vData.upper, vData.lower, vData.vmax, hoverCell);
+        drawHeatmap(ctxG, gData.upper, gData.lower, gData.vmax, hoverCell);
+        updateHoverBar();
+      }
+
+      function setGoalButtons(val) {
+        const group = document.querySelector('.seg-group[data-group="land-goal"]');
+        if (!group) return;
+        group.querySelectorAll(".seg-btn").forEach((b) => {
+          b.classList.toggle("active", b.dataset.val === val);
+        });
+      }
+
+      wireSegmented("land-variant", (v) => { variant = v; renderMaps(); });
+      wireSegmented("land-goal", (v) => {
+        autoSwitch = false;
+        btnAuto.classList.remove("active");
+        btnAuto.textContent = "Auto-Switch: Off";
+        targetGoal = v === "upper" ? 0 : 1;
+      });
+
+      btnAuto.addEventListener("click", () => {
+        autoSwitch = !autoSwitch;
+        autoTimer = 0;
+        btnAuto.classList.toggle("active", autoSwitch);
+        btnAuto.textContent = autoSwitch ? "Auto-Switch: On" : "Auto-Switch: Off";
+      });
+
+      function handlePointer(e, canvas) {
+        const rect = canvas.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * IMG_SIZE;
+        const y = ((e.clientY - rect.top) / rect.height) * IMG_SIZE;
+        let bestR = -1, bestC = -1, bestD = 9999;
+        for (let r = 0; r < 20; r++) {
+          if (rowY[r] === null) continue;
+          for (let c = 0; c < 20; c++) {
+            if (colX[c] === null || DATA.geodesic.upper[r][c] === null) continue;
+            const d = Math.hypot(colX[c] - x, rowY[r] - y);
+            if (d < bestD) { bestD = d; bestR = r; bestC = c; }
+          }
+        }
+        hoverCell = bestD < 14 ? { r: bestR, c: bestC } : null;
+        renderMaps();
+      }
+
+      for (const c of [cLewm, cGeo]) {
+        c.addEventListener("mousemove", (e) => handlePointer(e, c));
+        c.addEventListener("mouseleave", () => { hoverCell = null; renderMaps(); });
+      }
+
+      let last = performance.now();
+      function loop(now) {
+        const dt = Math.min(0.05, (now - last) / 1000);
+        last = now;
+        if (autoSwitch) {
+          autoTimer += dt;
+          if (autoTimer >= 2.8) {
+            autoTimer = 0;
+            targetGoal = 1 - targetGoal;
+            setGoalButtons(targetGoal === 0 ? "upper" : "lower");
+          }
+        }
+        const diff = targetGoal - blend;
+        if (Math.abs(diff) > 0.002) {
+          blend += diff * Math.min(1, dt * 6.5);
+          renderMaps();
+        }
+        requestAnimationFrame(loop);
+      }
+      renderMaps();
+      requestAnimationFrame(loop);
+    })();
+  })();
   </script>
 </body>
 </html>
