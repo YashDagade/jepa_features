@@ -884,26 +884,19 @@
   </header>
 
   <main class="container">
-    <!-- 1. QUANTITATIVE RESULTS FIRST -->
-    <section id="results-overview">
-      <div class="metrics-grid">
-        <div class="metric-card">
-          <div class="metric-value"><span class="good">.934</span> vs <span class="bad">.224</span></div>
-          <div class="metric-label">Linear probe R<sup>2</sup> on Color for tunnel <strong>location</strong> vs. <strong>cue identity</strong></div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-value"><span class="good">.885</span> vs <span class="bad">.273</span></div>
-          <div class="metric-label">2-layer MLP probe R<sup>2</sup> on Color (nonlinear probes retain the gap)</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-value"><span class="good">80%</span> &rarr; <span class="bad">16%</span></div>
-          <div class="metric-label">CEM planning success drop from R1 (nearer) to R2 (farther correct tunnel)</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-value"><span class="bad">88%</span></div>
-          <div class="metric-label">Color R2 episodes where CEM enters the nearer, incorrect tunnel first</div>
-        </div>
+    <!-- 1. ABSTRACT -->
+    <section id="abstract">
+      <h2>Abstract</h2>
+      <div class="abstract-box">
+        <p>
+          Joint-Embedding Predictive Architectures (JEPAs) learn representations that abstract away visual details unnecessary for prediction, but which information is preserved or discarded remains poorly understood. We introduce <em>Tunnel Room</em>, a controlled navigation benchmark that probes this question by making a small visual cue, such as color or shape, determine where a tunnel leads. We study LeWorldModel (LeWM) and find a consistent separation between learning <em>where tunnels are</em> and <em>where they lead</em>. On Tunnel Room Color, linear probes recover tunnel locations with mean R<sup>2</sup> = .934, but achieve only .224 when the same coordinates are identified by color. Reconstructions and goal-energy landscapes similarly preserve tunnel geometry. The effect extends to prediction and planning, where planners favor the nearest tunnel even when it is incorrect, and cue swaps that lead to different destinations produce substantially less separation in predicted than observed features. These results highlight a challenge for JEPA-based world models: information that is visually small may nevertheless be critical for predicting the consequences of actions. Why models develop this particular representational asymmetry remains an open question.
+        </p>
       </div>
+    </section>
+
+    <!-- 2. QUANTITATIVE RESULTS (TABLE 1 & TABLE 2) -->
+    <section id="results-overview">
+      <h2>Key Results</h2>
 
       <div class="table-card">
         <div class="table-header">
@@ -956,6 +949,25 @@
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-value"><span class="good">.934</span> vs <span class="bad">.224</span></div>
+          <div class="metric-label">Linear probe R<sup>2</sup> on Color for tunnel <strong>location</strong> vs. <strong>cue identity</strong></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><span class="good">.885</span> vs <span class="bad">.273</span></div>
+          <div class="metric-label">2-layer MLP probe R<sup>2</sup> on Color (nonlinear probes retain the gap)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><span class="good">80%</span> &rarr; <span class="bad">16%</span></div>
+          <div class="metric-label">CEM planning success drop from R1 (nearer) to R2 (farther correct tunnel)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><span class="bad">88%</span></div>
+          <div class="metric-label">Color R2 episodes where CEM enters the nearer, incorrect tunnel first</div>
         </div>
       </div>
 
@@ -1182,16 +1194,6 @@
         <div class="demo-caption">
           <strong>Watch the hub room as the goal switches:</strong> Yellow denotes lower energy (closer to the red goal). The geodesic reference cleanly swaps its low-energy funnel from the top hub tunnel (Upper goal) to the bottom hub tunnel (Lower goal), whereas LeWM assigns low energy near both hub entrances regardless of the goal room.
         </div>
-      </div>
-    </section>
-
-    <!-- 3. ABSTRACT -->
-    <section id="abstract">
-      <h2>Abstract</h2>
-      <div class="abstract-box">
-        <p>
-          Joint-Embedding Predictive Architectures (JEPAs) learn representations that abstract away visual details unnecessary for prediction, but which information is preserved or discarded remains poorly understood. We introduce <em>Tunnel Room</em>, a controlled navigation benchmark that probes this question by making a small visual cue, such as color or shape, determine where a tunnel leads. We study LeWorldModel (LeWM) and find a consistent separation between learning <em>where tunnels are</em> and <em>where they lead</em>. On Tunnel Room Color, linear probes recover tunnel locations with mean R<sup>2</sup> = .934, but achieve only .224 when the same coordinates are identified by color. Reconstructions and goal-energy landscapes similarly preserve tunnel geometry. The effect extends to prediction and planning, where planners favor the nearest tunnel even when it is incorrect, and cue swaps that lead to different destinations produce substantially less separation in predicted than observed features. These results highlight a challenge for JEPA-based world models: information that is visually small may nevertheless be critical for predicting the consequences of actions. Why models develop this particular representational asymmetry remains an open question.
-        </p>
       </div>
     </section>
 
