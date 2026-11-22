@@ -1,7 +1,8 @@
+
 \documentclass{article}
 
 \PassOptionsToPackage{numbers,compress}{natbib}
-\usepackage[dblblindworkshop]{neurips_2026}
+\usepackage{neurips_2026}
 \workshoptitle{From Pretrained Representations to Acting Agents}
 
 \usepackage[utf8]{inputenc}
@@ -22,11 +23,21 @@
 \newcommand{\lewm}{LeWM}
 \newcommand{\curpred}[2]{#1\,/\,#2}
 
-\title{When LeWM Misses the Color:\\Cue Binding in Tunnel Room}
-\author{Anonymous Authors}
+\title{Tunnel Room: Probing What JEPA World Models Preserve}
+
+\author{
+  Yash Dagade \\
+  Pantheon \\
+  \texttt{yash@pantheon.inc}
+  \And
+  Taj Gillin \\
+  Brown University \\
+  \texttt{taj\_gillin@brown.edu}
+}
 
 \begin{document}
 \maketitle
+
 
 \begin{abstract}
 Joint-Embedding Predictive Architectures (JEPAs) learn representations that
@@ -50,7 +61,7 @@ asymmetry remains an open question.
 \section{Introduction}
 \label{sec:introduction}
 
-Joint-Embedding Predictive Architectures (JEPAs) have emerged as a promising approach to visual representation learning and world modeling
+Joint-Embedding Predictive Architectures (JEPAs) have emerged as a promising approach to world modelling and visual representation learning
 \citep{assran2023ijepa,bardes2024vjepa,assran2025vjepa2,murlabadia2026vjepa21,maes2026stableworldmodel}.
 By predicting in latent space rather than pixel space, JEPAs can abstract away visual details that are unnecessary for the predictive objective
 \citep{lecun2022path,balestriero2025lejepa}.
