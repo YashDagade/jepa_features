@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tunnel Room: Probing What JEPA World Models Preserve</title>
+  <meta name="description" content="Tunnel Room: a controlled navigation benchmark probing whether JEPA world models preserve decision-critical visual cues. NeurIPS 2026 Workshop: From Pretrained Representations to Acting Agents." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #fcfcfd;
+      --surface: #ffffff;
+      --surface-subtle: #f5f7fa;
+      --ink: #111827;
+      --ink-secondary: #374151;
+      --ink-muted: #6b7280;
+      --border: #e5e7eb;
+      --accent: #1d4ed8;
+      --cue-green: #15803d;
+      --cue-green-bg: #f0fdf4;
+      --cue-orange: #c2410c;
+      --cue-orange-bg: #fff7ed;
+      --radius: 12px;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+      --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.68;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    header.hero {
+      padding: 58px 0 38px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .venue-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #dbeafe;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      margin-bottom: 18px;
+    }
+
+    .venue-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #2563eb;
+    }
+
+    h1.paper-title {
+      font-family: "Newsreader", Georgia, serif;
+      font-size: clamp(2rem, 4.4vw, 3rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      max-width: 780px;
+      margin: 0 auto 22px;
+    }
+
+    .authors {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px 36px;
+      margin-bottom: 12px;
+    }
+
+    .author {
+      text-align: center;
+    }
+
+    .author-name {
+      font-size: 1.06rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .author-name a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .author-name a:hover {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .author-affil {
+      font-size: 0.9rem;
+      color: var(--ink-secondary);
+    }
+
+    .author-email {
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+    }
+
+    .author-footnote {
+      font-size: 0.86rem;
+      color: var(--ink-muted);
+      margin-bottom: 26px;
+    }
+
+    .cta-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 0.12s ease, background 0.15s ease, border-color 0.15s ease;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--ink);
+      color: #ffffff;
+      border: 1px solid var(--ink);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-primary:hover {
+      background: #1f2937;
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--ink);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-secondary:hover {
+      border-color: #cbd5e1;
+      background: #f9fafb;
+    }
+
+    .btn svg {
+      width: 17px;
+      height: 17px;
+      flex-shrink: 0;
+    }
+
+    main {
+      padding: 36px 0 72px;
+    }
+
+    section {
+      margin-bottom: 48px;
+    }
+
+    h2 {
+      font-family: "Newsreader", Georgia, serif;
+      font-size: 1.75rem;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      color: var(--ink);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h3 {
+      font-size: 1.06rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 26px 0 10px;
+    }
+
+    p {
+      color: var(--ink-secondary);
+      margin-bottom: 14px;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    a.inline-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a.inline-link:hover {
+      text-decoration: underline;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .metric-value {
+      font-size: 1.42rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .good {
+      color: var(--cue-green);
+      font-weight: 600;
+    }
+
+    .bad {
+      color: var(--cue-orange);
+      font-weight: 600;
+    }
+
+    .metric-label {
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: var(--ink-muted);
+    }
+
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      margin: 18px 0 26px;
+      overflow: hidden;
+    }
+
+    .table-header {
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
+    }
+
+    .table-title {
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .table-subtitle {
+      font-size: 0.84rem;
+      color: var(--ink-muted);
+      line-height: 1.5;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.89rem;
+    }
+
+    thead th {
+      background: var(--surface-subtle);
+      color: var(--ink);
+      font-weight: 600;
+      text-align: center;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    thead th.group-head {
+      background: #eef2f6;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ink-secondary);
+      border-bottom: 1px solid #dbe2ea;
+    }
+
+    thead th:first-child {
+      text-align: left;
+    }
+
+    tbody td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      text-align: center;
+      color: var(--ink-secondary);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    tbody td:first-child {
+      text-align: left;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    tbody tr.loc-row td:first-child::before {
+      content: "";
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--cue-green);
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    tbody tr.cue-row td:first-child::before {
+      content: "";
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--cue-orange);
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    tbody tr.cue-start td {
+      border-top: 1.5px dashed #cbd5e1;
+    }
+
+    tbody tr.cue-row {
+      background: #fffcfa;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tag-loc {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--cue-green);
+      background: var(--cue-green-bg);
+      padding: 2px 7px;
+      border-radius: 999px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .tag-cue {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--cue-orange);
+      background: var(--cue-orange-bg);
+      padding: 2px 7px;
+      border-radius: 999px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .figure-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-md);
+      margin: 22px 0;
+    }
+
+    .figure-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+    }
+
+    .figure-caption {
+      margin-top: 14px;
+      font-size: 0.9rem;
+      line-height: 1.58;
+      color: var(--ink-secondary);
+    }
+
+    .figure-caption strong {
+      color: var(--ink);
+    }
+
+    .abstract-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px 30px;
+      box-shadow: var(--shadow-sm);
+      font-size: 0.97rem;
+    }
+
+    .code-callout {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 18px 20px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+      font-size: 0.84rem;
+      line-height: 1.6;
+      margin-top: 14px;
+    }
+
+    .bibtex-wrap {
+      position: relative;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #f8fafc;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-family: "Inter", sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    .ack-box {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 26px;
+      font-size: 0.94rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 0 44px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--ink-muted);
+    }
+
+    @media (max-width: 760px) {
+      header.hero {
+        padding: 44px 0 32px;
+      }
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .abstract-box,
+      .code-callout {
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="container">
+      <div class="venue-badge">
+        <span class="venue-dot"></span>
+        NeurIPS 2026 Workshop · From Pretrained Representations to Acting Agents (PTA)
+      </div>
+      <h1 class="paper-title">Tunnel Room: Probing What JEPA World Models Preserve</h1>
+
+      <div class="authors">
+        <div class="author">
+          <div class="author-name"><a href="https://github.com/YashDagade" target="_blank" rel="noopener">Yash Dagade</a><sup>*</sup></div>
+          <div class="author-affil">Pantheon</div>
+          <div class="author-email">yash@pantheon.inc</div>
+        </div>
+        <div class="author">
+          <div class="author-name">Taj Gillin</div>
+          <div class="author-affil">Brown University</div>
+          <div class="author-email">taj_gillin@brown.edu</div>
+        </div>
+      </div>
+
+      <p class="author-footnote"><sup>*</sup>Work done while Member of Technical Staff at Pantheon.</p>
+
+      <div class="cta-row">
+        <a class="btn btn-primary" href="paper.pdf" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Paper (PDF)
+        </a>
+        <a class="btn btn-secondary" href="https://github.com/YashDagade/jepa_features" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          Code (GitHub)
+        </a>
+        <a class="btn btn-secondary" href="#bibtex">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          BibTeX
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="results-overview">
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-value"><span class="good">.934</span> vs <span class="bad">.224</span></div>
+          <div class="metric-label">Linear probe R<sup>2</sup> on Color for tunnel <strong>location</strong> vs. <strong>cue identity</strong></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><span class="good">.885</span> vs <span class="bad">.273</span></div>
+          <div class="metric-label">2-layer MLP probe R<sup>2</sup> on Color (nonlinear probes retain the gap)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><span class="good">80%</span> &rarr; <span class="bad">16%</span></div>
+          <div class="metric-label">CEM planning success drop from R1 (nearer) to R2 (farther correct tunnel)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value"><span class="bad">88%</span></div>
+          <div class="metric-label">Color R2 episodes where CEM enters the nearer, incorrect tunnel first</div>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title">Table 1: Tunnel location is substantially more recoverable than cue identity (Tunnel Room Color)</div>
+          <div class="table-subtitle">Linear / MLP probe MAE (pixels, lower is better) and R<sup>2</sup> (higher is better), averaged over <em>x/y</em> coordinates. Top/Bottom index tunnels by spatial position; Green/Orange index the exact same tunnels by color cue.</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th rowspan="2">Endpoint</th>
+                <th class="group-head" colspan="2">Central Room</th>
+                <th class="group-head" colspan="2">Destination Rooms</th>
+              </tr>
+              <tr>
+                <th>MAE (px) &darr;</th>
+                <th>R<sup>2</sup> &uarr;</th>
+                <th>MAE (px) &darr;</th>
+                <th>R<sup>2</sup> &uarr;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="loc-row">
+                <td>Top <span class="tag-loc">Location</span></td>
+                <td><span class="good">4.63</span> / 6.14</td>
+                <td><span class="good">.919</span> / .851</td>
+                <td><span class="good">2.72</span> / 3.82</td>
+                <td><span class="good">.960</span> / .925</td>
+              </tr>
+              <tr class="loc-row">
+                <td>Bottom <span class="tag-loc">Location</span></td>
+                <td><span class="good">5.14</span> / 6.34</td>
+                <td><span class="good">.900</span> / .844</td>
+                <td><span class="good">2.82</span> / 4.06</td>
+                <td><span class="good">.958</span> / .919</td>
+              </tr>
+              <tr class="cue-row cue-start">
+                <td>Green <span class="tag-cue">Cue</span></td>
+                <td><span class="bad">25.05</span> / 25.43</td>
+                <td><span class="bad">.256</span> / .275</td>
+                <td><span class="bad">29.81</span> / 29.47</td>
+                <td><span class="bad">.180</span> / .257</td>
+              </tr>
+              <tr class="cue-row">
+                <td>Orange <span class="tag-cue">Cue</span></td>
+                <td><span class="bad">25.01</span> / 25.40</td>
+                <td><span class="bad">.289</span> / .318</td>
+                <td><span class="bad">29.72</span> / 29.72</td>
+                <td><span class="bad">.172</span> / .240</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title">Table 2: Same representation and planning gap across Color, Shape, and Palette</div>
+          <div class="table-subtitle">Mean probe R<sup>2</sup> (Linear / MLP) and planning success (%) for CEM / GD on R1 (correct tunnel nearer, 25 cases) vs. R2 (correct tunnel farther, 25 cases).</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Variant</th>
+                <th>Location R<sup>2</sup> (Lin / MLP) &uarr;</th>
+                <th>Cue R<sup>2</sup> (Lin / MLP) &uarr;</th>
+                <th>CEM R1 / R2 (%) &uarr;</th>
+                <th>GD R1 / R2 (%) &uarr;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Color (green / orange)</td>
+                <td><span class="good">.934</span> / .885</td>
+                <td><span class="bad">.224</span> / .273</td>
+                <td><span class="good">80.0</span> / <span class="bad">16.0</span></td>
+                <td><span class="good">64.0</span> / <span class="bad">52.0</span></td>
+              </tr>
+              <tr>
+                <td>Shape (triangle / diamond)</td>
+                <td><span class="good">.907</span> / .857</td>
+                <td><span class="bad">.203</span> / .261</td>
+                <td><span class="good">88.0</span> / <span class="bad">24.0</span></td>
+                <td><span class="good">76.0</span> / <span class="bad">40.0</span></td>
+              </tr>
+              <tr>
+                <td>Palette (green / blue)</td>
+                <td><span class="good">.930</span> / .874</td>
+                <td><span class="bad">.258</span> / .259</td>
+                <td><span class="good">80.0</span> / <span class="bad">28.0</span></td>
+                <td><span class="good">84.0</span> / <span class="bad">32.0</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="abstract">
+      <h2>Abstract</h2>
+      <div class="abstract-box">
+        <p>
+          Joint-Embedding Predictive Architectures (JEPAs) learn representations that abstract away visual details unnecessary for prediction, but which information is preserved or discarded remains poorly understood. We introduce <em>Tunnel Room</em>, a controlled navigation benchmark that probes this question by making a small visual cue, such as color or shape, determine where a tunnel leads. We study LeWorldModel (LeWM) and find a consistent separation between learning <em>where tunnels are</em> and <em>where they lead</em>. On Tunnel Room Color, linear probes recover tunnel locations with mean R<sup>2</sup> = .934, but achieve only .224 when the same coordinates are identified by color. Reconstructions and goal-energy landscapes similarly preserve tunnel geometry. The effect extends to prediction and planning, where planners favor the nearest tunnel even when it is incorrect, and cue swaps that lead to different destinations produce substantially less separation in predicted than observed features. These results highlight a challenge for JEPA-based world models: information that is visually small may nevertheless be critical for predicting the consequences of actions. Why models develop this particular representational asymmetry remains an open question.
+        </p>
+      </div>
+    </section>
+
+    <section id="visual-diagnostics">
+      <h2>Visual Diagnostics &amp; Rollout Analysis</h2>
+
+      <h3>Detached Reconstructions &amp; Goal-Energy Landscapes</h3>
+      <p>
+        Training a detached pixel decoder on frozen LeWM representations preserves room geometry and tunnel locations while washing out cue identity toward the mean of the two colors. Similarly, learned latent goal-energy landscapes assign low energy near multiple tunnel endpoints regardless of which leaf room holds the goal, unlike the true geodesic distance.
+      </p>
+
+      <div class="figure-card">
+        <img src="assets/fig2_reconstruction_and_energy.png" alt="Detached decoder reconstructions and learned goal-energy landscapes compared with geodesic reference" />
+        <p class="figure-caption">
+          <strong>Figure 2: LeWM preserves tunnel geometry but weakens cue binding.</strong>
+          (a) Two Color observations and their detached-decoder reconstructions.
+          (b) Learned goal energy <em>E</em> and (c) geodesic reference energy as the goal switches between upper and lower leaf rooms (red dots). Yellow denotes low energy.
+        </p>
+      </div>
+
+      <h3>Controlled Cue Swaps</h3>
+      <p>
+        Swapping the two hub colors while holding tunnel locations, leaf colors, and actions fixed keeps trajectories identical prior to entering the tunnel, then sends the agents to opposite leaf rooms after teleportation. Conditioned only on pre-crossing observations, LeWM's open-loop rollouts substantially understate the true post-teleportation divergence.
+      </p>
+
+      <div class="figure-card">
+        <img src="assets/fig3_portal_swap.png" alt="Paired worlds with swapped hub colors and divergence curves for observed states versus LeWM model rollouts" />
+        <p class="figure-caption">
+          <strong>Figure 3: Predicted features separate too little after a cue swap.</strong>
+          (a) Paired worlds differ only in hub cue assignment; identical action sequences lead to different leaf rooms after teleportation.
+          (b) Paired latent distance between the two worlds for encoded observations (blue) and open-loop LeWM rollouts (orange), showing medians and interquartile ranges over 16 geometries.
+        </p>
+      </div>
+    </section>
+
+    <section id="benchmark">
+      <h2>The Tunnel Room Benchmark</h2>
+      <p>
+        Tunnel Room consists of a central <em>hub</em> and two <em>leaf</em> rooms connected by paired teleporting tunnels whose positions and cue pairings vary across episodes. We provide three matched cue variants—<strong>Color</strong> (green/orange), <strong>Shape</strong> (triangle/diamond), and <strong>Palette</strong> (green/blue)—and evaluate planners on <strong>R1</strong> (correct tunnel nearer) versus <strong>R2</strong> (correct tunnel farther) episodes.
+      </p>
+
+      <div class="figure-card">
+        <img src="assets/fig1_tunnel_variants_and_rank.png" alt="Tunnel Room variants (Color, Shape, Palette) and a Rank-2 planning task" />
+        <p class="figure-caption">
+          <strong>Figure 1: Tunnel Room requires cue-guided navigation.</strong>
+          (a&ndash;c) <em>Color</em>, <em>Shape</em>, and <em>Palette</em> share the same geometry while changing the visual cue identifying paired tunnel endpoints; the red dot denotes the agent.
+          (d) A rank-2 (R2) task where the tunnel leading to the goal is farther from the agent than the incorrect tunnel.
+        </p>
+      </div>
+    </section>
+
+    <section id="code">
+      <h2>Code &amp; Reproducibility</h2>
+      <div class="code-callout">
+        <p>
+          Our code, Tunnel Room environments, training configs, probing scripts, and frozen paper results are publicly available at
+          <a class="inline-link" href="https://github.com/YashDagade/jepa_features" target="_blank" rel="noopener">https://github.com/YashDagade/jepa_features</a>
+          so researchers can reproduce and extend our experiments.
+        </p>
+        <pre><code>git clone https://github.com/YashDagade/jepa_features.git
+cd jepa_features/stable-worldmodel
+pip install -e '.[train,format]'
+
+# Collect Tunnel Room trajectories
+python scripts/data/collect_tunnel_rooms.py --help
+
+# Train LeWM with spatial 8x8 aggregation and IDM
+python scripts/train/lewm_idm.py --help
+
+# Run linear/MLP coordinate probes on frozen checkpoints
+python scripts/probes/location_probe.py --help</code></pre>
+      </div>
+    </section>
+
+    <section id="bibtex">
+      <h2>Citation</h2>
+      <div class="bibtex-wrap">
+        <button class="copy-btn" id="copy-bibtex" type="button">Copy BibTeX</button>
+        <pre><code id="bibtex-code">@inproceedings{dagade2026tunnelroom,
+  title     = {Tunnel Room: Probing What JEPA World Models Preserve},
+  author    = {Dagade, Yash and Gillin, Taj},
+  booktitle = {NeurIPS 2026 Workshop: From Pretrained Representations to Acting Agents},
+  year      = {2026}
+}</code></pre>
+      </div>
+    </section>
+
+    <section id="acknowledgments">
+      <h2>Acknowledgments</h2>
+      <div class="ack-box">
+        <p>
+          This work was done while Yash Dagade was a Member of Technical Staff at Pantheon. We would like to thank the entire Pantheon research team for the resources and guidance that supported this project.
+        </p>
+        <p>
+          Our implementation builds on <a class="inline-link" href="https://github.com/galilai-group/stable-worldmodel" target="_blank" rel="noopener">Stable WorldModel</a>.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      Tunnel Room &middot; Yash Dagade &amp; Taj Gillin &middot;
+      <a class="inline-link" href="https://github.com/YashDagade/jepa_features" target="_blank" rel="noopener">GitHub Repository</a>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("copy-bibtex").addEventListener("click", function () {
+      const text = document.getElementById("bibtex-code").textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        this.textContent = "Copied!";
+        setTimeout(() => { this.textContent = "Copy BibTeX"; }, 1800);
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,8 +1,7 @@
-
 \documentclass{article}
 
 \PassOptionsToPackage{numbers,compress}{natbib}
-\usepackage{neurips_2026}
+\usepackage[dblblindworkshop,final]{neurips_2026}
 \workshoptitle{From Pretrained Representations to Acting Agents}
 
 \usepackage[utf8]{inputenc}
@@ -26,7 +25,7 @@
 \title{Tunnel Room: Probing What JEPA World Models Preserve}
 
 \author{
-  Yash Dagade \\
+  Yash Dagade\thanks{Work done while Member of Technical Staff at Pantheon.} \\
   Pantheon \\
   \texttt{yash@pantheon.inc}
   \And
@@ -37,7 +36,6 @@
 
 \begin{document}
 \maketitle
-
 
 \begin{abstract}
 Joint-Embedding Predictive Architectures (JEPAs) learn representations that
@@ -70,7 +68,7 @@ Such representations can support planning through learned latent dynamics
 
 We introduce \emph{Tunnel Room}, a controlled navigation benchmark for testing whether such decision-critical cues remain useful to a world model. Tunnel colors or shapes determine which destinations are connected, while tunnel locations determine only where entrances are found. Because the nearest entrance may lead to the wrong destination, the task separates knowing \emph{where a tunnel is} from knowing \emph{where it leads}.
 
-Our contributions are twofold. (1) We introduce \emph{Tunnel Room} and its Color, Shape, and Palette variants (Section~\ref{sec:benchmark}). (2) We show that LeWM represents tunnel locations more reliably than the cues that determine their destinations, tracing this gap across probes, reconstructions, energy landscapes, predicted transitions, and planning (Section~\ref{sec:results}). We investigate a possible explanation through transition exposure (Appendix~\ref{app:exposure}), but leave the mechanism as an open question.
+Our contributions are twofold. (1) We introduce \emph{Tunnel Room} and its Color, Shape, and Palette variants (Section~\ref{sec:benchmark}). (2) We show that LeWM represents tunnel locations more reliably than the cues that determine their destinations, tracing this gap across probes, reconstructions, energy landscapes, predicted transitions, and planning (Section~\ref{sec:results}). We investigate a possible explanation through transition exposure (Appendix~\ref{app:exposure}), but leave the mechanism as an open question. Project page and code: \url{https://yashdagade.github.io/jepa_features/} and \mbox{\url{https://github.com/YashDagade/jepa_features}}.
 
 \section{Tunnel Room}
 \label{sec:benchmark}
@@ -99,7 +97,8 @@ frozen representations. We fit linear and MLP probes to predict the same
 tunnel coordinates under two labelings: \emph{location} probes identify
 endpoints by their top/bottom position, whereas \emph{cue} probes identify
 them by color. We report
-mean absolute error (MAE) in pixels and $R^2$.
+mean absolute error (MAE) in pixels and $R^2$;
+Figure~\ref{fig:mae} illustrates these error magnitudes at the task scale.
 
 \begin{table}[!htbp]
 \centering
@@ -265,6 +264,11 @@ to ensure that decision-critical cues are preserved, remains an important
 direction for future work.
 
 \clearpage
+
+\begin{ack}
+This work was done while Yash Dagade was a Member of Technical Staff at Pantheon.
+We would like to thank the entire Pantheon research team for the resources and guidance that supported this project.
+\end{ack}
 
 % The supplied template permits 9-point references.
 \begingroup
