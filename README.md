@@ -4,7 +4,7 @@
 
 **Yash Dagade\***<sup>1</sup> &nbsp;&middot;&nbsp; **Taj Gillin**<sup>2</sup>
 
-<sup>1</sup>Pantheon (`yash@pantheon.inc`) &nbsp;&nbsp; <sup>2</sup>Brown University (`taj_gillin@brown.edu`)  
+<sup>1</sup>Pantheon (`yash.dagade@duke.edu`) &nbsp;&nbsp; <sup>2</sup>Brown University (`taj_gillin@brown.edu`)  
 <sub>\*Work done while Member of Technical Staff at Pantheon.</sub>
 
 *NeurIPS 2026 Workshop: From Pretrained Representations to Acting Agents (PTA)*
